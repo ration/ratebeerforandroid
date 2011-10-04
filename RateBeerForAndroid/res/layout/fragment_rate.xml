@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:fillViewport="true">
+	<LinearLayout  
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+			
+		<TextView
+			android:id="@+id/name"
+			style="@style/DetailsHeadertext"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginTop="10dip"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip" />
+			
+		<TextView
+			android:id="@+id/customnamelabel"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_below="@id/map"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:text="@string/rate_offline_customname"
+			style="@style/Label" />
+			
+		<EditText
+			android:id="@+id/customname"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:inputType="textCapWords|textEmailSubject"
+			android:scrollHorizontally="false" />
+			
+		<LinearLayout
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_marginTop="10dip"
+			android:layout_marginLeft="20dip"
+			android:layout_marginRight="20dip"
+			android:orientation="horizontal">
+			<com.ratebeer.android.gui.wheel.WheelView
+				android:id="@+id/aroma"
+				android:layout_height="wrap_content"
+				android:layout_width="0dip"
+				android:layout_weight="1" />
+			<com.ratebeer.android.gui.wheel.WheelView
+				android:id="@+id/appearance"
+				android:layout_height="wrap_content"
+				android:layout_width="0dip"
+				android:layout_weight="1" />
+			<com.ratebeer.android.gui.wheel.WheelView
+				android:id="@+id/taste"
+				android:layout_height="wrap_content"
+				android:layout_width="0dip"
+				android:layout_weight="1" />
+			<com.ratebeer.android.gui.wheel.WheelView
+				android:id="@+id/palate"
+				android:layout_height="wrap_content"
+				android:layout_width="0dip"
+				android:layout_weight="1" />
+			<com.ratebeer.android.gui.wheel.WheelView
+				android:id="@+id/overall"
+				android:layout_height="wrap_content"
+				android:layout_width="0dip"
+				android:layout_weight="1" />
+			<TextView
+				android:id="@+id/total"
+				style="@style/RateTotalText" />
+		</LinearLayout>
+		<LinearLayout
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_marginBottom="5dip"
+			android:layout_marginLeft="20dip"
+			android:layout_marginRight="20dip"
+			android:orientation="horizontal">
+			<TextView
+				android:text="@string/rate_aroma"
+				style="@style/RateWheelText" />
+			<TextView
+				android:text="@string/rate_appearance"
+				style="@style/RateWheelText" />
+			<TextView
+				android:text="@string/rate_taste"
+				style="@style/RateWheelText" />
+			<TextView
+				android:text="@string/rate_palate"
+				style="@style/RateWheelText" />
+			<TextView
+				android:text="@string/rate_overall"
+				style="@style/RateWheelText" />
+			<TextView
+				android:text="@string/rate_totalscore"
+				style="@style/RateWheelText" />
+		</LinearLayout>
+		
+		<TextView
+			android:id="@+id/character_counter"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="@string/rate_comments"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			style="@style/Label" />
+		<EditText
+			android:id="@+id/comments"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:inputType="textCapSentences|textMultiLine"
+			android:scrollHorizontally="false"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip" />
+			
+		<Button 
+			android:id="@+id/assistance"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="right"
+			android:layout_marginRight="10dip"
+			android:text="@string/rate_showassistance" />
+			
+		<TextView
+			android:id="@+id/assistance_words"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:linksClickable="true"
+			android:text="@string/rate_assistance_words"
+			android:visibility="gone" />
+			
+		<CheckBox
+			android:id="@+id/share"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:text="@string/app_sharerating" />
+			
+		<Button
+			android:id="@+id/addrating"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_marginBottom="10dip"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			style="@style/DetailsButtonSmall" />
+			
+		<FrameLayout
+			android:layout_height="0dip"
+			android:layout_weight="1"
+			android:layout_width="match_parent" />
+		
+		<Button
+			android:id="@+id/offline_status"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textSize="@dimen/LabelSize"
+			android:textColor="@color/LabelColorLight"
+			android:padding="10dip"
+			android:background="@color/BackgroundDark"
+			android:gravity="center" />
+			
+	</LinearLayout>
+</ScrollView>

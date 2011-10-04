@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:fillViewport="true">
+	<LinearLayout 
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+		
+		<TextView
+			android:id="@+id/addingwhat"
+			style="@style/DetailsHeadertext"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_margin="10dip" />
+			
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/cellar_memo"
+			style="@style/Label" />
+	
+		<EditText
+			android:id="@+id/memo"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:inputType="textCapSentences|textShortMessage" />
+				
+		<TextView
+			android:id="@+id/vintage_label"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/cellar_vintage"
+			style="@style/Label" />
+	
+		<EditText
+			android:id="@+id/vintage"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:inputType="textCapSentences|textShortMessage" />
+				
+		<TextView
+			android:id="@+id/quantity_label"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/cellar_quantity"
+			style="@style/Label" />
+	
+		<EditText
+			android:id="@+id/quantity"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:inputType="textCapSentences|textShortMessage" />
+			
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dip"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:orientation="horizontal">
+			<Button
+				android:id="@+id/add"
+				android:layout_height="wrap_content"
+				android:layout_width="0dip"
+				android:layout_weight="1"
+				android:text="@string/cellar_addtocellar" />
+			<Button
+				android:id="@+id/cancel"
+				android:layout_height="wrap_content"
+				android:layout_width="0dip"
+				android:layout_weight="1"
+				android:text="@string/app_cancel"
+				android:layout_marginLeft="10dip" />
+		</LinearLayout>
+		
+	</LinearLayout>
+</ScrollView>

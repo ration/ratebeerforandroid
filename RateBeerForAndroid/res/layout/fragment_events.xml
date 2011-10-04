@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+	
+	<TextView
+		android:id="@+id/countrylabel"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:text="@string/topbeers_country"
+		style="@style/Label" />
+	<Spinner
+		android:id="@+id/country"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_marginRight="2dip" />
+		
+	<TextView
+		android:id="@+id/statelabel"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:text="@string/topbeers_state"
+		style="@style/Label" />
+	<Spinner
+		android:id="@+id/state"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_marginRight="2dip" />
+		
+	<ListView
+		android:id="@+id/events"
+		android:layout_width="match_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:cacheColorHint="@color/BackgroundLight" />
+	
+	<TextView
+		android:id="@+id/empty"
+		android:layout_width="match_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:gravity="center"
+		android:layout_gravity="center"
+		android:text="@string/events_noitems"
+		android:visibility="gone" />
+	
+</LinearLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory
+		android:title="@string/settings_display">
+		<CheckBoxPreference 
+			android:key="distance_in_km"
+			android:title="@string/settings_distanceinkm" 
+			android:summary="@string/settings_distanceinkm_info" />
+		<EditTextPreference 
+			android:key="share_text"
+			android:title="@string/settings_sharetext" 
+			android:defaultValue="@string/app_ratedwithurl"
+			android:dialogMessage="@string/settings_sharetext_msg" />
+	</PreferenceCategory>
+</PreferenceScreen>

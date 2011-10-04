@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="BackgroundDark">#036</color>
+	<color name="BackgroundDarkish">#037</color>
+	<color name="BackgroundLight">#fff</color>
+	
+	<color name="LabelColorDark">#000</color>
+	<color name="LabelColorLight">#fff</color>
+	<color name="HomeTextColor">#036</color>
+	
+	<color name="DarkGrey">#666</color>
+	<color name="Orange">#fdbb00</color>
+	
+</resources>

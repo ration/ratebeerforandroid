@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/scorecard"
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:background="#66A212" 
+	android:layout_gravity="center_horizontal">
+	<TextView 
+		android:id="@+id/scorelabel"
+		android:layout_width="150dip"
+		android:layout_height="wrap_content" 
+		android:text="@string/details_score" 
+		android:gravity="center_horizontal"
+		android:background="#333" 
+		android:textColor="#fff"
+		android:padding="3dip" />
+	<TextView 
+		android:id="@+id/overallpctl"
+		android:layout_width="100dip" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/scorelabel" 
+		android:gravity="center_horizontal"
+		android:background="#036" 
+		android:textSize="60dip"
+		android:textColor="#fff" />
+	<TextView 
+		android:id="@+id/overallpctllabel"
+		android:layout_width="100dip" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/overallpctl"
+		android:gravity="center_horizontal" 
+		android:text="@string/details_percentile"
+		android:background="#036" 
+		android:textColor="#fff"
+		android:paddingBottom="3dip" />
+	<TextView 
+		android:id="@+id/stylepctl"
+		android:layout_width="50dip" 
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/overallpctl"
+		android:layout_below="@id/scorelabel" 
+		android:gravity="center_horizontal"
+		android:textColor="#fff"
+		android:padding="5dip" />
+	<TextView 
+		android:id="@+id/stylepctllabel"
+		android:layout_width="50dip" 
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/overallpctl"
+		android:layout_below="@id/stylepctl" 
+		android:gravity="center_horizontal"
+		android:textColor="#fff"
+		android:text="@string/details_style" />
+	<TextView 
+		android:id="@+id/ratings"
+		android:layout_width="50dip" 
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/overallpctl"
+		android:layout_below="@id/stylepctllabel" 
+		android:gravity="center_horizontal"
+		android:textColor="#fff"
+		android:padding="5dip" />
+	<TextView 
+		android:id="@+id/ratingslabel"
+		android:layout_width="50dip" 
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/overallpctl"
+		android:layout_below="@id/ratings" 
+		android:gravity="center_horizontal"
+		android:textColor="#fff"
+		android:text="@string/details_ratings" />
+</RelativeLayout>

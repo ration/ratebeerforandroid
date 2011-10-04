@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="vertical"
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:padding="0dip">
+	<com.google.android.apps.iosched.ui.widget.DashboardLayout
+		android:layout_width="match_parent" 
+		android:layout_height="0dip"
+		android:layout_weight="1">
+		<Button 
+			android:id="@+id/search" 
+			style="@style/HomeButton"
+			android:text="@string/home_search" 
+			android:drawableTop="@drawable/ic_home_search" />
+		<Button 
+			android:id="@+id/myprofile" 
+			style="@style/HomeButton"
+			android:text="@string/home_myprofile" 
+			android:drawableTop="@drawable/ic_home_myprofile" />
+		<Button 
+			android:id="@+id/beerstyles" 
+			style="@style/HomeButton"
+			android:text="@string/home_beerstyles" 
+			android:drawableTop="@drawable/ic_home_styles" />
+		<Button 
+			android:id="@+id/offlineratings" 
+			style="@style/HomeButton"
+			android:text="@string/home_offlineratings" 
+			android:drawableTop="@drawable/ic_home_offline" />
+		<Button 
+			android:id="@+id/places" 
+			style="@style/HomeButton"
+			android:text="@string/home_places" 
+			android:drawableTop="@drawable/ic_home_places" />
+		<Button 
+			android:id="@+id/top50" 
+			style="@style/HomeButton"
+			android:text="@string/home_top50" 
+			android:drawableTop="@drawable/ic_home_top50" />
+		<Button 
+			android:id="@+id/events" 
+			style="@style/HomeButton"
+			android:text="@string/home_events" 
+			android:drawableTop="@drawable/ic_home_events" />
+		<Button 
+			android:id="@+id/bycountry" 
+			style="@style/HomeButton"
+			android:text="@string/home_bycountry" 
+			android:drawableTop="@drawable/ic_home_bycountry" />
+	</com.google.android.apps.iosched.ui.widget.DashboardLayout>
+	
+	<Button
+		android:id="@+id/drinking_status"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textSize="@dimen/LabelSize"
+		android:textColor="@color/LabelColorLight"
+		android:padding="10dip"
+		android:background="@color/BackgroundDark"
+		android:gravity="center"
+		android:visibility="gone" />
+		
+</LinearLayout>

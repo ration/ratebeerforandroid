@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+	
+	<TextView
+		android:id="@+id/order"
+		android:layout_width="50dip"
+		android:layout_height="wrap_content"
+		android:textSize="40dip"
+		android:gravity="center_horizontal" />
+	
+	<TextView
+		android:id="@+id/beer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/order"
+		android:layout_marginRight="30dip" 
+		android:paddingTop="3dip"
+		style="@style/ListHeaderText" />
+	
+	<TextView
+		android:id="@+id/score"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_alignBaseline="@id/beer" />
+	
+	<TextView
+		android:id="@+id/count"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beer"
+		android:layout_alignParentRight="true" />
+	
+</RelativeLayout>

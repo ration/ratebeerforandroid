@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+	
+	<TextView
+		android:id="@+id/myrating"
+		android:layout_width="60dip" 
+		android:layout_height="wrap_content"
+		android:textSize="35dip"
+		android:gravity="center_horizontal" />
+	
+	<TextView
+		android:id="@+id/beer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/myrating"
+		android:paddingTop="3dip"
+		style="@style/ListHeaderText" />
+	
+	<TextView
+		android:id="@+id/brewer"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beer"
+		android:singleLine="true"
+		android:layout_toRightOf="@id/myrating" />
+	
+	<TextView
+		android:id="@+id/date"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/brewer"
+		android:layout_alignParentRight="true" />
+	
+	<TextView
+		android:id="@+id/style"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/brewer"
+		android:layout_toRightOf="@id/myrating"
+		android:layout_toLeftOf="@id/date" />
+	
+	<TextView
+		android:id="@+id/score"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignRight="@id/myrating"
+		android:layout_alignBaseline="@id/style"
+		android:layout_marginRight="5dip" />
+	
+</RelativeLayout>

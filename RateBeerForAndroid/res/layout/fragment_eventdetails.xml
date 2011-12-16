@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:paddingTop="10dip"
+	android:paddingLeft="10dip"
+	android:paddingRight="10dip"
+	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/name"
+		style="@style/DetailsHeadertext"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+
+	<Button
+		android:id="@+id/location"
+		android:drawableLeft="@android:drawable/ic_menu_compass"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:visibility="invisible"
+		style="@style/DetailsButton" />
+
+	<Button
+		android:id="@+id/time"
+		android:drawableLeft="@android:drawable/ic_menu_agenda"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:visibility="invisible"
+		style="@style/DetailsButton" />
+
+	<TextView
+		android:id="@+id/details"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:autoLink="all"
+		style="@style/DetailsField" />
+
+	<TextView
+		android:id="@+id/contact"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:autoLink="all"
+		style="@style/DetailsField" />
+
+	<FrameLayout
+		android:id="@+id/map"
+		android:layout_marginTop="10dip"
+		android:layout_width="fill_parent"
+		android:layout_height="150dip" />
+
+	<TextView
+		android:id="@+id/attendeeslabel"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@id/map"
+		android:text="@string/events_attendees"
+		android:visibility="invisible"
+		style="@style/Label" />
+	
+	<Button
+		android:id="@+id/setattendance"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_marginTop="5dip"
+		style="@style/DetailsButtonSmall" />
+		
+</LinearLayout>

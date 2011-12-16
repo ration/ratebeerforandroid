@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RateBeer for Android</string>
+    <!-- Debug key -->
+    <!-- <string name="app_googlemapskey">0tkfMrcfmFeMLyX_vX__k7wHmC3HwFnJWM_XBrg</string> -->
+    <!-- Release key -->
+    <string name="app_googlemapskey">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
+	<string name="app_ok">OK</string>
+	<string name="app_cancel">Cancel</string>
+	<string name="app_home">Home</string>
+	<string name="app_refresh">Refresh</string>
+	<string name="app_share">Share</string>
+	<string name="app_loading">Loading...</string>
+	<string name="app_legal">By using this application you agree with the terms of the RateBeer User Agreement available at http://www.ratebeer.com/UserAgreement.asp\n\nEven without a RateBeer account you can use this application to view beer details, top lists, upcoming events, local beer-releated places and much more. For the full feature set, like rating beers and adding beer availability, you can create an account at http://www.ratebeer.com/NewUser.asp</string>
+	<string name="app_legal_title">Welcome!</string>
+
+	<string name="app_install">Install now</string>
+	<string name="app_nomarket">The Android Market is not installed on your device.</string>
+	<string name="app_scannernotfound">The barcode scanner can not be found.\nWould you like to install this from the Android Market?</string>
+	<string name="app_onlyifsignedin">This feature is only available after signing in to RateBeer.</string>
+
+	<string name="app_newstatus">Enter new status</string>
+	<string name="app_nowdrinking">Now drinking</string>
+	<string name="app_settingdrinking_expl">You can also choose \'Drinking this\' from a beer\'s details screen.</string>
+	<string name="app_settingdrinking">Setting drinking status</string>
+	<string name="app_sharerating">Share rating on Twitter/Facebook/...</string>
+	<string name="app_postingrating">Posting beer rating</string>
+	<string name="app_addingavailability">Publishing availability</string>
+	<string name="app_addingforbeer">Adding availability for %1$s</string>
+	<string name="app_addingavailability">Publishing availability</string>
+	<string name="app_rated">Rated %1$s with a %2$s</string>
+	<string name="app_addingtocellar">Adding to cellar</string>
+	<string name="app_addwant">I want %1$s</string>
+	<string name="app_addhave">I have %1$s</string>
+	<string name="app_ratedwithurl">Rated %2$s with a %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+	<string name="app_requiressignin">Please sign in to your RateBeer account to use this feature.</string>
+	<string name="app_noaccount">No account?\nhttp://www.ratebeer.com/NewUser.asp</string>
+	<string name="app_newmails">You\'ve got %1$s new beer mails</string>
+	<string name="app_newmail">You\'ve got new beer mail</string>
+	<string name="app_by">By %1$s</string>
+	<string name="app_andothers"> and others</string>
+			
+	<string name="signin_username">Username:</string>
+	<string name="signin_password">Password:</string>
+	<string name="signin_signin">Sign in</string>
+	<string name="signin_signout">Sign out</string>
+	<string name="signin_connecting">Connecting...</string>
+	<string name="signin_signoutsuccess">Successfully signed out</string>
+	<string name="signin_signinsuccess">Successfully signed in</string>
+	
+	<string name="home_beers">Beers</string>
+	<string name="home_places">Places</string>
+	<string name="home_events">Events</string>
+	<string name="home_search">Search</string>
+	<string name="home_myprofile">My profile</string>
+	<string name="home_top50">Top 50</string>
+	<string name="home_bycountry">Best by country</string>
+	<string name="home_offlineratings">Offline notes</string>
+	<string name="home_beerstyles">Beer styles</string>
+	<string name="home_beermail">Beermail</string>
+	<string name="home_nowdrinking">Now drinking %1$s</string>
+	<string name="home_preferences">Preferences</string>
+	
+	<string name="myratings_avg">%1$s avg.</string>
+	<string name="myratings_noitems">No ratings yet; open up a beer and start those taste buds!</string>
+	<string name="myratings_sortby">Sort by</string>
+	<string-array name="myratings_sortby_names">
+		<item>Name</item>
+		<item>Brewer</item>
+		<item>Style</item>
+		<item>My rating</item>
+		<item>Date</item>
+		<item>Score</item>
+	</string-array>
+
+	<string name="cellar_viewcellar">View cellar</string>
+	<string name="cellar_wants">Wants</string>
+	<string name="cellar_haves">Haves</string>
+	<string name="cellar_wantthis">Want this</string>
+	<string name="cellar_havethis">Have this</string>
+	<string name="cellar_addingahave">Adding a have</string>
+	<string name="cellar_addingawant">Adding a want</string>
+	<string name="cellar_memo">Memo</string>
+	<string name="cellar_vintage">Vintage (year)</string>
+	<string name="cellar_quantity">Quantity</string>
+	<string name="cellar_addtocellar">Add to cellar</string>
+	<string name="cellar_remove">Remove from cellar</string>
+	<string name="cellar_confirmremoval">Remove %1$s from your cellar?</string>
+	
+	<string name="topbeers_country">Country:</string>
+	<string name="topbeers_state">State:</string>
+	<string name="topbeers_noitems">Select a country to view its top beers...</string>
+	
+	<string name="places_nearby">Places nearby</string>
+	<string name="places_noitems">No beer places found in this area!</string>
+	<string name="places_brewpub">Brewpub</string>
+	<string name="places_bar">Bar</string>
+	<string name="places_beerstore">Beer store</string>
+	<string name="places_restaurant">Restaurant</string>
+	<string name="places_brewer">Brewer</string>
+	<string name="places_unknown">Unknown</string>
+	<string name="places_km">km</string>
+	<string name="places_m">m</string>
+	<string name="places_checkins">Check ins</string>
+	<string name="places_checkinhere">Check in here</string>
+	<string name="places_checkedinnow">You have checked in (now refreshing)</string>
+	<string name="places_share">Check out %1$s at @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
+	<string name="places_shareplace">Share place...</string>
+
+	<string name="events_attendees">Attendees:</string>
+	<string name="events_noitems">No events planned in this area!</string>
+	<string name="events_addattendance">Yes, add my name</string>
+	<string name="events_removeattendance">No, remove my name</string>
+	<string name="events_nowattending">Added my name to the attendants list</string>
+	<string name="events_nownotattending">Removed my name from the attendants list</string>
+	<string name="events_share">Check out %1$s at @ratebeer http://ratebeer.com/event/%2$s/</string>
+	<string name="events_shareevent">Share event...</string>
+	
+	<string name="search_resultsfor">Results for \'%1$s\'</string>
+	<string name="search_beersearch">RateBeer search</string>
+	<string name="search_hint">Search beers, places &amp; users</string>
+	<string name="search_beers">Beers</string>
+	<string name="search_places">Places</string>
+	<string name="search_users">Users</string>
+	<string name="search_barcodescanner">Barcode scanner</string>
+	<string name="search_nobeerswithbarcode">No beers found for this barcode</string>
+	<string name="search_clearhistory">Clear history</string>
+	<string name="search_noitems">No results for your query. Maybe try again with a small part of the beer, place or user\'s name?</string>
+	<string name="search_retired">retired</string>
+	<string name="search_alias">alias</string>
+	<string name="search_rated">rated</string>
+	<string name="search_ratings">%1$s ratings</string>
+	<string name="search_aliasedbeer">This is an aliased beer: no details available</string>
+	
+	<string name="details_bybrewer">by %1$s</string>
+	<string name="details_score">Score</string>
+	<string name="details_noscoreyet">Requires more ratings</string>
+	<string name="details_percentile">percentile</string>
+	<string name="details_ratings">ratings</string>
+	<string name="details_style">style</string>
+	<string name="details_nodescription">No commercial description</string>
+	<string name="details_abvstyle">Style: %1$s\nABV: %2$s</string>
+	<string name="details_ratethis">Rate this</string>
+	<string name="details_viewrerate">Re-rate this</string>
+	<string name="details_drinkingthis">Drinking this</string>
+	<string name="details_myrating">My rating:</string>
+	<string name="details_recentratings">Recent ratings:</string>
+	<string name="details_share">Check out %1$s at @ratebeer http://ratebeer.com/b/%2$s/</string>
+	<string name="details_sharebeer">Share beer...</string>
+	
+	<string name="user_dates">Joined: %1$s\nLast seen: %2$s</string>
+	<string name="user_beersrated">%1$s beers rated\n%2$s places rated\nAvg. score given: %3$s\nAvg. beer rated: %4$s</string>
+	<string name="user_favsyle">Favourite style: %1$s</string>
+	<string name="user_nofavstyle">none</string>
+	
+	<string name="rate_aroma">Aroma</string>
+	<string name="rate_appearance">Appearance</string>
+	<string name="rate_taste">Taste</string>
+	<string name="rate_palate">Palate</string>
+	<string name="rate_overall">Overall</string>
+	<string name="rate_totalscore">Total score</string>
+	<string name="rate_comments">Comments</string>
+	<string name="rate_addrating">Upload my rating</string>
+	<string name="rate_commenttooshort">Comment should be at least 85 characters.</string>
+	<string name="rate_ratingnotcompleted">Your rating is not yet completed</string>
+	<string name="rate_charstogo">%1$s characters to go...</string>
+	<string name="rate_commentok">Comment length is ok!</string>
+	<string name="rate_showassistance">Show assistance</string>
+	<string name="rate_hideassistance">Hide assistance</string>
+	<string name="rate_assistance_words">caramel, bread, hay, cereal, chocolate, coffee, nuts, toast, roasty, resin, floral, grass, spruce, citrus, herbs, dough, barnyard, cheese, basement aromas, leather, earthy, leaves, alcohol, banana, bubblegum, butterscotch, clove, cooked vegetables, cough drop, ginger, licorice, raisin, rotten eggs, soy sauce, skunky, smoke, vanilla, woody</string>
+	
+	<string name="rate_offline_title">Offline rating</string>
+	<string name="rate_offline_info">When tasting your beer and writing the rating the scores and comments are stored locally. If you are offline or experience connection problems you may submit the rating to RateBeer.com at a later time. Offline stored ratings are automatically removed after successfully adding it to RateBeer.</string>
+	<string name="rate_offline_availble">Offline rating available</string>
+	<string name="rate_offline_notavailable">Offline rating not available</string>
+	<string name="rate_offline_savedat">Stored %1$s</string>
+	<string name="rate_offline_noitems">No offline ratings stored</string>
+	<string name="rate_offline_delete">Delete rating</string>
+	<string name="rate_offline_confirmdelete">Delete offline rating for %1$s?</string>
+	<string name="rate_offline_addrating">Add offline rating</string>
+	<string name="rate_offline_discard">Discard</string>
+	<string name="rate_offline_customname">Beer you are rating:</string>
+	<string name="rate_offline_confirmdiscard">You will loose your rating and comments. Are you sure?</string>
+	<string name="rate_offline_findbeer">Find this beer...</string>
+	<string name="rate_offline_name">Name:</string>
+	<string name="rate_offline_nonamegiven">Please enter the name of the beer you have rated</string>
+	<string name="rate_offline_alreadyrated">Sorry, but you already rated this beer and you cannot re-rate beers from an offline-only rating at the moment</string>
+	<string name="rate_offline_export">Export</string>
+	<string name="rate_offline_export_info">Your offline ratings will now be exported to a JSON-encoded text file at %1$s</string>
+	<string name="rate_offline_import">Import</string>
+	<string name="rate_offline_import_info">A previously stored offline ratings file will now be imported from %1$s</string>
+	
+	<string name="addav_addavailability">Add availability</string>
+	<string name="addav_favourites">Favourites/likely</string>
+	<string name="addav_findaplace">Find a place</string>
+	<string name="addav_otherplace">Other place:</string>
+	<string name="addav_find">Find</string>
+	<string name="addav_on">On:</string>
+	<string name="addav_ontap">tap</string>
+	<string name="addav_onbottlecan">bottle/can</string>
+	<string name="addav_skip">Skip</string>
+	<string name="addav_noplacesselected">You have not yet selected any places</string>
+	
+	<string name="mail_noitems">There are no mails in your inbox</string>
+	<string name="mail_sendmail">Send mail</string>
+	<string name="mail_couldnotretrieve">Could not retrieve your mail right now</string>
+	<string name="mail_notavailable">Local mail storage is currently not available</string>
+	<string name="mail_delete">Delete mail</string>
+	<string name="mail_confirmdelete">Delete this mail by %1$s?</string>
+	<string name="mail_relpied">replied</string>
+	<string name="mail_new">new</string>
+	<string name="mail_read">read</string>
+	<string name="mail_reply">Reply</string>
+	<string name="mail_sendto">Send to</string>
+	<string name="mail_subject">Subject</string>
+	<string name="mail_message">Message:</string>
+	<string name="mail_includeoriginal">Include original message</string>
+	<string name="mail_send">Send</string>
+	<string name="mail_emptyfields">Please complete all fields before sending</string>
+	<string name="mail_sendingmail">Sending beermail</string>
+	<string name="mail_sendingto">Sending to %1$s</string>
+			
+	<string name="settings_display">Display preferences</string>
+	<string name="settings_distanceinkm">Show distances in km</string>
+	<string name="settings_distanceinkm_info">Distances shown in miles otherwise</string>
+	<string name="settings_sharetext">Text when sharing a rating</string>
+	<string name="settings_sharetext_msg">Placeholders: %1$s for beer ID, %2$s for beer name, %3$s for total score and %4$s for your user ID</string>
+	<string name="settings_beermail">Beermail</string>
+	<string name="settings_background">Enable notifications</string>
+	<string name="settings_background_info">Periodically check for new beermail</string>
+	<string name="settings_updatefrequency">Update frequency</string>
+	<string name="settings_vibrate">Vibrate on notification</string>
+	<string-array name="settings_frequency_names">
+		<item>1 minute</item>
+		<item>10 minutes</item>
+		<item>30 minutes</item>
+		<item>1 hour</item>
+		<item>4 hours</item>
+		<item>24 hours</item>
+	</string-array>
+	<string-array name="settings_frequency_values">
+		<item>60</item>
+		<item>600</item>
+		<item>1800</item>
+		<item>3600</item>
+		<item>14400</item>
+		<item>86400</item>
+	</string-array>
+			
+	<string name="error_offline">You do not have an internet connection or RateBeer.com is offline</string>
+	<string name="error_authenticationfailed">Your username or password is incorrect</string>
+	<string name="error_commandfailed">The command failed unexpectedly. Connection is poor or RateBeer is offline</string>
+	<string name="error_nouserorpass">Both username and password are required fields to sign in</string>
+	<string name="error_nolocation">Your location could not be determined</string>
+	<string name="error_locationnotsupported">Your device does not support retrieving a location or you have this disabled</string>
+	<string name="error_sendreport">Send error report</string>
+	<string name="error_stylenotfound">Cannot find beer style; please report this error</string>
+	<string name="error_cannotwrite">Cannot write to file..</string>
+	<string name="error_cannotread">No file or cannot read from it</string>
+	<string name="error_filenotvalid">File does not contain offline ratings (in the correct format)</string>
+	<string name="error_lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Android Market?</string>
+	<string name="error_lc_run">The Log Collector application will now collect the device log and send it to rb@2312.nl.\nYou will have an opportunity to review and modify the data being sent.</string>
+	
+</resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+	
+	<TextView
+		android:id="@+id/overall"
+		android:layout_width="60dip" 
+		android:layout_height="wrap_content"
+		android:textSize="35dip"
+		android:gravity="center_horizontal" />
+	
+	<TextView
+		android:id="@+id/beer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/overall" 
+		android:paddingTop="3dip"
+		style="@style/ListHeaderText" />
+	
+	<TextView
+		android:id="@+id/count"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beer"
+		android:paddingTop="2dip"
+		android:paddingBottom="2dip"
+		android:layout_toRightOf="@id/overall" />
+	
+	<TextView
+		android:id="@+id/retired"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beer"
+		android:layout_alignParentRight="true"
+		style="@style/BeerLabel"
+		android:background="@color/DarkGrey"
+		android:text="@string/search_retired" />
+	
+	<TextView
+		android:id="@+id/rated"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beer"
+		android:layout_toLeftOf="@id/retired"
+		android:layout_alignWithParentIfMissing="true"
+		style="@style/BeerLabel"
+		android:text="@string/search_rated" />
+	
+	<TextView
+		android:id="@+id/alias"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beer"
+		android:layout_toLeftOf="@id/retired"
+		android:layout_alignWithParentIfMissing="true"
+		style="@style/BeerLabel"
+		android:background="@color/Orange"
+		android:text="@string/search_alias" />
+	
+</RelativeLayout>

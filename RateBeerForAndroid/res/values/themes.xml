@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Theme.RateBeer" parent="@style/Theme.Sherlock.Light">
+		<item name="android:textAppearance">@style/DefaultTextAppearance</item>
+		<item name="android:windowBackground">@color/BackgroundLight</item>
+        <item name="abDisplayOptions">showHome|useLogo</item>
+        <item name="abLogo">@drawable/logo</item>
+        <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
+	</style>
+	<style name="Theme.RateBeer.SignIn" parent="@style/Theme.Sherlock">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+		<item name="android:windowBackground">@color/BackgroundDark</item>
+	</style>
+</resources>

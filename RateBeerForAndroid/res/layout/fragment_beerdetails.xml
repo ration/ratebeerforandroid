@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+	
+	<TextView
+		android:id="@+id/name"
+		style="@style/DetailsHeadertext"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent" />
+		
+	<TextView
+		android:id="@+id/brewername"
+		android:layout_below="@id/name"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent" />
+		
+	<LinearLayout 
+		android:id="@+id/header"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_below="@id/brewername"
+		android:padding="5dip"
+		android:orientation="horizontal">
+		
+		<include 
+			android:id="@+id/scorecard"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="invisible"
+			layout="@layout/big_scorecard" />
+			
+		<TextView
+			android:id="@+id/noscoreyet"
+			android:layout_width="150dip"
+			android:layout_height="120dip"
+			android:background="#333" 
+			android:textColor="#fff" 
+			android:gravity="center"
+			android:text="@string/details_noscoreyet"
+			android:visibility="gone" />
+			
+		<FrameLayout 
+			android:layout_width="0dip"
+			android:layout_height="wrap_content" 
+			android:layout_weight="1"
+			android:paddingLeft="10dip">
+			<ImageView 
+				android:id="@+id/image"
+				android:layout_width="match_parent" 
+				android:layout_height="150dip"
+				android:layout_gravity="center_horizontal" 
+				android:scaleType="fitCenter" />
+		</FrameLayout>
+	</LinearLayout>
+
+	<Button
+		android:id="@+id/abvstyle"
+		android:drawableLeft="@android:drawable/ic_menu_info_details"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:layout_below="@id/header"
+		android:visibility="invisible"
+		style="@style/DetailsButton" />
+	
+	<TextView 
+		android:id="@+id/description"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/abvstyle"
+		android:autoLink="all"
+		android:layout_marginBottom="10dip"
+		style="@style/DetailsField" />
+
+	<LinearLayout 
+		android:id="@+id/buttonsbar"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_below="@id/description"
+		android:visibility="gone"
+		android:orientation="horizontal">
+		<Button 
+			android:id="@+id/ratethis"
+			android:layout_width="0dip" 
+			android:layout_height="wrap_content"
+			android:layout_weight="1" 
+			android:text="@string/app_loading"
+			style="@style/DetailsButtonSmall" />
+		<Button 
+			android:id="@+id/drinkingthis"
+			android:layout_width="0dip" 
+			android:layout_height="wrap_content"
+			android:layout_weight="1" 
+			android:text="@string/details_drinkingthis"
+			style="@style/DetailsButtonSmall" />
+	</LinearLayout>
+	<Button 
+		android:id="@+id/addavailability"
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content"
+		android:text="@string/addav_addavailability"
+		android:layout_below="@id/buttonsbar"
+		android:visibility="gone"
+		style="@style/DetailsButtonSmall" />
+	<LinearLayout 
+		android:id="@+id/buttonsbar2"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_below="@id/addavailability"
+		android:visibility="gone"
+		android:orientation="horizontal">
+		<Button 
+			android:id="@+id/wantthis"
+			android:layout_width="0dip" 
+			android:layout_height="wrap_content"
+			android:layout_weight="1" 
+			android:text="@string/cellar_wantthis"
+			style="@style/DetailsButtonSmall" />
+		<Button 
+			android:id="@+id/havethis"
+			android:layout_width="0dip" 
+			android:layout_height="wrap_content"
+			android:layout_weight="1" 
+			android:text="@string/cellar_havethis"
+			style="@style/DetailsButtonSmall" />
+	</LinearLayout>
+	
+	<TextView
+		android:id="@+id/ownratinglabel"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@id/buttonsbar2"
+		android:text="@string/details_myrating"
+		android:visibility="gone"
+		style="@style/Label" />
+		
+	<include 
+		android:id="@+id/ownrating"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/ownratinglabel"
+		android:padding="0dip"
+		layout="@layout/list_item_rating" />
+		
+	<TextView
+		android:id="@+id/recentratingslabel"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@id/ownrating"
+		android:text="@string/details_recentratings"
+		android:visibility="invisible"
+		style="@style/Label" />
+		
+</RelativeLayout>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+
+	<TextView
+		android:id="@+id/beerName"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		style="@style/ListHeaderText" />
+	
+	<TextView 
+		android:id="@+id/total"
+		android:layout_width="60dip" 
+		android:layout_height="wrap_content"
+		android:textSize="35dip"
+		android:layout_below="@id/beerName"
+		android:gravity="center_horizontal" />
+
+	<TextView 
+		android:id="@+id/aroma"
+		android:layout_width="25dip" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beerName"
+		android:layout_toRightOf="@id/total" 
+		android:paddingTop="3dip" />
+	<TextView 
+		android:id="@+id/appearance"
+		android:layout_width="25dip" 
+		android:layout_height="wrap_content" 
+		android:layout_below="@id/beerName"
+		android:layout_toRightOf="@id/aroma"
+		android:paddingTop="3dip" />
+	<TextView 
+		android:id="@+id/taste"
+		android:layout_width="25dip" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beerName"
+		android:layout_toRightOf="@id/appearance" 
+		android:paddingTop="3dip" />
+	<TextView 
+		android:id="@+id/palate"
+		android:layout_width="25dip" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beerName"
+		android:layout_toRightOf="@id/taste" 
+		android:paddingTop="3dip" />
+	<TextView 
+		android:id="@+id/overall"
+		android:layout_width="25dip" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/beerName"
+		android:layout_toRightOf="@id/palate" 
+		android:paddingTop="3dip" />
+
+	<TextView 
+		android:id="@+id/status"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/aroma" 
+		android:layout_toRightOf="@id/total" />
+
+	<TextView 
+		android:id="@+id/comments"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/status" />
+
+</RelativeLayout>

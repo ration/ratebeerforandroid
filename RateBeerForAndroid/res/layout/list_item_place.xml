@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+	
+	<TextView
+		android:id="@+id/score"
+		android:layout_width="60dip" 
+		android:layout_height="wrap_content"
+		android:textSize="35dip"
+		android:gravity="center_horizontal" />
+	
+	<TextView
+		android:id="@+id/placeName"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/score"
+		android:layout_marginRight="55dip"
+		android:paddingTop="3dip"
+		style="@style/ListHeaderText" />
+	
+	<TextView
+		android:id="@+id/distance"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_alignBaseline="@id/placeName" />
+	
+	<TextView
+		android:id="@+id/placeType"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/placeName"
+		android:layout_alignParentRight="true" />
+	
+	<TextView
+		android:id="@+id/city"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/placeName"
+		android:layout_toLeftOf="@id/placeType"
+		android:layout_toRightOf="@id/score" />
+	
+</RelativeLayout>

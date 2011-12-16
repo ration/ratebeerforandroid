@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>	
+	<style name="DefaultTextAppearance">
+		<item name="android:textSize">18dip</item>
+	</style>
+	<style name="ListHeaderText" parent="@android:style/TextAppearance">
+		<item name="android:textSize">18dip</item>
+	</style>
+	<style name="DetailsHeadertext">
+		<item name="android:textSize">26dip</item>
+		<item name="android:textColor">@color/BackgroundDark</item>
+	</style>
+	<style name="DetailsButton">
+		<item name="android:background">@drawable/btn_block</item>
+		<item name="android:gravity">center_vertical</item>
+		<item name="android:drawablePadding">5dip</item>
+		<item name="android:paddingRight">15dip</item>
+	</style>
+	<style name="DetailsButtonSmall">
+		<item name="android:background">@drawable/btn_block</item>
+		<item name="android:gravity">center</item>
+	</style>
+	<style name="DetailsField">
+		<item name="android:paddingLeft">10dip</item>
+		<item name="android:paddingRight">10dip</item>
+		<item name="android:paddingTop">10dip</item>
+	</style>
+	
+	<style name="ScoreText">
+		<item name="android:layout_height">50dip</item>
+		<item name="android:layout_width">70dip</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textSize">30dip</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:textColor">@color/LabelColorLight</item>
+		<item name="android:background">@color/BackgroundDark</item>
+	</style>
+	
+	<style name="Label">
+		<item name="android:textSize">@dimen/LabelSize</item>
+		<item name="android:textColor">@color/LabelColorDark</item>
+		<item name="android:paddingLeft">10dip</item>
+		<item name="android:layout_marginTop">10dip</item>
+	</style>
+	<style name="LabelInverse">
+		<item name="android:textSize">@dimen/LabelSize</item>
+		<item name="android:textColor">@color/LabelColorLight</item>
+		<item name="android:paddingLeft">10dip</item>
+		<item name="android:layout_marginTop">10dip</item>
+	</style>
+	<dimen name="LabelSize">13dip</dimen>
+	
+	<style name="HomeButton">
+		<item name="android:layout_width">0dip</item>
+		<item name="android:layout_height">match_parent</item>
+		<item name="android:layout_weight">1</item>
+		<item name="android:layout_gravity">center_vertical</item>
+		<item name="android:gravity">center_horizontal</item>
+		<item name="android:textSize">@dimen/HomeButtonTextSize</item>
+		<item name="android:textColor">@color/HomeTextColor</item>
+		<item name="android:background">@drawable/btn_home</item>
+	</style>
+	<dimen name="HomeButtonTextSize">19dip</dimen>
+
+	<style name="ConnectBackground">
+		<item name="android:background">@color/BackgroundDark</item>
+	</style>
+	
+	<style name="BeerLabel">
+		<item name="android:layout_marginLeft">10dip</item>
+		<item name="android:paddingTop">2dip</item>
+		<item name="android:paddingBottom">2dip</item>
+		<item name="android:paddingLeft">5dip</item>
+		<item name="android:paddingRight">5dip</item>
+		<item name="android:background">@color/BackgroundDark</item>
+		<item name="android:textColor">@color/LabelColorLight</item>
+	</style>
+	
+	<style name="RateTotalText">
+		<item name="android:layout_height">match_parent</item>
+		<item name="android:layout_width">0dip</item>
+		<item name="android:layout_weight">1</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textSize">25dip</item>
+	</style>
+	
+	<style name="RateWheelText">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">0dip</item>
+		<item name="android:layout_weight">1</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textSize">@dimen/LabelSize</item>
+	</style>
+	
+</resources>

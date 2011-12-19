@@ -37,7 +37,7 @@ public class PreferencesInterface extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 
 		addPreferencesFromResource(R.xml.pref_interface);
-		
+
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(onPreferenceChanged);
 	}
@@ -57,8 +57,9 @@ public class PreferencesInterface extends PreferenceActivity {
 	private OnSharedPreferenceChangeListener onPreferenceChanged = new OnSharedPreferenceChangeListener() {
 		@Override
 		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-			if (key.equals(ApplicationSettings.ENABLE_BEERMAIL)) {
-				// If the beermail setting was changed, start/stop the service accordingly
+			if (key.equals(ApplicationSettings.ENABLE_BEERMAIL)
+					|| key.equals(ApplicationSettings.BEERMAIL_UPDATEFREQUENCY)) {
+				// If a beermail setting was changed, start/stop the service accordingly
 				if (getRateBeerApplication().getSettings().isBeermailEnabled()) {
 					BootReceiver.startAlarm(getApplicationContext());
 				} else {
@@ -68,8 +69,8 @@ public class PreferencesInterface extends PreferenceActivity {
 		}
 	};
 
-    public RateBeerForAndroid getRateBeerApplication() {
-    	return (RateBeerForAndroid) getApplication();
-    }
+	public RateBeerForAndroid getRateBeerApplication() {
+		return (RateBeerForAndroid) getApplication();
+	}
 
 }

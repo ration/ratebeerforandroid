@@ -1341,7 +1341,7 @@ public class RateBeerApi implements CommandService {
 				JSONObject result = json.getJSONObject(i);
 				results.add(new Mail(result.getInt("MessageID"), HttpHelper.cleanHtml(result.getString("UserName")), result
 						.getBoolean("MessageRead"), HttpHelper.cleanHtml(result.getString("Subject")), result.getInt("Source"),
-						HttpHelper.cleanHtml(result.getString("Sent")), result.getBoolean("Reply")));
+						HttpHelper.cleanHtml(result.getString("Sent")), result.getString("Reply").equals("1")));
 			}
 
 			// Set the list of beer mails on the original command as result

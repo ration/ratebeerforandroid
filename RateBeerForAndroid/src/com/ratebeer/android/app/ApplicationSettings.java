@@ -36,7 +36,7 @@ public class ApplicationSettings {
 	private static final String IS_FIRST_START = "is_first_start";
 	public static final String ENABLE_BEERMAIL = "enable_beermail";
 	public static final String BEERMAIL_UPDATEFREQUENCY = "beermail_updatefrequency";
-	private static final String VIBRATE = "beermail_vibrate";
+	private static final String BEERMAIL_VIBRATE = "beermail_vibrate";
 	
 	private SharedPreferences prefs;
 	private Context context;
@@ -172,7 +172,7 @@ public class ApplicationSettings {
 	 * @return True if the user requested to vibrate on notifications
 	 */
 	public boolean getVibrateOnNotification() {
-		return prefs.getBoolean(VIBRATE, false);
+		return prefs.getBoolean(BEERMAIL_VIBRATE, false);
 	}
 	
 }

@@ -786,6 +786,9 @@ public class RateBeerApi implements CommandService {
 			int quantityStart = html.indexOf("valign=bottom align=center>", beerStart)
 					+ "valign=bottom align=center>".length();
 			String quantity = HttpHelper.cleanHtml(html.substring(quantityStart, html.indexOf("</td>", quantityStart))).trim();
+			if (quantity.equals(" <span class=beerfoot>available</span>")) {
+				quantity = "available";
+			}
 
 			int memoStart = html.indexOf("beerfoot valign=top>", quantityStart) + "beerfoot valign=top>".length();
 			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("<br><span", memoStart))).trim();
@@ -1338,7 +1341,7 @@ public class RateBeerApi implements CommandService {
 				JSONObject result = json.getJSONObject(i);
 				results.add(new Mail(result.getInt("MessageID"), HttpHelper.cleanHtml(result.getString("UserName")), result
 						.getBoolean("MessageRead"), HttpHelper.cleanHtml(result.getString("Subject")), result.getInt("Source"),
-						HttpHelper.cleanHtml(result.getString("Sent")), result.getBoolean("Reply")));
+						HttpHelper.cleanHtml(result.getString("Sent")), result.getString("Reply").equals("1")));
 			}
 
 			// Set the list of beer mails on the original command as result

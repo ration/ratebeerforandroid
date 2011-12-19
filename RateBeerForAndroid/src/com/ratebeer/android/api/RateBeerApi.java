@@ -786,6 +786,9 @@ public class RateBeerApi implements CommandService {
 			int quantityStart = html.indexOf("valign=bottom align=center>", beerStart)
 					+ "valign=bottom align=center>".length();
 			String quantity = HttpHelper.cleanHtml(html.substring(quantityStart, html.indexOf("</td>", quantityStart))).trim();
+			if (quantity.equals(" <span class=beerfoot>available</span>")) {
+				quantity = "available";
+			}
 
 			int memoStart = html.indexOf("beerfoot valign=top>", quantityStart) + "beerfoot valign=top>".length();
 			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("<br><span", memoStart))).trim();

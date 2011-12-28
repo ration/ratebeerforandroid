@@ -60,7 +60,8 @@ import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 public class HttpHelper {
 
-	private static final int TIMEOUT = 10000;
+	private static final int TIMEOUT = 4000;
+	private static final int RETRIES = 3;
 	private static final String USER_AGENT = "RateBeer for Android";
 	private static final String URL_SIGNIN = "http://www.ratebeer.com/signin/";
 	public static final String RB_KEY = "tTmwRTWT-W7tpBhtL";
@@ -91,11 +92,20 @@ public class HttpHelper {
 	public static InputStream makeRawRBGet(String url) throws ClientProtocolException, IOException {
 		ensureClient();
 		
-		// Execute a GET request and return the raw response stream
-		HttpGet get = new HttpGet(url);
-		HttpResponse response = httpClient.execute(get);
-		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			return response.getEntity().getContent();
+		// Try to execute at most RETRIES times
+		for (int i = 0; i < RETRIES; i++) {
+			// Execute a GET request and return the raw response stream
+			HttpGet get = new HttpGet(url);
+			try {
+				HttpResponse response = httpClient.execute(get);
+				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+					return response.getEntity().getContent();
+				}
+			} catch (ClientProtocolException e) {
+				// Just try again
+			} catch (IOException e) {
+				// Just try again
+			}
 		}
 		
 		throw new IOException("ratebeer.com offline?");

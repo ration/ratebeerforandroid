@@ -68,7 +68,7 @@ public class HttpHelper {
 	public static final String UTF8 = "UTF-8";
 
 	private static DefaultHttpClient httpClient = null;
-	
+
 	private static void ensureClient() {
 		if (httpClient == null) {
 			SchemeRegistry registry = new SchemeRegistry();
@@ -77,11 +77,11 @@ public class HttpHelper {
 			HttpConnectionParams.setConnectionTimeout(httpparams, TIMEOUT);
 			HttpConnectionParams.setSoTimeout(httpparams, TIMEOUT);
 			HttpProtocolParams.setUserAgent(httpparams, USER_AGENT);
-			
+
 			httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpparams, registry), httpparams);
-			// TODO: See if we can enable this again; RateBeer seemd to have problems with sending GZipped content
-			//httpClient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
-			//httpClient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
+			// TODO: See if we can enable this again; RateBeer seems to have problems with sending GZipped content
+			// httpClient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
+			// httpClient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class HttpHelper {
 
 	public static InputStream makeRawRBGet(String url) throws ClientProtocolException, IOException {
 		ensureClient();
-		
+
 		// Try to execute at most RETRIES times
 		for (int i = 0; i < RETRIES; i++) {
 			// Execute a GET request and return the raw response stream
@@ -107,29 +107,41 @@ public class HttpHelper {
 				// Just try again
 			}
 		}
-		
+
 		throw new IOException("ratebeer.com offline?");
 	}
 
-	public static String makeRBPost(String url, List<? extends NameValuePair> parameters) throws ClientProtocolException, IOException {
+	public static String makeRBPost(String url, List<? extends NameValuePair> parameters)
+			throws ClientProtocolException, IOException {
 		return makeRBPost(url, parameters, HttpStatus.SC_OK);
 	}
-	
-	public static String makeRBPost(String url, List<? extends NameValuePair> parameters, int expectedHttpCode) throws ClientProtocolException, IOException {
+
+	public static String makeRBPost(String url, List<? extends NameValuePair> parameters, int expectedHttpCode)
+			throws ClientProtocolException, IOException {
 		ensureClient();
 
-		// Set up POST request
-		HttpPost post = new HttpPost(url);
-		post.setEntity(new UrlEncodedFormEntity(parameters));
-		
-		// Execute a POST request to sign in
-		HttpResponse response = httpClient.execute(post);
-		if (response.getStatusLine().getStatusCode() == expectedHttpCode) {
-			return getResponseString(response.getEntity().getContent());
+		// Try to execute at most RETRIES times
+		for (int i = 0; i < RETRIES; i++) {
+
+			// Set up POST request
+			HttpPost post = new HttpPost(url);
+			try {
+				post.setEntity(new UrlEncodedFormEntity(parameters));
+
+				// Execute a POST request to sign in
+				HttpResponse response = httpClient.execute(post);
+				if (response.getStatusLine().getStatusCode() == expectedHttpCode) {
+					return getResponseString(response.getEntity().getContent());
+				}
+			} catch (ClientProtocolException e) {
+				// Just try again
+			} catch (IOException e) {
+				// Just try again
+			}
 		}
-		
+
 		throw new IOException("ratebeer.com offline?");
-		
+
 	}
 
 	public static boolean signIn(String username, String password) throws ClientProtocolException, IOException {
@@ -143,42 +155,38 @@ public class HttpHelper {
 		parameters.add(new BasicNameValuePair("username", username));
 		parameters.add(new BasicNameValuePair("pwd", password));
 		post.setEntity(new UrlEncodedFormEntity(parameters));
-		
+
 		// Execute a POST request to sign in
 		httpClient.execute(post);
-		
+
 		boolean success = isSignedIn();
 		post.abort(); // Consume content
 		return success;
-		
+
 	}
 
 	public static String getResponseString(InputStream is) throws IOException {
-		/*ByteArrayOutputStream ostream = new ByteArrayOutputStream();  
-		response.getEntity().writeTo(ostream);
-		//return ostream.toString("ISO8859_1");
-		return ostream.toString("windows-1252"); */
-    	InputStreamReader isr = new InputStreamReader(is, "windows-1252");
-    	BufferedReader reader = new BufferedReader(isr);
-        StringBuilder sb = new StringBuilder();
- 
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
+		InputStreamReader isr = new InputStreamReader(is, "windows-1252");
+		BufferedReader reader = new BufferedReader(isr);
+		StringBuilder sb = new StringBuilder();
+
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return sb.toString();
 	}
-	
+
 	public static boolean isSignedIn() {
 		ensureClient();
 
@@ -186,7 +194,7 @@ public class HttpHelper {
 		List<Cookie> beforeCookies = httpClient.getCookieStore().getCookies();
 		for (Iterator<Cookie> iterator = beforeCookies.iterator(); iterator.hasNext();) {
 			Cookie cookie = iterator.next();
-			if(cookie.getName().equalsIgnoreCase("SessionCode")){
+			if (cookie.getName().equalsIgnoreCase("SessionCode")) {
 				return true;
 			}
 		}
@@ -268,10 +276,10 @@ public class HttpHelper {
 	public static String normalizeSearchQuery(String query) {
 		// First translate diacritics
 		// (from http://stackoverflow.com/questions/1008802/converting-symbols-accent-letters-to-english-alphabet)
-		String normalized = Normalizer.normalize(query, Normalizer.Form.NFD); 
-	    // And remove the marks to only leave Latin characters
+		String normalized = Normalizer.normalize(query, Normalizer.Form.NFD);
+		// And remove the marks to only leave Latin characters
 		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-	    query = pattern.matcher(normalized).replaceAll("");
+		query = pattern.matcher(normalized).replaceAll("");
 		// Translate other special characters into English alphabet characters by hand
 		query = query.replaceAll("æ", "ae");
 		query = query.replaceAll("Æ", "AE");
@@ -280,5 +288,5 @@ public class HttpHelper {
 		query = query.replaceAll("Ø", "O");
 		return query;
 	}
-	
+
 }

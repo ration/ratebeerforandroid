@@ -47,7 +47,6 @@ public enum ApiMethod {
 	GetBeerImage,
 	GetBeerRatings,
 	GetBeerRating,
-	GetBeerAvailability,
 	GetTopBeers,
 	
 	// Styles
@@ -57,13 +56,14 @@ public enum ApiMethod {
 	SearchPlaces,
 	GetPlaceDetails,
 	GetPlacesAround,
-	GetPlaceBeerAvailability,
 	CheckIn,
 	GetCheckins,
 	
 	// Availability
 	GetFavouritePlaces, 
 	AddAvailability, 
+	GetAvailableBeers,
+	GetBeerAvailability,
 	
 	// Events
 	GetEvents,

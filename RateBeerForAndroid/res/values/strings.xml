@@ -3,13 +3,14 @@
 
     <string name="app_name">RateBeer for Android</string>
     <!-- Debug key -->
-    <!-- <string name="app_googlemapskey">0tkfMrcfmFeMLyX_vX__k7wHmC3HwFnJWM_XBrg</string> -->
+	<!-- <string name="app_googlemapskey">0tkfMrcfmFeMLyX_vX__k7wHmC3HwFnJWM_XBrg</string> -->
     <!-- Release key -->
     <string name="app_googlemapskey">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
 	<string name="app_ok">OK</string>
 	<string name="app_cancel">Cancel</string>
 	<string name="app_home">Home</string>
 	<string name="app_refresh">Refresh</string>
+	<string name="app_details">Details</string>
 	<string name="app_share">Share</string>
 	<string name="app_loading">Loading...</string>
 	<string name="app_legal">By using this application you agree with the terms of the RateBeer User Agreement available at http://www.ratebeer.com/UserAgreement.asp\n\nEven without a RateBeer account you can use this application to view beer details, top lists, upcoming events, local beer-releated places and much more. For the full feature set, like rating beers and adding beer availability, you can create an account at http://www.ratebeer.com/NewUser.asp</string>
@@ -105,6 +106,8 @@
 	<string name="places_checkins">Check ins</string>
 	<string name="places_checkinhere">Check in here</string>
 	<string name="places_checkedinnow">You have checked in (now refreshing)</string>
+	<string name="places_availablebeers">Available</string>
+	<string name="places_enteredat">Entered at %1$s</string>
 	<string name="places_share">Check out %1$s at @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
 	<string name="places_shareplace">Share place...</string>
 

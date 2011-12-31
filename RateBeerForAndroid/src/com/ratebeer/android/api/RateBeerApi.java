@@ -169,7 +169,7 @@ public class RateBeerApi implements CommandService {
 				GetUserImageCommand getUserImageCommand = (GetUserImageCommand) command;
 				return parseUserImage(
 						getUserImageCommand,
-						HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/" + getUserImageCommand.getUsername()
+						HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/" + getUserImageCommand.getUsername().trim()
 								+ ".jpg"));
 
 			case SearchBeers:

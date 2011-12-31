@@ -918,7 +918,7 @@ public class RateBeerApi implements CommandService {
 			servedInStart = html.indexOf(servedInText, servedInStart + 1);
 		}
 
-		String rowText = "<td class=\"beer\"><font color=\"#999999\">";
+		String rowText = "<td class=\"listRank\">";
 		int rowStart = html.indexOf(rowText, servedInStart) + rowText.length();
 		ArrayList<TopBeer> beers = new ArrayList<TopBeer>();
 

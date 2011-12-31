@@ -43,29 +43,11 @@
 		</FrameLayout>
 	</LinearLayout>
 
-	<Button
-		android:id="@+id/abvstyle"
-		android:drawableLeft="@android:drawable/ic_menu_info_details"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_below="@id/header"
-		android:visibility="invisible"
-		style="@style/DetailsButton" />
-	
-	<TextView 
-		android:id="@+id/description"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:layout_below="@id/abvstyle"
-		android:autoLink="all"
-		android:layout_marginBottom="10dip"
-		style="@style/DetailsField" />
-
 	<LinearLayout 
 		android:id="@+id/buttonsbar"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" 
-		android:layout_below="@id/description"
+		android:layout_below="@id/header"
 		android:visibility="gone"
 		android:orientation="horizontal">
 		<Button 

@@ -149,6 +149,7 @@
 	<string name="details_drinkingthis">Drinking this</string>
 	<string name="details_myrating">My rating:</string>
 	<string name="details_recentratings">Recent ratings:</string>
+	<string name="details_availability">Availability</string>
 	<string name="details_share">Check out %1$s at @ratebeer http://ratebeer.com/b/%2$s/</string>
 	<string name="details_sharebeer">Share beer...</string>
 	

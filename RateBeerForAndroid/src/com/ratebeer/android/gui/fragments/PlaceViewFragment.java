@@ -126,8 +126,10 @@ public class PlaceViewFragment extends RateBeerFragment {
 		ratingText = (TextView) getView().findViewById(R.id.rating);
 		
 		if (savedInstanceState != null) {
-			place = savedInstanceState.getParcelable(STATE_PLACE);
 			placeId = savedInstanceState.getInt(STATE_PLACEID);
+			if (savedInstanceState.containsKey(STATE_PLACE)) {
+				place = savedInstanceState.getParcelable(STATE_PLACE);
+			}
 			if (savedInstanceState.containsKey(STATE_CHECKINS)) {
 				checkins = savedInstanceState.getParcelableArrayList(STATE_CHECKINS);
 			}
@@ -136,7 +138,6 @@ public class PlaceViewFragment extends RateBeerFragment {
 			}
 		} else if (place != null) {
 			// Use the already known details
-			setDetails(place);
 			refreshCheckins();
 			refreshAvailableBeers();
 		} else {
@@ -146,6 +147,7 @@ public class PlaceViewFragment extends RateBeerFragment {
 			refreshAvailableBeers();
 		}
 		// Publish the current details, even when it is not loaded yet (and thus still empty)
+		publishDetails(place);
 		publishCheckins(checkins);
 		publishAvailableBeers(availableBeers);
 		
@@ -186,8 +188,10 @@ public class PlaceViewFragment extends RateBeerFragment {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putParcelable(STATE_PLACE, place);
 		outState.putInt(STATE_PLACEID, placeId);
+		if (place != null) {
+			outState.putParcelable(STATE_PLACE, place);
+		}
 		if (checkins != null) {
 			outState.putParcelableArrayList(STATE_CHECKINS, checkins);
 		}
@@ -262,6 +266,9 @@ public class PlaceViewFragment extends RateBeerFragment {
 
 	private void publishDetails(Place details) {
 		this.place = details;
+		if (details == null) {
+			return;
+		}
 		// Show details
 		setDetails(details);
 	}

@@ -36,13 +36,4 @@
 		android:layout_weight="1"
 		android:layout_marginTop="10dip" />
 
-	<Button
-		android:id="@+id/checkinhere"
-		android:layout_height="wrap_content"
-		android:layout_width="match_parent"
-		android:layout_marginTop="10dip"
-		android:text="@string/places_checkinhere"
-		android:visibility="invisible"
-		style="@style/DetailsButtonSmall" />
-		
 </LinearLayout>

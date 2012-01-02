@@ -5,18 +5,6 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical">
 	
-	<TextView
-		android:id="@+id/name"
-		style="@style/DetailsHeadertext"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent" />
-		
-	<TextView
-		android:id="@+id/brewername"
-		android:layout_below="@id/name"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent" />
-
 	<com.viewpagerindicator.TabPageIndicator
 		android:id="@+id/titles" 
 		android:layout_height="wrap_content"

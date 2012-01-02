@@ -152,8 +152,6 @@ public class BeerViewFragment extends RateBeerFragment {
 		pager.setAdapter(placePagerAdapter);
 		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
 		titles.setViewPager(pager);
-		nameText = (TextView) getView().findViewById(R.id.name);
-		brewernameText = (TextView) getView().findViewById(R.id.brewername);
 
 		if (savedInstanceState != null) {
 			beerName = savedInstanceState.getString(STATE_BEERNAME);
@@ -207,6 +205,7 @@ public class BeerViewFragment extends RateBeerFragment {
 			refreshImage();
 			refreshOwnRating();
 			refreshRatings();
+			refreshAvailability();
 			break;
 		case MENU_SHARE:
 			// Start a share intent for this beer
@@ -351,9 +350,6 @@ public class BeerViewFragment extends RateBeerFragment {
 	
 	private void publishOwnRating(OwnBeerRating ownRating) {
 		this.ownRating = ownRating;
-		if (ownRating == null) {
-			return;
-		}
 		// Show the rating
 		setOwnRating(ownRating);
 	}
@@ -578,23 +574,27 @@ public class BeerViewFragment extends RateBeerFragment {
 
 		public BeerPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
-			pagerDetailsView = (LinearLayout) inflater.inflate(R.layout.fragment_beerdetails, null);
+			pagerDetailsView = inflater.inflate(R.layout.fragment_beerdetails, null);
 			pagerRecentRatingsView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 			pagerAvailabilityView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 
 			recentRatingsView = pagerRecentRatingsView;
 			availabilityView = pagerAvailabilityView;
 
-			if (pagerDetailsView.findViewById(R.id.image) == null) {
+			if (pagerDetailsView.findViewById(R.id.image) != null) {
 				// Phone version; beer image, description and style button are on the details page in the pager
 				imageView = (ImageView) pagerDetailsView.findViewById(R.id.image);
 				abvstyleButton = (Button) pagerDetailsView.findViewById(R.id.abvstyle);
 				descriptionText = (TextView) pagerDetailsView.findViewById(R.id.description);
+				nameText = (TextView) pagerDetailsView.findViewById(R.id.name);
+				brewernameText = (TextView) pagerDetailsView.findViewById(R.id.brewername);
 			} else {
-				// Tablet version; these fileds are not in the pager but directly in the main layout
+				// Tablet version; these fields are not in the pager but directly in the main layout
 				imageView = (ImageView) getView().findViewById(R.id.image);
 				abvstyleButton = (Button) getView().findViewById(R.id.abvstyle);
 				descriptionText = (TextView) getView().findViewById(R.id.description);
+				nameText = (TextView) getView().findViewById(R.id.name);
+				brewernameText = (TextView) getView().findViewById(R.id.brewername);
 			}
 			scoreCard = pagerDetailsView.findViewById(R.id.scorecard);
 			noscoreyetText = (TextView) pagerDetailsView.findViewById(R.id.noscoreyet);

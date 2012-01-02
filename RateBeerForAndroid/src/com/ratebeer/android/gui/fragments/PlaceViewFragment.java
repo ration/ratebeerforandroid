@@ -95,7 +95,9 @@ public class PlaceViewFragment extends RateBeerFragment {
 	 */
 	public PlaceViewFragment(Place place) {
 		this.place = place;
-		this.placeId = place.placeID;
+		if (place != null) {
+			this.placeId = place.placeID;
+		}
 	}
 
 	/**

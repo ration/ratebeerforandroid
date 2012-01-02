@@ -259,7 +259,7 @@ public class RateBeerApi implements CommandService {
 				GetBeerAvailabilityCommand getBeerAvailabilityCommand = (GetBeerAvailabilityCommand) command;
 				return parseBeerAvailability(
 						getBeerAvailabilityCommand,
-						HttpHelper.makeRBGet("http://ratebeer.com/json/where?k=" + RB_KEY + "&bd="
+						HttpHelper.makeRBGet("http://ratebeer.com/json/where.asp?k=" + RB_KEY + "&bd="
 								+ getBeerAvailabilityCommand.getBeerID()));
 
 			case GetEvents:

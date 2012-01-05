@@ -91,5 +91,14 @@
 		<item name="android:gravity">center</item>
 		<item name="android:textSize">@dimen/LabelSize</item>
 	</style>
+
+    <style name="TabPageIndicator" parent="Widget">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">@drawable/tab_indicator</item>
+        <item name="android:paddingLeft">12dip</item>
+        <item name="android:paddingRight">12dip</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
 	
 </resources>

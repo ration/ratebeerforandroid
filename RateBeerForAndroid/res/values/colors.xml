@@ -11,4 +11,7 @@
 	<color name="DarkGrey">#666</color>
 	<color name="Orange">#fdbb00</color>
 	
+	<color name="ab_background_pressed">#80003366</color>
+	<color name="ab_background_focussed">#40003366</color>
+	<color name="ab_background_normal">#00003366</color>
 </resources>

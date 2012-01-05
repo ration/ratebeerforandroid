@@ -409,17 +409,20 @@ public class PlaceViewFragment extends RateBeerFragment {
 	private class PlacePagerAdapter extends PagerAdapter implements TitleProvider {
 
 		private View pagerDetailsView;
-		private ListView pagerCheckinsView;
+		private View pagerCheckinsView;
 		private ListView pagerAvailableBeersView;
 
 		public PlacePagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			pagerDetailsView = (LinearLayout) inflater.inflate(R.layout.fragment_placedetails, null);
-			pagerCheckinsView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerCheckinsView = (LinearLayout) inflater.inflate(R.layout.fragment_placecheckins, null);
 			pagerAvailableBeersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 
-			checkinsView = pagerCheckinsView;
 			availableBeersView = pagerAvailableBeersView;
+
+			checkinsView = (ListView) pagerCheckinsView.findViewById(R.id.list);
+			checkinhereButton = (Button) pagerCheckinsView.findViewById(R.id.checkinhere);
+			checkinhereButton.setOnClickListener(onCheckInClick);
 
 			typeText = (TextView) pagerDetailsView.findViewById(R.id.type);
 			addressText = (Button) pagerDetailsView.findViewById(R.id.address);
@@ -427,8 +430,6 @@ public class PlaceViewFragment extends RateBeerFragment {
 			mapFrame = (FrameLayout) pagerDetailsView.findViewById(R.id.map);
 			addressText.setOnClickListener(onAddressClick);
 			phoneText.setOnClickListener(onPhoneClick);
-			checkinhereButton = (Button) pagerDetailsView.findViewById(R.id.checkinhere);
-			checkinhereButton.setOnClickListener(onCheckInClick);
 
 		}
 

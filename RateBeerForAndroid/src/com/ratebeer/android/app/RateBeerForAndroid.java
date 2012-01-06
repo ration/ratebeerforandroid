@@ -60,9 +60,10 @@ public class RateBeerForAndroid extends Application {
 	 * @return True if the device is a tablet, false otherwise
 	 */
 	public static boolean isTablet(Resources r) {
-		//boolean hasLargeScreen = ((r.getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
+		// 'Tablets' are devices with an XLarge screen and at least API level 11 (i.e. supporting Honeycomb APIs)
 		boolean hasXLargeScreen = ((r.getConfiguration().screenLayout & 
-				Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
+				Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE) && 
+				android.os.Build.VERSION.SDK_INT >= 11;
 		return hasXLargeScreen;
 	}
 

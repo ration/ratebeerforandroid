@@ -924,7 +924,7 @@ public class RateBeerApi implements CommandService {
 
 		while (rowStart > 0 + rowText.length()) {
 
-			int orderNr = Integer.parseInt(html.substring(rowStart, html.indexOf("<", rowStart)));
+			int orderNr = Integer.parseInt(HttpHelper.cleanHtml(html.substring(rowStart, html.indexOf("<", rowStart))).trim());
 
 			int idStart1 = html.indexOf("<A HREF=\"/beer/", rowStart) + "<A HREF=\"/beer/".length();
 			int idStart2 = html.indexOf("/", idStart1) + "/".length();

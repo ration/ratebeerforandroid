@@ -81,79 +81,31 @@
 				android:layout_marginBottom="10dip"
 				android:autoLink="all" />
 
-			<LinearLayout
-				android:id="@+id/buttonsbar"
+			<Button
+				android:id="@+id/drinkingthis"
+				style="@style/DetailsButtonSmall"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:visibility="gone" >
-
-				<Button
-					android:id="@+id/ratethis"
-					style="@style/DetailsButtonSmall"
-					android:layout_width="0dip"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="@string/app_loading" />
-
-				<Button
-					android:id="@+id/drinkingthis"
-					style="@style/DetailsButtonSmall"
-					android:layout_width="0dip"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="@string/details_drinkingthis" />
-			</LinearLayout>
+				android:text="@string/details_drinkingthis"
+				android:visibility="gone" />
 
 			<Button
-				android:id="@+id/addavailability"
+				android:id="@+id/wantthis"
 				style="@style/DetailsButtonSmall"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="@string/addav_addavailability"
-				android:visibility="gone" />
-
-			<LinearLayout
-				android:id="@+id/buttonsbar2"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:visibility="gone" >
-
-				<Button
-					android:id="@+id/wantthis"
-					style="@style/DetailsButtonSmall"
-					android:layout_width="0dip"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="@string/cellar_wantthis" />
-
-				<Button
-					android:id="@+id/havethis"
-					style="@style/DetailsButtonSmall"
-					android:layout_width="0dip"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="@string/cellar_havethis" />
-			</LinearLayout>
-
-			<TextView
-				android:id="@+id/ownratinglabel"
-				style="@style/Label"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="@string/details_myrating"
+				android:text="@string/cellar_wantthis"
 				android:visibility="gone" />
 
-			<include
-				android:id="@+id/ownrating"
-				android:layout_width="match_parent"
+			<Button
+				android:id="@+id/havethis"
+				style="@style/DetailsButtonSmall"
+				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				layout="@layout/list_item_rating"
-				android:padding="0dip" />
-			
+				android:text="@string/cellar_havethis"
+				android:visibility="gone" />
 		</LinearLayout>
-		
+
 	</ScrollView>
 
 </FrameLayout>

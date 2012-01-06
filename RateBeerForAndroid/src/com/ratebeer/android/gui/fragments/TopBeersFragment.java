@@ -62,7 +62,7 @@ public class TopBeersFragment extends RateBeerFragment {
 
 	private TopListType topList;
 	private Country country = null;
-	private ArrayList<TopBeer> beers = null;
+	private ArrayList<TopBeer> beers;
 
 	public TopBeersFragment() {
 		this(TopListType.Top50);
@@ -92,13 +92,16 @@ public class TopBeersFragment extends RateBeerFragment {
 
 		if (savedInstanceState != null) {
 			topList = TopListType.valueOf(savedInstanceState.getString(STATE_TOPLIST));
+			if (topList != TopListType.TopByCountry) {
+				countryLabel.setVisibility(View.GONE);
+				countrySpinner.setVisibility(View.GONE);
+			}
 			if (savedInstanceState.containsKey(STATE_COUNTRY)) {
 				country = Country.ALL_COUNTRIES.get(savedInstanceState.getInt(STATE_COUNTRY));
 			}
 			populateCountrySpinner();
 			if (savedInstanceState.containsKey(STATE_BEERS)) {
-				ArrayList<TopBeer> savedBeers = savedInstanceState.getParcelableArrayList(STATE_BEERS);
-				publishResults(savedBeers);
+				beers = savedInstanceState.getParcelableArrayList(STATE_BEERS);
 			}
 		} else {
 			if (topList == TopListType.TopByCountry) {
@@ -109,6 +112,8 @@ public class TopBeersFragment extends RateBeerFragment {
 			}
 			refreshBeers();
 		}
+		// Publish the current details, even when it is not loaded yet (and thus still empty)
+		publishResults(beers);
 		
 	}
 
@@ -204,7 +209,11 @@ public class TopBeersFragment extends RateBeerFragment {
 
 	private void publishResults(ArrayList<TopBeer> result) {
 		this.beers = result;
-		// Collections.sort(result, new UserRatingComparator(sortOrder));
+		if (beers == null) {
+			beersView.setVisibility(View.GONE);
+			emptyText.setVisibility(View.GONE);
+			return;
+		}
 		if (beersView.getAdapter() == null) {
 			beersView.setAdapter(new TopBeersAdapter(getActivity(), result));
 		} else {

@@ -99,14 +99,12 @@ public class StyleViewFragment extends RateBeerFragment {
 		if (savedInstanceState != null) {
 			style = savedInstanceState.getParcelable(STATE_STYLE);
 			if (savedInstanceState.containsKey(STATE_DETAILS)) {
-				StyleDetails savedDetails = savedInstanceState.getParcelable(STATE_DETAILS);
-				publishDetails(savedDetails);
+				details = savedInstanceState.getParcelable(STATE_DETAILS);
 			}
 		} else {
 			refreshDetails();
 		}
-		// Already fill in the style name
-		nameText.setText(style.getName());
+		publishDetails(details);
 		
 	}
 
@@ -154,6 +152,9 @@ public class StyleViewFragment extends RateBeerFragment {
 
 	private void publishDetails(StyleDetails details) {
 		this.details = details;
+		if (details == null) {
+			return;
+		}
 		// Show details
 		setDetails(details);
 	}

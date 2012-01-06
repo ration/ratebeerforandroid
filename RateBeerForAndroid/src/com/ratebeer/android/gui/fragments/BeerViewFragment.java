@@ -38,10 +38,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.commonsware.cwac.merge.MergeAdapter;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -86,13 +86,13 @@ public class BeerViewFragment extends RateBeerFragment {
 	private ViewPager pager;
 	private View scoreCard;
 	private TextView nameText, brewernameText, noscoreyetText, scoreText, stylepctlText, ratingsText, descriptionText;
-	private LinearLayout buttonsbarView, buttonsbar2View;
 	private Button abvstyleButton;
 	private Button rateThisButton, drinkingThisButton, addAvailabilityButton, havethisButton, wantthisButton;
-	private View ownratingRow, ownratinglabel;
+	private View ownratingRow, ownratinglabel, otherratingslabel;
 	private TextView ownratingTotal, ownratingAroma, ownratingAppearance, ownratingTaste, ownratingPalate, 
 		ownratingOverall, ownratingUsername, ownratingComments;
-	private ListView recentRatingsView, availabilityView;
+	private ListView availabilityView;
+	private BeerRatingsAdapter recentRatingsAdapter;
 	private ImageView imageView;
 
 	protected String beerName;
@@ -379,11 +379,8 @@ public class BeerViewFragment extends RateBeerFragment {
 			}
 		}
 		// Show the new list of ratings
-		if (recentRatingsView.getAdapter() == null) {
-			recentRatingsView.setAdapter(new BeerRatingsAdapter(getActivity(), ratings));
-		} else {
-			((BeerRatingsAdapter) recentRatingsView.getAdapter()).replace(ratings);
-		}
+		otherratingslabel.setVisibility(View.VISIBLE);
+		recentRatingsAdapter.replace(ratings);
 	}
 
 	public void setAvailability(ArrayList<PlaceSearchResult> places) {
@@ -422,10 +419,11 @@ public class BeerViewFragment extends RateBeerFragment {
 				getString(R.string.details_nodescription): details.description);
 		// Only show the buttons bar if we have a signed in user
 		UserSettings user = getRateBeerApplication().getSettings().getUserSettings();
-		buttonsbarView.setVisibility(user != null? View.VISIBLE: View.GONE);
+		drinkingThisButton.setVisibility(user != null? View.VISIBLE: View.GONE);
 		addAvailabilityButton.setVisibility(user != null? View.VISIBLE: View.GONE);
 		// Only show the cellar buttons bar if we have a signed in premium user
-		buttonsbar2View.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
+		wantthisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
+		havethisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 	}
 	
 	public void setOwnRating(OwnBeerRating ownRating) {
@@ -566,21 +564,61 @@ public class BeerViewFragment extends RateBeerFragment {
 		TextView name, city;
 	}
 
+    private class BeerRatingsViewAdapter extends MergeAdapter {
+
+            public BeerRatingsViewAdapter() {
+
+            	// Add the rate button and the views for the user's own rating
+                View fields = getActivity().getLayoutInflater().inflate(R.layout.fragment_beerratings, null);
+                addView(fields, true);
+
+                rateThisButton = (Button) fields.findViewById(R.id.ratethis);
+                otherratingslabel = fields.findViewById(R.id.otherratingslabel);
+    			ownratinglabel = fields.findViewById(R.id.ownratinglabel);
+    			ownratingRow = fields.findViewById(R.id.ownrating);
+    			ownratingTotal = (TextView) fields.findViewById(R.id.total);
+    			ownratingAroma = (TextView) fields.findViewById(R.id.aroma);
+    			ownratingAppearance = (TextView) fields.findViewById(R.id.appearance);
+    			ownratingTaste = (TextView) fields.findViewById(R.id.taste);
+    			ownratingPalate = (TextView) fields.findViewById(R.id.palate);
+    			ownratingOverall = (TextView) fields.findViewById(R.id.overall);
+    			ownratingUsername = (TextView) fields.findViewById(R.id.username);
+    			ownratingComments = (TextView) fields.findViewById(R.id.comments);
+
+                // Add the recent ratings
+                recentRatingsAdapter = new BeerRatingsAdapter(getActivity(), new ArrayList<BeerRating>());
+                addAdapter(recentRatingsAdapter);
+                
+            }
+
+    }
+    
 	private class BeerPagerAdapter extends PagerAdapter implements TitleProvider {
 
 		private View pagerDetailsView;
 		private ListView pagerRecentRatingsView;
-		private ListView pagerAvailabilityView;
+		private View pagerAvailabilityView;
 
 		public BeerPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			pagerDetailsView = inflater.inflate(R.layout.fragment_beerdetails, null);
 			pagerRecentRatingsView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
-			pagerAvailabilityView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerAvailabilityView = inflater.inflate(R.layout.fragment_beeravailability, null);
 
-			recentRatingsView = pagerRecentRatingsView;
-			availabilityView = pagerAvailabilityView;
-
+			// Ratings page
+			pagerRecentRatingsView.setAdapter(new BeerRatingsViewAdapter());
+			
+			// Availability page
+			availabilityView = (ListView) pagerAvailabilityView.findViewById(R.id.list);
+			addAvailabilityButton = (Button) pagerAvailabilityView.findViewById(R.id.addavailability);
+			addAvailabilityButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onAddAvailability();
+				}
+			});
+			
+			// Details page
 			if (pagerDetailsView.findViewById(R.id.image) != null) {
 				// Phone version; beer image, description and style button are on the details page in the pager
 				imageView = (ImageView) pagerDetailsView.findViewById(R.id.image);
@@ -601,23 +639,9 @@ public class BeerViewFragment extends RateBeerFragment {
 			scoreText = (TextView) pagerDetailsView.findViewById(R.id.overallpctl);
 			stylepctlText = (TextView) pagerDetailsView.findViewById(R.id.stylepctl);
 			ratingsText = (TextView) pagerDetailsView.findViewById(R.id.ratings);
-			buttonsbarView = (LinearLayout) pagerDetailsView.findViewById(R.id.buttonsbar);
-			rateThisButton = (Button) pagerDetailsView.findViewById(R.id.ratethis);
 			drinkingThisButton = (Button) pagerDetailsView.findViewById(R.id.drinkingthis);
-			addAvailabilityButton = (Button) pagerDetailsView.findViewById(R.id.addavailability);
-			buttonsbar2View = (LinearLayout) pagerDetailsView.findViewById(R.id.buttonsbar2);
 			havethisButton = (Button) pagerDetailsView.findViewById(R.id.havethis);
 			wantthisButton = (Button) pagerDetailsView.findViewById(R.id.wantthis);
-			ownratinglabel = pagerDetailsView.findViewById(R.id.ownratinglabel);
-			ownratingRow = pagerDetailsView.findViewById(R.id.ownrating);
-			ownratingTotal = (TextView) pagerDetailsView.findViewById(R.id.total);
-			ownratingAroma = (TextView) pagerDetailsView.findViewById(R.id.aroma);
-			ownratingAppearance = (TextView) pagerDetailsView.findViewById(R.id.appearance);
-			ownratingTaste = (TextView) pagerDetailsView.findViewById(R.id.taste);
-			ownratingPalate = (TextView) pagerDetailsView.findViewById(R.id.palate);
-			ownratingOverall = (TextView) pagerDetailsView.findViewById(R.id.overall);
-			ownratingUsername = (TextView) pagerDetailsView.findViewById(R.id.username);
-			ownratingComments = (TextView) pagerDetailsView.findViewById(R.id.comments);
 			abvstyleButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -628,12 +652,6 @@ public class BeerViewFragment extends RateBeerFragment {
 				@Override
 				public void onClick(View v) {
 					onDrinkingBeerClick();
-				}
-			});
-			addAvailabilityButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					onAddAvailability();
 				}
 			});
 			havethisButton.setOnClickListener(new OnClickListener() {

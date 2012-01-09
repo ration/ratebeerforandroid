@@ -24,7 +24,7 @@
 			android:title="@string/settings_updatefrequency"
 			android:entries="@array/settings_frequency_names"
 			android:entryValues="@array/settings_frequency_values" 
-			android:defaultValue="60"
+			android:defaultValue="1800"
 			android:dependency="enable_beermail" />
 		<CheckBoxPreference 
 			android:key="beermail_vibrate"

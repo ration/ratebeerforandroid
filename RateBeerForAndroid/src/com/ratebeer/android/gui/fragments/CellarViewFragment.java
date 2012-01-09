@@ -239,7 +239,7 @@ public class CellarViewFragment extends RateBeerFragment {
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_cellarbeer, null);
+				convertView = inflater.inflate(R.layout.list_item_cellaritem, null);
 				holder = new ViewHolder();
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
 				holder.memo = (TextView) convertView.findViewById(R.id.memo);
@@ -276,8 +276,8 @@ public class CellarViewFragment extends RateBeerFragment {
 
 		public CellarPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
-			pagerWantsView = (ListView) inflater.inflate(R.layout.fragment_cellarlist, null);
-			pagerHavesView = (ListView) inflater.inflate(R.layout.fragment_cellarlist, null);
+			pagerWantsView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerHavesView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 			//pagerWantsView = (ListView) wantLayout.findViewById(R.id.list);
 			//pagerHavesView = (ListView) haveLayout.findViewById(R.id.list);
 		}

@@ -255,13 +255,13 @@ public class MailsFragment extends RateBeerFragment {
 			holder.date.setText(dateFormat.format(item.getSent()));
 			if (item.isReplied()) {
 				holder.status.setText(repliedString);
-				holder.status.setBackgroundColor(R.color.BackgroundDark);
+				holder.status.setBackgroundColor(getResources().getColor(R.color.BackgroundDark));
 			} else if (item.isRead()) {
 				holder.status.setText(readString);
-				holder.status.setBackgroundColor(R.color.DarkGrey);
+				holder.status.setBackgroundColor(getResources().getColor(R.color.DarkGrey));
 			} else {
 				holder.status.setText(newString);
-				holder.status.setBackgroundColor(R.color.Orange);
+				holder.status.setBackgroundColor(getResources().getColor(R.color.Orange));
 			}
 
 			return convertView;

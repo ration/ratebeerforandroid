@@ -51,6 +51,9 @@ import com.ratebeer.android.api.command.DeleteBeerMailCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
 import com.ratebeer.android.api.command.UploadBeerPhotoCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
+import com.ratebeer.android.api.command.GetAvailableBeersCommand;
+import com.ratebeer.android.api.command.GetAvailableBeersCommand.AvailableBeer;
+import com.ratebeer.android.api.command.GetBeerAvailabilityCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetBeerImageCommand;
@@ -252,11 +255,19 @@ public class RateBeerApi implements CommandService {
 								+ getPlacesCommand.getRadius() + "&la=" + getPlacesCommand.getLatitude() + "&lo="
 								+ getPlacesCommand.getLongitude()));
 
-			case GetPlaceBeerAvailability:
-				// TODO: Use the API call http://www.ratebeer.com/json/beershere.asp?pid=<PLACEID>&k=<KEY>
+			case GetAvailableBeers:
+				GetAvailableBeersCommand getAvailableBeersCommand = (GetAvailableBeersCommand) command;
+				return parseAvailableBeers(
+						getAvailableBeersCommand,
+						HttpHelper.makeRBGet("http://ratebeer.com/json/beershere.asp?k=" + RB_KEY + "&pid="
+								+ getAvailableBeersCommand.getPlaceId()));
 
 			case GetBeerAvailability:
-				// TODO: Use the API call http://www.ratebeer.com/json/where.asp?bd=<BEERID>&k=<KEY>
+				GetBeerAvailabilityCommand getBeerAvailabilityCommand = (GetBeerAvailabilityCommand) command;
+				return parseBeerAvailability(
+						getBeerAvailabilityCommand,
+						HttpHelper.makeRBGet("http://ratebeer.com/json/where.asp?k=" + RB_KEY + "&bd="
+								+ getBeerAvailabilityCommand.getBeerID()));
 
 			case GetEvents:
 				ensureLogin(userSettings);
@@ -805,6 +816,9 @@ public class RateBeerApi implements CommandService {
 			int quantityStart = html.indexOf("valign=bottom align=center>", beerStart)
 					+ "valign=bottom align=center>".length();
 			String quantity = HttpHelper.cleanHtml(html.substring(quantityStart, html.indexOf("</td>", quantityStart))).trim();
+			if (quantity.equals(" <span class=beerfoot>available</span>")) {
+				quantity = "available";
+			}
 
 			int memoStart = html.indexOf("beerfoot valign=top>", quantityStart) + "beerfoot valign=top>".length();
 			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("<br><span", memoStart))).trim();
@@ -1346,6 +1360,64 @@ public class RateBeerApi implements CommandService {
 		}
 	}
 
+	private CommandResult parseAvailableBeers(GetAvailableBeersCommand command, String html) {
+
+		try {
+
+			// Parse the JSON response
+			SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+			JSONArray json = new JSONArray(html);
+			ArrayList<AvailableBeer> results = new ArrayList<AvailableBeer>();
+			for (int i = 0; i < json.length(); i++) {
+				JSONObject result = json.getJSONObject(i);
+				String pctl = result.getString("AverageRating");
+				String entered = result.getString("TimeEntered");
+				Date timeEntered = null;
+				try {
+					timeEntered = dateFormat.parse(entered);
+				} catch (ParseException e) {
+				}
+				results.add(new AvailableBeer(Integer.parseInt(result.getString("BeerID")), HttpHelper.cleanHtml(result
+						// TODO: This should parse as a double and be displayed as integer instead
+						.getString("BeerName")), (pctl.equals("null") ? -1 : (int) Double.parseDouble(pctl)), 
+						timeEntered));
+			}
+
+			// Set the list of available beers on the original command as result
+			command.setAvailableBeers(results);
+			return new CommandSuccessResult(command);
+
+		} catch (JSONException e) {
+			return new CommandFailureResult(command, new ApiException(ApiException.ExceptionType.CommandFailed,
+					"JSON parsing error: " + e.toString()));
+		}
+	}
+
+	private CommandResult parseBeerAvailability(GetBeerAvailabilityCommand command, String html) {
+
+		try {
+
+			// Parse the JSON response
+			JSONArray json = new JSONArray(html);
+			ArrayList<PlaceSearchResult> results = new ArrayList<PlaceSearchResult>();
+			for (int i = 0; i < json.length(); i++) {
+				// {"PlaceID":4413,"PlaceName":"Keg Liquors","Latitude":38.312,"Longitude":-85.766,"PostalCode":"47129",
+				// "Abbrev":"IN ","Country":"United States ","ServedBottle":false,"ServedTap":false}
+				JSONObject result = json.getJSONObject(i);
+				results.add(new PlaceSearchResult(Integer.parseInt(result.getString("PlaceID")), HttpHelper
+						.cleanHtml(result.getString("PlaceName")), HttpHelper.cleanHtml(result.getString("Country"))));
+			}
+
+			// Set the list of available beers on the original command as result
+			command.setPlaces(results);
+			return new CommandSuccessResult(command);
+
+		} catch (JSONException e) {
+			return new CommandFailureResult(command, new ApiException(ApiException.ExceptionType.CommandFailed,
+					"JSON parsing error: " + e.toString()));
+		}
+	}
+
 	private CommandResult parseAllBeerMails(GetAllBeerMailsCommand command, String html) {
 
 		try {
@@ -1357,7 +1429,7 @@ public class RateBeerApi implements CommandService {
 				JSONObject result = json.getJSONObject(i);
 				results.add(new Mail(result.getInt("MessageID"), HttpHelper.cleanHtml(result.getString("UserName")), result
 						.getBoolean("MessageRead"), HttpHelper.cleanHtml(result.getString("Subject")), result.getInt("Source"),
-						HttpHelper.cleanHtml(result.getString("Sent")), result.getBoolean("Reply")));
+						HttpHelper.cleanHtml(result.getString("Sent")), result.getString("Reply").equals("1")));
 			}
 
 			// Set the list of beer mails on the original command as result

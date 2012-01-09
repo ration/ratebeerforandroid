@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.gui.fragments;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,10 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.text.method.ScrollingMovementMethod;
@@ -74,6 +78,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	private static final String STATE_RATINGS = "ratings";
 	private static final int UNKNOWN_RATINGS_COUNT = -1;
 	private static final int MENU_SHARE = 0;
+	private static final int ACTIVITY_CAMERA = 0;
 
 	private LayoutInflater inflater;
 	private ListView beerView;
@@ -83,7 +88,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	private TextView nameText, brewernameText, noscoreyetText, scoreText, stylepctlText, ratingsText, descriptionText;
 	private LinearLayout buttonsbarView, buttonsbar2View;
 	private Button abvstyleButton;
-	private Button rateThisButton, drinkingThisButton, addAvailabilityButton, havethisButton, wantthisButton;
+	private Button rateThisButton, drinkingThisButton, addAvailabilityButton, havethisButton, wantthisButton, uploadphotoButton;
 	private View ownratingRow, ownratinglabel, recentratingslabel;
 	private TextView ownratingTotal, ownratingAroma, ownratingAppearance, ownratingTaste, ownratingPalate, 
 		ownratingOverall, ownratingUsername, ownratingComments;
@@ -301,6 +306,48 @@ public class BeerViewFragment extends RateBeerFragment {
 		// Start the user details screen
 		getRateBeerActivity().load(new UserViewFragment(username, userId));
 	}
+
+	protected void onStartPhotoUpload() {
+		// Start an intent to snap a picture
+		// http://stackoverflow.com/questions/1910608/android-action-image-capture-intent
+		try {
+			if (Environment.getExternalStorageDirectory().equals(Environment.MEDIA_MOUNTED)) {
+				
+				File file = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/photos/" + Integer.toString(beerId) + ".jpg");
+				if (!file.exists()) {
+					file.getParentFile().mkdirs();
+					file.createNewFile();
+				}
+				
+				Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+				startActivityForResult(i, ACTIVITY_CAMERA);
+			
+			} else {
+				publishException(null, getString(R.string.error_nocamera));
+			}
+		} catch (Exception e) {
+			publishException(null, getString(R.string.error_nocamera));
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+		case ACTIVITY_CAMERA:
+			
+			Uri photo = data.getData();
+			// Start an upload task for this photo
+			Intent i = new Intent(PosterService.ACTION_UPLOADBEERPHOTO);
+			i.putExtra(PosterService.EXTRA_BEERID, beerId);
+			i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
+			i.putExtra(PosterService.EXTRA_PHOTO, photo.toString());
+			getActivity().startService(i);
+			break;
+			
+		}
+	}
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
@@ -386,6 +433,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		UserSettings user = getRateBeerApplication().getSettings().getUserSettings();
 		buttonsbarView.setVisibility(user != null? View.VISIBLE: View.GONE);
 		addAvailabilityButton.setVisibility(user != null? View.VISIBLE: View.GONE);
+		uploadphotoButton.setVisibility(user != null? View.VISIBLE: View.GONE);
 		// Only show the cellar buttons bar if we have a signed in premium user
 		buttonsbar2View.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 	}
@@ -521,6 +569,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		buttonsbar2View = (LinearLayout) fields.findViewById(R.id.buttonsbar2);
 		havethisButton = (Button) fields.findViewById(R.id.havethis);
 		wantthisButton = (Button) fields.findViewById(R.id.wantthis);
+		uploadphotoButton = (Button) fields.findViewById(R.id.uploadphoto);
 		ownratinglabel = fields.findViewById(R.id.ownratinglabel);
 		ownratingRow = fields.findViewById(R.id.ownrating);
 		ownratingTotal = (TextView) fields.findViewById(R.id.total);
@@ -560,6 +609,12 @@ public class BeerViewFragment extends RateBeerFragment {
 			@Override
 			public void onClick(View v) {
 				onWantOrHaveBeerClick(CellarType.Want);
+			}
+		});
+		uploadphotoButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onStartPhotoUpload();
 			}
 		});
 	}

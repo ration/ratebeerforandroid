@@ -87,6 +87,7 @@
 				<action android:name="com.ratebeer.android.ADD_AVAILABILITY" />
 				<action android:name="com.ratebeer.android.ADD_TO_CELLAR" />
 				<action android:name="com.ratebeer.android.SEND_BEERMAIL" />
+				<action android:name="com.ratebeer.android.UPLOAD_BEER_PHOTO" />
 			</intent-filter>
 		</service>
 

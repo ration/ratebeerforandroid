@@ -112,6 +112,12 @@ public class HttpHelper {
 		HttpPost post = new HttpPost(url);
 		post.setEntity(new UrlEncodedFormEntity(parameters));
 		
+		return makeRawRBPost(post, expectedHttpCode);
+	}
+
+	public static String makeRawRBPost(HttpPost post, int expectedHttpCode) throws ClientProtocolException, IOException {
+		ensureClient();
+
 		// Execute a POST request to sign in
 		HttpResponse response = httpClient.execute(post);
 		if (response.getStatusLine().getStatusCode() == expectedHttpCode) {

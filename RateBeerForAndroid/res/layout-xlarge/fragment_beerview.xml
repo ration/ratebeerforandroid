@@ -136,12 +136,21 @@
 			android:text="@string/cellar_havethis"
 			style="@style/DetailsButtonSmall" />
 	</LinearLayout>
+	<Button 
+		android:id="@+id/uploadphoto"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@id/buttonsbar2"
+		android:layout_toRightOf="@id/scorewrapper"
+		android:text="@string/upload_uploadphoto"
+		android:visibility="gone"
+		style="@style/DetailsButtonSmall" />
 	
 	<TextView
 		android:id="@+id/ownratinglabel"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:layout_below="@id/buttonsbar2"
+		android:layout_below="@id/uploadphoto"
 		android:layout_toRightOf="@id/imageframe"
 		android:text="@string/details_myrating"
 		android:visibility="gone"

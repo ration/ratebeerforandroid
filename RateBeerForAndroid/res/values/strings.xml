@@ -40,6 +40,8 @@
 	<string name="app_newmail">You\'ve got new beer mail</string>
 	<string name="app_by">By %1$s</string>
 	<string name="app_andothers"> and others</string>
+	<string name="app_uploadingphoto">Uploading new photo</string>
+	<string name="app_photofor">Uploading photo for %1$s</string>
 			
 	<string name="signin_username">Username:</string>
 	<string name="signin_password">Password:</string>
@@ -149,6 +151,8 @@
 	<string name="details_share">Check out %1$s at @ratebeer http://ratebeer.com/b/%2$s/</string>
 	<string name="details_sharebeer">Share beer...</string>
 	
+	<string name="upload_uploadphoto">Upload photo</string>
+	
 	<string name="user_dates">Joined: %1$s\nLast seen: %2$s</string>
 	<string name="user_beersrated">%1$s beers rated\n%2$s places rated\nAvg. score given: %3$s\nAvg. beer rated: %4$s</string>
 	<string name="user_favsyle">Favourite style: %1$s</string>
@@ -256,9 +260,10 @@
 	<string name="error_locationnotsupported">Your device does not support retrieving a location or you have this disabled</string>
 	<string name="error_sendreport">Send error report</string>
 	<string name="error_stylenotfound">Cannot find beer style; please report this error</string>
-	<string name="error_cannotwrite">Cannot write to file..</string>
+	<string name="error_cannotwrite">Cannot write to file</string>
 	<string name="error_cannotread">No file or cannot read from it</string>
 	<string name="error_filenotvalid">File does not contain offline ratings (in the correct format)</string>
+	<string name="error_nocamera">Cannot take a photo; either you have no camera or cannot write to the external SD storage</string>
 	<string name="error_lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Android Market?</string>
 	<string name="error_lc_run">The Log Collector application will now collect the device log and send it to rb@2312.nl.\nYou will have an opportunity to review and modify the data being sent.</string>
 	

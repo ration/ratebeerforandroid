@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -38,11 +40,16 @@ import org.json.JSONObject;
 
 import android.graphics.drawable.Drawable;
 
+import com.android.internalcopy.http.multipart.FilePart;
+import com.android.internalcopy.http.multipart.MultipartEntity;
+import com.android.internalcopy.http.multipart.Part;
+import com.android.internalcopy.http.multipart.StringPart;
 import com.ratebeer.android.api.command.AddAvailabilityCommand;
 import com.ratebeer.android.api.command.AddToCellarCommand;
 import com.ratebeer.android.api.command.CheckInCommand;
 import com.ratebeer.android.api.command.DeleteBeerMailCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
+import com.ratebeer.android.api.command.UploadBeerPhotoCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
@@ -425,6 +432,18 @@ public class RateBeerApi implements CommandService {
 								new BasicNameValuePair("Subject", sendBeerMailCommand.getSubject()),
 								new BasicNameValuePair("Body", sendBeerMailCommand.getBody())));
 				return new CommandSuccessResult(sendBeerMailCommand);
+
+			case UploadBeerPhoto:
+				ensureLogin(userSettings);
+				UploadBeerPhotoCommand uploadBeerPhotoCommand = (UploadBeerPhotoCommand) command;
+				File upload = new File(uploadBeerPhotoCommand.getPhotoUri().getPath());
+				// TODO: Get the actual upload URL
+				HttpPost post = new HttpPost("http://www.ratebeer.com/uploadphoto/");
+				Part[] parts = { new StringPart("beerId", Integer.toString(uploadBeerPhotoCommand.getBeerId())), 
+						new FilePart("file", upload, FilePart.DEFAULT_CONTENT_TYPE, null) };
+				post.setEntity(new MultipartEntity(parts, post.getParams()));
+				HttpHelper.makeRawRBPost(post, HttpStatus.SC_OK);
+				return new CommandSuccessResult(uploadBeerPhotoCommand);
 
 			default:
 				return null;

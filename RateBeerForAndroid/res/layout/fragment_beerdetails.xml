@@ -125,6 +125,14 @@
 			android:text="@string/cellar_havethis"
 			style="@style/DetailsButtonSmall" />
 	</LinearLayout>
+	<Button 
+		android:id="@+id/uploadphoto"
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/buttonsbar2"
+		android:text="@string/upload_uploadphoto"
+		android:visibility="gone"
+		style="@style/DetailsButtonSmall" />
 	
 	<TextView
 		android:id="@+id/ownratinglabel"

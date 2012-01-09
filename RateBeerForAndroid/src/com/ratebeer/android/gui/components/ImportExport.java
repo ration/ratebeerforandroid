@@ -29,17 +29,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.Environment;
-
 import com.j256.ormlite.dao.Dao;
 import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.OfflineRating;
 
 public class ImportExport {
 
-	public static final String DEFAULT_FILES_DIR = Environment.getExternalStorageDirectory().toString() + "/RateBeerForAndroid";
 	public static final String DEFAULT_RATINGS_FILENAME = "/OfflineRatings.json";
-	public static final File DEFAULT_RATINGS_FILE = new File(DEFAULT_FILES_DIR + DEFAULT_RATINGS_FILENAME);
+	public static final File DEFAULT_RATINGS_FILE = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + DEFAULT_RATINGS_FILENAME);
 	
 	/**
 	 * Synchronously writes the offline ratings stored in the database

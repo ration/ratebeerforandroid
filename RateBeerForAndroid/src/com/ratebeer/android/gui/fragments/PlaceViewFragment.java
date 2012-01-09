@@ -19,6 +19,7 @@ package com.ratebeer.android.gui.fragments;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +27,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -35,44 +39,51 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.commonsware.cwac.merge.MergeAdapter;
 import com.google.android.maps.MapView;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.command.CheckInCommand;
+import com.ratebeer.android.api.command.GetAvailableBeersCommand;
+import com.ratebeer.android.api.command.GetAvailableBeersCommand.AvailableBeer;
 import com.ratebeer.android.api.command.GetCheckinsCommand;
 import com.ratebeer.android.api.command.GetCheckinsCommand.CheckedInUser;
 import com.ratebeer.android.api.command.GetPlaceDetailsCommand;
 import com.ratebeer.android.api.command.GetPlacesCommand.Place;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
-import com.ratebeer.android.gui.components.MapContainer;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.viewpagerindicator.TabPageIndicator;
+import com.viewpagerindicator.TitleProvider;
 
-public class PlaceViewFragment extends RateBeerFragment implements MapContainer {
+public class PlaceViewFragment extends RateBeerFragment {
 
-	private static final String STATE_PLACE = "place";
 	private static final String STATE_PLACEID = "placeId";
+	private static final String STATE_PLACE = "place";
+	private static final String STATE_CHECKINS= "checkins";
+	private static final String STATE_AVAILABLEBEERS = "availableBeers";
 
 	private static final int MENU_SHARE = 0;
 
 	private LayoutInflater inflater;
-	private ListView placeView;
-
-	private TextView nameText, typeText, ratingText, checkinslabel;
+	private ViewPager pager;
+	private TextView nameText, typeText, ratingText;
 	private Button addressText, phoneText, checkinhereButton;
 	private FrameLayout mapFrame;
-	private CheckinsAdapter checkedinsAdapter;
+	private ListView checkinsView;
+	private ListView availableBeersView;
 
-	private Place place;
 	private int placeId;
+	private Place place;
+	private ArrayList<CheckedInUser> checkins = new ArrayList<CheckedInUser>();
+	private ArrayList<AvailableBeer> availableBeers = new ArrayList<AvailableBeer>();
 
 	public PlaceViewFragment() {
 		this(null);
@@ -84,7 +95,9 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 	 */
 	public PlaceViewFragment(Place place) {
 		this.place = place;
-		this.placeId = place.placeID;
+		if (place != null) {
+			this.placeId = place.placeID;
+		}
 	}
 
 	/**
@@ -106,31 +119,39 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		placeView = (ListView) getView().findViewById(R.id.placeview);
-		if (placeView != null) {
-			placeView.setAdapter(new PlaceViewAdapter());
-			placeView.setItemsCanFocus(true);
-		} else {
-			// Tablet
-			ListView checkinsView = (ListView) getView().findViewById(R.id.checkins);
-			checkedinsAdapter = new CheckinsAdapter(getActivity(), new ArrayList<CheckedInUser>());
-			checkinsView.setAdapter(checkedinsAdapter);
-			initFields(getView());
-		}
+		pager = (ViewPager) getView().findViewById(R.id.pager);
+		PlacePagerAdapter placePagerAdapter = new PlacePagerAdapter();
+		pager.setAdapter(placePagerAdapter);
+		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
+		titles.setViewPager(pager);
+		nameText = (TextView) getView().findViewById(R.id.name);
+		ratingText = (TextView) getView().findViewById(R.id.rating);
 		
 		if (savedInstanceState != null) {
-			place = savedInstanceState.getParcelable(STATE_PLACE);
 			placeId = savedInstanceState.getInt(STATE_PLACEID);
-		}
-
-		if (place != null) {
-			setDetails(place);
+			if (savedInstanceState.containsKey(STATE_PLACE)) {
+				place = savedInstanceState.getParcelable(STATE_PLACE);
+			}
+			if (savedInstanceState.containsKey(STATE_CHECKINS)) {
+				checkins = savedInstanceState.getParcelableArrayList(STATE_CHECKINS);
+			}
+			if (savedInstanceState.containsKey(STATE_AVAILABLEBEERS)) {
+				availableBeers = savedInstanceState.getParcelableArrayList(STATE_AVAILABLEBEERS);
+			}
+		} else if (place != null) {
+			// Use the already known details
 			refreshCheckins();
+			refreshAvailableBeers();
 		} else {
-			// Retrieve the details
+			// Retrieve the details too
 			refreshDetails();
 			refreshCheckins();
+			refreshAvailableBeers();
 		}
+		// Publish the current details, even when it is not loaded yet (and thus still empty)
+		publishDetails(place);
+		publishCheckins(checkins);
+		publishAvailableBeers(availableBeers);
 		
 	}
 
@@ -151,6 +172,7 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 		case RateBeerActivity.MENU_REFRESH:
 			refreshDetails();
 			refreshCheckins();
+			refreshAvailableBeers();
 			break;
 		case MENU_SHARE:
 			if (place != null) {
@@ -168,8 +190,16 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putParcelable(STATE_PLACE, place);
 		outState.putInt(STATE_PLACEID, placeId);
+		if (place != null) {
+			outState.putParcelable(STATE_PLACE, place);
+		}
+		if (checkins != null) {
+			outState.putParcelableArrayList(STATE_CHECKINS, checkins);
+		}
+		if (availableBeers != null) {
+			outState.putParcelableArrayList(STATE_AVAILABLEBEERS, availableBeers);
+		}
 	}
 
 	private void refreshDetails() {
@@ -178,6 +208,10 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 
 	private void refreshCheckins() {
 		execute(new GetCheckinsCommand(getRateBeerActivity().getApi(), placeId));
+	}
+
+	private void refreshAvailableBeers() {
+		execute(new GetAvailableBeersCommand(getRateBeerActivity().getApi(), placeId));
 	}
 
 	private OnClickListener onAddressClick = new OnClickListener() {
@@ -205,6 +239,10 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 	private void onCheckinClick(int userId, String username) {
 		getRateBeerActivity().load(new UserViewFragment(username, userId));
 	}
+
+	private void onAvailableBeerClick(int beerId, String beerName) {
+		getRateBeerActivity().load(new BeerViewFragment(beerName, beerId));
+	}
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
@@ -215,6 +253,8 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 		} else if (result.getCommand().getMethod() == ApiMethod.CheckIn) {
 			Toast.makeText(getActivity(), R.string.places_checkedinnow, Toast.LENGTH_LONG).show();
 			refreshCheckins();
+		} else if (result.getCommand().getMethod() == ApiMethod.GetAvailableBeers) {
+			publishAvailableBeers(((GetAvailableBeersCommand) result.getCommand()).getAvailableBeers());
 		}
 	}
 
@@ -228,12 +268,29 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 
 	private void publishDetails(Place details) {
 		this.place = details;
+		if (details == null) {
+			return;
+		}
 		// Show details
 		setDetails(details);
 	}
 
 	private void publishCheckins(ArrayList<CheckedInUser> checkins) {
-		checkedinsAdapter.replace(checkins);
+		this.checkins = checkins;
+		if (checkinsView.getAdapter() == null) {
+			checkinsView.setAdapter(new CheckinsAdapter(getActivity(), checkins));
+		} else {
+			((CheckinsAdapter) checkinsView.getAdapter()).replace(checkins);
+		}
+	}
+
+	private void publishAvailableBeers(ArrayList<AvailableBeer> availableBeers) {
+		this.availableBeers = availableBeers;
+		if (availableBeersView.getAdapter() == null) {
+			availableBeersView.setAdapter(new AvailableBeersAdapter(getActivity(), availableBeers));
+		} else {
+			((AvailableBeersAdapter) availableBeersView.getAdapter()).replace(availableBeers);
+		}
 	}
 
 	private void setDetails(Place details) {
@@ -245,7 +302,7 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 		phoneText.setText(place.phoneNumber);
 
 		// Get the activity-wide MapView to show on this fragment and center on this place's location
-		MapView mapView = getRateBeerActivity().requestMapViewInstance(this);
+		MapView mapView = getRateBeerActivity().requestMapViewInstance();
 		mapView.getController().setCenter(getRateBeerActivity().getPoint(place.latitude, place.longitude));
 		mapView.getController().setZoom(15);
 		mapFrame.addView(mapView);
@@ -254,27 +311,10 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 		ratingText.setVisibility(View.VISIBLE);
 		addressText.setVisibility(View.VISIBLE);
 		phoneText.setVisibility(View.VISIBLE);
-		checkinslabel.setVisibility(View.VISIBLE);
 		checkinhereButton.setVisibility(View.VISIBLE);
 		
 	}
 
-	private class PlaceViewAdapter extends MergeAdapter {
-
-		public PlaceViewAdapter() {
-
-			// Set the place detail fields
-			View fields = getActivity().getLayoutInflater().inflate(R.layout.fragment_placedetails, null);
-			addView(fields);
-			initFields(fields);
-			
-			// Set the list of checked in users
-			checkedinsAdapter = new CheckinsAdapter(getActivity(), new ArrayList<CheckedInUser>());
-			addAdapter(checkedinsAdapter);
-		}
-
-	}
-	
 	private class CheckinsAdapter extends ArrayAdapter<CheckedInUser> {
 
 		private OnClickListener onRowClick = new OnClickListener() {
@@ -292,15 +332,15 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			// Get the right view, using a ViewHolder
-			ViewHolder holder;
+			CheckinViewHolder holder;
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.list_item_checkedinuser, null);
 				ActivityUtil.makeListItemClickable(convertView, onRowClick);
-				holder = new ViewHolder();
+				holder = new CheckinViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.user);
 				convertView.setTag(holder);
 			} else {
-				holder = (ViewHolder) convertView.getTag();
+				holder = (CheckinViewHolder) convertView.getTag();
 			}
 
 			// Bind the data
@@ -313,29 +353,147 @@ public class PlaceViewFragment extends RateBeerFragment implements MapContainer 
 
 	}
 
-	protected static class ViewHolder {
+	protected static class CheckinViewHolder {
 		TextView name;
 	}
 
-	public void initFields(View fields) {
-		nameText = (TextView) fields.findViewById(R.id.name);
-		typeText = (TextView) fields.findViewById(R.id.type);
-		ratingText = (TextView) fields.findViewById(R.id.rating);
-		addressText = (Button) fields.findViewById(R.id.address);
-		phoneText = (Button) fields.findViewById(R.id.phone);
-		mapFrame = (FrameLayout) fields.findViewById(R.id.map);
-		addressText.setOnClickListener(onAddressClick);
-		phoneText.setOnClickListener(onPhoneClick);
-		checkinslabel = (TextView) fields.findViewById(R.id.checkinslabel);
-		checkinhereButton = (Button) fields.findViewById(R.id.checkinhere);
-		checkinhereButton.setOnClickListener(onCheckInClick);
+	private class AvailableBeersAdapter extends ArrayAdapter<AvailableBeer> {
+
+		private final DateFormat dateFormat;
+
+		private OnClickListener onRowClick = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onAvailableBeerClick((Integer)v.findViewById(R.id.beer).getTag(), ((TextView)v.findViewById(R.id.beer)).getText().toString());
+			}
+		};
+
+		public AvailableBeersAdapter(Context context, List<AvailableBeer> objects) {
+			super(context, objects);
+			this.dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+
+			// Get the right view, using a ViewHolder
+			AvailableBeerViewHolder holder;
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.list_item_availablebeer, null);
+				ActivityUtil.makeListItemClickable(convertView, onRowClick);
+				holder = new AvailableBeerViewHolder();
+				holder.score = (TextView) convertView.findViewById(R.id.score);
+				holder.beer = (TextView) convertView.findViewById(R.id.beer);
+				holder.timerecorded = (TextView) convertView.findViewById(R.id.timerecorded);
+				convertView.setTag(holder);
+			} else {
+				holder = (AvailableBeerViewHolder) convertView.getTag();
+			}
+
+			// Bind the data
+			AvailableBeer item = getItem(position);
+			holder.beer.setTag(item.beerId);
+			holder.beer.setText(item.beerName);
+			holder.score.setText(item.averageRating == -1? "?": Integer.toString(item.averageRating));
+			holder.timerecorded.setText(getString(R.string.places_enteredat, dateFormat.format(item.timeEntered)));
+			
+			return convertView;
+		}
+
 	}
 
-	@Override
-	public void removeMapViewinstance() {
-		// Removes the map view from it's container so other fragments can use it
-		if (mapFrame.getChildAt(0) != null)
-			mapFrame.removeViewAt(0);
+	protected static class AvailableBeerViewHolder {
+		TextView score, beer, timerecorded;
+	}
+
+	private class PlacePagerAdapter extends PagerAdapter implements TitleProvider {
+
+		private View pagerDetailsView;
+		private View pagerCheckinsView;
+		private ListView pagerAvailableBeersView;
+
+		public PlacePagerAdapter() {
+			LayoutInflater inflater = getActivity().getLayoutInflater();
+			pagerDetailsView = (LinearLayout) inflater.inflate(R.layout.fragment_placedetails, null);
+			pagerCheckinsView = (LinearLayout) inflater.inflate(R.layout.fragment_placecheckins, null);
+			pagerAvailableBeersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+
+			availableBeersView = pagerAvailableBeersView;
+
+			checkinsView = (ListView) pagerCheckinsView.findViewById(R.id.list);
+			checkinhereButton = (Button) pagerCheckinsView.findViewById(R.id.checkinhere);
+			checkinhereButton.setOnClickListener(onCheckInClick);
+
+			typeText = (TextView) pagerDetailsView.findViewById(R.id.type);
+			addressText = (Button) pagerDetailsView.findViewById(R.id.address);
+			phoneText = (Button) pagerDetailsView.findViewById(R.id.phone);
+			mapFrame = (FrameLayout) pagerDetailsView.findViewById(R.id.map);
+			addressText.setOnClickListener(onAddressClick);
+			phoneText.setOnClickListener(onPhoneClick);
+
+		}
+
+		@Override
+		public int getCount() {
+			return 3;
+		}
+
+		@Override
+		public String getTitle(int position) {
+			switch (position) {
+			case 0:
+				return getActivity().getString(R.string.app_details);
+			case 1:
+				return getActivity().getString(R.string.places_checkins);
+			case 2:
+				return getActivity().getString(R.string.places_availablebeers);
+			}
+			return null;
+		}
+
+		@Override
+		public Object instantiateItem(View container, int position) {
+			switch (position) {
+			case 0:
+				((ViewPager) container).addView(pagerDetailsView, 0);
+				return pagerDetailsView;
+			case 1:
+				((ViewPager) container).addView(pagerCheckinsView, 0);
+				return pagerCheckinsView;
+			case 2:
+				((ViewPager) container).addView(pagerAvailableBeersView, 0);
+				return pagerAvailableBeersView;
+			}
+			return null;
+		}
+
+		@Override
+		public void destroyItem(View container, int position, Object object) {
+			((ViewPager) container).removeView((View) object);
+		}
+
+		@Override
+		public boolean isViewFromObject(View view, Object object) {
+			return view == (View) object;
+		}
+
+		@Override
+		public void finishUpdate(View container) {
+		}
+
+		@Override
+		public Parcelable saveState() {
+			return null;
+		}
+
+		@Override
+		public void startUpdate(View container) {
+		}
+
+		@Override
+		public void restoreState(Parcelable state, ClassLoader loader) {
+		}
+
 	}
 
 }

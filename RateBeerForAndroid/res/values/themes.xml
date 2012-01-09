@@ -5,7 +5,8 @@
 		<item name="android:windowBackground">@color/BackgroundLight</item>
         <item name="abDisplayOptions">showHome|useLogo</item>
         <item name="abLogo">@drawable/logo</item>
-        <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
+        <item name="vpiTabPageIndicatorStyle">@style/TabPageIndicator</item>
+        <item name="selectableItemBackground">@drawable/ab_background</item>
 	</style>
 	<style name="Theme.RateBeer.SignIn" parent="@style/Theme.Sherlock">
         <item name="windowActionBar">false</item>

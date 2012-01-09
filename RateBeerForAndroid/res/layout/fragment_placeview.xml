@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:app="http://schemas.android.com/apk/res/com.ratebeer.android"
 	android:layout_width="match_parent" 
 	android:layout_height="match_parent"
 	android:orientation="vertical">
-	
-	<ListView
-		android:id="@+id/placeview"
+
+	<RelativeLayout
+		android:id="@+id/header"
+		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:layout_height="0dip"
-		android:layout_weight="1"
-		android:cacheColorHint="@color/BackgroundLight" />
-	
+		android:padding="10dip"
+		android:paddingBottom="0dip">
+		<TextView
+			android:id="@+id/rating"
+			android:layout_alignParentRight="true"
+			android:layout_marginLeft="5dip"
+			android:visibility="invisible"
+			style="@style/ScoreText" />
+		<TextView
+			android:id="@+id/name"
+			style="@style/DetailsHeadertext"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_toLeftOf="@id/rating" />
+	</RelativeLayout>
+
+	<com.viewpagerindicator.TabPageIndicator
+		android:id="@+id/titles" 
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent" />
+
+	<android.support.v4.view.ViewPager
+		android:id="@+id/pager" 
+		android:layout_width="fill_parent"
+		android:layout_height="0dp" 
+		android:layout_weight="1" />
+        
 </LinearLayout>

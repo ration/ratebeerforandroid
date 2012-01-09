@@ -491,9 +491,9 @@ public class SearchFragment extends RateBeerFragment {
 
 		public SearchPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
-			pagerBeersView = (ListView) inflater.inflate(R.layout.fragment_cellarlist, null);
-			pagerPlacesView = (ListView) inflater.inflate(R.layout.fragment_cellarlist, null);
-			pagerUsersView = (ListView) inflater.inflate(R.layout.fragment_cellarlist, null);
+			pagerBeersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerPlacesView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerUsersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 		}
 
 		public ListView getBeersView() {

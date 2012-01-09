@@ -101,6 +101,8 @@ public class BeermailService extends RateBeerService {
 		CommandResult result = allMails.execute();
 		if (result instanceof CommandSuccessResult) {
 
+			Log.d(RateBeerForAndroid.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
+
 			int unreadMails = 0;
 			BeerMail firstUnread = null;
 			List<String> mailBy = new ArrayList<String>();
@@ -187,6 +189,7 @@ public class BeermailService extends RateBeerService {
 			}
 
 			// Create a notification about the new mails
+			Log.d(RateBeerForAndroid.LOG_NAME, "User has " + unreadMails + " unread mails.");
 			if (!intent.hasExtra(EXTRA_MESSENGER) && unreadMails > 0) {
 
 				// Prepare senders text

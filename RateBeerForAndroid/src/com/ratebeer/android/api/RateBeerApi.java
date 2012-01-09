@@ -179,7 +179,7 @@ public class RateBeerApi implements CommandService {
 				GetUserImageCommand getUserImageCommand = (GetUserImageCommand) command;
 				return parseUserImage(
 						getUserImageCommand,
-						HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/" + getUserImageCommand.getUsername()
+						HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/" + getUserImageCommand.getUsername().trim()
 								+ ".jpg"));
 
 			case SearchBeers:
@@ -948,13 +948,13 @@ public class RateBeerApi implements CommandService {
 			servedInStart = html.indexOf(servedInText, servedInStart + 1);
 		}
 
-		String rowText = "<td class=\"beer\"><font color=\"#999999\">";
+		String rowText = "<td class=\"listRank\">";
 		int rowStart = html.indexOf(rowText, servedInStart) + rowText.length();
 		ArrayList<TopBeer> beers = new ArrayList<TopBeer>();
 
 		while (rowStart > 0 + rowText.length()) {
 
-			int orderNr = Integer.parseInt(html.substring(rowStart, html.indexOf("<", rowStart)));
+			int orderNr = Integer.parseInt(HttpHelper.cleanHtml(html.substring(rowStart, html.indexOf("<", rowStart))).trim());
 
 			int idStart1 = html.indexOf("<A HREF=\"/beer/", rowStart) + "<A HREF=\"/beer/".length();
 			int idStart2 = html.indexOf("/", idStart1) + "/".length();

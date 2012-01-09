@@ -15,10 +15,31 @@
     along with RateBeer for Android.  If not, see 
     <http://www.gnu.org/licenses/>.
  */
-package com.ratebeer.android.gui.components;
+package com.ratebeer.android.api.command;
 
-public interface MapContainer {
+import android.net.Uri;
 
-	public void removeMapViewinstance();
-	
+import com.ratebeer.android.api.ApiMethod;
+import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.RateBeerApi;
+
+public class UploadBeerPhotoCommand extends Command {
+
+	private final int beerId;
+	private final Uri photo;
+
+	public UploadBeerPhotoCommand(RateBeerApi api, int beerId, Uri photo) {
+		super(api, ApiMethod.UploadBeerPhoto);
+		this.beerId = beerId;
+		this.photo = photo;
+	}
+
+	public int getBeerId() {
+		return beerId;
+	}
+
+	public Uri getPhotoUri() {
+		return photo;
+	}
+
 }

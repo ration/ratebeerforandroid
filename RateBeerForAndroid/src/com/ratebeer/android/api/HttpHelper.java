@@ -120,14 +120,20 @@ public class HttpHelper {
 			throws ClientProtocolException, IOException {
 		ensureClient();
 
+		// Set up POST request
+		HttpPost post = new HttpPost(url);
+		post.setEntity(new UrlEncodedFormEntity(parameters));
+		
+		return makeRawRBPost(post, expectedHttpCode);
+	}
+
+	public static String makeRawRBPost(HttpPost post, int expectedHttpCode) throws ClientProtocolException, IOException {
+		ensureClient();
+
 		// Try to execute at most RETRIES times
 		for (int i = 0; i < RETRIES; i++) {
 
-			// Set up POST request
-			HttpPost post = new HttpPost(url);
 			try {
-				post.setEntity(new UrlEncodedFormEntity(parameters));
-
 				// Execute a POST request to sign in
 				HttpResponse response = httpClient.execute(post);
 				if (response.getStatusLine().getStatusCode() == expectedHttpCode) {
@@ -141,7 +147,6 @@ public class HttpHelper {
 		}
 
 		throw new IOException("ratebeer.com offline?");
-
 	}
 
 	public static boolean signIn(String username, String password) throws ClientProtocolException, IOException {

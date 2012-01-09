@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -38,12 +40,20 @@ import org.json.JSONObject;
 
 import android.graphics.drawable.Drawable;
 
+import com.android.internalcopy.http.multipart.FilePart;
+import com.android.internalcopy.http.multipart.MultipartEntity;
+import com.android.internalcopy.http.multipart.Part;
+import com.android.internalcopy.http.multipart.StringPart;
 import com.ratebeer.android.api.command.AddAvailabilityCommand;
 import com.ratebeer.android.api.command.AddToCellarCommand;
 import com.ratebeer.android.api.command.CheckInCommand;
 import com.ratebeer.android.api.command.DeleteBeerMailCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
+import com.ratebeer.android.api.command.UploadBeerPhotoCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
+import com.ratebeer.android.api.command.GetAvailableBeersCommand;
+import com.ratebeer.android.api.command.GetAvailableBeersCommand.AvailableBeer;
+import com.ratebeer.android.api.command.GetBeerAvailabilityCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetBeerImageCommand;
@@ -245,11 +255,19 @@ public class RateBeerApi implements CommandService {
 								+ getPlacesCommand.getRadius() + "&la=" + getPlacesCommand.getLatitude() + "&lo="
 								+ getPlacesCommand.getLongitude()));
 
-			case GetPlaceBeerAvailability:
-				// TODO: Use the API call http://www.ratebeer.com/json/beershere.asp?pid=<PLACEID>&k=<KEY>
+			case GetAvailableBeers:
+				GetAvailableBeersCommand getAvailableBeersCommand = (GetAvailableBeersCommand) command;
+				return parseAvailableBeers(
+						getAvailableBeersCommand,
+						HttpHelper.makeRBGet("http://ratebeer.com/json/beershere.asp?k=" + RB_KEY + "&pid="
+								+ getAvailableBeersCommand.getPlaceId()));
 
 			case GetBeerAvailability:
-				// TODO: Use the API call http://www.ratebeer.com/json/where.asp?bd=<BEERID>&k=<KEY>
+				GetBeerAvailabilityCommand getBeerAvailabilityCommand = (GetBeerAvailabilityCommand) command;
+				return parseBeerAvailability(
+						getBeerAvailabilityCommand,
+						HttpHelper.makeRBGet("http://ratebeer.com/json/where.asp?k=" + RB_KEY + "&bd="
+								+ getBeerAvailabilityCommand.getBeerID()));
 
 			case GetEvents:
 				ensureLogin(userSettings);
@@ -425,6 +443,18 @@ public class RateBeerApi implements CommandService {
 								new BasicNameValuePair("Subject", sendBeerMailCommand.getSubject()),
 								new BasicNameValuePair("Body", sendBeerMailCommand.getBody())));
 				return new CommandSuccessResult(sendBeerMailCommand);
+
+			case UploadBeerPhoto:
+				ensureLogin(userSettings);
+				UploadBeerPhotoCommand uploadBeerPhotoCommand = (UploadBeerPhotoCommand) command;
+				File upload = new File(uploadBeerPhotoCommand.getPhotoUri().getPath());
+				// TODO: Get the actual upload URL
+				HttpPost post = new HttpPost("http://www.ratebeer.com/uploadphoto/");
+				Part[] parts = { new StringPart("beerId", Integer.toString(uploadBeerPhotoCommand.getBeerId())), 
+						new FilePart("file", upload, FilePart.DEFAULT_CONTENT_TYPE, null) };
+				post.setEntity(new MultipartEntity(parts, post.getParams()));
+				HttpHelper.makeRawRBPost(post, HttpStatus.SC_OK);
+				return new CommandSuccessResult(uploadBeerPhotoCommand);
 
 			default:
 				return null;
@@ -1322,6 +1352,64 @@ public class RateBeerApi implements CommandService {
 
 			// Set the mail details on the original command as result
 			command.setMail(mail);
+			return new CommandSuccessResult(command);
+
+		} catch (JSONException e) {
+			return new CommandFailureResult(command, new ApiException(ApiException.ExceptionType.CommandFailed,
+					"JSON parsing error: " + e.toString()));
+		}
+	}
+
+	private CommandResult parseAvailableBeers(GetAvailableBeersCommand command, String html) {
+
+		try {
+
+			// Parse the JSON response
+			SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+			JSONArray json = new JSONArray(html);
+			ArrayList<AvailableBeer> results = new ArrayList<AvailableBeer>();
+			for (int i = 0; i < json.length(); i++) {
+				JSONObject result = json.getJSONObject(i);
+				String pctl = result.getString("AverageRating");
+				String entered = result.getString("TimeEntered");
+				Date timeEntered = null;
+				try {
+					timeEntered = dateFormat.parse(entered);
+				} catch (ParseException e) {
+				}
+				results.add(new AvailableBeer(Integer.parseInt(result.getString("BeerID")), HttpHelper.cleanHtml(result
+						// TODO: This should parse as a double and be displayed as integer instead
+						.getString("BeerName")), (pctl.equals("null") ? -1 : (int) Double.parseDouble(pctl)), 
+						timeEntered));
+			}
+
+			// Set the list of available beers on the original command as result
+			command.setAvailableBeers(results);
+			return new CommandSuccessResult(command);
+
+		} catch (JSONException e) {
+			return new CommandFailureResult(command, new ApiException(ApiException.ExceptionType.CommandFailed,
+					"JSON parsing error: " + e.toString()));
+		}
+	}
+
+	private CommandResult parseBeerAvailability(GetBeerAvailabilityCommand command, String html) {
+
+		try {
+
+			// Parse the JSON response
+			JSONArray json = new JSONArray(html);
+			ArrayList<PlaceSearchResult> results = new ArrayList<PlaceSearchResult>();
+			for (int i = 0; i < json.length(); i++) {
+				// {"PlaceID":4413,"PlaceName":"Keg Liquors","Latitude":38.312,"Longitude":-85.766,"PostalCode":"47129",
+				// "Abbrev":"IN ","Country":"United States ","ServedBottle":false,"ServedTap":false}
+				JSONObject result = json.getJSONObject(i);
+				results.add(new PlaceSearchResult(Integer.parseInt(result.getString("PlaceID")), HttpHelper
+						.cleanHtml(result.getString("PlaceName")), HttpHelper.cleanHtml(result.getString("Country"))));
+			}
+
+			// Set the list of available beers on the original command as result
+			command.setPlaces(results);
 			return new CommandSuccessResult(command);
 
 		} catch (JSONException e) {

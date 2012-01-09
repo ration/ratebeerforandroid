@@ -20,6 +20,7 @@ package com.ratebeer.android.app;
 import android.app.Application;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import com.ratebeer.android.api.RateBeerApi;
@@ -28,6 +29,8 @@ public class RateBeerForAndroid extends Application {
 
 	public static final String LOG_NAME = "RateBeerForAndroid";
 
+	public static final String DEFAULT_FILES_DIR = Environment.getExternalStorageDirectory().toString() + "/RateBeerForAndroid";
+	
 	private ApplicationSettings settings;
 	private RateBeerApi api;
 

@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -64,7 +65,6 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 
 	// Google Maps container management
 	private MapView mapViewInstance = null;
-	private MapContainer mapViewUser = null;
 
 	public void onCreate(Bundle savedInstanceState, int layoutResID) {
 
@@ -270,17 +270,20 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 
 	}
 
-	public MapView requestMapViewInstance(MapContainer requester) {
-		// Set the new map view using fragment
-		if (this.mapViewUser  != null) {
-			this.mapViewUser.removeMapViewinstance();
-		}
-		this.mapViewUser = requester;
-		// Return the map view (and create if if we didn't have one yet)
+	public MapView requestMapViewInstance() {
+
+		// Create the map view if if we didn't have one yet
 		if (mapViewInstance == null) {
 			mapViewInstance = new MapView(this, getString(R.string.app_googlemapskey));
 		}
+		
+		// Make sure it is not attached to any view
+		if (mapViewInstance.getParent() != null && mapViewInstance.getParent() instanceof FrameLayout) {
+			((FrameLayout)mapViewInstance.getParent()).removeView(mapViewInstance);
+		}
+		
 		return mapViewInstance;
+		
 	}
 
 	public GeoPoint getPoint(double lat, double lon) {

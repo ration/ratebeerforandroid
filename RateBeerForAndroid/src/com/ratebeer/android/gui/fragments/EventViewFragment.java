@@ -35,8 +35,8 @@ import android.support.v4.view.MenuItem;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -51,16 +51,15 @@ import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.command.GetEventDetailsCommand;
-import com.ratebeer.android.api.command.SetEventAttendanceCommand;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.Attendee;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.EventDetails;
+import com.ratebeer.android.api.command.SetEventAttendanceCommand;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
-import com.ratebeer.android.gui.components.MapContainer;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
-public class EventViewFragment extends RateBeerFragment implements MapContainer {
+public class EventViewFragment extends RateBeerFragment {
 
 	private static final String STATE_EVENTNAME = "eventName";
 	private static final String STATE_EVENTID = "eventId";
@@ -224,7 +223,7 @@ public class EventViewFragment extends RateBeerFragment implements MapContainer 
 		}
 		
 		// Get the activity-wide MapView to show on this fragment and center on this event's location
-		MapView mapView = getRateBeerActivity().requestMapViewInstance(this);
+		MapView mapView = getRateBeerActivity().requestMapViewInstance();
 		try {
 			if (Geocoder.isPresent()) {
 				// Use Geocoder to look up the coordinates
@@ -394,13 +393,6 @@ public class EventViewFragment extends RateBeerFragment implements MapContainer 
 		locationText.setOnClickListener(onLocationClicked );
 		timeText.setOnClickListener(onTimeClicked);
 		setattendanceButton.setOnClickListener(onSetAttendanceClick);
-	}
-
-	@Override
-	public void removeMapViewinstance() {
-		// Removes the map view from it's container so other fragments can use it
-		if (mapFrame.getChildAt(0) != null)
-			mapFrame.removeViewAt(0);
 	}
 
 }

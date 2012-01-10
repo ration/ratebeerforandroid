@@ -52,7 +52,8 @@ public class GetUserCellarCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
+	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
 		return HttpHelper.makeRBGet("http://www.ratebeer.com/user/" + forUserId + "/cellar/");
 	}
 
@@ -67,8 +68,8 @@ public class GetUserCellarCommand extends HtmlCommand {
 					"The response HTML did not contain the unique wants/haves content string");
 		}
 
-		ArrayList<CellarBeer> wants = new ArrayList<CellarBeer>();
-		ArrayList<CellarBeer> haves = new ArrayList<CellarBeer>();
+		wants = new ArrayList<CellarBeer>();
+		haves = new ArrayList<CellarBeer>();
 		String wantRowText = "/wishlist/have/";
 		int wantRowStart = html.indexOf(wantRowText, wantsStart) + wantRowText.length();
 		while (wantRowStart > 0 + wantRowText.length() && wantRowStart < havesStart) {

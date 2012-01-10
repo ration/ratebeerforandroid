@@ -167,6 +167,7 @@ public class GetTopBeersCommand extends HtmlCommand {
 				beers.add(new TopBeer(orderNr, beerId, beerName, score, count, style));
 				rowStart = html.indexOf(rowText, styleStart) + rowText.length();
 			}
+			break;
 
 		case TopByCountry:
 
@@ -205,6 +206,7 @@ public class GetTopBeersCommand extends HtmlCommand {
 				beers.add(new TopBeer(orderNr, beerId, beerName, score, count, style));
 				row2Start = html.indexOf(row2Text, styleStart) + row2Text.length();
 			}
+			break;
 
 		}
 	}

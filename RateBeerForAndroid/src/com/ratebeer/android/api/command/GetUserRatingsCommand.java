@@ -80,7 +80,7 @@ public class GetUserRatingsCommand extends HtmlCommand {
 		}
 		String rowText = "\"><A HREF=\"/beer/";
 		int rowStart = html.indexOf(rowText, tableStart) + rowText.length();
-		ArrayList<UserRating> ratings = new ArrayList<UserRating>();
+		ratings = new ArrayList<UserRating>();
 
 		while (rowStart > 0 + rowText.length()) {
 

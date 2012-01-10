@@ -53,7 +53,7 @@ public abstract class HtmlCommand extends Command {
 		}
 	}
 
-	protected abstract String makeRequest() throws ClientProtocolException, IOException;
+	protected abstract String makeRequest() throws ClientProtocolException, IOException, ApiException;
 
 	protected abstract void parse(String html) throws JSONException, ApiException;
 

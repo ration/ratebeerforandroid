@@ -54,7 +54,7 @@ public abstract class JsonCommand extends Command {
 		}
 	}
 
-	protected abstract String makeRequest() throws ClientProtocolException, IOException;
+	protected abstract String makeRequest() throws ClientProtocolException, IOException, ApiException;
 
 	protected abstract void parse(JSONArray json) throws JSONException;
 

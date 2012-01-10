@@ -48,7 +48,8 @@ public class GetEventDetailsCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
+	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
 		return HttpHelper.makeRBGet("http://www.ratebeer.com/Events-Detail.asp?EventID=" + eventId);
 	}
 

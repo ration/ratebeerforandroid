@@ -252,7 +252,9 @@ public class MailsFragment extends RateBeerFragment {
 			holder.subject.setText(item.getSubject());
 			// holder.subject.setTag(item);
 			holder.sender.setText(item.getSenderName());
-			holder.date.setText(dateFormat.format(item.getSent()));
+			if (item.getSent() != null) {
+				holder.date.setText(dateFormat.format(item.getSent()));
+			}
 			if (item.isReplied()) {
 				holder.status.setText(repliedString);
 				holder.status.setBackgroundColor(getResources().getColor(R.color.BackgroundDark));

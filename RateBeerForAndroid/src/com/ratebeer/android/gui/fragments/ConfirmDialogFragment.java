@@ -30,6 +30,10 @@ public class ConfirmDialogFragment extends DialogFragment {
 	private final int dialogTitle;
 	private final Object[] dialogTitleArgs;
 
+	public ConfirmDialogFragment() {
+		this(null, -1);
+	}
+	
 	public ConfirmDialogFragment(OnDialogResult resultListener, int dialogTitle, Object... dialogTitleArgs) {
 		this.resultListener = resultListener;
 		this.dialogTitle = dialogTitle;

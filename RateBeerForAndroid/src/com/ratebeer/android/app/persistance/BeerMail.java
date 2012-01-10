@@ -111,7 +111,7 @@ public class BeerMail implements Parcelable {
 		out.writeString(senderName);
 		out.writeInt(read? 1: 0);
 		out.writeInt(replied? 1: 0);
-		out.writeLong(sent.getTime());
+		out.writeLong(sent == null? -1: sent.getTime());
 		out.writeString(subject);
 		out.writeString(body);
 	}
@@ -129,7 +129,8 @@ public class BeerMail implements Parcelable {
 		senderName = in.readString();
 		read = in.readInt() == 1;
 		replied = in.readInt() == 1;
-		sent = new Date(in.readLong());
+		long sentLong = in.readLong();
+		sent = sentLong == -1? null: new Date(sentLong);
 		subject = in.readString();
 		body = in.readString();
 	}

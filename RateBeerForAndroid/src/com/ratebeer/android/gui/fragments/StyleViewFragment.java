@@ -99,14 +99,12 @@ public class StyleViewFragment extends RateBeerFragment {
 		if (savedInstanceState != null) {
 			style = savedInstanceState.getParcelable(STATE_STYLE);
 			if (savedInstanceState.containsKey(STATE_DETAILS)) {
-				StyleDetails savedDetails = savedInstanceState.getParcelable(STATE_DETAILS);
-				publishDetails(savedDetails);
+				details = savedInstanceState.getParcelable(STATE_DETAILS);
 			}
 		} else {
 			refreshDetails();
 		}
-		// Already fill in the style name
-		nameText.setText(style.getName());
+		publishDetails(details);
 		
 	}
 
@@ -154,6 +152,9 @@ public class StyleViewFragment extends RateBeerFragment {
 
 	private void publishDetails(StyleDetails details) {
 		this.details = details;
+		if (details == null) {
+			return;
+		}
 		// Show details
 		setDetails(details);
 	}
@@ -206,7 +207,7 @@ public class StyleViewFragment extends RateBeerFragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-
+			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
@@ -228,7 +229,9 @@ public class StyleViewFragment extends RateBeerFragment {
 			holder.order.setText(Integer.toString(item.orderNr));
 			holder.beer.setText(item.beerName);
 			holder.score.setText(String.format(DECIMAL_FORMATTER, item.score));
-			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+			if (getActivity() != null) {
+				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+			}
 			
 			return convertView;
 		}

@@ -17,14 +17,22 @@ along with RateBeer for Android.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class GetBeerDetailsCommand extends Command {
+public class GetBeerDetailsCommand extends JsonCommand {
 	
 	public final static float NO_SCORE_YET = -1F;
 	
@@ -36,18 +44,33 @@ public class GetBeerDetailsCommand extends Command {
 		this.beerId = beerId;
 	}
 	
-	public int getBeerId() {
-		return beerId;
-	}
-
-	public void setDetails(BeerDetails details) {
-		this.details = details;
-	}
-
 	public BeerDetails getDetails() {
 		return details;
 	}
 
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/bff.asp?k=" + HttpHelper.RB_KEY + "&bd=" + beerId);
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+		
+		details = null;
+		if (json.length() > 0) {
+			JSONObject result = json.getJSONObject(0);
+			String overall = result.getString("OverallPctl");
+			String style = result.getString("StylePctl");
+			details = new BeerDetails(result.getInt("BeerID"), HttpHelper.cleanHtml(result.getString("BeerName")),
+					result.getInt("BrewerID"), HttpHelper.cleanHtml(result.getString("BrewerName")),
+					HttpHelper.cleanHtml(result.getString("BeerStyleName")), (float) result.getDouble("Alcohol"),
+					overall.equals("null") ? GetBeerDetailsCommand.NO_SCORE_YET : Float.parseFloat(overall),
+					style.equals("null") ? GetBeerDetailsCommand.NO_SCORE_YET : Float.parseFloat(style),
+					HttpHelper.cleanHtml(result.getString("Description")));
+		}
+
+	}
+	
 	public static class BeerDetails implements Parcelable {
 
 		public final int beerId;

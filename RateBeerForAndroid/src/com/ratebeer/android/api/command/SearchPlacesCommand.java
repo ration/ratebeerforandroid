@@ -17,17 +17,25 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
 import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class SearchPlacesCommand extends Command {
+public class SearchPlacesCommand extends JsonCommand {
 
 	private final String query;
 	private ArrayList<PlaceSearchResult> results;
@@ -37,20 +45,34 @@ public class SearchPlacesCommand extends Command {
 		this.query = query;
 	}
 
-	public String getQuery() {
-		return query;
-	}
-
-	public String getNormalizedQuery() {
+	private String getNormalizedQuery() {
 		return HttpHelper.normalizeSearchQuery(query);
-	}
-
-	public void setSearchResults(ArrayList<PlaceSearchResult> results) {
-		this.results = results;
 	}
 
 	public ArrayList<PlaceSearchResult> getSearchResults() {
 		return results;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		try {
+			return HttpHelper.makeRBGet("http://www.ratebeer.com/json/psstring.asp?k=" + HttpHelper.RB_KEY + "&s="
+					+ URLEncoder.encode(getNormalizedQuery(), HttpHelper.UTF8));
+		} catch (UnsupportedEncodingException e) {
+		}
+		return null;
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+
+		results = new ArrayList<PlaceSearchResult>();
+		for (int i = 0; i < json.length(); i++) {
+			JSONObject result = json.getJSONObject(i);
+			results.add(new PlaceSearchResult(Integer.parseInt(result.getString("PlaceID")), HttpHelper
+					.cleanHtml(result.getString("PlaceName")), HttpHelper.cleanHtml(result.getString("City"))));
+		}
+
 	}
 
 	public static class PlaceSearchResult implements Parcelable {
@@ -58,7 +80,7 @@ public class SearchPlacesCommand extends Command {
 		public final int placeId;
 		public final String placeName;
 		public final String city;
-		
+
 		public PlaceSearchResult(int placeId, String placeName, String city) {
 			this.placeId = placeId;
 			this.placeName = placeName;
@@ -68,25 +90,29 @@ public class SearchPlacesCommand extends Command {
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(placeId);
 			out.writeString(placeName);
 			out.writeString(city);
 		}
+
 		public static final Parcelable.Creator<PlaceSearchResult> CREATOR = new Parcelable.Creator<PlaceSearchResult>() {
 			public PlaceSearchResult createFromParcel(Parcel in) {
 				return new PlaceSearchResult(in);
 			}
+
 			public PlaceSearchResult[] newArray(int size) {
 				return new PlaceSearchResult[size];
 			}
 		};
+
 		private PlaceSearchResult(Parcel in) {
 			placeId = in.readInt();
 			placeName = in.readString();
 			city = in.readString();
 		}
-		
+
 	}
 
 }

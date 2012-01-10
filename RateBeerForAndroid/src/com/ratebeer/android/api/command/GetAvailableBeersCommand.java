@@ -17,36 +17,65 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class GetAvailableBeersCommand extends Command {
+public class GetAvailableBeersCommand extends JsonCommand {
 
 	private final int placeId;
 	private ArrayList<AvailableBeer> results;
-	
+
 	public GetAvailableBeersCommand(RateBeerApi api, int placeId) {
 		super(api, ApiMethod.GetAvailableBeers);
 		this.placeId = placeId;
 	}
 
-	public int getPlaceId() {
-		return placeId;
-	}
-	
-	public void setAvailableBeers(ArrayList<AvailableBeer> results) {
-		this.results = results;
-	}
-
 	public ArrayList<AvailableBeer> getAvailableBeers() {
 		return results;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper
+				.makeRBGet("http://ratebeer.com/json/beershere.asp?k=" + HttpHelper.RB_KEY + "&pid=" + placeId);
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+
+		// Parse the JSON response
+		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+		results = new ArrayList<AvailableBeer>();
+		for (int i = 0; i < json.length(); i++) {
+			JSONObject result = json.getJSONObject(i);
+			String pctl = result.getString("AverageRating");
+			String entered = result.getString("TimeEntered");
+			Date timeEntered = null;
+			try {
+				timeEntered = dateFormat.parse(entered);
+			} catch (ParseException e) {
+			}
+			results.add(new AvailableBeer(Integer.parseInt(result.getString("BeerID")), HttpHelper.cleanHtml(result
+			// TODO: This should parse as a double and be displayed as integer instead
+					.getString("BeerName")), (pctl.equals("null") ? -1 : (int) Double.parseDouble(pctl)), timeEntered));
+		}
+
 	}
 
 	public static class AvailableBeer implements Parcelable {
@@ -55,7 +84,7 @@ public class GetAvailableBeersCommand extends Command {
 		public final String beerName;
 		public final int averageRating;
 		public final Date timeEntered;
-		
+
 		public AvailableBeer(int beerId, String beerName, int averageRating, Date timeEntered) {
 			this.beerId = beerId;
 			this.beerName = beerName;
@@ -66,27 +95,31 @@ public class GetAvailableBeersCommand extends Command {
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(beerId);
 			out.writeString(beerName);
 			out.writeInt(averageRating);
 			out.writeLong(timeEntered.getTime());
 		}
+
 		public static final Parcelable.Creator<AvailableBeer> CREATOR = new Parcelable.Creator<AvailableBeer>() {
 			public AvailableBeer createFromParcel(Parcel in) {
 				return new AvailableBeer(in);
 			}
+
 			public AvailableBeer[] newArray(int size) {
 				return new AvailableBeer[size];
 			}
 		};
+
 		private AvailableBeer(Parcel in) {
 			beerId = in.readInt();
 			beerName = in.readString();
 			averageRating = in.readInt();
 			timeEntered = new Date(in.readLong());
 		}
-		
+
 	}
 
 }

@@ -17,24 +17,29 @@
  */
 package com.ratebeer.android.api;
 
-
+/**
+ * Represents a command that can be executed against the RateBeer servers. The result may either be
+ * a {@link CommandSuccessResult} or a {@link CommandFailureResult}. The {@link HtmlCommand}, 
+ * {@link JsonCommand} and {@link EmptyResponseCommand} classes can be used as a helpers. 
+ * @author erickok
+ */
 public abstract class Command {
 
-	final private CommandService api;
-	final private ApiMethod method;
+	private final RateBeerApi api;
+	private final ApiMethod method;
 
 	/**
 	 * Construct a command for a certain method
 	 * @param panel The panel to execute the command against
 	 * @param method The method to perform
 	 */
-	protected Command(CommandService api, ApiMethod method) {
+	protected Command(RateBeerApi api, ApiMethod method) {
 		this.api = api;
 		this.method = method;
 	}
 
-	public CommandService getApi() {
-		return api;
+	public UserSettings getUserSettings() {
+		return api.getUserSettings();
 	}
 
 	public ApiMethod getMethod() {
@@ -45,9 +50,7 @@ public abstract class Command {
 	 * Execute the set up command against the forum
 	 * @return The command result
 	 */
-	public CommandResult execute() {
-		return api.execute(this);
-	}
+	public abstract CommandResult execute();
 
 	@Override
 	public String toString() {

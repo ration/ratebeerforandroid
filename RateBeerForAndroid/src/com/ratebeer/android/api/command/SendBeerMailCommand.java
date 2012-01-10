@@ -17,11 +17,19 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class SendBeerMailCommand extends Command {
+public class SendBeerMailCommand extends EmptyResponseCommand {
 
 	private final String sendTo;
 	private final String subject;
@@ -34,16 +42,16 @@ public class SendBeerMailCommand extends Command {
 		this.body = body;
 	}
 
-	public String getSendTo() {
-		return sendTo;
-	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public String getBody() {
-		return body;
+	@Override
+	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
+		HttpHelper.makeRBPost("http://www.ratebeer.com/savemessage/",
+				Arrays.asList(new BasicNameValuePair("nSource", Integer.toString(getUserSettings().getUserID())),
+						new BasicNameValuePair("Referrer", "http://www.ratebeer.com/user/messages/0/"),
+						new BasicNameValuePair("UserName", "0"),
+						new BasicNameValuePair("RecipientName", sendTo),
+						new BasicNameValuePair("Subject", subject),
+						new BasicNameValuePair("Body", body)));
 	}
 
 }

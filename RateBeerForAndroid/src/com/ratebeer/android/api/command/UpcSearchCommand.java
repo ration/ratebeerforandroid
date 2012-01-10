@@ -1,10 +1,11 @@
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import org.apache.http.conn.HttpHostConnectException;
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,23 +13,19 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.CommandFailureResult;
-import com.ratebeer.android.api.CommandResult;
-import com.ratebeer.android.api.CommandService;
-import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
+import com.ratebeer.android.api.RateBeerApi;
 
-public class UpcSearchCommand extends Command {
+public class UpcSearchCommand extends JsonCommand {
 
 	private static final String BASE_URL = "http://www.ratebeer.com/json/upc.asp?k=" + HttpHelper.RB_KEY;
 
 	private final String upcCode;
 	private final ArrayList<UpcSearchResult> upcSearchResults = new ArrayList<UpcSearchResult>();
 
-	public UpcSearchCommand(CommandService api, String upcCode) {
+	public UpcSearchCommand(RateBeerApi api, String upcCode) {
 		super(api, ApiMethod.UpcSearch);
 		this.upcCode = upcCode;
 	}
@@ -38,31 +35,21 @@ public class UpcSearchCommand extends Command {
 	}
 
 	@Override
-	public CommandResult execute() {
+	protected String makeRequest() throws ClientProtocolException, IOException {
 		try {
-			String json = HttpHelper.makeRBGet(BASE_URL + "&upc=" + URLEncoder.encode(upcCode, HttpHelper.UTF8));
-			parseJson(json);
-			return new CommandSuccessResult(this);
-		} catch (JSONException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
-					"JSON parsing error: " + e.toString()));
-		} catch (UnknownHostException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
-		} catch (HttpHostConnectException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
-		} catch (Exception e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
-					e.toString()));
+			return HttpHelper.makeRBGet(BASE_URL + "&upc=" + URLEncoder.encode(upcCode, HttpHelper.UTF8));
+		} catch (UnsupportedEncodingException e) {
 		}
-
+		return null;
 	}
 
-	private void parseJson(String json) throws JSONException {
-		JSONArray jsonArray = new JSONArray(json);
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+
 		// Will this ever return more than one?
-		for (int i = 0; i < jsonArray.length(); i++) {
+		for (int i = 0; i < json.length(); i++) {
 			// [{"BeerID":422,"BeerName":"Stone India Pale Ale (IPA)","BrewerID":76,"BrewerName":"Stone Brewing Co.","AverageRating":3.980633,"alcohol":6.9}]
-			JSONObject jsonObject = jsonArray.getJSONObject(i);
+			JSONObject jsonObject = json.getJSONObject(i);
 			int beerId = jsonObject.getInt("BeerID");
 			String beerName = HttpHelper.cleanHtml(jsonObject.getString("BeerName"));
 			int brewerId = jsonObject.getInt("BrewerID");
@@ -73,6 +60,7 @@ public class UpcSearchCommand extends Command {
 			UpcSearchResult result = new UpcSearchResult(beerId, beerName, brewerId, brewerName, averageRating, abv);
 			upcSearchResults.add(result);
 		}
+		
 	}
 
 	public static class UpcSearchResult implements Parcelable {
@@ -131,4 +119,5 @@ public class UpcSearchCommand extends Command {
 		}
 
 	}
+
 }

@@ -38,8 +38,8 @@ import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
-import com.ratebeer.android.api.command.GetPlacesCommand;
-import com.ratebeer.android.api.command.GetPlacesCommand.Place;
+import com.ratebeer.android.api.command.GetPlacesAroundCommand;
+import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 import com.ratebeer.android.app.location.MyLocation;
 import com.ratebeer.android.app.location.MyLocation.LocationResult;
 import com.ratebeer.android.gui.components.ArrayAdapter;
@@ -140,7 +140,7 @@ public class PlacesFragment extends RateBeerFragment {
 			}
 			// Now get the places at this location, if this fragment is still bound to an activity
 			if (getRateBeerActivity() != null) {
-				execute(new GetPlacesCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, location.getLatitude(), location.getLongitude()));
+				execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, location.getLatitude(), location.getLongitude()));
 			}
 		}
 	};
@@ -156,7 +156,7 @@ public class PlacesFragment extends RateBeerFragment {
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
 		if (result.getCommand().getMethod() == ApiMethod.GetPlacesAround) {
-			publishResults(((GetPlacesCommand) result.getCommand()).getPlaces());
+			publishResults(((GetPlacesAroundCommand) result.getCommand()).getPlaces());
 		}
 	}
 

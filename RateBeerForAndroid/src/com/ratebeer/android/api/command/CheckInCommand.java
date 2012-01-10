@@ -17,11 +17,17 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class CheckInCommand extends Command {
+public class CheckInCommand extends EmptyResponseCommand {
 
 	private final int placeID;
 
@@ -30,8 +36,11 @@ public class CheckInCommand extends Command {
 		this.placeID = placeID;
 	}
 
-	public int getPlaceID() {
-		return placeID;
+	@Override
+	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
+		HttpHelper.makeRBGet("http://www.ratebeer.com/json/ci.asp?t=Log&p="
+				+ Integer.toString(placeID) + "&k=" + HttpHelper.RB_KEY);
 	}
 
 }

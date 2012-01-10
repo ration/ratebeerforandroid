@@ -468,6 +468,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		UserSettings user = getRateBeerApplication().getSettings().getUserSettings();
 		drinkingThisButton.setVisibility(user != null? View.VISIBLE: View.GONE);
 		addAvailabilityButton.setVisibility(user != null? View.VISIBLE: View.GONE);
+		uploadphotoButton.setVisibility(user != null? View.VISIBLE: View.GONE);
 		// Only show the cellar buttons bar if we have a signed in premium user
 		wantthisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 		havethisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);

@@ -17,14 +17,20 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HtmlCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 
-public class GetFavouritePlacesCommand extends Command {
+public class GetFavouritePlacesCommand extends HtmlCommand {
 
 	private final int beerId;
 	private ArrayList<PlaceSearchResult> places;
@@ -34,16 +40,42 @@ public class GetFavouritePlacesCommand extends Command {
 		this.beerId = beerId;
 	}
 
-	public int getBeerId() {
-		return beerId;
-	}
-
-	public void setPlaces(ArrayList<PlaceSearchResult> places) {
-		this.places = places;
-	}
-
 	public ArrayList<PlaceSearchResult> getPlaces() {
 		return places;
 	}
 
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/beer/availability-add/" + beerId + "/");
+	}
+
+	@Override
+	protected void parse(String html) throws JSONException, ApiException {
+
+		// Parse the favourite places table
+		int tableStart = html.indexOf("<div id=\"likely\"");
+		if (tableStart < 0) {
+			throw new ApiException(ApiException.ExceptionType.CommandFailed,
+					"The response HTML did not contain the unique favourites table begin HTML string");
+		}
+		String rowText = "<INPUT name=\"placeid\" type=checkbox value=";
+		int rowStart = html.indexOf(rowText, tableStart) + rowText.length();
+		places = new ArrayList<PlaceSearchResult>();
+
+		while (rowStart > 0 + rowText.length()) {
+
+			int placeId = Integer.parseInt(html.substring(rowStart, html.indexOf(" ", rowStart)));
+
+			int placeNameStart = html.indexOf(".click()\">", rowStart) + ".click()\">".length();
+			String placeName = HttpHelper.cleanHtml(html.substring(placeNameStart, html.indexOf("<", placeNameStart)));
+
+			int cityStart = html.indexOf("><em>in ", placeNameStart) + "><em>in ".length();
+			String city = html.substring(cityStart, html.indexOf("<", cityStart));
+
+			places.add(new PlaceSearchResult(placeId, placeName, city));
+			rowStart = html.indexOf(rowText, cityStart) + rowText.length();
+		}
+	
+	}
+	
 }

@@ -17,11 +17,20 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class SetEventAttendanceCommand extends Command {
+public class SetEventAttendanceCommand extends EmptyResponseCommand {
 
 	private final int eventId;
 	private final boolean isGoing;
@@ -32,12 +41,18 @@ public class SetEventAttendanceCommand extends Command {
 		this.isGoing = isGoing;
 	}
 
-	public int getEventId() {
-		return eventId;
-	}
-
 	public boolean isGoing() {
 		return isGoing;
+	}
+
+	@Override
+	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
+		HttpHelper.makeRBPost("http://www.ratebeer.com/eventprocess-attend.asp", Arrays.asList(
+				new BasicNameValuePair("EventID", Integer.toString(eventId)),
+				new BasicNameValuePair("IsGoing", isGoing ? "1" : "0")),
+		// Note that we get an HTTP 500 response even when the request is successfull...
+				HttpStatus.SC_INTERNAL_SERVER_ERROR);
 	}
 
 }

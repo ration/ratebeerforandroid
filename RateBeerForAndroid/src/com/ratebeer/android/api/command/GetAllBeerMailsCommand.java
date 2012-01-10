@@ -17,16 +17,23 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class GetAllBeerMailsCommand extends Command {
+public class GetAllBeerMailsCommand extends JsonCommand {
 
 	private final int count;
 	private ArrayList<Mail> mails;
@@ -36,16 +43,29 @@ public class GetAllBeerMailsCommand extends Command {
 		this.count = count;
 	}
 
-	public int getCount() {
-		return count;
-	}
-
-	public void setMail(ArrayList<Mail> mails) {
-		this.mails = mails;
-	}
-
 	public ArrayList<Mail> getMails() {
 		return mails;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/msg.asp?k=" + HttpHelper.RB_KEY + "&u="
+				+ Integer.toString(getUserSettings().getUserID()) + "&max=" + Integer.toString(count));
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+
+		// Parse the JSON response
+		mails = new ArrayList<Mail>();
+		for (int i = 0; i < json.length(); i++) {
+			JSONObject result = json.getJSONObject(i);
+			mails.add(new Mail(result.getInt("MessageID"), HttpHelper.cleanHtml(result.getString("UserName")), result
+					.getBoolean("MessageRead"), HttpHelper.cleanHtml(result.getString("Subject")), result
+					.getInt("Source"), HttpHelper.cleanHtml(result.getString("Sent")), result.getString("Reply")
+					.equals("1")));
+		}
+
 	}
 
 	public static class Mail implements Parcelable {
@@ -76,11 +96,11 @@ public class GetAllBeerMailsCommand extends Command {
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(messageID);
 			out.writeString(senderName);
-			out.writeInt(messageRead? 1: 0);
+			out.writeInt(messageRead ? 1 : 0);
 			out.writeString(subject);
 			out.writeInt(senderID);
 			out.writeString(sent);
-			out.writeInt(replied? 1: 0);
+			out.writeInt(replied ? 1 : 0);
 		}
 
 		public static final Parcelable.Creator<Mail> CREATOR = new Parcelable.Creator<Mail>() {

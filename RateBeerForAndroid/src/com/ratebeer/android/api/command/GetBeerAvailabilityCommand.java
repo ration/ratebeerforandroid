@@ -17,14 +17,21 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 
-public class GetBeerAvailabilityCommand extends Command {
+public class GetBeerAvailabilityCommand extends JsonCommand {
 
 	private final int beerId;
 	private ArrayList<PlaceSearchResult> results;
@@ -34,16 +41,27 @@ public class GetBeerAvailabilityCommand extends Command {
 		this.beerId = beerId;
 	}
 
-	public int getBeerID() {
-		return beerId;
-	}
-
-	public void setPlaces(ArrayList<PlaceSearchResult> results) {
-		this.results = results;
-	}
-
 	public ArrayList<PlaceSearchResult> getPlaces() {
 		return results;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBGet("http://ratebeer.com/json/where.asp?k=" + HttpHelper.RB_KEY + "&bd=" + beerId);
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+
+		results = new ArrayList<PlaceSearchResult>();
+		for (int i = 0; i < json.length(); i++) {
+			// {"PlaceID":4413,"PlaceName":"Keg Liquors","Latitude":38.312,"Longitude":-85.766,"PostalCode":"47129",
+			// "Abbrev":"IN ","Country":"United States ","ServedBottle":false,"ServedTap":false}
+			JSONObject result = json.getJSONObject(i);
+			results.add(new PlaceSearchResult(Integer.parseInt(result.getString("PlaceID")), HttpHelper
+					.cleanHtml(result.getString("PlaceName")), HttpHelper.cleanHtml(result.getString("Country"))));
+		}
+
 	}
 
 }

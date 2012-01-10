@@ -17,22 +17,29 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class GetPlacesCommand extends Command {
+public class GetPlacesAroundCommand extends JsonCommand {
 
 	private final int radius;
 	private final double latitude;
 	private final double longitude;
 	private ArrayList<Place> places;
-	
+
 	public static final int SORTBY_BEER = 1;
 	public static final int SORTBY_BREWER = 2;
 	public static final int SORTBY_STYLE = 3;
@@ -40,31 +47,39 @@ public class GetPlacesCommand extends Command {
 	public static final int SORTBY_DATE = 5;
 	public static final int SORTBY_SCORE = 6;
 
-	public GetPlacesCommand(RateBeerApi api, int radius, double latitude, double longitude) {
+	public GetPlacesAroundCommand(RateBeerApi api, int radius, double latitude, double longitude) {
 		super(api, ApiMethod.GetPlacesAround);
 		this.radius = radius;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
 
-	public int getRadius() {
-		return radius;
-	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setPlaces(ArrayList<Place> results) {
-		this.places = results;
-	}
-
 	public ArrayList<Place> getPlaces() {
 		return places;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBGet("http://ratebeer.com/json/beerme.asp?k=" + HttpHelper.RB_KEY + "&mi=" + radius
+				+ "&la=" + latitude + "&lo=" + longitude);
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+
+		places = new ArrayList<Place>();
+		for (int i = 0; i < json.length(); i++) {
+			JSONObject result = json.getJSONObject(i);
+			String avgRating = result.getString("AvgRating");
+			places.add(new Place(result.getInt("PlaceID"), HttpHelper.cleanHtml(result.getString("PlaceName")), result
+					.getInt("PlaceType"), HttpHelper.cleanHtml(result.getString("Address")), HttpHelper
+					.cleanHtml(result.getString("City")), result.getString("StateID"), result.getInt("CountryID"),
+					HttpHelper.cleanHtml(result.getString("PostalCode")), HttpHelper.cleanHtml(result
+							.getString("PhoneNumber")), avgRating.equals("null") ? -1 : (int) Float
+							.parseFloat(avgRating), HttpHelper.cleanHtml(result.getString("PhoneAC")), result
+							.getDouble("Latitude"), result.getDouble("Longitude"), result.getDouble("Distance")));
+		}
+
 	}
 
 	public static class Place implements Parcelable {
@@ -83,9 +98,10 @@ public class GetPlacesCommand extends Command {
 		public final double latitude;
 		public final double longitude;
 		public final double distance;
-		
-		public Place(int placeID, String placeName, int placeType, String address, String city, String stateID, int countryID,
-				String postalCode, String phoneNumber, int avgRating, String phoneAc, double latitude, double longitude, double distance) {
+
+		public Place(int placeID, String placeName, int placeType, String address, String city, String stateID,
+				int countryID, String postalCode, String phoneNumber, int avgRating, String phoneAc, double latitude,
+				double longitude, double distance) {
 			this.placeID = placeID;
 			this.placeName = placeName;
 			this.placeType = placeType;
@@ -101,10 +117,11 @@ public class GetPlacesCommand extends Command {
 			this.longitude = longitude;
 			this.distance = distance;
 		}
-		
+
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(placeID);
 			out.writeString(placeName);
@@ -121,14 +138,17 @@ public class GetPlacesCommand extends Command {
 			out.writeDouble(longitude);
 			out.writeDouble(distance);
 		}
+
 		public static final Parcelable.Creator<Place> CREATOR = new Parcelable.Creator<Place>() {
 			public Place createFromParcel(Parcel in) {
 				return new Place(in);
 			}
+
 			public Place[] newArray(int size) {
 				return new Place[size];
 			}
 		};
+
 		private Place(Parcel in) {
 			placeID = in.readInt();
 			placeName = in.readString();
@@ -145,7 +165,7 @@ public class GetPlacesCommand extends Command {
 			longitude = in.readDouble();
 			distance = in.readDouble();
 		}
-		
+
 	}
 
 }

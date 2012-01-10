@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -326,7 +327,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		// Start an intent to snap a picture
 		// http://stackoverflow.com/questions/1910608/android-action-image-capture-intent
 		try {
-			if (Environment.getExternalStorageDirectory().equals(Environment.MEDIA_MOUNTED)) {
+			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				
 				File file = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/photos/" + Integer.toString(beerId) + ".jpg");
 				if (!file.exists()) {
@@ -352,14 +353,16 @@ public class BeerViewFragment extends RateBeerFragment {
 		switch (requestCode) {
 		case ACTIVITY_CAMERA:
 			
-			Uri photo = data.getData();
-			// Start an upload task for this photo
-			Intent i = new Intent(PosterService.ACTION_UPLOADBEERPHOTO);
-			i.putExtra(PosterService.EXTRA_BEERID, beerId);
-			i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
-			i.putExtra(PosterService.EXTRA_PHOTO, photo.toString());
-			getActivity().startService(i);
-			break;
+			File photo = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/photos/" + Integer.toString(beerId) + ".jpg");
+			if (resultCode == Activity.RESULT_OK && photo.exists()) {
+				// Start an upload task for this photo
+				Intent i = new Intent(PosterService.ACTION_UPLOADBEERPHOTO);
+				i.putExtra(PosterService.EXTRA_BEERID, beerId);
+				i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
+				i.putExtra(PosterService.EXTRA_PHOTO, photo);
+				getActivity().startService(i);
+				break;
+			}
 			
 		}
 	}
@@ -468,6 +471,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		UserSettings user = getRateBeerApplication().getSettings().getUserSettings();
 		drinkingThisButton.setVisibility(user != null? View.VISIBLE: View.GONE);
 		addAvailabilityButton.setVisibility(user != null? View.VISIBLE: View.GONE);
+		uploadphotoButton.setVisibility(user != null? View.VISIBLE: View.GONE);
 		// Only show the cellar buttons bar if we have a signed in premium user
 		wantthisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 		havethisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);

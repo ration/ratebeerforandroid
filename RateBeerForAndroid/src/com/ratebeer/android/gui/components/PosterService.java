@@ -9,6 +9,9 @@
 package com.ratebeer.android.gui.components;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import android.app.Notification;
@@ -16,6 +19,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Message;
 import android.os.Messenger;
@@ -85,6 +90,8 @@ public class PosterService extends RateBeerService {
 	private static final int NOTIFY_ADDTOCELLAR = 3;
 	private static final int NOTIFY_SENDMAIL = 4;
 	private static final int NOTIFY_UPLOADPHOTO = 5;
+
+	private static final int IMAGE_MAX_SIZE = 800; // Max pixels in one dimension
 
 	private NotificationManager notificationManager = null;
 
@@ -327,7 +334,7 @@ public class PosterService extends RateBeerService {
 		if (intent.getAction().equals(ACTION_UPLOADBEERPHOTO)) {
 
 			// Get photo URI and beer id and name
-			Uri photo = Uri.parse(intent.getStringExtra(EXTRA_PHOTO));
+			File photo = (File) intent.getSerializableExtra(EXTRA_PHOTO);
 			int beerId = intent.getIntExtra(EXTRA_BEERID, NO_BEER_EXTRA);
 			String beerName = intent.getStringExtra(EXTRA_BEERNAME);
 			if (beerName == null) {
@@ -346,6 +353,21 @@ public class PosterService extends RateBeerService {
 					.toString(beerId))));
 			createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto), getString(
 					R.string.app_photofor, beerName), true, recoverIntent);
+
+			// Make sure the photo is no bigger than 250kB
+			try {
+				decodeFile(photo);
+			} catch (IOException e1) {
+				Log.d(RateBeerForAndroid.LOG_NAME, "Resizing of photo + " + photo.toString() + " for " + beerName + 
+						" failed: " + e1);
+				createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto),
+						getString(R.string.error_commandfailed), true, recoverIntent);
+				// If requested, call back the messenger, i.e. the calling activity
+				callbackMessenger(intent, RESULT_FAILURE);
+				return;
+			}
+			
+			// Start actual upload of the now-resized file
 			CommandResult result = new UploadBeerPhotoCommand(app.getApi(), beerId, photo).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_UPLOADPHOTO);
@@ -363,6 +385,38 @@ public class PosterService extends RateBeerService {
 
 		}
 
+	}
+
+	private void decodeFile(File f) throws IOException {
+		// See http://stackoverflow.com/a/3549021/243165
+		// Decode image size
+		BitmapFactory.Options o = new BitmapFactory.Options();
+		o.inJustDecodeBounds = true;
+
+		FileInputStream fis = new FileInputStream(f);
+		BitmapFactory.decodeStream(fis, null, o);
+		fis.close();
+
+		int scale = 1;
+		if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
+			scale = (int) Math.pow(
+					2,
+					(int) Math.round(Math.log(IMAGE_MAX_SIZE / (double) Math.max(o.outHeight, o.outWidth))
+							/ Math.log(0.5)));
+		}
+
+		// Decode with inSampleSize
+		BitmapFactory.Options o2 = new BitmapFactory.Options();
+		o2.inSampleSize = scale;
+		fis = new FileInputStream(f);
+		Bitmap b = BitmapFactory.decodeStream(fis, null, o2);
+		fis.close();
+
+		// Write bitmap to the desired output file
+		// See http://stackoverflow.com/a/673014/243165
+		FileOutputStream out = new FileOutputStream(f);
+		b.compress(Bitmap.CompressFormat.JPEG, 80, out);
+		out.close();
 	}
 
 	private void callbackMessenger(Intent intent, int result) {
@@ -388,8 +442,8 @@ public class PosterService extends RateBeerService {
 		if (autoCancel) {
 			notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		}
-		notification.setLatestEventInfo(getApplicationContext(), line1, line2, PendingIntent.getActivity(this, 0,
-				contentIntent, 0));
+		notification.setLatestEventInfo(getApplicationContext(), line1, line2,
+				PendingIntent.getActivity(this, 0, contentIntent, 0));
 
 		// Send notification
 		notificationManager.notify(id, notification);

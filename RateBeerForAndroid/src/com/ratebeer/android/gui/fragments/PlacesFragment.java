@@ -129,7 +129,7 @@ public class PlacesFragment extends RateBeerFragment {
 	private LocationResult onLocationResult = new LocationResult() {
 		@Override
 		public void gotLocation(Location location) {
-			if (location == null) {
+			if (location == null && getView() != null) {
 				getView().post(new Runnable() {
 					@Override
 					public void run() {

@@ -33,7 +33,7 @@
 			android:id="@+id/beermail" 
 			style="@style/HomeButton"
 			android:text="@string/home_beermail" 
-			android:drawableTop="@drawable/ic_home_offline" />
+			android:drawableTop="@drawable/ic_home_beermail" />
 		<Button 
 			android:id="@+id/beerstyles" 
 			style="@style/HomeButton"

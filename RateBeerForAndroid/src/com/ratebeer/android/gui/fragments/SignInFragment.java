@@ -119,8 +119,8 @@ public class SignInFragment extends RateBeerFragment {
 			}
 			
 			// Try to sign in
-			String username = usernameEdit.getText().toString();
-			String password = passwordEdit.getText().toString();
+			String username = usernameEdit.getText().toString().trim();
+			String password = passwordEdit.getText().toString().trim();
 			if (username != null && !username.equals("") && password != null && !password.equals("")) {
 				// Try to sign in
 				execute(new SignInCommand(getRateBeerActivity().getApi(), username, password));
@@ -143,8 +143,8 @@ public class SignInFragment extends RateBeerFragment {
 		} else if (result.getCommand().getMethod() == ApiMethod.GetUserId) {
 			// We also have a user ID now
 			// Store this user as the new signed in user
-			String username = usernameEdit.getText().toString();
-			String password = passwordEdit.getText().toString();
+			String username = usernameEdit.getText().toString().trim();
+			String password = passwordEdit.getText().toString().trim();
 			GetUserIdCommand getCommand = (GetUserIdCommand) result.getCommand();
 			// Save the user's settings; this also notifies any listeners (activities) about the successful login
 			Toast.makeText(getRateBeerActivity(), R.string.signin_signinsuccess, Toast.LENGTH_LONG).show();

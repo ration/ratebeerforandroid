@@ -17,12 +17,18 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.app.persistance.BeerMail;
 
-public class DeleteBeerMailCommand extends Command {
+public class DeleteBeerMailCommand extends EmptyResponseCommand {
 	
 	private final BeerMail mail;
 
@@ -33,6 +39,13 @@ public class DeleteBeerMailCommand extends Command {
 
 	public BeerMail getMail() {
 		return mail;
+	}
+
+	@Override
+	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
+		HttpHelper.makeRBGet("http://www.ratebeer.com/DeleteMessage.asp?MessageID="
+				+ Integer.toString(mail.getMessageId()));
 	}
 
 }

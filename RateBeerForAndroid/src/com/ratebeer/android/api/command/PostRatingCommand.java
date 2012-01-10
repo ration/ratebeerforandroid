@@ -17,11 +17,19 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class PostRatingCommand extends Command {
+public class PostRatingCommand extends EmptyResponseCommand {
 
 	private final int beerId;
 	private final int ratingID;
@@ -62,47 +70,11 @@ public class PostRatingCommand extends Command {
 		this.comment = comment;
 	}
 
-	public int getBeerId() {
-		return beerId;
-	}
-
-	public int getRatingID() {
-		return ratingID;
-	}
-
-	public String getOriginalPostDate() {
-		return origDate;
-	}
-
 	public String getBeerName() {
 		return beerName;
 	}
 
-	public int getAroma() {
-		return aroma;
-	}
-
-	public int getAppearance() {
-		return appearance;
-	}
-
-	public int getTaste() {
-		return taste;
-	}
-
-	public int getPalate() {
-		return palate;
-	}
-
-	public int getOverall() {
-		return overall;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public float getTotal() {
+	private float getTotal() {
 		return calculateTotal(aroma, appearance, taste, palate, overall);
 	}
 	
@@ -117,6 +89,25 @@ public class PostRatingCommand extends Command {
 	 */
 	public static float calculateTotal(int aroma, int appearance, int taste, int palate, int overall) {
 		return (float)(aroma + appearance + taste + palate + overall) / 10F;
+	}
+
+	@Override
+	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
+		// NOTE: Maybe use the API call to http://www.ratebeer.com/m/m_saverating.asp, but it should be checked
+		// whether this allows updating of a rating too
+		HttpHelper.makeRBPost(ratingID <= 0 ? "http://www.ratebeer.com/saverating.asp"
+				: "http://www.ratebeer.com/updaterating.asp", Arrays.asList(new BasicNameValuePair("BeerID",
+				Integer.toString(beerId)), new BasicNameValuePair("RatingID", ratingID <= 0 ? "" : 
+					Integer.toString(ratingID)),
+				new BasicNameValuePair("OrigDate", origDate == null ? "": origDate),
+				new BasicNameValuePair("aroma", Integer.toString(aroma)),
+				new BasicNameValuePair("appearance", Integer.toString(appearance)),
+				new BasicNameValuePair("flavor", Integer.toString(taste)),
+				new BasicNameValuePair("palate", Integer.toString(palate)),
+				new BasicNameValuePair("overall", Integer.toString(overall)),
+				new BasicNameValuePair("totalscore", Float.toString(getTotal())),
+				new BasicNameValuePair("Comments", comment)));
 	}
 
 }

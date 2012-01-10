@@ -15,47 +15,35 @@
     along with RateBeer for Android.  If not, see 
     <http://www.gnu.org/licenses/>.
  */
-package com.ratebeer.android.api.command;
+package com.ratebeer.android.api;
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.net.UnknownHostException;
 
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.conn.HttpHostConnectException;
+import org.json.JSONArray;
+import org.json.JSONException;
 
-import android.graphics.drawable.Drawable;
+/**
+ * Specific command type that needs to parse the sevrer response as JSON array
+ * @author erickok
+ */
+public abstract class JsonCommand extends Command {
 
-import com.ratebeer.android.api.ApiException;
-import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.CommandFailureResult;
-import com.ratebeer.android.api.CommandResult;
-import com.ratebeer.android.api.CommandSuccessResult;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
-
-public class GetUserImageCommand extends Command {
-
-	private final String username;
-	private Drawable image;
-
-	public GetUserImageCommand(RateBeerApi api, String username) {
-		super(api, ApiMethod.GetUserImage);
-		this.username = username;
-	}
-
-	public Drawable getImage() {
-		return image;
+	protected JsonCommand(RateBeerApi api, ApiMethod method) {
+		super(api, method);
 	}
 
 	@Override
-	public CommandResult execute() {
+	public final CommandResult execute() {
 		try {
-
-			InputStream rawStream = HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/" + username + ".jpg");
-			// Read the raw response stream as Drawable image and return this in a success result
-			image = Drawable.createFromStream(rawStream, "tmp");
+			String json = makeRequest();
+			parse(new JSONArray(json));
 			return new CommandSuccessResult(this);
-
+		} catch (JSONException e) {
+			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
+					"JSON parsing error: " + e.toString()));
 		} catch (UnknownHostException e) {
 			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
 		} catch (HttpHostConnectException e) {
@@ -65,5 +53,9 @@ public class GetUserImageCommand extends Command {
 					e.toString()));
 		}
 	}
+
+	protected abstract String makeRequest() throws ClientProtocolException, IOException, ApiException;
+
+	protected abstract void parse(JSONArray json) throws JSONException;
 
 }

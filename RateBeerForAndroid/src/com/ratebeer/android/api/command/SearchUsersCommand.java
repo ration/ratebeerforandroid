@@ -17,17 +17,24 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class SearchUsersCommand extends Command {
+public class SearchUsersCommand extends HtmlCommand {
 
 	private final String query;
 	private ArrayList<UserSearchResult> results;
@@ -45,12 +52,80 @@ public class SearchUsersCommand extends Command {
 		return HttpHelper.normalizeSearchQuery(query);
 	}
 
-	public void setSearchResults(ArrayList<UserSearchResult> results) {
-		this.results = results;
-	}
-
 	public ArrayList<UserSearchResult> getSearchResults() {
 		return results;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBPost("http://www.ratebeer.com/usersearch.php",
+				Arrays.asList(new BasicNameValuePair("UserName", getNormalizedQuery())));
+	}
+
+	@Override
+	protected void parse(String html) throws JSONException, ApiException {
+	
+		// Results?
+		int foundStart = html.indexOf("No users found");
+		if (foundStart >= 0) {
+			// Return an empty list as result
+			results = new ArrayList<UserSearchResult>();
+			return; // Success, just empty
+		}
+	
+		// We are either send to a search results page or directly to the only found user's page
+		int tableStart = html.indexOf("Found more than one user");
+		if (tableStart < 0) {
+			
+			// Probably send directly to the single found user: parse that instead
+			String idText = "<div class=\"sitename\">";
+			int idStart = html.indexOf(idText);
+			if (idStart < 0) {
+				throw new ApiException(ApiException.ExceptionType.CommandFailed,
+						"The response HTML did not contain the unique identifiable HTML string");
+			}
+			
+			// Indeed a user page was found: return just the user name, id and number of ratings
+			idStart += idText.length();
+			String userName = html.substring(idStart, html.indexOf("<", idStart));
+	
+			int ratingsStart1 = html.indexOf("Last seen", idStart);
+			int ratingsStart2 = html.indexOf("<b>", ratingsStart1) + "<b>".length();
+			int ratings = Integer.parseInt(html.substring(ratingsStart2, html.indexOf("</b> beer", ratingsStart2)));
+	
+			int userIdStart = html.indexOf("/user/") + "/user/".length();
+			int userId = Integer.parseInt(html.substring(userIdStart, html.indexOf("/", userIdStart)));
+			
+			// Make a list of just this user
+			results = new ArrayList<UserSearchResult>();
+			results.add(new UserSearchResult(userId, userName, ratings));
+			return; // Success
+		
+		}
+
+		// We are given a table of users and their number of ratings
+		String rowText = "<TD class=\"beer\"><A HREF=\"/user/";
+		int rowStart = html.indexOf(rowText, tableStart) + rowText.length();
+		results = new ArrayList<UserSearchResult>();
+
+		while (rowStart > 0 + rowText.length()) {
+
+			int userId = Integer.parseInt(html.substring(rowStart, html.indexOf("/", rowStart)));
+
+			int nameStart = html.indexOf(">", rowStart) + 1;
+			String userName = HttpHelper.cleanHtml(html.substring(nameStart, html.indexOf("<", nameStart)));
+
+			int ratingsStart = html.indexOf("<B>", nameStart) + "<B>".length();
+			String ratingsRaw = html.substring(ratingsStart, html.indexOf("</B>", ratingsStart));
+			int ratings = 0;
+			if (ratingsRaw.length() > 0) {
+				ratings = Integer.parseInt(html.substring(ratingsStart, html.indexOf("</B>", ratingsStart)));
+			}
+
+			results.add(new UserSearchResult(userId, userName, ratings));
+			rowStart = html.indexOf(rowText, ratingsStart) + rowText.length();
+		}
+
 	}
 
 	public static class UserSearchResult implements Parcelable {

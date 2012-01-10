@@ -55,7 +55,7 @@ import com.ratebeer.android.api.command.GetAvailableBeersCommand.AvailableBeer;
 import com.ratebeer.android.api.command.GetCheckinsCommand;
 import com.ratebeer.android.api.command.GetCheckinsCommand.CheckedInUser;
 import com.ratebeer.android.api.command.GetPlaceDetailsCommand;
-import com.ratebeer.android.api.command.GetPlacesCommand.Place;
+import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;

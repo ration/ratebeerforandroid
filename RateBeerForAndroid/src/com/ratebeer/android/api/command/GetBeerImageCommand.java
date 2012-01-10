@@ -17,10 +17,20 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.InputStream;
+import java.net.UnknownHostException;
+
+import org.apache.http.conn.HttpHostConnectException;
+
 import android.graphics.drawable.Drawable;
 
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.CommandFailureResult;
+import com.ratebeer.android.api.CommandResult;
+import com.ratebeer.android.api.CommandSuccessResult;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
 public class GetBeerImageCommand extends Command {
@@ -33,16 +43,27 @@ public class GetBeerImageCommand extends Command {
 		this.beerId = beerId;
 	}
 	
-	public int getBeerId() {
-		return beerId;
-	}
-
-	public void setImage(Drawable image) {
-		this.image = image;
-	}
-
 	public Drawable getImage() {
 		return image;
+	}
+
+	@Override
+	public CommandResult execute() {
+		try {
+
+			InputStream rawStream = HttpHelper.makeRawRBGet("http://www.ratebeer.com/beerimages/" + beerId + ".jpg");
+			// Read the raw response stream as Drawable image and return this in a success result
+			image = Drawable.createFromStream(rawStream, "tmp");
+			return new CommandSuccessResult(this);
+
+		} catch (UnknownHostException e) {
+			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
+		} catch (HttpHostConnectException e) {
+			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
+		} catch (Exception e) {
+			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
+					e.toString()));
+		}
 	}
 
 }

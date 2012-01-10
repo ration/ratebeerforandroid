@@ -17,36 +17,72 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class GetRatingsCommand extends Command {
-	
+public class GetRatingsCommand extends JsonCommand {
+
 	private final int beerId;
 	private ArrayList<BeerRating> ratings;
-	
+
 	public GetRatingsCommand(RateBeerApi api, int beerId) {
 		super(api, ApiMethod.GetBeerRatings);
 		this.beerId = beerId;
 	}
-	
-	public int getBeerId() {
-		return beerId;
-	}
-	
-	public void setRatings(ArrayList<BeerRating> ratings) {
-		this.ratings = ratings;
-	}
 
 	public ArrayList<BeerRating> getRatings() {
 		return ratings;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/gr.asp?k=" + HttpHelper.RB_KEY + "&bid=" + beerId);
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+		ratings = new ArrayList<BeerRating>();
+		for (int i = 0; i < json.length(); i++) {
+			JSONObject result = json.getJSONObject(i);
+			String entered = result.getString("TimeEntered");
+			Date timeEntered = null;
+			try {
+				timeEntered = dateFormat.parse(entered);
+			} catch (ParseException e) {
+			}
+			String updated = result.getString("TimeUpdated");
+			Date timeUpdated = null;
+			try {
+				timeUpdated = dateFormat.parse(updated);
+			} catch (ParseException e) {
+			}
+			ratings.add(new BeerRating(result.getString("resultNum"), result.getString("RatingID"), result
+					.getString("Appearance"), result.getString("Aroma"), result.getString("Flavor"), result
+					.getString("Mouthfeel"), result.getString("Overall"), result.getString("TotalScore"), HttpHelper
+					.cleanHtml(result.getString("Comments")), timeEntered, timeUpdated, Integer.parseInt(result
+					.getString("UserID")), HttpHelper.cleanHtml(result.getString("UserName")), HttpHelper
+					.cleanHtml(result.getString("City")), result.getString("StateID"), HttpHelper.cleanHtml(result
+					.getString("State")), result.getString("CountryID"), HttpHelper.cleanHtml(result
+					.getString("Country")), result.getString("RateCount")));
+		}
+
 	}
 
 	public static class BeerRating implements Parcelable {
@@ -72,9 +108,9 @@ public class GetRatingsCommand extends Command {
 		public final String rateCount;
 
 		public BeerRating(String resultNum, String ratingId, String appearance, String aroma, String flavor,
-			String mouthfeel, String overall, String totalScore, String comments, Date timeEntered,
-			Date timeUpdated, int userId, String userName, String city, String stateId, String state,
-			String countryId, String country, String rateCount) {
+				String mouthfeel, String overall, String totalScore, String comments, Date timeEntered,
+				Date timeUpdated, int userId, String userName, String city, String stateId, String state,
+				String countryId, String country, String rateCount) {
 			this.resultNum = resultNum;
 			this.ratingId = ratingId;
 			this.appearance = appearance;
@@ -95,10 +131,11 @@ public class GetRatingsCommand extends Command {
 			this.country = country;
 			this.rateCount = rateCount;
 		}
-	
+
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeString(resultNum);
 			out.writeString(ratingId);
@@ -109,8 +146,8 @@ public class GetRatingsCommand extends Command {
 			out.writeString(overall);
 			out.writeString(totalScore);
 			out.writeString(comments);
-			out.writeLong(timeEntered == null? -1L: timeEntered.getTime());
-			out.writeLong(timeUpdated == null? -1L: timeUpdated.getTime());
+			out.writeLong(timeEntered == null ? -1L : timeEntered.getTime());
+			out.writeLong(timeUpdated == null ? -1L : timeUpdated.getTime());
 			out.writeInt(userId);
 			out.writeString(userName);
 			out.writeString(city);
@@ -120,14 +157,17 @@ public class GetRatingsCommand extends Command {
 			out.writeString(country);
 			out.writeString(rateCount);
 		}
+
 		public static final Parcelable.Creator<BeerRating> CREATOR = new Parcelable.Creator<BeerRating>() {
 			public BeerRating createFromParcel(Parcel in) {
 				return new BeerRating(in);
 			}
+
 			public BeerRating[] newArray(int size) {
 				return new BeerRating[size];
 			}
 		};
+
 		private BeerRating(Parcel in) {
 			resultNum = in.readString();
 			ratingId = in.readString();
@@ -140,8 +180,8 @@ public class GetRatingsCommand extends Command {
 			comments = in.readString();
 			long timeEnteredSeconds = in.readLong();
 			long timeUpdatedSeconds = in.readLong();
-			timeEntered = timeEnteredSeconds == -1L? null: new Date(timeEnteredSeconds);
-			timeUpdated = timeUpdatedSeconds == -1L? null: new Date(timeUpdatedSeconds);
+			timeEntered = timeEnteredSeconds == -1L ? null : new Date(timeEnteredSeconds);
+			timeUpdated = timeUpdatedSeconds == -1L ? null : new Date(timeUpdatedSeconds);
 			userId = in.readInt();
 			userName = in.readString();
 			city = in.readString();
@@ -151,7 +191,7 @@ public class GetRatingsCommand extends Command {
 			country = in.readString();
 			rateCount = in.readString();
 		}
-	
+
 	}
 
 }

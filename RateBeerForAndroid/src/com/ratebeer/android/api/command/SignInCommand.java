@@ -17,11 +17,17 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class SignInCommand extends Command {
+public class SignInCommand extends EmptyResponseCommand {
 
 	private final String username;
 	private final String password;
@@ -32,12 +38,13 @@ public class SignInCommand extends Command {
 		this.password = password;
 	}
 	
-	public String getUsername() {
-		return username;
+	@Override
+	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
+		if (HttpHelper.signIn(username, password)) {
+			return; // Success
+		}
+		throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
+				"Tried to sign in but no (login) cookies were returned by the server");
 	}
-	
-	public String getPassword() {
-		return password;
-	}
-	
+
 }

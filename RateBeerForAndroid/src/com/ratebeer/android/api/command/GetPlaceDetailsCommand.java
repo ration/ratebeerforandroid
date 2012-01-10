@@ -17,31 +17,54 @@
  */
 package com.ratebeer.android.api.command;
 
-import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.RateBeerApi;
-import com.ratebeer.android.api.command.GetPlacesCommand.Place;
+import java.io.IOException;
 
-public class GetPlaceDetailsCommand extends Command {
-	
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.ratebeer.android.api.ApiMethod;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
+import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
+
+public class GetPlaceDetailsCommand extends JsonCommand {
+
 	private final int placeId;
 	private Place details;
-	
+
 	public GetPlaceDetailsCommand(RateBeerApi api, int placeId) {
 		super(api, ApiMethod.GetPlaceDetails);
 		this.placeId = placeId;
 	}
-	
-	public int getPlaceId() {
-		return placeId;
-	}
-
-	public void setDetails(Place details) {
-		this.details = details;
-	}
 
 	public Place getDetails() {
 		return details;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/pss.asp?pid=" + Integer.toString(placeId) + "&k="
+				+ HttpHelper.RB_KEY);
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+
+		JSONObject result = json.getJSONObject(0);
+		String avgRating = result.getString("AvgRating");
+
+		// Get the details directly form the JSON object
+		details = new Place(result.getInt("PlaceID"), HttpHelper.cleanHtml(result.getString("PlaceName")),
+				result.getInt("PlaceType"), HttpHelper.cleanHtml(result.getString("Address")),
+				HttpHelper.cleanHtml(result.getString("City")), result.getString("StateID"),
+				result.getInt("CountryID"), HttpHelper.cleanHtml(result.getString("PostalCode")),
+				HttpHelper.cleanHtml(result.getString("PhoneNumber")), avgRating.equals("null") ? -1
+						: (int) Float.parseFloat(avgRating), HttpHelper.cleanHtml(result.getString("PhoneAC")),
+				result.getDouble("Latitude"), result.getDouble("Longitude"), -1D);
+
 	}
 
 }

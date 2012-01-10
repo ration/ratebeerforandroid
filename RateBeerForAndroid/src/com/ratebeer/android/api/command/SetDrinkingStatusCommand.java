@@ -17,11 +17,20 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class SetDrinkingStatusCommand extends Command {
+public class SetDrinkingStatusCommand extends EmptyResponseCommand {
 
 	private final String newStatus;
 
@@ -30,8 +39,13 @@ public class SetDrinkingStatusCommand extends Command {
 		this.newStatus = newStatus;
 	}
 
-	public String getNewStatus() {
-		return newStatus;
+	@Override
+	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
+		HttpHelper.makeRBPost("http://www.ratebeer.com/userstatus-process.asp",
+				Arrays.asList(new BasicNameValuePair("MyStatus", newStatus)),
+				// Note that we get an HTTP 500 response even when the request is successfull...
+				HttpStatus.SC_INTERNAL_SERVER_ERROR);
 	}
 
 }

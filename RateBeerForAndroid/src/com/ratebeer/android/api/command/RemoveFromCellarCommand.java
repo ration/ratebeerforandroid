@@ -17,11 +17,17 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class RemoveFromCellarCommand extends Command {
+public class RemoveFromCellarCommand extends EmptyResponseCommand {
 	
 	private final int beerId;
 
@@ -32,6 +38,13 @@ public class RemoveFromCellarCommand extends Command {
 
 	public int getBeerId() {
 		return beerId;
+	}
+
+	@Override
+	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
+		HttpHelper.makeRBGet("http://www.ratebeer.com/WishList-Delete.asp?WishID="
+				+ beerId + "&UserID=" + getUserSettings().getUserID());
 	}
 
 }

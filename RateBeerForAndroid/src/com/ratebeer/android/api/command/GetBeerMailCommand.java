@@ -17,14 +17,23 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class GetBeerMailCommand extends Command {
+public class GetBeerMailCommand extends JsonCommand {
 
 	private final int messageId;
 	private MailDetails mail;
@@ -34,16 +43,23 @@ public class GetBeerMailCommand extends Command {
 		this.messageId = messageID;
 	}
 
-	public int getMessageID() {
-		return messageId;
-	}
-
-	public void setMail(MailDetails mail) {
-		this.mail = mail;
-	}
-
 	public MailDetails getMail() {
 		return mail;
+	}
+
+	@Override
+	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/msg.asp?k=" + HttpHelper.RB_KEY + "&u="
+				+ Integer.toString(getUserSettings().getUserID()) + "&mid=" + Integer.toString(messageId));
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+
+		JSONObject result = json.getJSONObject(0);
+		mail = new MailDetails(result.getInt("MessageID"), result.getString("Body"));
+
 	}
 
 	public static class MailDetails implements Parcelable {

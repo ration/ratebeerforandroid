@@ -71,7 +71,7 @@ public class GetFavouritePlacesCommand extends HtmlCommand {
 			String placeName = HttpHelper.cleanHtml(html.substring(placeNameStart, html.indexOf("<", placeNameStart)));
 
 			int cityStart = html.indexOf("><em>in ", placeNameStart) + "><em>in ".length();
-			String city = html.substring(cityStart, html.indexOf("<", cityStart));
+			String city = HttpHelper.cleanHtml(html.substring(cityStart, html.indexOf("<", cityStart)));
 
 			places.add(new PlaceSearchResult(placeId, placeName, city));
 			rowStart = html.indexOf(rowText, cityStart) + rowText.length();

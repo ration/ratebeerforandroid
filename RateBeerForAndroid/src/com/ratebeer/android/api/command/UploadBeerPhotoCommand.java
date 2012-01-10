@@ -24,8 +24,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 
-import android.net.Uri;
-
 import com.android.internalcopy.http.multipart.FilePart;
 import com.android.internalcopy.http.multipart.MultipartEntity;
 import com.android.internalcopy.http.multipart.Part;
@@ -39,9 +37,9 @@ import com.ratebeer.android.api.RateBeerApi;
 public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 
 	private final int beerId;
-	private final Uri photo;
+	private final File photo;
 
-	public UploadBeerPhotoCommand(RateBeerApi api, int beerId, Uri photo) {
+	public UploadBeerPhotoCommand(RateBeerApi api, int beerId, File photo) {
 		super(api, ApiMethod.UploadBeerPhoto);
 		this.beerId = beerId;
 		this.photo = photo;
@@ -51,18 +49,16 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 		return beerId;
 	}
 
-	public Uri getPhotoUri() {
+	public File getPhotoFile() {
 		return photo;
 	}
 
 	@Override
 	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
 		RateBeerApi.ensureLogin(getUserSettings());
-		File upload = new File(photo.getPath());
-		// TODO: Get the actual upload URL
-		HttpPost post = new HttpPost("http://www.ratebeer.com/uploadphoto/");
-		Part[] parts = { new StringPart("beerId", Integer.toString(beerId)), 
-				new FilePart("file", upload, FilePart.DEFAULT_CONTENT_TYPE, null) };
+		HttpPost post = new HttpPost("http://www.ratebeer.com/m/m_savebeerpic.asp");
+		Part[] parts = { new StringPart("BeerID", Integer.toString(beerId)), 
+				new FilePart("File1", photo, FilePart.DEFAULT_CONTENT_TYPE, null) };
 		post.setEntity(new MultipartEntity(parts, post.getParams()));
 		HttpHelper.makeRawRBPost(post, HttpStatus.SC_OK);
 	}

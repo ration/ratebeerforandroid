@@ -5,14 +5,6 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical">
 
-	<Button
-		android:id="@+id/ratethis"
-		style="@style/DetailsButtonSmall"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_margin="10dip"
-		android:text="@string/app_loading" />
-
 	<TextView
 		android:id="@+id/ownratinglabel"
 		style="@style/Label"
@@ -21,6 +13,16 @@
 		android:text="@string/details_myrating"
 		android:visibility="gone" />
 
+	<Button
+		android:id="@+id/ratethis"
+		style="@style/DetailsButtonSmall"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dip"
+		android:layout_marginLeft="10dip"
+		android:layout_marginRight="10dip"
+		android:text="@string/app_loading" />
+	
 	<include
 		android:id="@+id/ownrating"
 		android:layout_width="match_parent"

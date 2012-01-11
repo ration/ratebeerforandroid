@@ -78,13 +78,13 @@ public class GetStyleDetailsCommand extends HtmlCommand {
 			servedInStart = html.indexOf(servedInText, servedInStart + 1);
 		}
 
-		String rowText = "<td class=\"beer\"><font color=\"#999999\">";
-		int rowStart = html.indexOf(rowText, servedInStart) + rowText.length();
+		String rowText = "<td class=\"listRank\">";
+		int rowStart = html.indexOf(rowText, descriptionStart) + rowText.length();
 		ArrayList<TopBeer> beers = new ArrayList<TopBeer>();
 
 		while (rowStart > 0 + rowText.length()) {
 
-			int orderNr = Integer.parseInt(html.substring(rowStart, html.indexOf("<", rowStart)));
+			int orderNr = Integer.parseInt(html.substring(rowStart, html.indexOf(" ", rowStart)));
 
 			int idStart1 = html.indexOf("<A HREF=\"/beer/", rowStart) + "<A HREF=\"/beer/".length();
 			int idStart2 = html.indexOf("/", idStart1) + "/".length();

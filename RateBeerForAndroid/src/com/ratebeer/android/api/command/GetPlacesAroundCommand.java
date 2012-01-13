@@ -76,7 +76,7 @@ public class GetPlacesAroundCommand extends JsonCommand {
 					.cleanHtml(result.getString("City")), result.getString("StateID"), result.getInt("CountryID"),
 					HttpHelper.cleanHtml(result.getString("PostalCode")), HttpHelper.cleanHtml(result
 							.getString("PhoneNumber")), avgRating.equals("null") ? -1 : (int) Float
-							.parseFloat(avgRating), HttpHelper.cleanHtml(result.getString("PhoneAC")), result
+							.parseFloat(avgRating), -1, HttpHelper.cleanHtml(result.getString("PhoneAC")), result
 							.getDouble("Latitude"), result.getDouble("Longitude"), result.getDouble("Distance")));
 		}
 
@@ -94,14 +94,15 @@ public class GetPlacesAroundCommand extends JsonCommand {
 		public final String postalCode;
 		public final String phoneNumber;
 		public final int avgRating;
+		public final int rateCount;
 		public final String phoneAc;
 		public final double latitude;
 		public final double longitude;
 		public final double distance;
 
 		public Place(int placeID, String placeName, int placeType, String address, String city, String stateID,
-				int countryID, String postalCode, String phoneNumber, int avgRating, String phoneAc, double latitude,
-				double longitude, double distance) {
+				int countryID, String postalCode, String phoneNumber, int avgRating, int rateCount, String phoneAc,
+				double latitude, double longitude, double distance) {
 			this.placeID = placeID;
 			this.placeName = placeName;
 			this.placeType = placeType;
@@ -113,6 +114,7 @@ public class GetPlacesAroundCommand extends JsonCommand {
 			this.phoneNumber = phoneNumber;
 			this.phoneAc = phoneAc;
 			this.avgRating = avgRating;
+			this.rateCount = rateCount;
 			this.latitude = latitude;
 			this.longitude = longitude;
 			this.distance = distance;
@@ -133,6 +135,7 @@ public class GetPlacesAroundCommand extends JsonCommand {
 			out.writeString(postalCode);
 			out.writeString(phoneNumber);
 			out.writeInt(avgRating);
+			out.writeInt(rateCount);
 			out.writeString(phoneAc);
 			out.writeDouble(latitude);
 			out.writeDouble(longitude);
@@ -160,6 +163,7 @@ public class GetPlacesAroundCommand extends JsonCommand {
 			postalCode = in.readString();
 			phoneNumber = in.readString();
 			avgRating = in.readInt();
+			rateCount = in.readInt();
 			phoneAc = in.readString();
 			latitude = in.readDouble();
 			longitude = in.readDouble();

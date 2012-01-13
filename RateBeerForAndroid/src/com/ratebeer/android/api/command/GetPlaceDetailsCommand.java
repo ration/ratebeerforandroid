@@ -54,15 +54,15 @@ public class GetPlaceDetailsCommand extends JsonCommand {
 	protected void parse(JSONArray json) throws JSONException {
 
 		JSONObject result = json.getJSONObject(0);
-		String avgRating = result.getString("AvgRating");
+		String percentile = result.getString("Percentile");
 
 		// Get the details directly form the JSON object
 		details = new Place(result.getInt("PlaceID"), HttpHelper.cleanHtml(result.getString("PlaceName")),
 				result.getInt("PlaceType"), HttpHelper.cleanHtml(result.getString("Address")),
 				HttpHelper.cleanHtml(result.getString("City")), result.getString("StateID"),
 				result.getInt("CountryID"), HttpHelper.cleanHtml(result.getString("PostalCode")),
-				HttpHelper.cleanHtml(result.getString("PhoneNumber")), avgRating.equals("null") ? -1
-						: (int) Float.parseFloat(avgRating), HttpHelper.cleanHtml(result.getString("PhoneAC")),
+				HttpHelper.cleanHtml(result.getString("PhoneNumber")), percentile.equals("null") ? -1
+						: (int) Float.parseFloat(percentile), result.getInt("RateCount"), HttpHelper.cleanHtml(result.getString("PhoneAC")),
 				result.getDouble("Latitude"), result.getDouble("Longitude"), -1D);
 
 	}

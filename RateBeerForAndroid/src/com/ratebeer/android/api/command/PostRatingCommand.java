@@ -17,20 +17,25 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.Command;
+import com.ratebeer.android.api.CommandFailureResult;
+import com.ratebeer.android.api.CommandResult;
+import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class PostRatingCommand extends EmptyResponseCommand {
+public class PostRatingCommand extends Command {
 
+	private static final String POST_SUCCESS = "<h1>availability</h1>";
+	
 	private final int beerId;
 	private final int ratingID;
 	private final String origDate;
@@ -42,7 +47,8 @@ public class PostRatingCommand extends EmptyResponseCommand {
 	private final int overall;
 	private final String comment;
 
-	public PostRatingCommand(RateBeerApi api, int beerId, int ratingID, String origDate, String beerName, int aroma, int appearance, int taste, int palate, int overall, String comment) {
+	public PostRatingCommand(RateBeerApi api, int beerId, int ratingID, String origDate, String beerName, int aroma,
+			int appearance, int taste, int palate, int overall, String comment) {
 		super(api, ApiMethod.PostRating);
 		this.beerId = beerId;
 		this.ratingID = ratingID;
@@ -56,7 +62,8 @@ public class PostRatingCommand extends EmptyResponseCommand {
 		this.comment = comment;
 	}
 
-	public PostRatingCommand(RateBeerApi api, int beerId, String beerName, int aroma, int appearance, int taste, int palate, int overall, String comment) {
+	public PostRatingCommand(RateBeerApi api, int beerId, String beerName, int aroma, int appearance, int taste,
+			int palate, int overall, String comment) {
 		super(api, ApiMethod.PostRating);
 		this.beerId = beerId;
 		this.ratingID = -1;
@@ -77,7 +84,7 @@ public class PostRatingCommand extends EmptyResponseCommand {
 	private float getTotal() {
 		return calculateTotal(aroma, appearance, taste, palate, overall);
 	}
-	
+
 	/**
 	 * Static method to calculate the total score of a new rating
 	 * @param aroma
@@ -88,26 +95,43 @@ public class PostRatingCommand extends EmptyResponseCommand {
 	 * @return The total score, which is a float [0,5 .. 5]
 	 */
 	public static float calculateTotal(int aroma, int appearance, int taste, int palate, int overall) {
-		return (float)(aroma + appearance + taste + palate + overall) / 10F;
+		return (float) (aroma + appearance + taste + palate + overall) / 10F;
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		// NOTE: Maybe use the API call to http://www.ratebeer.com/m/m_saverating.asp, but it should be checked
-		// whether this allows updating of a rating too
-		HttpHelper.makeRBPost(ratingID <= 0 ? "http://www.ratebeer.com/saverating.asp"
-				: "http://www.ratebeer.com/updaterating.asp", Arrays.asList(new BasicNameValuePair("BeerID",
-				Integer.toString(beerId)), new BasicNameValuePair("RatingID", ratingID <= 0 ? "" : 
-					Integer.toString(ratingID)),
-				new BasicNameValuePair("OrigDate", origDate == null ? "": origDate),
-				new BasicNameValuePair("aroma", Integer.toString(aroma)),
-				new BasicNameValuePair("appearance", Integer.toString(appearance)),
-				new BasicNameValuePair("flavor", Integer.toString(taste)),
-				new BasicNameValuePair("palate", Integer.toString(palate)),
-				new BasicNameValuePair("overall", Integer.toString(overall)),
-				new BasicNameValuePair("totalscore", Float.toString(getTotal())),
-				new BasicNameValuePair("Comments", comment)));
+	public CommandResult execute() {
+		try {
+
+			RateBeerApi.ensureLogin(getUserSettings());
+			// NOTE: Maybe use the API call to http://www.ratebeer.com/m/m_saverating.asp, but it should be checked
+			// whether this allows updating of a rating too
+			String result = HttpHelper.makeRBPost(ratingID <= 0 ? "http://www.ratebeer.com/saverating.asp"
+					: "http://www.ratebeer.com/updaterating.asp", Arrays.asList(new BasicNameValuePair("BeerID",
+					Integer.toString(beerId)),
+					new BasicNameValuePair("RatingID", ratingID <= 0 ? "" : Integer.toString(ratingID)),
+					new BasicNameValuePair("OrigDate", origDate == null ? "" : origDate), new BasicNameValuePair(
+							"aroma", Integer.toString(aroma)),
+					new BasicNameValuePair("appearance", Integer.toString(appearance)), new BasicNameValuePair(
+							"flavor", Integer.toString(taste)),
+					new BasicNameValuePair("palate", Integer.toString(palate)), new BasicNameValuePair("overall",
+							Integer.toString(overall)),
+					new BasicNameValuePair("totalscore", Float.toString(getTotal())), new BasicNameValuePair(
+							"Comments", comment)));
+			if (result.indexOf(POST_SUCCESS) >= 0) {
+				return new CommandSuccessResult(this);
+			} else {
+				return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed, 
+						"The rating was posted, but the returned HTML did not contain the unique success string."));
+			}
+
+		} catch (UnknownHostException e) {
+			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
+		} catch (HttpHostConnectException e) {
+			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
+		} catch (Exception e) {
+			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
+					e.toString()));
+		}
 	}
 
 }

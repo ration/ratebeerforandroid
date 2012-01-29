@@ -19,6 +19,7 @@
 		android:id="@+id/newstatus"
 		android:layout_toRightOf="@id/nowdrinking"
 		android:layout_alignBaseline="@id/nowdrinking"
+		android:inputType="textShortMessage|textCapWords"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent" />
 		

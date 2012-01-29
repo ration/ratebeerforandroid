@@ -21,7 +21,6 @@
 			android:id="@+id/customnamelabel"
 			android:layout_height="wrap_content"
 			android:layout_width="match_parent"
-			android:layout_below="@id/map"
 			android:layout_marginLeft="10dip"
 			android:layout_marginRight="10dip"
 			android:text="@string/rate_offline_customname"

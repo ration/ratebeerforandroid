@@ -397,11 +397,21 @@ public class RateFragment extends RateBeerFragment {
 		outState.putInt(STATE_ORIGRATINGID, originalRatingId);
 		outState.putString(STATE_ORIGRATINGDATE, originalRatingDate);
 		outState.putInt(STATE_OFFLINEID, offlineId);
-		outState.putInt(STATE_APPEARANCE, appearanceWheel.getAdapter().getSelectedValue());
-		outState.putInt(STATE_AROMA, aromaWheel.getAdapter().getSelectedValue());
-		outState.putInt(STATE_TASTE, tasteWheel.getAdapter().getSelectedValue());
-		outState.putInt(STATE_PALATE, palateWheel.getAdapter().getSelectedValue());
-		outState.putInt(STATE_OVERALL, overallWheel.getAdapter().getSelectedValue());
+		if (appearanceWheel.getAdapter() != null) {
+			outState.putInt(STATE_APPEARANCE, appearanceWheel.getAdapter().getSelectedValue());
+		}
+		if (aromaWheel.getAdapter() != null) {
+			outState.putInt(STATE_AROMA, aromaWheel.getAdapter().getSelectedValue());
+		}
+		if (tasteWheel.getAdapter() != null) {
+			outState.putInt(STATE_TASTE, tasteWheel.getAdapter().getSelectedValue());
+		}
+		if (palateWheel.getAdapter() != null) {
+			outState.putInt(STATE_PALATE, palateWheel.getAdapter().getSelectedValue());
+		}
+		if (overallWheel.getAdapter() != null) {
+			outState.putInt(STATE_OVERALL, overallWheel.getAdapter().getSelectedValue());
+		}
 	}
 
 	private OnClickListener onAssistanceClick = new OnClickListener() {

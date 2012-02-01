@@ -117,6 +117,10 @@ public class MailsFragment extends RateBeerFragment {
 		i.putExtra(BeermailService.EXTRA_MESSENGER, new Messenger(new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
+				if (getRateBeerActivity() == null) {
+					// No longer visible
+					return;
+				}
 				// Callback from the poster service; now reload the screen
 				if (msg.arg1 == BeermailService.RESULT_SUCCESS) {
 					loadMails();
@@ -137,12 +141,7 @@ public class MailsFragment extends RateBeerFragment {
 
 	private void loadMails() {
 
-		try {
-			if (getRateBeerActivity() == null) {
-				// No longer visible
-				return;
-			}
-			
+		try {			
 			// Get mails from database
 			List<BeerMail> result = getRateBeerActivity().getHelper().getBeerMailDao().queryBuilder()
 					.orderBy(BeerMail.MESSAGEID_FIELD_NAME, false).query();

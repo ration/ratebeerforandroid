@@ -102,7 +102,13 @@ public class MailViewFragment extends RateBeerFragment {
 			senderText.setText(getString(R.string.app_by, mail.getSenderName()) + "\n"
 					+ dateFormat.format(mail.getSent()));
 			bodyText.setMovementMethod(LinkMovementMethod.getInstance());
-			bodyText.setText(Html.fromHtml(mail.getBody().replace("\n", "<br />")));
+			try {
+				bodyText.setText(Html.fromHtml(mail.getBody().replace("\n", "<br />")));
+			} catch (Exception e) {
+				// This can happen if the mail is very long, in which case Html.fromHtml throws a RuntimeException
+				// As a fallback, don't parse the body as HTML but print the plain text instead
+				bodyText.setText(mail.getBody().replace("<br />", "\n"));
+			}
 			
 			// Also set this mail to read (which should already be done on the server by now)
 			mail.setIsRead(true);

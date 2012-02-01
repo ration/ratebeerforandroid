@@ -81,6 +81,10 @@ public class SignInFragment extends RateBeerFragment {
 		getRateBeerActivity().setOnProgressChangedListener(new OnProgressChangedListener() {
 			@Override
 			public void setProgress(boolean isBusy) {
+				if (getRateBeerActivity() == null) {
+					// No longer attached
+					return;
+				}
 				if (isBusy) {
 					progress.setVisibility(View.VISIBLE);
 					connect.setText(R.string.signin_connecting);

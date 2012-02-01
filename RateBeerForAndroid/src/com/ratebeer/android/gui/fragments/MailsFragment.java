@@ -138,6 +138,11 @@ public class MailsFragment extends RateBeerFragment {
 	private void loadMails() {
 
 		try {
+			if (getRateBeerActivity() == null) {
+				// No longer visible
+				return;
+			}
+			
 			// Get mails from database
 			List<BeerMail> result = getRateBeerActivity().getHelper().getBeerMailDao().queryBuilder()
 					.orderBy(BeerMail.MESSAGEID_FIELD_NAME, false).query();

@@ -257,7 +257,7 @@ public class RateFragment extends RateBeerFragment {
 			if (offline == null) {
 				// This offline ID is no longer available; rating probably already uploaded
 				Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
-				getSupportFragmentManager().popBackStackImmediate();
+				getSupportFragmentManager().popBackStack();
 				return;
 			}
 
@@ -397,19 +397,19 @@ public class RateFragment extends RateBeerFragment {
 		outState.putInt(STATE_ORIGRATINGID, originalRatingId);
 		outState.putString(STATE_ORIGRATINGDATE, originalRatingDate);
 		outState.putInt(STATE_OFFLINEID, offlineId);
-		if (appearanceWheel.getAdapter() != null) {
+		if (appearanceWheel != null && appearanceWheel.getAdapter() != null) {
 			outState.putInt(STATE_APPEARANCE, appearanceWheel.getAdapter().getSelectedValue());
 		}
-		if (aromaWheel.getAdapter() != null) {
+		if (aromaWheel != null && aromaWheel.getAdapter() != null) {
 			outState.putInt(STATE_AROMA, aromaWheel.getAdapter().getSelectedValue());
 		}
-		if (tasteWheel.getAdapter() != null) {
+		if (tasteWheel != null && tasteWheel.getAdapter() != null) {
 			outState.putInt(STATE_TASTE, tasteWheel.getAdapter().getSelectedValue());
 		}
-		if (palateWheel.getAdapter() != null) {
+		if (palateWheel != null && palateWheel.getAdapter() != null) {
 			outState.putInt(STATE_PALATE, palateWheel.getAdapter().getSelectedValue());
 		}
-		if (overallWheel.getAdapter() != null) {
+		if (overallWheel != null && overallWheel.getAdapter() != null) {
 			outState.putInt(STATE_OVERALL, overallWheel.getAdapter().getSelectedValue());
 		}
 	}

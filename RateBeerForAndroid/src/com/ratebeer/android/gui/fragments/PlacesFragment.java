@@ -57,6 +57,7 @@ public class PlacesFragment extends RateBeerFragment {
 	private ListView placesView;
 
 	private ArrayList<Place> places = null;
+	private Location lastLocation = null;
 	
 	public PlacesFragment() {
 	}
@@ -127,20 +128,29 @@ public class PlacesFragment extends RateBeerFragment {
 	}
 
 	private LocationResult onLocationResult = new LocationResult() {
+
 		@Override
 		public void gotLocation(Location location) {
 			if (location == null && getView() != null) {
 				getView().post(new Runnable() {
 					@Override
 					public void run() {
-						publishException(emptyText, getString(R.string.error_nolocation));
+						if (getRateBeerActivity() != null) {
+							publishException(emptyText, getString(R.string.error_nolocation));
+						}
 					}
 				});
 				return;
 			}
 			// Now get the places at this location, if this fragment is still bound to an activity
+			PlacesFragment.this.lastLocation = location;
 			if (getRateBeerActivity() != null) {
-				execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, location.getLatitude(), location.getLongitude()));
+				getView().post(new Runnable() {
+					@Override
+					public void run() {
+						execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, lastLocation.getLatitude(), lastLocation.getLongitude()));
+					}
+				});
 			}
 		}
 	};

@@ -53,7 +53,12 @@ public class GetUserImageCommand extends Command {
 
 			InputStream rawStream = HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/" + username + ".jpg");
 			// Read the raw response stream as Drawable image and return this in a success result
-			image = Drawable.createFromStream(rawStream, "tmp");
+			try {
+				image = Drawable.createFromStream(rawStream, "tmp");
+			} catch (OutOfMemoryError e) {
+				// Image to big to load; since this very rarely happens (most RB images are tiny) we just ignore it
+				image = null;
+			}
 			return new CommandSuccessResult(this);
 
 		} catch (UnknownHostException e) {

@@ -34,15 +34,15 @@ import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
 public class GetBeerImageCommand extends Command {
-	
+
 	private final int beerId;
 	private Drawable image;
-	
+
 	public GetBeerImageCommand(RateBeerApi api, int beerId) {
 		super(api, ApiMethod.GetBeerImage);
 		this.beerId = beerId;
 	}
-	
+
 	public Drawable getImage() {
 		return image;
 	}
@@ -53,7 +53,12 @@ public class GetBeerImageCommand extends Command {
 
 			InputStream rawStream = HttpHelper.makeRawRBGet("http://www.ratebeer.com/beerimages/" + beerId + ".jpg");
 			// Read the raw response stream as Drawable image and return this in a success result
-			image = Drawable.createFromStream(rawStream, "tmp");
+			try {
+				image = Drawable.createFromStream(rawStream, "tmp");
+			} catch (OutOfMemoryError e) {
+				// Image to big to load; since this very rarely happens (most RB images are tiny) we just ignore it
+				image = null;
+			}
 			return new CommandSuccessResult(this);
 
 		} catch (UnknownHostException e) {

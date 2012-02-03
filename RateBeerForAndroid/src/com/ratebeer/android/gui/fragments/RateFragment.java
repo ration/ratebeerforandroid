@@ -494,6 +494,10 @@ public class RateFragment extends RateBeerFragment {
 		int overall = overallWheel.getAdapter().getSelectedValue();
 		String comments = commentsEdit.getText().toString();
 		try {
+			if (getRateBeerActivity() == null) {
+				offlineButton.setText(R.string.rate_offline_notavailable);
+				return;
+			}
 			OfflineRating offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
 			if (offline == null) {
 				offlineButton.setText(R.string.rate_offline_notavailable);

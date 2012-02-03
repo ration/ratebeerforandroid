@@ -21,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +59,7 @@ import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 public class HttpHelper {
 
-	private static final int TIMEOUT = 4000;
+	private static final int TIMEOUT = 5000;
 	private static final int RETRIES = 3;
 	private static final String USER_AGENT = "RateBeer for Android";
 	private static final String URL_SIGNIN = "http://www.ratebeer.com/signin/";
@@ -281,10 +280,18 @@ public class HttpHelper {
 	public static String normalizeSearchQuery(String query) {
 		// First translate diacritics
 		// (from http://stackoverflow.com/questions/1008802/converting-symbols-accent-letters-to-english-alphabet)
-		String normalized = Normalizer.normalize(query, Normalizer.Form.NFD);
-		// And remove the marks to only leave Latin characters
-		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-		query = pattern.matcher(normalized).replaceAll("");
+		// The Normalizer class is unavailable < API level 9, so use it through an interface using reflection
+		try {
+			QueryNormalizer normalizer = (QueryNormalizer) Class.forName("com.ratebeer.android.api.QueryNormalizerImpl").newInstance();
+			// Normalize (which translates the diacritics)
+			String normalized = normalizer.normalize(query);
+			// And remove the marks to only leave Latin characters
+			Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+			query = pattern.matcher(normalized).replaceAll("");
+		} catch (Exception e) {
+			// Not available - just continue
+		}
+
 		// Translate other special characters into English alphabet characters by hand
 		query = query.replaceAll("æ", "ae");
 		query = query.replaceAll("Æ", "AE");

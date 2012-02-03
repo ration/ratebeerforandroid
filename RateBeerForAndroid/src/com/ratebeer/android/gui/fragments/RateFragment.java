@@ -257,7 +257,7 @@ public class RateFragment extends RateBeerFragment {
 			if (offline == null) {
 				// This offline ID is no longer available; rating probably already uploaded
 				Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
-				getSupportFragmentManager().popBackStackImmediate();
+				getSupportFragmentManager().popBackStack();
 				return;
 			}
 
@@ -397,11 +397,21 @@ public class RateFragment extends RateBeerFragment {
 		outState.putInt(STATE_ORIGRATINGID, originalRatingId);
 		outState.putString(STATE_ORIGRATINGDATE, originalRatingDate);
 		outState.putInt(STATE_OFFLINEID, offlineId);
-		outState.putInt(STATE_APPEARANCE, appearanceWheel.getAdapter().getSelectedValue());
-		outState.putInt(STATE_AROMA, aromaWheel.getAdapter().getSelectedValue());
-		outState.putInt(STATE_TASTE, tasteWheel.getAdapter().getSelectedValue());
-		outState.putInt(STATE_PALATE, palateWheel.getAdapter().getSelectedValue());
-		outState.putInt(STATE_OVERALL, overallWheel.getAdapter().getSelectedValue());
+		if (appearanceWheel != null && appearanceWheel.getAdapter() != null) {
+			outState.putInt(STATE_APPEARANCE, appearanceWheel.getAdapter().getSelectedValue());
+		}
+		if (aromaWheel != null && aromaWheel.getAdapter() != null) {
+			outState.putInt(STATE_AROMA, aromaWheel.getAdapter().getSelectedValue());
+		}
+		if (tasteWheel != null && tasteWheel.getAdapter() != null) {
+			outState.putInt(STATE_TASTE, tasteWheel.getAdapter().getSelectedValue());
+		}
+		if (palateWheel != null && palateWheel.getAdapter() != null) {
+			outState.putInt(STATE_PALATE, palateWheel.getAdapter().getSelectedValue());
+		}
+		if (overallWheel != null && overallWheel.getAdapter() != null) {
+			outState.putInt(STATE_OVERALL, overallWheel.getAdapter().getSelectedValue());
+		}
 	}
 
 	private OnClickListener onAssistanceClick = new OnClickListener() {
@@ -484,6 +494,10 @@ public class RateFragment extends RateBeerFragment {
 		int overall = overallWheel.getAdapter().getSelectedValue();
 		String comments = commentsEdit.getText().toString();
 		try {
+			if (getRateBeerActivity() == null) {
+				offlineButton.setText(R.string.rate_offline_notavailable);
+				return;
+			}
 			OfflineRating offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
 			if (offline == null) {
 				offlineButton.setText(R.string.rate_offline_notavailable);

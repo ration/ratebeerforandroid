@@ -54,4 +54,19 @@
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent" />
 		
+	<com.viewpagerindicator.TabPageIndicator
+		android:id="@+id/titles" 
+		android:layout_below="@id/brewername"
+		android:layout_toRightOf="@id/imageframe"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent" />
+
+	<android.support.v4.view.ViewPager
+		android:id="@+id/pager" 
+		android:layout_below="@id/titles"
+		android:layout_toRightOf="@id/imageframe"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_alignParentBottom="true" />
+        
 </RelativeLayout>

@@ -65,7 +65,7 @@ public class ErrorLogSender {
         else
         {
             new AlertDialog.Builder(context)
-            .setTitle("Transdroid")
+            .setTitle("RateBeer for Android")
             .setIcon(android.R.drawable.ic_dialog_info)
             .setMessage(R.string.error_lc_run)
             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){

@@ -12,7 +12,7 @@
 	<string name="app_refresh">Refresh</string>
 	<string name="app_details">Details</string>
 	<string name="app_share">Share</string>
-	<string name="app_loading">Loading...</string>
+	<string name="app_loading">Loading&#8230;</string>
 	<string name="app_legal">By using this application you agree with the terms of the RateBeer User Agreement available at http://www.ratebeer.com/UserAgreement.asp\n\nEven without a RateBeer account you can use this application to view beer details, top lists, upcoming events, local beer-releated places and much more. For the full feature set, like rating beers and adding beer availability, you can create an account at http://www.ratebeer.com/NewUser.asp</string>
 	<string name="app_legal_title">Welcome!</string>
 
@@ -25,7 +25,7 @@
 	<string name="app_nowdrinking">Now drinking</string>
 	<string name="app_settingdrinking_expl">You can also choose \'Drinking this\' from a beer\'s details screen.</string>
 	<string name="app_settingdrinking">Setting drinking status</string>
-	<string name="app_sharerating">Share rating on Twitter/Facebook/...</string>
+	<string name="app_sharerating">Share rating on Twitter/Facebook/&#8230;</string>
 	<string name="app_postingrating">Posting beer rating</string>
 	<string name="app_addingavailability">Publishing availability</string>
 	<string name="app_addingforbeer">Adding availability for %1$s</string>
@@ -48,7 +48,7 @@
 	<string name="signin_password">Password:</string>
 	<string name="signin_signin">Sign in</string>
 	<string name="signin_signout">Sign out</string>
-	<string name="signin_connecting">Connecting...</string>
+	<string name="signin_connecting">Connecting&#8230;</string>
 	<string name="signin_signoutsuccess">Successfully signed out</string>
 	<string name="signin_signinsuccess">Successfully signed in</string>
 	
@@ -93,7 +93,7 @@
 	
 	<string name="topbeers_country">Country:</string>
 	<string name="topbeers_state">State:</string>
-	<string name="topbeers_noitems">Select a country to view its top beers...</string>
+	<string name="topbeers_noitems">Select a country to view its top beers&#8230;</string>
 	
 	<string name="places_nearby">Places nearby</string>
 	<string name="places_noitems">No beer places found in this area!</string>
@@ -111,7 +111,7 @@
 	<string name="places_availablebeers">Available</string>
 	<string name="places_enteredat">Entered at %1$s</string>
 	<string name="places_share">Check out %1$s at @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
-	<string name="places_shareplace">Share place...</string>
+	<string name="places_shareplace">Share place&#8230;</string>
 
 	<string name="events_attendees">Attendees:</string>
 	<string name="events_noitems">No events planned in this area!</string>
@@ -120,7 +120,7 @@
 	<string name="events_nowattending">Added my name to the attendants list</string>
 	<string name="events_nownotattending">Removed my name from the attendants list</string>
 	<string name="events_share">Check out %1$s at @ratebeer http://ratebeer.com/event/%2$s/</string>
-	<string name="events_shareevent">Share event...</string>
+	<string name="events_shareevent">Share event&#8230;</string>
 	
 	<string name="search_resultsfor">Results for \'%1$s\'</string>
 	<string name="search_beersearch">RateBeer search</string>
@@ -154,7 +154,7 @@
 	<string name="details_otherratings">Recent ratings:</string>
 	<string name="details_availability">Availability</string>
 	<string name="details_share">Check out %1$s at @ratebeer http://ratebeer.com/b/%2$s/</string>
-	<string name="details_sharebeer">Share beer...</string>
+	<string name="details_sharebeer">Share beer&#8230;</string>
 	
 	<string name="upload_uploadphoto">Upload photo</string>
 	
@@ -173,7 +173,7 @@
 	<string name="rate_addrating">Upload my rating</string>
 	<string name="rate_commenttooshort">Comment should be at least 85 characters.</string>
 	<string name="rate_ratingnotcompleted">Your rating is not yet completed</string>
-	<string name="rate_charstogo">%1$s characters to go...</string>
+	<string name="rate_charstogo">%1$s characters to go&#8230;</string>
 	<string name="rate_commentok">Comment length is ok!</string>
 	<string name="rate_showassistance">Show assistance</string>
 	<string name="rate_hideassistance">Hide assistance</string>
@@ -191,7 +191,7 @@
 	<string name="rate_offline_discard">Discard</string>
 	<string name="rate_offline_customname">Beer you are rating:</string>
 	<string name="rate_offline_confirmdiscard">You will loose your rating and comments. Are you sure?</string>
-	<string name="rate_offline_findbeer">Find this beer...</string>
+	<string name="rate_offline_findbeer">Find this beer&#8230;</string>
 	<string name="rate_offline_name">Name:</string>
 	<string name="rate_offline_nonamegiven">Please enter the name of the beer you have rated</string>
 	<string name="rate_offline_alreadyrated">Sorry, but you already rated this beer and you cannot re-rate beers from an offline-only rating at the moment</string>

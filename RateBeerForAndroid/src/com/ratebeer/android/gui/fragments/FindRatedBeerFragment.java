@@ -170,6 +170,9 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 			BeerSearchResult item = ((SearchResultsAdapter)resultsView.getAdapter()).getItem(position);
 			
 			try {
+				if (getRateBeerActivity() == null) {
+					cancelScreen();
+				}
 				// Update the stored offline rating with the found beer ID and close the screen
 				OfflineRating offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
 				if (item.isRated) {

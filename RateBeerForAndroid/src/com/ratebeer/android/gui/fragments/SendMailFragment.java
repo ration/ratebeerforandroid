@@ -113,11 +113,11 @@ public class SendMailFragment extends RateBeerFragment {
 		String sendTo = sendtoEdit.getText().toString();
 		String subject = subjectEdit.getText().toString();
 		String body = bodyEdit.getText().toString();
-		if (!sendTo.isEmpty() && !subject.isEmpty() && !body.isEmpty()) {
+		if (!sendTo.equals("") && !subject.equals("") && !body.equals("")) {
 
 			// Include original text of message we are replying to?
 			if (includeoriginalBox.isChecked() && bodyField != null) {
-				body = bodyField + body;
+				body += bodyField;
 			}
 			
 			// Use the poster service to send this new mail

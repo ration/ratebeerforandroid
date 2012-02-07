@@ -127,12 +127,12 @@ public class BeermailService extends RateBeerService {
 						}
 
 						// Create a beer mail object to save to the database
-						Date sent;
+						Date sent = null;
 						try {
 							// Parse mail date
 							sent = sentDateFormat.parse(mail.sent);
 						} catch (ParseException e) {
-							sent = null;
+							// Cannot parse date; ignore and don't show instead
 						}
 						// Add to the database
 						beerMail = new BeerMail(mail.messageID, mail.senderID, mail.senderName, mail.messageRead,

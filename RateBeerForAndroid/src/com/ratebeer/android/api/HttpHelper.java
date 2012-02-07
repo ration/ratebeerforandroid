@@ -282,12 +282,16 @@ public class HttpHelper {
 		// (from http://stackoverflow.com/questions/1008802/converting-symbols-accent-letters-to-english-alphabet)
 		// The Normalizer class is unavailable < API level 9, so use it through an interface using reflection
 		try {
-			QueryNormalizer normalizer = (QueryNormalizer) Class.forName("com.ratebeer.android.api.QueryNormalizerImpl").newInstance();
-			// Normalize (which translates the diacritics)
-			String normalized = normalizer.normalize(query);
-			// And remove the marks to only leave Latin characters
-			Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-			query = pattern.matcher(normalized).replaceAll("");
+			if (android.os.Build.VERSION.SDK_INT >= 9) {
+				QueryNormalizer normalizer = (QueryNormalizer) Class.forName("com.ratebeer.android.api.QueryNormalizerImpl").newInstance();
+				// Normalize (which translates the diacritics)
+				String normalized = normalizer.normalize(query);
+				// And remove the marks to only leave Latin characters
+				Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+				query = pattern.matcher(normalized).replaceAll("");
+			}
+		} catch (NoClassDefFoundError e) {
+			// Not available - just continue
 		} catch (Exception e) {
 			// Not available - just continue
 		}

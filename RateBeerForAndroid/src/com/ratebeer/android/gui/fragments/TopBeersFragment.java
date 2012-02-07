@@ -237,6 +237,10 @@ public class TopBeersFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getRateBeerActivity() == null) {
+				return null;
+			}
+			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {

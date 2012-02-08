@@ -99,8 +99,15 @@ public class MailViewFragment extends RateBeerFragment {
 		if (mail != null) {
 			// Load mail details into the widgets
 			subjectText.setText(mail.getSubject());
-			senderText.setText(getString(R.string.app_by, mail.getSenderName()) + mail.getSent() != null? "\n"
-					+ dateFormat.format(mail.getSent()): "");
+			String dateText = "";
+			try {
+				if (mail.getSent() != null) {
+					dateText = "\n" + dateFormat.format(mail.getSent());
+				}
+			} catch (Exception e) {
+				// Cannot format date; ignore and don't show instead
+			}
+			senderText.setText(getString(R.string.app_by, mail.getSenderName()) + dateText);
 			bodyText.setMovementMethod(LinkMovementMethod.getInstance());
 			try {
 				bodyText.setText(Html.fromHtml(mail.getBody().replace("\n", "<br />")));

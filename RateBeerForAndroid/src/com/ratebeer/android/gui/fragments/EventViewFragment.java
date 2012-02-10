@@ -225,23 +225,21 @@ public class EventViewFragment extends RateBeerFragment {
 		// Get the activity-wide MapView to show on this fragment and center on this event's location
 		MapView mapView = getRateBeerActivity().requestMapViewInstance();
 		try {
-			if (Geocoder.isPresent()) {
-				// Use Geocoder to look up the coordinates
-				try {
-					List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address + (details.city != null? " " + details.city: ""), 1);
-					if (point.size() <= 0) {
-						// Cannot find address: hide the map
-						mapFrame.setVisibility(View.GONE);
-					} else {
-						// Found a location! Center the map here
-						mapView.getController().setCenter(getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
-						mapView.getController().setZoom(15);
-						mapFrame.setVisibility(View.VISIBLE);
-					}
-				} catch (IOException e) {
-					// Canot connect to geocoder server: hide the map
+			// Use Geocoder to look up the coordinates
+			try {
+				List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address + (details.city != null? " " + details.city: ""), 1);
+				if (point.size() <= 0) {
+					// Cannot find address: hide the map
 					mapFrame.setVisibility(View.GONE);
+				} else {
+					// Found a location! Center the map here
+					mapView.getController().setCenter(getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
+					mapView.getController().setZoom(15);
+					mapFrame.setVisibility(View.VISIBLE);
 				}
+			} catch (IOException e) {
+				// Canot connect to geocoder server: hide the map
+				mapFrame.setVisibility(View.GONE);
 			}
 		} catch (NoSuchMethodError e) {
 			// Geocoder is not available at all: hide the map

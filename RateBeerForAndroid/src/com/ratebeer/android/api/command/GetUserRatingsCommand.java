@@ -73,6 +73,12 @@ public class GetUserRatingsCommand extends HtmlCommand {
 	@Override
 	protected void parse(String html) throws JSONException, ApiException {
 
+		// Maybe no ratings?
+		if (html.indexOf("<b>0</b> <span class=\"userDetails\">beer ratings</span>") >= 0) {
+			ratings = new ArrayList<UserRating>();
+			return;
+		}
+		
 		// Parse the beer ratings table
 		int tableStart = html.indexOf("<!-- RATINGS -->");
 		if (tableStart < 0) {

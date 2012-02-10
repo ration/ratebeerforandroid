@@ -178,6 +178,7 @@ public class PlaceViewFragment extends RateBeerFragment {
 			if (place != null) {
 				// Start a share intent for this event
 				Intent s = new Intent(Intent.ACTION_SEND);
+			    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 				s.setType("text/plain");
 				s.putExtra(Intent.EXTRA_TEXT, getString(R.string.places_share, place.placeName, place.placeID));
 				startActivity(Intent.createChooser(s, getString(R.string.places_shareplace)));

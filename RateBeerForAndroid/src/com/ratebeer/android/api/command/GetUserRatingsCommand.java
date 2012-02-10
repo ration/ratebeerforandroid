@@ -64,7 +64,8 @@ public class GetUserRatingsCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
+	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
+		RateBeerApi.ensureLogin(getUserSettings());
 		return HttpHelper.makeRBGet("http://www.ratebeer.com/user/" + forUserId + "/ratings/" + pageNr + "/"
 				+ sortOrder + "/");
 	}

@@ -20,7 +20,7 @@ package com.ratebeer.android.api.command;
 import java.util.HashMap;
 import java.util.Map;
 
-public class State {
+public class State implements Comparable<State> {
 
 	private final int id;
 	private final int country;
@@ -47,6 +47,11 @@ public class State {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public int compareTo(State another) {
+		return this.name.compareTo(another.getName());
 	}
 
 	/**

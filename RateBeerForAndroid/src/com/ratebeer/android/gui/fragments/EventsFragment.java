@@ -19,6 +19,7 @@ package com.ratebeer.android.gui.fragments;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.content.Context;
@@ -130,6 +131,7 @@ public class EventsFragment extends RateBeerFragment {
 	private void populateCountrySpinner() {
 		// Get an array with all the country names
 		Country[] allCountries = Country.ALL_COUNTRIES.values().toArray(new Country[Country.ALL_COUNTRIES.size()]);
+		Arrays.sort(allCountries);
 		android.widget.ArrayAdapter<Country> adapter = new android.widget.ArrayAdapter<Country>(getActivity(), android.R.layout.simple_spinner_item, allCountries);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		countrySpinner.setAdapter(adapter);
@@ -153,6 +155,7 @@ public class EventsFragment extends RateBeerFragment {
 			// Get states for the selected country
 			allStates = State.ALL_STATES.get(country.getId()).values().toArray(new State[State.ALL_STATES.get(country.getId()).size()]);
 		}
+		Arrays.sort(allStates);
 		android.widget.ArrayAdapter<State> adapter = new android.widget.ArrayAdapter<State>(getActivity(), android.R.layout.simple_spinner_item, allStates);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		stateSpinner.setAdapter(adapter);

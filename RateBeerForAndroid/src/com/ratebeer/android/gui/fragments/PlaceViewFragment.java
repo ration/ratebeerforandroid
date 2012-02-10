@@ -219,6 +219,7 @@ public class PlaceViewFragment extends RateBeerFragment {
 		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
+		    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			try {
 				intent.setData(Uri.parse("geo:" + place.latitude + "," + place.longitude + 
 						"?q=" + URLEncoder.encode(place.placeName, HttpHelper.UTF8)));
@@ -232,6 +233,7 @@ public class PlaceViewFragment extends RateBeerFragment {
 		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent(Intent.ACTION_DIAL);
+		    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			intent.setData(Uri.parse("tel:" + place.phoneNumber.replace("-", "").replace("+", "").replace(" ", "").trim()));
 			startActivity(intent);
 		}

@@ -75,14 +75,14 @@ public class GetEventDetailsCommand extends HtmlCommand {
 			int timeSep1 = daysStipped.indexOf("-");
 			int timeSep2 = daysStipped.indexOf("-", timeSep1 + 1);
 			days = timeSep1 < 0 || timeSep2 < 0? daysStipped: daysStipped.substring(0, timeSep2);
-			times = timeSep1 < 0 || timeSep2 < 0? "": daysStipped.substring(timeSep2);
+			times = timeSep1 < 0 || timeSep2 < 0? "": (daysStipped.substring(timeSep2) + 2).trim();
 		} else {
 			int timeSep = daysRaw.indexOf("-");
 			days = timeSep < 0? daysRaw.trim(): daysRaw.substring(0, timeSep).trim();
 			times = timeSep <0? "": daysRaw.substring(timeSep + 1).trim();
 		}
 
-		int locationStart = html.indexOf("<br>", daysStart) + "<br>".length();
+		int locationStart = html.indexOf("</h2><br>", daysStart) + "</h2><br>".length();
 		String location = HttpHelper.cleanHtml(html.substring(locationStart, html.indexOf("<", locationStart)));
 
 		int addressStart = html.indexOf("\">", locationStart) + "\">".length();

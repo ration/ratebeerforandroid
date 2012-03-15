@@ -75,7 +75,12 @@ public class GetEventDetailsCommand extends HtmlCommand {
 			int timeSep1 = daysStipped.indexOf("-");
 			int timeSep2 = daysStipped.indexOf("-", timeSep1 + 1);
 			days = timeSep1 < 0 || timeSep2 < 0? daysStipped: daysStipped.substring(0, timeSep2);
-			times = timeSep1 < 0 || timeSep2 < 0? "": (daysStipped.substring(timeSep2) + 2).trim();
+			if (timeSep1 < 0 || timeSep2 < 0) {
+				times = "";
+			} else {
+				String timesRaw = daysStipped.substring(timeSep2).trim();
+				times = timesRaw.startsWith("-")? timesRaw.substring(1).trim(): timesRaw;
+			}
 		} else {
 			int timeSep = daysRaw.indexOf("-");
 			days = timeSep < 0? daysRaw.trim(): daysRaw.substring(0, timeSep).trim();

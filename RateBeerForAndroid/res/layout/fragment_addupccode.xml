@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dip"
+		android:layout_marginLeft="10dip"
+		android:layout_marginRight="10dip">
+		<TextView 
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:gravity="center"
+			android:text="@string/addupc_upccode" />
+		<TextView 
+			android:id="@+id/upccode"
+			android:layout_width="0dip"
+			android:layout_weight="3.5"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:text="98218196"
+			android:textSize="@dimen/HomeButtonTextSize" />
+	</LinearLayout>
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="10dip"
+		android:layout_marginLeft="10dip"
+		android:layout_marginRight="10dip">
+		<TextView 
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:gravity="center"
+			android:text="@string/addupc_beer" />
+		<EditText 
+			android:id="@+id/beername"
+			android:layout_width="0dip"
+			android:layout_weight="2"
+			android:layout_height="wrap_content"
+			android:inputType="textFilter"
+			android:layout_marginTop="2dip" />
+		<Button 
+			android:id="@+id/findbeer"
+			android:layout_width="0dip"
+			android:layout_weight="1.5"
+			android:layout_height="wrap_content"
+			android:text="@string/addupc_find"
+			android:enabled="false" />
+	</LinearLayout>
+	
+	<ListView
+		android:id="@+id/results"
+		android:layout_width="match_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:cacheColorHint="@color/BackgroundLight" />
+	
+	<TextView
+		android:id="@+id/empty"
+		android:layout_width="match_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:gravity="center"
+		android:layout_gravity="center"
+		android:text="@string/search_noitems"
+		android:visibility="gone" />
+	
+</LinearLayout>

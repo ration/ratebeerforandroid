@@ -32,9 +32,11 @@ public class ConfirmDialogFragment extends DialogFragment {
 
 	public ConfirmDialogFragment() {
 		this(null, -1);
+		setRetainInstance(true);
 	}
 	
 	public ConfirmDialogFragment(OnDialogResult resultListener, int dialogTitle, Object... dialogTitleArgs) {
+		setRetainInstance(true);
 		this.resultListener = resultListener;
 		this.dialogTitle = dialogTitle;
 		this.dialogTitleArgs = dialogTitleArgs;

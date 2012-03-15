@@ -207,7 +207,7 @@ public class EventViewFragment extends RateBeerFragment {
 	 */
 	public void setDetails(EventDetails details) {
 		nameText.setText(details.name);
-		timeText.setText(details.days + "\n" + details.times);
+		timeText.setText(details.days + details.times == null || details.times.equals("")? "": "\n" + details.times);
 		timeText.setVisibility(View.VISIBLE);
 		locationText.setText(details.location + "\n" + (details.city != null? details.city + "\n": "") + details.address);
 		locationText.setVisibility(View.VISIBLE);
@@ -215,7 +215,7 @@ public class EventViewFragment extends RateBeerFragment {
 		contactText.setText(details.contact);
 		attendeeAdapter.replace(details.attendees);
 		attendeeslabel.setVisibility(View.VISIBLE);
-		
+		setattendanceButton.setVisibility(View.VISIBLE);
 		if (details.isAttending(getRateBeerActivity().getUser().getUserID())) {
 			setattendanceButton.setText(R.string.events_removeattendance);
 		} else {

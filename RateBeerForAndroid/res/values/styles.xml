@@ -91,6 +91,7 @@
 		<item name="android:gravity">center</item>
 		<item name="android:textSize">@dimen/LabelSize</item>
 	</style>
+	<dimen name="AssistanceTextSize">20dip</dimen>
 
     <style name="TabPageIndicator" parent="Widget">
         <item name="android:gravity">center_horizontal</item>

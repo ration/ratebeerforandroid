@@ -53,9 +53,10 @@ import com.ratebeer.android.gui.wheel.IntegerWheelAdapter;
 import com.ratebeer.android.gui.wheel.OnSelectionChangedListener;
 import com.ratebeer.android.gui.wheel.WheelView;
 
-public class RateFragment extends RateBeerFragment {
+public class RateFragment extends RateBeerFragment implements Runnable {
 
 	protected static final int MIN_CHARACTERS = 85;
+	private static final long TIMER_DELAY = 750;
 	private static final int MENU_DISCARD = 0;
 	private static final String STATE_BEERNAME = "beerName";
 	private static final String STATE_BEERID = "beerId";
@@ -76,6 +77,7 @@ public class RateFragment extends RateBeerFragment {
 	private EditText customnameEdit, commentsEdit;
 	private Button addrating, offlineButton, assistanceButton;
 	private CheckBox shareBox;
+	private Thread timer;
 
 	private int beerId;
 	private int originalRatingId;
@@ -447,21 +449,29 @@ public class RateFragment extends RateBeerFragment {
 			int overall = overallWheel.getAdapter().getSelectedValue();
 			totalText.setText(Float.toString(PostRatingCommand
 					.calculateTotal(aroma, appearance, taste, palate, overall)));
-			storeOfflineRating();
+			timer = new Thread(RateFragment.this);
+			timer.start();
 		}
 	};
 
 	private TextWatcher onCommentChanged = new TextWatcher() {
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			timer = new Thread(RateFragment.this);
+			timer.start();
 		}
 
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			if (timer != null && timer.isAlive()) {
+				timer.interrupt();
+			}
 		}
 
 		@Override
 		public void afterTextChanged(Editable s) {
+			if (getActivity() == null) 
+				return;
 			int left = MIN_CHARACTERS - commentsEdit.getText().length();
 			if (commentsEdit.getText().length() == 0) {
 				charsText.setText(R.string.rate_commenttooshort);
@@ -470,22 +480,32 @@ public class RateFragment extends RateBeerFragment {
 			} else {
 				charsText.setText(R.string.rate_commentok);
 			}
-			storeOfflineRating();
 		}
 	};
 
-	private OnClickListener onUploadRating = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (beerId == NO_BEER_ID) {
-				findRatedBeer();
-			} else {
-				postRating();
-			}
+	/**
+	 * Implements a small timer to delay the loading of the example RSS feed
+	 */
+	@Override
+	public void run() {
+		try {
+			Thread.sleep(TIMER_DELAY);
+			// If not interrupted...
+			if (getActivity() == null)
+				return;
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					// Store the updated offline rating in the database
+					saveOfflineRating();
+				}
+			});
+		} catch (InterruptedException e) {
 		}
-	};
-
-	protected void storeOfflineRating() {
+	}
+	
+	private void saveOfflineRating() {
+		// Gather the rating data
 		String customName = customnameEdit.getText().toString();
 		int appearance = appearanceWheel.getAdapter().getSelectedValue();
 		int aroma = aromaWheel.getAdapter().getSelectedValue();
@@ -498,11 +518,13 @@ public class RateFragment extends RateBeerFragment {
 				offlineButton.setText(R.string.rate_offline_notavailable);
 				return;
 			}
+			// Get the offline rating from the database
 			OfflineRating offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
 			if (offline == null) {
 				offlineButton.setText(R.string.rate_offline_notavailable);
 				return;
 			}
+			// Update the databse object
 			offline.update(beerId, customName, originalRatingId, originalRatingDate, appearance, aroma, taste, palate, overall, comments);
 			getRateBeerActivity().getHelper().getOfflineRatingDao().update(offline);
 			offlineButton.setText(R.string.rate_offline_availble);
@@ -510,6 +532,17 @@ public class RateFragment extends RateBeerFragment {
 			offlineButton.setText(R.string.rate_offline_notavailable);
 		}
 	}
+
+	private OnClickListener onUploadRating = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if (beerId == NO_BEER_ID) {
+				findRatedBeer();
+			} else {
+				postRating();
+			}
+		}
+	};
 
 	protected void findRatedBeer() {
 		getRateBeerActivity().load(new FindRatedBeerFragment(offlineId));

@@ -8,4 +8,5 @@
 	</style>
 	<dimen name="LabelSize">16dip</dimen>
 	<dimen name="HomeButtonTextSize">23dip</dimen>
+	<dimen name="AssistanceTextSize">23dip</dimen>
 </resources>

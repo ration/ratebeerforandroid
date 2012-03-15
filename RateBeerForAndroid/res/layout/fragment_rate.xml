@@ -130,6 +130,7 @@
 			android:layout_marginLeft="10dip"
 			android:layout_marginRight="10dip"
 			android:linksClickable="true"
+			android:textSize="@dimen/AssistanceTextSize"
 			android:text="@string/rate_assistance_words"
 			android:visibility="gone" />
 			

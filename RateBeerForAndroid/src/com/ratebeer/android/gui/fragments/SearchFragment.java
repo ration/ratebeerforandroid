@@ -312,17 +312,28 @@ public class SearchFragment extends RateBeerFragment {
 			publishUserResults(((SearchUsersCommand) result.getCommand()).getSearchResults());
 		} else if (result.getCommand().getMethod() == ApiMethod.UpcSearch) {
 			// See if there were any results
-			List<UpcSearchResult> results = ((UpcSearchCommand)result.getCommand()).getUpcSearchResults();
+			UpcSearchCommand command = (UpcSearchCommand)result.getCommand();
+			List<UpcSearchResult> results = command.getUpcSearchResults();
 			if (results.size() > 0) {
 				// Beer found: redirect to beer details
 				getRateBeerActivity().load(new BeerViewFragment(results.get(0).beerName, results.get(0).beerId));
 			} else {
-				// Report that there were no results
-				Toast.makeText(getActivity(), R.string.search_nobeerswithbarcode, Toast.LENGTH_LONG).show();
+				noBarcodeResult(command.getSearchedUpcCode());
 			}
 		}
 	}
 
+	private void noBarcodeResult(final String code) {
+		// Report that there were no results and ask the user to specify this beer instead
+		new ConfirmDialogFragment(new OnDialogResult() {
+			@Override
+			public void onConfirmed() {
+				getSupportFragmentManager().popBackStack();
+				getRateBeerActivity().load(new AddUpcCodeFragment(code));
+			}
+		}, R.string.search_nobeerswithbarcode, code).show(getSupportFragmentManager(), "addupccode");
+	}
+	
 	private void publishBeerResults(ArrayList<BeerSearchResult> result) {
 		this.beerResults = result;
 		if (result == null) {

@@ -67,20 +67,35 @@ public class GetEventDetailsCommand extends HtmlCommand {
 		String name = HttpHelper.cleanHtml(html.substring(nameStart, html.indexOf("</h1>", nameStart)));
 
 		int daysStart = html.indexOf("<h2>", nameStart) + "<h2>".length();
-		String days = html.substring(daysStart, html.indexOf("</h2>", daysStart));
+		String daysRaw = html.substring(daysStart, html.indexOf("</h2>", daysStart)).trim();
+		String days, times;
+		String multiday = "<font color=\"#FFFFFF\">Multiday</font><br>";
+		if (daysRaw.startsWith(multiday)) {
+			String daysStipped = daysRaw.substring(multiday.length());
+			int timeSep1 = daysStipped.indexOf("-");
+			int timeSep2 = daysStipped.indexOf("-", timeSep1 + 1);
+			days = timeSep1 < 0 || timeSep2 < 0? daysStipped: daysStipped.substring(0, timeSep2);
+			if (timeSep1 < 0 || timeSep2 < 0) {
+				times = "";
+			} else {
+				String timesRaw = daysStipped.substring(timeSep2).trim();
+				times = timesRaw.startsWith("-")? timesRaw.substring(1).trim(): timesRaw;
+			}
+		} else {
+			int timeSep = daysRaw.indexOf("-");
+			days = timeSep < 0? daysRaw.trim(): daysRaw.substring(0, timeSep).trim();
+			times = timeSep <0? "": daysRaw.substring(timeSep + 1).trim();
+		}
 
-		int timesStart = html.indexOf("<br>", daysStart) + "<br>".length();
-		String times = html.substring(timesStart, html.indexOf("<br>", timesStart)).trim();
-
-		int locationStart = html.indexOf("<br>", timesStart) + "<br>".length();
-		String location = HttpHelper.cleanHtml(html.substring(locationStart, html.indexOf("<br>", locationStart)));
+		int locationStart = html.indexOf("</h2><br>", daysStart) + "</h2><br>".length();
+		String location = HttpHelper.cleanHtml(html.substring(locationStart, html.indexOf("<", locationStart)));
 
 		int addressStart = html.indexOf("\">", locationStart) + "\">".length();
 		String address = HttpHelper.cleanHtml(html.substring(addressStart, html.indexOf(" [ map ]", addressStart)).trim());
 
 		String detailsText = "<strong><h3>Details</h3></strong><br>";
 		int detailsStart = html.indexOf(detailsText, addressStart) + detailsText.length();
-		String details = HttpHelper.cleanHtml(html.substring(detailsStart, html.indexOf("<b>Cost:</b>", detailsStart))).trim();
+		String details = HttpHelper.cleanHtml(html.substring(detailsStart, html.indexOf("<b>Cost:", detailsStart))).trim();
 
 		String contactText = "<h3>Contact Info</h3><br>";
 		int contactStart = html.indexOf(contactText, detailsStart) + contactText.length();

@@ -54,6 +54,10 @@ public class Home extends Activity {
 			// Home activity should start editing a beer rating
 			startActivity.replaceExtras(getIntent().getExtras());
 			startActivity.setAction(PosterService.ACTION_EDITRATING);
+		} else if (getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_ADDUPCCODE)) {
+			// Home activity should show the add UPC code screen again
+			startActivity.replaceExtras(getIntent().getExtras());
+			startActivity.setAction(PosterService.ACTION_ADDUPCCODE);
 		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAILS)) {
 			// Open the beermails screen
 			startActivity.setAction(BeermailService.ACTION_VIEWBEERMAILS);

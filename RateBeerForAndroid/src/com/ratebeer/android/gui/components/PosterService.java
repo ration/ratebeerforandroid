@@ -33,6 +33,7 @@ import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.AddAvailabilityCommand;
 import com.ratebeer.android.api.command.AddToCellarCommand;
+import com.ratebeer.android.api.command.AddUpcCodeCommand;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.SendBeerMailCommand;
 import com.ratebeer.android.api.command.SetDrinkingStatusCommand;
@@ -52,6 +53,7 @@ public class PosterService extends RateBeerService {
 	public static final String ACTION_ADDTOCELLAR = "com.ratebeer.android.ADD_TO_CELLAR";
 	public static final String ACTION_SENDMAIL = "com.ratebeer.android.SEND_BEERMAIL";
 	public static final String ACTION_UPLOADBEERPHOTO = "com.ratebeer.android.UPLOAD_BEER_PHOTO";
+	public static final String ACTION_ADDUPCCODE = "com.ratebeer.android.ADD_UPCCODE";
 	public static final String URI_BEER = "http://ratebeer.com/b/%s/";
 	public static final String EXTRA_MESSENGER = "MESSENGER";
 	public static final String EXTRA_NEWSTATUS = "NEW_STATUS";
@@ -79,6 +81,7 @@ public class PosterService extends RateBeerService {
 	public static final String EXTRA_SUBJECT = "SUBJECT";
 	public static final String EXTRA_BODY = "BODY";
 	public static final String EXTRA_PHOTO = "PHOTO";
+	public static final String EXTRA_UPCCODE = "UPCCODE";
 	public static final int NO_BEER_EXTRA = -1;
 	public static final int NO_OFFLINE_EXTRA = -1;
 	public static final int RESULT_SUCCESS = 0;
@@ -90,6 +93,7 @@ public class PosterService extends RateBeerService {
 	private static final int NOTIFY_ADDTOCELLAR = 3;
 	private static final int NOTIFY_SENDMAIL = 4;
 	private static final int NOTIFY_UPLOADPHOTO = 5;
+	private static final int NOTIFY_ADDUPCCODE = 6;
 
 	private static final int IMAGE_MAX_SIZE = 800; // Max pixels in one dimension
 
@@ -381,6 +385,39 @@ public class PosterService extends RateBeerService {
 						getString(R.string.error_commandfailed), true, recoverIntent);
 				// If requested, call back the messenger, i.e. the calling activity
 				callbackMessenger(intent, RESULT_FAILURE);
+			}
+
+		}
+
+		// Try to add a UPC code to some selected beer
+		if (intent.getAction().equals(ACTION_ADDUPCCODE)) {
+
+			// Get beer and upc code
+			int beerId = intent.getIntExtra(EXTRA_BEERID, -1);
+			String beerName = intent.getStringExtra(EXTRA_BEERNAME);
+			String upcCode = intent.getStringExtra(EXTRA_UPCCODE);
+			if (beerId <= 0 || beerName == null || upcCode == null || upcCode.equals("")) {
+				Log.d(RateBeerForAndroid.LOG_NAME, "Missing extras in the ADD_UPCCODE intent; cancelling.");
+				return;
+			}
+
+			// Synchronously call the add UPC code method
+			// During the operation a notification will be shown
+			Log.d(RateBeerForAndroid.LOG_NAME, "Adding barcode " + upcCode + " to " + beerName);
+			Intent recoverIntent = new Intent(getApplicationContext(), Home.class);
+			recoverIntent.replaceExtras(intent.getExtras());
+			recoverIntent.setAction(ACTION_ADDUPCCODE);
+			createNotification(NOTIFY_ADDUPCCODE, getString(R.string.app_addingupccode), getString(
+					R.string.app_addingcodefor, beerName), true, recoverIntent);
+			CommandResult result = new AddUpcCodeCommand(app.getApi(), beerId, upcCode).execute();
+			if (result instanceof CommandSuccessResult) {
+				notificationManager.cancel(NOTIFY_ADDUPCCODE);
+			} else {
+				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
+						.toString() : "Unknown error";
+				Log.d(RateBeerForAndroid.LOG_NAME, "Adding of barcode " + upcCode + " to " + beerName + " failed: " + e);
+				createNotification(NOTIFY_ADDUPCCODE, getString(R.string.app_addingupccode),
+						getString(R.string.error_commandfailed), true, recoverIntent);
 			}
 
 		}

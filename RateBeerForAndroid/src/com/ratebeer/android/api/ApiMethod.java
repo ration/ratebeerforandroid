@@ -43,6 +43,7 @@ public enum ApiMethod {
 	// Beers
 	SearchBeers,
 	UpcSearch,
+	AddUpcCode,
 	GetBeerDetails,
 	GetBeerImage,
 	GetBeerRatings,

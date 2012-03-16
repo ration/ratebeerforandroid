@@ -92,6 +92,15 @@
 		<item name="android:textSize">@dimen/LabelSize</item>
 	</style>
 
+	<style name="CalculatorButton" parent="DetailsButton">
+		<item name="android:textSize">20dip</item>
+		<item name="android:gravity">center</item>
+	</style>
+	<style name="CalculatorInput">
+		<item name="android:textSize">24dip</item>
+		<item name="android:gravity">center</item>
+	</style>
+	
     <style name="TabPageIndicator" parent="Widget">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:background">@drawable/tab_indicator</item>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/com.ratebeer.android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_margin="10dip">
+
+	<TableLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:shrinkColumns="*"
+		android:stretchColumns="*">
+
+		<Spinner
+			android:id="@+id/system"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="10dip"/>
+
+		<TableRow android:layout_marginBottom="10dip">
+
+			<Button
+				android:id="@+id/from1"
+				style="@style/CalculatorButton"
+				android:layout_height="wrap_content"/>
+
+			<Button
+				android:id="@+id/from2"
+				style="@style/CalculatorButton"
+				android:layout_height="wrap_content"/>
+
+			<Button
+				android:id="@+id/from3"
+				style="@style/CalculatorButton"
+				android:layout_height="wrap_content"/>
+
+			<Button
+				android:id="@+id/from4"
+				style="@style/CalculatorButton"
+				android:layout_height="wrap_content"/>
+		</TableRow>
+
+		<TableRow>
+
+			<EditText
+				android:id="@+id/from_quantity"
+				style="@style/CalculatorInput"
+				android:layout_height="wrap_content"
+				android:inputType="numberSigned"/>
+
+			<TextView
+				android:id="@+id/from_for"
+				android:layout_height="wrap_content"
+				android:gravity="center" />
+
+			<EditText
+				android:id="@+id/from_euro"
+				style="@style/CalculatorInput"
+				android:hint="@string/calc_euro"
+				android:layout_height="wrap_content"
+				android:inputType="numberSigned"/>
+
+			<EditText
+				android:id="@+id/from_cent"
+				style="@style/CalculatorInput"
+				android:hint="@string/calc_cent"
+				android:layout_height="wrap_content"
+				android:inputType="numberSigned"/>
+		</TableRow>
+
+		<LinearLayout
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="10dip"
+			android:layout_marginTop="10dip"
+			android:orientation="horizontal">
+
+			<Button
+				android:id="@+id/from_to"
+				android:layout_width="0dip"
+				android:layout_height="wrap_content"
+				android:layout_weight="3"
+				android:text="@string/calc_from_to"/>
+
+			<Button
+				android:id="@+id/clear"
+				android:layout_width="0dip"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/calc_clear"/>
+			
+			<Button
+				android:id="@+id/to_from"
+				android:layout_width="0dip"
+				android:layout_height="wrap_content"
+				android:layout_weight="3"
+				android:text="@string/calc_to_from"/>
+		</LinearLayout>
+
+		<TableRow>
+
+			<EditText
+				android:id="@+id/to_quantity"
+				style="@style/CalculatorInput"
+				android:layout_height="wrap_content"
+				android:inputType="numberSigned"/>
+
+			<TextView
+				android:id="@+id/to_for"
+				android:layout_height="wrap_content"
+				android:gravity="center" />
+
+			<EditText
+				android:id="@+id/to_euro"
+				style="@style/CalculatorInput"
+				android:hint="@string/calc_euro"
+				android:layout_height="wrap_content"
+				android:inputType="numberSigned"/>
+
+			<EditText
+				android:id="@+id/to_cent"
+				style="@style/CalculatorInput"
+				android:hint="@string/calc_cent"
+				android:layout_height="wrap_content"
+				android:inputType="numberSigned"/>
+		</TableRow>
+
+		<TableRow android:layout_marginTop="10dip">
+
+			<Button
+				android:id="@+id/to1"
+				style="@style/CalculatorButton"
+				android:layout_height="wrap_content"/>
+
+			<Button
+				android:id="@+id/to2"
+				style="@style/CalculatorButton"
+				android:layout_height="wrap_content"/>
+
+			<Button
+				android:id="@+id/to3"
+				style="@style/CalculatorButton"
+				android:layout_height="wrap_content"/>
+
+			<Button
+				android:id="@+id/to4"
+				style="@style/CalculatorButton"
+				android:layout_height="wrap_content"/>
+		</TableRow>
+	</TableLayout>
+
+</ScrollView>

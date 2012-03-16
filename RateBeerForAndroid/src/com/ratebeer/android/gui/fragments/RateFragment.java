@@ -578,6 +578,7 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 				// Share this rating?
 				if (shareBox.isChecked()) {
 					Intent s = new Intent(Intent.ACTION_SEND);
+				    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 					s.setType("text/plain");
 					s.putExtra(Intent.EXTRA_TEXT, String.format(getRateBeerActivity().getSettings()
 							.getRatingShareText(), Integer.toString(beerId), beerName, PostRatingCommand

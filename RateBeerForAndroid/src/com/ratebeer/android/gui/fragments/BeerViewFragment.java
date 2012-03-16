@@ -216,6 +216,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		case MENU_SHARE:
 			// Start a share intent for this beer
 			Intent s = new Intent(Intent.ACTION_SEND);
+		    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			s.setType("text/plain");
 			s.putExtra(Intent.EXTRA_TEXT, getString(R.string.details_share, beerName, beerId));
 			startActivity(Intent.createChooser(s, getString(R.string.details_sharebeer)));

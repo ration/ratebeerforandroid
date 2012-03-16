@@ -56,6 +56,7 @@ public class DashboardFragment extends RateBeerFragment {
 
 	private static final int MENU_SCANBARCODE = 1;
 	private static final int MENU_SEARCH = 2;
+	private static final int MENU_CALCULATOR = 3;
 
 	private Button drinkingStatus, myProfileButton;
 	private ListView stylesView;
@@ -153,11 +154,14 @@ public class DashboardFragment extends RateBeerFragment {
 		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
 			// For phones, the dashboard (and the dashboard only) shows a search icon in the action bar
-			// Not that tablets always show an search input in the action bar through the HomeTablet activity directly
+			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
 			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, MENU_SEARCH, R.string.home_search);
 			item.setIcon(R.drawable.ic_action_search);
 			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
+		MenuItem item3 = menu.add(Menu.NONE, MENU_CALCULATOR, MENU_CALCULATOR, R.string.home_calculator);
+		item3.setIcon(R.drawable.ic_action_barcode);
+		item3.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -171,6 +175,10 @@ public class DashboardFragment extends RateBeerFragment {
 		case MENU_SCANBARCODE:
 	    	// Start the search activity (without specific search string), which offers the actual scanning feature
 			getRateBeerActivity().load(new SearchFragment(true));
+			break;
+		case MENU_CALCULATOR:
+			// Start calculator screen
+			getRateBeerActivity().load(new CalculatorFragment());
 			break;
 		}
 		return super.onOptionsItemSelected(item);

@@ -203,6 +203,7 @@ public class SearchFragment extends RateBeerFragment {
 		// Test to see if the ZXing barcode scanner is available that can handle the SCAN intent
 	    Intent scan = new Intent(SCAN_INTENT);
 	    scan.addCategory(Intent.CATEGORY_DEFAULT);
+	    scan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
     	if (ActivityUtil.isIntentAvailable(getActivity(), scan)) {
     		// Ask the barcode scanner to allow the user to scan some code
     		startActivityForResult(scan, ACTIVITY_BARCODE);

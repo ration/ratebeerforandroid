@@ -20,16 +20,18 @@ package com.ratebeer.android.api.command;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Country {
+public class Country implements Comparable<Country> {
 
 	private final int id;
 	private final String code;
 	private final String name;
+	private final int sortOrder;
 	
-	private Country(int id, String code, String name) {
+	private Country(int id, String code, String name, int sortOrder) {
 		this.id = id;
 		this.code = code;
 		this.name = name;
+		this.sortOrder = sortOrder;
 	}
 
 	public int getId() {
@@ -44,16 +46,26 @@ public class Country {
 		return name;
 	}
 	
+	public Integer getSortOrder() {
+		return sortOrder;
+	}
+	
 	@Override
 	public String toString() {
 		return name;
 	}
-	
+
+	@Override
+	public int compareTo(Country another) {
+		return this.getSortOrder().compareTo(another.getSortOrder());
+	}
+
 	/**
 	 * List of all the countries available in RateBeer
 	 */
 	public static Map<Integer, Country> ALL_COUNTRIES;
-
+	public static int sortNr = 0;
+	
 	/**
 	 * Initialization of all the countries (which will run when the Country class is first used
 	 */
@@ -323,11 +335,11 @@ public class Country {
 	 * @param name The human readable name of the country
 	 */
 	private static void addCountry(String code, int id, String name) {
-		ALL_COUNTRIES.put(id, new Country(id, code, name));
+		ALL_COUNTRIES.put(id, new Country(id, code, name, ++sortNr));
 	}
 
 	public String toSinglePreference() {
-		return id + "|" + code + "|" + name;
+		return id + "|" + code + "|" + name + "|" + sortOrder;
 	}
 
 	public static Country fromSinglePreference(String storedPreference) {
@@ -335,11 +347,11 @@ public class Country {
 			return null;
 		}
 		String[] parts = storedPreference.split("\\|");
-		if (parts.length < 3) {
+		if (parts.length < 4) {
 			return null;
 		}
 		try {
-			return new Country(Integer.parseInt(parts[0]), parts[1], parts[2]);
+			return new Country(Integer.parseInt(parts[0]), parts[1], parts[2], Integer.parseInt(parts[3]));
 		} catch (NumberFormatException e) {}
 		return null;
 	}

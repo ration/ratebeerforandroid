@@ -30,6 +30,10 @@ public class UpcSearchCommand extends JsonCommand {
 		this.upcCode = upcCode;
 	}
 
+	public String getSearchedUpcCode() {
+		return upcCode;
+	}
+	
 	public ArrayList<UpcSearchResult> getUpcSearchResults() {
 		return upcSearchResults;
 	}

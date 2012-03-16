@@ -35,6 +35,8 @@
 	<string name="app_addwant">I want %1$s</string>
 	<string name="app_addhave">I have %1$s</string>
 	<string name="app_ratedwithurl">Rated %2$s with a %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+	<string name="app_addingupccode">Adding scanned barcode to beer</string>
+	<string name="app_addingcodefor">Adding code to %1$s</string>
 	<string name="app_requiressignin">Please sign in to your RateBeer account to use this feature.</string>
 	<string name="app_noaccount">No account?\nhttp://www.ratebeer.com/NewUser.asp</string>
 	<string name="app_newmails">You\'ve got %1$s new beer mails</string>
@@ -138,7 +140,7 @@
 	<string name="search_places">Places</string>
 	<string name="search_users">Users</string>
 	<string name="search_barcodescanner">Barcode scanner</string>
-	<string name="search_nobeerswithbarcode">No beers found for this barcode</string>
+	<string name="search_nobeerswithbarcode">No beers found for barcode %1$s. Please consider adding it to the database using a simple beer search.</string>
 	<string name="search_clearhistory">Clear history</string>
 	<string name="search_noitems">No results for your query. Maybe try again with a small part of the beer, place or user\'s name?</string>
 	<string name="search_retired">retired</string>
@@ -219,6 +221,10 @@
 	<string name="addav_onbottlecan">bottle/can</string>
 	<string name="addav_skip">Skip</string>
 	<string name="addav_noplacesselected">You have not yet selected any places</string>
+	
+	<string name="addupc_upccode">UPC code:</string>
+	<string name="addupc_beer">Beer name:</string>
+	<string name="addupc_find">Find</string>
 	
 	<string name="mail_noitems">There are no mails in your inbox</string>
 	<string name="mail_sendmail">Send mail</string>

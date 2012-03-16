@@ -33,6 +33,7 @@ import com.ratebeer.android.gui.components.BeermailService;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.fragments.AddUpcCodeFragment;
 import com.ratebeer.android.gui.fragments.BeerViewFragment;
 import com.ratebeer.android.gui.fragments.DashboardFragment;
 import com.ratebeer.android.gui.fragments.MailViewFragment;
@@ -74,6 +75,9 @@ public class HomePhone extends RateBeerActivity {
 			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_EDITRATING)) {
 				// Open the rating screen for a beer
 				load(new RateFragment(getIntent().getExtras()));
+			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_ADDUPCCODE)) {
+				// Open the add UPC code screen again; this assumes the UPC code is given in the extras
+				load(new AddUpcCodeFragment(getIntent().getStringExtra(PosterService.EXTRA_UPCCODE)));
 			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAILS)) {
 				// Open the beermails screen
 				load(new MailsFragment());

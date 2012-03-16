@@ -64,6 +64,15 @@
 	<string name="home_beermail">Beermail</string>
 	<string name="home_nowdrinking">Now drinking %1$s</string>
 	<string name="home_preferences">Preferences</string>
+	<string name="home_calculator">Calculator</string>
+	
+	<string name="calc_clear">X</string>
+	<string name="calc_for">%1$s for</string>
+	<string name="calc_euro">¤</string>
+	<string name="calc_cent">¢</string>
+	<string name="calc_to_from">↑</string>
+	<string name="calc_from_to">↓</string>
+	<string name="calc_fillinall">Please fill in quality fields and one of the beer prices first</string>
 	
 	<string name="myratings_avg">%1$s avg.</string>
 	<string name="myratings_noitems">No ratings yet; open up a beer and start those taste buds!</string>

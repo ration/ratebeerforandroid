@@ -27,7 +27,7 @@ public class UserCommandsTests extends AndroidTestCase {
 
 	public void testExecute() {
 		
-		// Get test
+		// Search for users with android in the name
 		RateBeerApi api = TestHelper.getApi(getContext(), true);
 		SearchUsersCommand usersCommand = new SearchUsersCommand(api, "android");
 		usersCommand.execute();

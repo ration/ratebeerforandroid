@@ -395,10 +395,16 @@ public class PlaceViewFragment extends RateBeerFragment {
 
 			// Bind the data
 			AvailableBeer item = getItem(position);
-			holder.beer.setTag(item.beerId);
-			holder.beer.setText(item.beerName);
-			holder.score.setText(item.averageRating == -1? "?": Integer.toString(item.averageRating));
-			holder.timerecorded.setText(getString(R.string.places_enteredat, dateFormat.format(item.timeEntered)));
+			if (getActivity() != null) {
+				holder.beer.setTag(item.beerId);
+				holder.beer.setText(item.beerName);
+				holder.score.setText(item.averageRating == -1? "?": Integer.toString(item.averageRating));
+				if (item.timeEntered != null) {
+					holder.timerecorded.setText(getString(R.string.places_enteredat, dateFormat.format(item.timeEntered)));
+				} else {
+					holder.timerecorded.setText("");
+				}
+			}
 			
 			return convertView;
 		}

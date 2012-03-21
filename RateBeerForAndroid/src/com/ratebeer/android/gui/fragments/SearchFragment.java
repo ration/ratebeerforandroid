@@ -409,12 +409,14 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			BeerSearchResult item = getItem(position);
-			holder.beer.setText(item.beerName);
-			holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
-			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
-			holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
-			holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
-			holder.alias.setVisibility(item.isAlias ? View.VISIBLE : View.GONE);
+			if (getActivity() != null) {
+				holder.beer.setText(item.beerName);
+				holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
+				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+				holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
+				holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
+				holder.alias.setVisibility(item.isAlias ? View.VISIBLE : View.GONE);
+			}
 
 			return convertView;
 		}
@@ -448,8 +450,10 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			PlaceSearchResult item = getItem(position);
-			holder.name.setText(item.placeName);
-			holder.city.setText(item.city);
+			if (getActivity() != null) {
+				holder.name.setText(item.placeName);
+				holder.city.setText(item.city);
+			}
 
 			return convertView;
 		}
@@ -483,9 +487,11 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			UserSearchResult item = getItem(position);
-			holder.name.setText(item.userName);
-			holder.ratings.setText(getString(R.string.search_ratings, Integer.toString(item.ratings)));
-
+			if (getActivity() != null) {
+				holder.name.setText(item.userName);
+				holder.ratings.setText(getString(R.string.search_ratings, Integer.toString(item.ratings)));
+			}
+			
 			return convertView;
 		}
 

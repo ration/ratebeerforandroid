@@ -258,11 +258,13 @@ public class TopBeersFragment extends RateBeerFragment {
 
 			// Bind the data
 			TopBeer item = getItem(position);
-			holder.order.setText(Integer.toString(item.orderNr));
-			holder.beer.setText(item.beerName);
-			holder.style.setText(item.styleName);
-			holder.score.setText(String.format(DECIMAL_FORMATTER, item.score));
-			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+			if (getActivity() != null) {
+				holder.order.setText(Integer.toString(item.orderNr));
+				holder.beer.setText(item.beerName);
+				holder.style.setText(item.styleName);
+				holder.score.setText(String.format(DECIMAL_FORMATTER, item.score));
+				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+			}
 
 			return convertView;
 		}

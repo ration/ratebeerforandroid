@@ -56,9 +56,9 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 	@Override
 	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
 		RateBeerApi.ensureLogin(getUserSettings());
-		HttpPost post = new HttpPost("http://www.ratebeer.com/m/m_savebeerpic.asp");
+		HttpPost post = new HttpPost("http://www.ratebeer.com/ajax/m_savebeerpic.asp");
 		Part[] parts = { new StringPart("BeerID", Integer.toString(beerId)), 
-				new FilePart("File1", photo, FilePart.DEFAULT_CONTENT_TYPE, null) };
+				new FilePart("attach1", photo, FilePart.DEFAULT_CONTENT_TYPE, null) };
 		post.setEntity(new MultipartEntity(parts, post.getParams()));
 		HttpHelper.makeRawRBPost(post, HttpStatus.SC_OK);
 	}

@@ -12,7 +12,7 @@
 		android:stretchColumns="*">
 
 		<Spinner
-			android:id="@+id/system"
+			android:id="@+id/from_system"
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="10dip"/>
 
@@ -123,6 +123,11 @@
 				android:inputType="numberSigned"/>
 		</TableRow>
 
+		<Spinner
+			android:id="@+id/to_system"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="10dip"/>
+		
 		<TableRow android:layout_marginTop="10dip">
 
 			<Button

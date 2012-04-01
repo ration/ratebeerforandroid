@@ -389,7 +389,7 @@ public class BrewerViewFragment extends RateBeerFragment {
 			case 0:
 				return getActivity().getString(R.string.app_details);
 			case 1:
-				return getActivity().getString(R.string.places_availablebeers);
+				return getActivity().getString(R.string.brewers_beers);
 			}
 			return null;
 		}

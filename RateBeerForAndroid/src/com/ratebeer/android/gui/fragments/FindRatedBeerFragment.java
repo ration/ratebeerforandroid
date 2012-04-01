@@ -240,12 +240,14 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 			
 			// Bind the data
 			BeerSearchResult item = getItem(position);
-			holder.beer.setText(item.beerName);
-			holder.overall.setText((item.overallPerc >= 0? Integer.toString(item.overallPerc): "?"));
-			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
-			holder.rated.setVisibility(item.isRated? View.VISIBLE: View.GONE);
-			holder.retired.setVisibility(item.isRetired? View.VISIBLE: View.GONE);
-			holder.alias.setVisibility(item.isAlias? View.VISIBLE: View.GONE);
+			if (getActivity() != null) {
+				holder.beer.setText(item.beerName);
+				holder.overall.setText((item.overallPerc >= 0? Integer.toString(item.overallPerc): "?"));
+				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+				holder.rated.setVisibility(item.isRated? View.VISIBLE: View.GONE);
+				holder.retired.setVisibility(item.isRetired? View.VISIBLE: View.GONE);
+				holder.alias.setVisibility(item.isAlias? View.VISIBLE: View.GONE);
+			}
 			
 			return convertView;
 		}

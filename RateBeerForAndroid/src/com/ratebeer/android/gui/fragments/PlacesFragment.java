@@ -144,11 +144,12 @@ public class PlacesFragment extends RateBeerFragment {
 			}
 			// Now get the places at this location, if this fragment is still bound to an activity
 			PlacesFragment.this.lastLocation = location;
-			if (getRateBeerActivity() != null) {
+			if (getRateBeerActivity() != null && PlacesFragment.this.lastLocation != null) {
 				getView().post(new Runnable() {
 					@Override
 					public void run() {
-						execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, lastLocation.getLatitude(), lastLocation.getLongitude()));
+						execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, 
+								lastLocation.getLatitude(), lastLocation.getLongitude()));
 					}
 				});
 			}

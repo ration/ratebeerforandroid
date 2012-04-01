@@ -124,6 +124,11 @@
 	<string name="places_share">Check out %1$s at @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
 	<string name="places_shareplace">Share place&#8230;</string>
 
+	<string name="brewers_share">Check out %1$s at @ratebeer http://www.ratebeer.com/brewers/b/%2$s/</string>
+	<string name="brewers_sharebrewer">Share brewer&#8230;</string>
+	<string name="brewers_beers">Beers</string>
+	<string name="brewers_facebook">Facebook</string>
+	
 	<string name="events_attendees">Attendees:</string>
 	<string name="events_noitems">No events planned in this area!</string>
 	<string name="events_addattendance">Yes, add my name</string>
@@ -137,6 +142,7 @@
 	<string name="search_beersearch">RateBeer search</string>
 	<string name="search_hint">Search beers, places &amp; users</string>
 	<string name="search_beers">Beers</string>
+	<string name="search_brewers">Brewers</string>
 	<string name="search_places">Places</string>
 	<string name="search_users">Users</string>
 	<string name="search_barcodescanner">Barcode scanner</string>

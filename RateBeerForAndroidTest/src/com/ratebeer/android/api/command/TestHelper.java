@@ -37,7 +37,7 @@ public class TestHelper {
 			// - has 0 beer or place ratings
 			// - has joined Feb 10, 2012 and favourite style Saison
 			// http://www.ratebeer.com/View-User-156822.htm
-			settings.saveUserSettings(new UserSettings(156822, "rbandroid", "Andr01dAPP", null, false));
+			settings.saveUserSettings(new UserSettings(156822, "rbandroid", "Andr01dAPP", "", false));
 			return new RateBeerApi(settings);
 
 		} else {

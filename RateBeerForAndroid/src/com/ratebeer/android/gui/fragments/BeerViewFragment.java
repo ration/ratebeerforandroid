@@ -91,8 +91,8 @@ public class BeerViewFragment extends RateBeerFragment {
 	private LayoutInflater inflater;
 	private ViewPager pager;
 	private View scoreCard;
-	private TextView nameText, brewernameText, noscoreyetText, scoreText, stylepctlText, ratingsText, descriptionText;
-	private Button abvstyleButton;
+	private TextView nameText, noscoreyetText, scoreText, stylepctlText, ratingsText, descriptionText;
+	private Button brewernameButton, abvstyleButton;
 	private Button rateThisButton, drinkingThisButton, addAvailabilityButton, havethisButton, wantthisButton, uploadphotoButton;
 	private View ownratingRow, ownratinglabel, otherratingslabel;
 	private TextView ownratingTotal, ownratingAroma, ownratingAppearance, ownratingTaste, ownratingPalate, 
@@ -318,7 +318,11 @@ public class BeerViewFragment extends RateBeerFragment {
 		// Open style details screen
 		getRateBeerActivity().load(new StyleViewFragment(style));
 	}
-
+	
+	protected void onBrewerClick() {
+		getRateBeerActivity().load(new BrewerViewFragment(details.brewerId));
+	}
+	
 	private void onReviewClick(Integer userId, String username) {
 		// Start the user details screen
 		getRateBeerActivity().load(new UserViewFragment(username, userId));
@@ -457,7 +461,8 @@ public class BeerViewFragment extends RateBeerFragment {
 	 */
 	public void setDetails(BeerDetails details) {
 		nameText.setText(details.beerName);
-		brewernameText.setText(getString(R.string.details_bybrewer, details.brewerName));
+		brewernameButton.setText(getString(R.string.details_bybrewer, details.brewerName));
+		brewernameButton.setVisibility(View.VISIBLE);
 		boolean noScoreYet = details.overallPerc == GetBeerDetailsCommand.NO_SCORE_YET;
 		noscoreyetText.setVisibility(noScoreYet? View.VISIBLE: View.GONE);
 		scoreCard.setVisibility(noScoreYet? View.GONE: View.VISIBLE);
@@ -677,14 +682,14 @@ public class BeerViewFragment extends RateBeerFragment {
 				abvstyleButton = (Button) pagerDetailsView.findViewById(R.id.abvstyle);
 				descriptionText = (TextView) pagerDetailsView.findViewById(R.id.description);
 				nameText = (TextView) pagerDetailsView.findViewById(R.id.name);
-				brewernameText = (TextView) pagerDetailsView.findViewById(R.id.brewername);
+				brewernameButton = (Button) pagerDetailsView.findViewById(R.id.brewername);
 			} else {
 				// Tablet version; these fields are not in the pager but directly in the main layout
 				imageView = (ImageView) getView().findViewById(R.id.image);
 				abvstyleButton = (Button) getView().findViewById(R.id.abvstyle);
 				descriptionText = (TextView) getView().findViewById(R.id.description);
 				nameText = (TextView) getView().findViewById(R.id.name);
-				brewernameText = (TextView) getView().findViewById(R.id.brewername);
+				brewernameButton = (Button) getView().findViewById(R.id.brewername);
 			}
 			scoreCard = pagerDetailsView.findViewById(R.id.scorecard);
 			noscoreyetText = (TextView) pagerDetailsView.findViewById(R.id.noscoreyet);
@@ -699,6 +704,12 @@ public class BeerViewFragment extends RateBeerFragment {
 				@Override
 				public void onClick(View v) {
 					onStyleClick();
+				}
+			});
+			brewernameButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onBrewerClick();
 				}
 			});
 			drinkingThisButton.setOnClickListener(new OnClickListener() {

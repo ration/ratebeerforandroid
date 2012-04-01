@@ -34,20 +34,29 @@ import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 public class GetBrewerBeersCommand extends JsonCommand {
 
 	private final int brewerId;
+	private final int userId;
 	private ArrayList<BeerSearchResult> results;
 
+	public static final int NO_USER = -1;
+
 	public GetBrewerBeersCommand(RateBeerApi api, int brewerId) {
-		super(api, ApiMethod.GetBrewerBeers);
-		this.brewerId = brewerId;
+		this(api, brewerId, NO_USER);
 	}
 
-	public ArrayList<BeerSearchResult> getAvailableBeers() {
+	public GetBrewerBeersCommand(RateBeerApi api, int brewerId, int userId) {
+		super(api, ApiMethod.GetBrewerBeers);
+		this.brewerId = brewerId;
+		this.userId = userId;
+	}
+
+	public ArrayList<BeerSearchResult> getBeers() {
 		return results;
 	}
 
 	@Override
 	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://ratebeer.com/json/bw.asp?k=" + HttpHelper.RB_KEY + "&b=" + brewerId);
+		return HttpHelper.makeRBGet("http://ratebeer.com/json/bw.asp?k=" + HttpHelper.RB_KEY + "&b=" + brewerId
+				+ (userId != SearchBeersCommand.NO_USER ? "&u=" + userId : ""));
 	}
 
 	@Override

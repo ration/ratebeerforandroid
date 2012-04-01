@@ -1,21 +1,21 @@
-package com.ratebeer.android.api.command;
 /*
-This file is part of RateBeer For Android.
+ This file is part of RateBeer For Android.
 
-RateBeer for Android is free software: you can redistribute it 
-and/or modify it under the terms of the GNU General Public 
-License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
+ RateBeer for Android is free software: you can redistribute it 
+ and/or modify it under the terms of the GNU General Public 
+ License as published by the Free Software Foundation, either 
+ version 3 of the License, or (at your option) any later version.
 
-RateBeer for Android is distributed in the hope that it will be 
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ RateBeer for Android is distributed in the hope that it will be 
+ useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with RateBeer for Android.  If not, see 
-<http://www.gnu.org/licenses/>.
-*/
+ You should have received a copy of the GNU General Public License
+ along with RateBeer for Android.  If not, see 
+ <http://www.gnu.org/licenses/>.
+ */
+package com.ratebeer.android.api.command;
 
 import java.io.IOException;
 
@@ -33,15 +33,15 @@ import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
 
 public class GetBrewerDetailsCommand extends JsonCommand {
-	
+
 	private final int brewerId;
 	private BrewerDetails details;
-	
+
 	public GetBrewerDetailsCommand(RateBeerApi api, int beerId) {
 		super(api, ApiMethod.GetBrewerDetails);
 		this.brewerId = beerId;
 	}
-	
+
 	public BrewerDetails getDetails() {
 		return details;
 	}
@@ -53,24 +53,24 @@ public class GetBrewerDetailsCommand extends JsonCommand {
 
 	@Override
 	protected void parse(JSONArray json) throws JSONException {
-		
+
 		details = null;
 		if (json.length() > 0) {
 			JSONObject result = json.getJSONObject(0);
 			details = new BrewerDetails(result.getInt("BrewerID"),
 					HttpHelper.cleanHtml(result.getString("BrewerName")), HttpHelper.cleanHtml(result
 							.getString("BrewerDescription")), HttpHelper.cleanHtml(result.getString("BrewerAddress")),
-					HttpHelper.cleanHtml(result.getString("BrewerCity")), result.getInt("BrewerStateID"),
-					result.getInt("BrewerCountryID"), HttpHelper.cleanHtml(result.getString("BrewerZipCode")),
-					result.getInt("BrewerTypeID"), HttpHelper.cleanHtml(result.getString("BrewerWebSite")),
-					HttpHelper.cleanHtml(result.getString("Facebook")), HttpHelper.cleanHtml(result
-							.getString("Twitter")), HttpHelper.cleanHtml(result.getString("BrewerEmail")),
-					HttpHelper.cleanHtml(result.getString("BrewerPhone")), HttpHelper.cleanHtml(result
-							.getString("Opened")));
+					HttpHelper.cleanHtml(result.getString("BrewerCity")), result.isNull("BrewerStateID") ? -1
+							: result.getInt("BrewerStateID"), result.getInt("BrewerCountryID"),
+					HttpHelper.cleanHtml(result.getString("BrewerZipCode")), result.getInt("BrewerTypeID"),
+					HttpHelper.cleanHtml(result.getString("BrewerWebSite")), HttpHelper.cleanHtml(result
+							.getString("Facebook")), HttpHelper.cleanHtml(result.getString("Twitter")),
+					HttpHelper.cleanHtml(result.getString("BrewerEmail")), HttpHelper.cleanHtml(result
+							.getString("BrewerPhone")), HttpHelper.cleanHtml(result.getString("Opened")));
 		}
 
 	}
-	
+
 	public static class BrewerDetails implements Parcelable {
 
 		public final int brewerId;
@@ -90,8 +90,8 @@ public class GetBrewerDetailsCommand extends JsonCommand {
 		public String opened;
 
 		public BrewerDetails(int brewerID, String brewerName, String description, String address, String city,
-				int stateID, int countryID, String zipcode, int type, String website, String facebook,
-				String twitter, String email, String phone, String opened) {
+				int stateID, int countryID, String zipcode, int type, String website, String facebook, String twitter,
+				String email, String phone, String opened) {
 			this.brewerId = brewerID;
 			this.brewerName = brewerName;
 			this.description = description;
@@ -112,6 +112,7 @@ public class GetBrewerDetailsCommand extends JsonCommand {
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(brewerId);
 			out.writeString(brewerName);
@@ -129,14 +130,17 @@ public class GetBrewerDetailsCommand extends JsonCommand {
 			out.writeString(phone);
 			out.writeString(opened);
 		}
+
 		public static final Parcelable.Creator<BrewerDetails> CREATOR = new Parcelable.Creator<BrewerDetails>() {
 			public BrewerDetails createFromParcel(Parcel in) {
 				return new BrewerDetails(in);
 			}
+
 			public BrewerDetails[] newArray(int size) {
 				return new BrewerDetails[size];
 			}
 		};
+
 		private BrewerDetails(Parcel in) {
 			brewerId = in.readInt();
 			brewerName = in.readString();
@@ -154,7 +158,7 @@ public class GetBrewerDetailsCommand extends JsonCommand {
 			phone = in.readString();
 			opened = in.readString();
 		}
-		
+
 	}
 
 }

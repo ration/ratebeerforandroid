@@ -258,12 +258,14 @@ public class UserRatingsFragment extends RateBeerFragment {
 
 			// Bind the data
 			UserRating item = getItem(position);
-			holder.beer.setText(item.beerName);
-			holder.brewer.setText(item.brewerName);
-			holder.style.setText(item.styleName);
-			holder.score.setText(getString(R.string.myratings_avg, String.format(DECIMAL_FORMATTER, item.score)));
-			holder.myrating.setText(String.format(DECIMAL_FORMATTER, item.myRating));
-			holder.date.setText(DATE_FORMATTER.format(item.date));
+			if (getActivity() != null) {
+				holder.beer.setText(item.beerName);
+				holder.brewer.setText(item.brewerName);
+				holder.style.setText(item.styleName);
+				holder.score.setText(getString(R.string.myratings_avg, String.format(DECIMAL_FORMATTER, item.score)));
+				holder.myrating.setText(String.format(DECIMAL_FORMATTER, item.myRating));
+				holder.date.setText(DATE_FORMATTER.format(item.date));
+			}
 
 			return convertView;
 		}

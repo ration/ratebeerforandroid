@@ -51,6 +51,11 @@ public enum ApiMethod {
 	GetTopBeers,
 	UploadBeerPhoto,
 	
+	// Brewers
+	SearchBrewers,
+	GetBrewerDetails,
+	GetBrewerBeers,
+	
 	// Styles
 	GetStyleDetails,
 	

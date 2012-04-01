@@ -225,11 +225,11 @@ public class StyleViewFragment extends RateBeerFragment {
 
 			// Bind the data
 			TopBeer item = getItem(position);
-			holder.beer.setTag(item);
-			holder.order.setText(Integer.toString(item.orderNr));
-			holder.beer.setText(item.beerName);
-			holder.score.setText(String.format(DECIMAL_FORMATTER, item.score));
 			if (getActivity() != null) {
+				holder.beer.setTag(item);
+				holder.order.setText(Integer.toString(item.orderNr));
+				holder.beer.setText(item.beerName);
+				holder.score.setText(String.format(DECIMAL_FORMATTER, item.score));
 				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
 			}
 			

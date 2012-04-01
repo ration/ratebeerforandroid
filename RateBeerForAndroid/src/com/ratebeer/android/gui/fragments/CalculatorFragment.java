@@ -42,7 +42,8 @@ public class CalculatorFragment extends RateBeerFragment {
 	protected enum MeasurementSystem {
 		Metric,
 		Imperial,
-		US
+		USSmall,
+		USBig
 	}
 	
 	protected Map<MeasurementSystem, double[]> defaults;
@@ -50,19 +51,54 @@ public class CalculatorFragment extends RateBeerFragment {
 		defaults = new HashMap<CalculatorFragment.MeasurementSystem, double[]>();
 		defaults.put(MeasurementSystem.Metric, new double[] {330D, 375D, 500D, 750D});
 		defaults.put(MeasurementSystem.Imperial, new double[] {12D, 15D, 20D, 40D});
-		defaults.put(MeasurementSystem.US, new double[] {12D, 16D, 22D, 26D});
+		defaults.put(MeasurementSystem.USSmall, new double[] {12D, 14D, 16D, 22D});
+		defaults.put(MeasurementSystem.USBig, new double[] {22D, 48D, 64D, 72D});
 	}
-	
+
 	protected Map<MeasurementSystem, String> units;
 	{
 		units = new HashMap<CalculatorFragment.MeasurementSystem, String>();
 		units.put(MeasurementSystem.Metric, "ml");
 		units.put(MeasurementSystem.Imperial, "oz");
-		units.put(MeasurementSystem.US, "oz");
+		units.put(MeasurementSystem.USSmall, "oz");
+		units.put(MeasurementSystem.USBig, "oz");
+	}
+
+	protected Map<MeasurementSystem, String> names;
+	{
+		names = new HashMap<CalculatorFragment.MeasurementSystem, String>();
+		names.put(MeasurementSystem.Metric, "Metric");
+		names.put(MeasurementSystem.Imperial, "Imperial");
+		names.put(MeasurementSystem.USSmall, "US Small");
+		names.put(MeasurementSystem.USBig, "US Big");
+	}
+	protected Map<MeasurementSystem, Map<MeasurementSystem, Double>> convertFactors;
+	{
+		convertFactors = new HashMap<MeasurementSystem, Map<MeasurementSystem,Double>>();
+		HashMap<MeasurementSystem, Double> cfMetric = new HashMap<MeasurementSystem, Double>();
+		cfMetric.put(MeasurementSystem.Metric, 1D);
+		cfMetric.put(MeasurementSystem.Imperial, 0.0351950797279D);
+		cfMetric.put(MeasurementSystem.USSmall, 0.0338140225589D);
+		cfMetric.put(MeasurementSystem.USBig, 0.0338140225589D);
+		convertFactors.put(MeasurementSystem.Metric, cfMetric);
+		HashMap<MeasurementSystem, Double> cfImperial = new HashMap<MeasurementSystem, Double>();
+		cfImperial.put(MeasurementSystem.Metric, 28.4130625D);
+		cfImperial.put(MeasurementSystem.Imperial, 1D);
+		cfImperial.put(MeasurementSystem.USSmall, 0.960759936343D);
+		cfImperial.put(MeasurementSystem.USBig, 0.960759936343D);
+		convertFactors.put(MeasurementSystem.Imperial, cfImperial);
+		HashMap<MeasurementSystem, Double> cfUS = new HashMap<MeasurementSystem, Double>();
+		cfUS.put(MeasurementSystem.Metric, 29.5735296875D);
+		cfUS.put(MeasurementSystem.Imperial, 1.04084273519D);
+		cfUS.put(MeasurementSystem.USSmall, 1D);
+		cfUS.put(MeasurementSystem.USBig, 1D);
+		convertFactors.put(MeasurementSystem.USSmall, cfUS);
+		convertFactors.put(MeasurementSystem.USBig, cfUS);
+		
 	}
 
 	DecimalFormat df = new DecimalFormat("#");
-	private Spinner systemSpinner;
+	private Spinner fromSystemSpinner, toSystemSpinner;
 	private Button from1, from2, from3, from4, to1, to2, to3, to4, fromTo, toFrom, clear;
 	private EditText fromQuantity, fromEuro, fromCent, toQuantity, toEuro, toCent;
 	private TextView fromFor, toFor;
@@ -91,17 +127,19 @@ public class CalculatorFragment extends RateBeerFragment {
 		fromFor = (TextView) getView().findViewById(R.id.from_for);
 		toFor = (TextView) getView().findViewById(R.id.to_for);
 		clear = (Button) getView().findViewById(R.id.clear);
-		from1 = addButton(R.id.from1, fromQuantity, 0);
-		from2 = addButton(R.id.from2, fromQuantity, 1);
-		from3 = addButton(R.id.from3, fromQuantity, 2);
-		from4 = addButton(R.id.from4, fromQuantity, 3);
-		to1 = addButton(R.id.to1, toQuantity, 0);
-		to2 = addButton(R.id.to2, toQuantity, 1);
-		to3 = addButton(R.id.to3, toQuantity, 2);
-		to4 = addButton(R.id.to4, toQuantity, 3);
-		systemSpinner = (Spinner) getView().findViewById(R.id.system);
-		systemSpinner.setOnItemSelectedListener(onSystemChanged);
-		populateSystemSpinner();
+		fromSystemSpinner = (Spinner) getView().findViewById(R.id.from_system);
+		fromSystemSpinner.setOnItemSelectedListener(onSystemChanged);
+		toSystemSpinner = (Spinner) getView().findViewById(R.id.to_system);
+		toSystemSpinner.setOnItemSelectedListener(onSystemChanged);
+		from1 = addButton(R.id.from1, fromQuantity, fromSystemSpinner, 0);
+		from2 = addButton(R.id.from2, fromQuantity, fromSystemSpinner, 1);
+		from3 = addButton(R.id.from3, fromQuantity, fromSystemSpinner, 2);
+		from4 = addButton(R.id.from4, fromQuantity, fromSystemSpinner, 3);
+		to1 = addButton(R.id.to1, toQuantity, toSystemSpinner, 0);
+		to2 = addButton(R.id.to2, toQuantity, toSystemSpinner, 1);
+		to3 = addButton(R.id.to3, toQuantity, toSystemSpinner, 2);
+		to4 = addButton(R.id.to4, toQuantity, toSystemSpinner, 3);
+		populateSystemSpinners();
 		//systemSpinner.setSelection(0);
 		fromTo.setOnClickListener(new OnClickListener() {
 			@Override
@@ -119,12 +157,12 @@ public class CalculatorFragment extends RateBeerFragment {
 
 	}
 
-	private Button addButton(int field, final EditText quantityText, final int valueIndex) {
+	private Button addButton(int field, final EditText quantityText, final Spinner system, final int valueIndex) {
 		Button button = (Button) getView().findViewById(field);
 		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				quantityText.setText(df.format(defaults.get(getSelectedSystem())[valueIndex]));
+				quantityText.setText(df.format(defaults.get((MeasurementSystem)system.getSelectedItem())[valueIndex]));
 			}
 		});
 		return button;
@@ -137,7 +175,8 @@ public class CalculatorFragment extends RateBeerFragment {
 			Double e1 = Double.parseDouble(euro1.getText().toString());
 			Double c1 = Double.parseDouble(cent1.getText().toString());
 			Double q2 = Double.parseDouble(quan2.getText().toString());
-			Double price = ((e1 * 100) + c1) / q1 * q2;
+			double price = ((e1 * 100) + c1) / (q1 * 
+					convertFactors.get(getFromSelectedSystem()).get(getToSelectedSystem())) * q2;
 			euro2.setText(df.format((price - price % 100) / 100));
 			cent2.setText(df.format(price % 100));
 		} catch (NumberFormatException e) {
@@ -145,33 +184,34 @@ public class CalculatorFragment extends RateBeerFragment {
 		}
 	}
 
-	protected MeasurementSystem getSelectedSystem() {
-		return (MeasurementSystem) systemSpinner.getSelectedItem();
-	}
-
-	private void populateSystemSpinner() {
+	private void populateSystemSpinners() {
 		MeasurementSystem[] allSystems = MeasurementSystem.values();
-		android.widget.ArrayAdapter<MeasurementSystem> adapter = new android.widget.ArrayAdapter<MeasurementSystem>(
+		android.widget.ArrayAdapter<MeasurementSystem> fromAdapter = new android.widget.ArrayAdapter<MeasurementSystem>(
 				getActivity(), android.R.layout.simple_spinner_item, allSystems);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		systemSpinner.setAdapter(adapter);
+		android.widget.ArrayAdapter<MeasurementSystem> toAdapter = new android.widget.ArrayAdapter<MeasurementSystem>(
+				getActivity(), android.R.layout.simple_spinner_item, allSystems);
+		fromAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		toAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		fromSystemSpinner.setAdapter(fromAdapter);
+		toSystemSpinner.setAdapter(toAdapter);
 	}
 
 	private OnItemSelectedListener onSystemChanged = new OnItemSelectedListener() {
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			// Update button labels
-			String unit = units.get(getSelectedSystem());
-			from1.setText(df.format(defaults.get(getSelectedSystem())[0]) + unit);
-			from2.setText(df.format(defaults.get(getSelectedSystem())[1]) + unit);
-			from3.setText(df.format(defaults.get(getSelectedSystem())[2]) + unit);
-			from4.setText(df.format(defaults.get(getSelectedSystem())[3]) + unit);
-			to1.setText(df.format(defaults.get(getSelectedSystem())[0]) + unit);
-			to2.setText(df.format(defaults.get(getSelectedSystem())[1]) + unit);
-			to3.setText(df.format(defaults.get(getSelectedSystem())[2]) + unit);
-			to4.setText(df.format(defaults.get(getSelectedSystem())[3]) + unit);
-			fromFor.setText(getString(R.string.calc_for, unit));
-			toFor.setText(getString(R.string.calc_for, unit));
+			String fromUnit = units.get(getFromSelectedSystem());
+			String toUnit = units.get(getToSelectedSystem());
+			from1.setText(df.format(defaults.get(getFromSelectedSystem())[0]) + fromUnit);
+			from2.setText(df.format(defaults.get(getFromSelectedSystem())[1]) + fromUnit);
+			from3.setText(df.format(defaults.get(getFromSelectedSystem())[2]) + fromUnit);
+			from4.setText(df.format(defaults.get(getFromSelectedSystem())[3]) + fromUnit);
+			to1.setText(df.format(defaults.get(getToSelectedSystem())[0]) + toUnit);
+			to2.setText(df.format(defaults.get(getToSelectedSystem())[1]) + toUnit);
+			to3.setText(df.format(defaults.get(getToSelectedSystem())[2]) + toUnit);
+			to4.setText(df.format(defaults.get(getToSelectedSystem())[3]) + toUnit);
+			fromFor.setText(getString(R.string.calc_for, fromUnit));
+			toFor.setText(getString(R.string.calc_for, toUnit));
 		}
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {
@@ -190,5 +230,13 @@ public class CalculatorFragment extends RateBeerFragment {
 			toCent.setText("");
 		}
 	};
+
+	protected MeasurementSystem getFromSelectedSystem() {
+		return (MeasurementSystem) fromSystemSpinner.getSelectedItem();
+	}
+
+	protected MeasurementSystem getToSelectedSystem() {
+		return (MeasurementSystem) toSystemSpinner.getSelectedItem();
+	}
 
 }

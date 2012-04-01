@@ -46,6 +46,8 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.SearchBeersCommand;
+import com.ratebeer.android.api.command.SearchBrewersCommand;
+import com.ratebeer.android.api.command.SearchBrewersCommand.BrewerSearchResult;
 import com.ratebeer.android.api.command.UpcSearchCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 import com.ratebeer.android.api.command.SearchPlacesCommand;
@@ -53,6 +55,7 @@ import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.api.command.SearchUsersCommand;
 import com.ratebeer.android.api.command.SearchUsersCommand.UserSearchResult;
 import com.ratebeer.android.api.command.UpcSearchCommand.UpcSearchResult;
+import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SearchHistoryProvider;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
@@ -66,12 +69,14 @@ public class SearchFragment extends RateBeerFragment {
 
 	private static final String STATE_QUERY = "lastQuery";
 	private static final String STATE_BEERRESULTS = "beerResults";
+	private static final String STATE_BREWERRESULTS = "brewerResults";
 	private static final String STATE_PLACERESULTS = "placeResults";
 	private static final String STATE_USERRESULTS = "userResults";
 	public static final String ARG_QUERY = "query";
 	private static final int MENU_CLEARHISTORY = 0;
 	private static final int MENU_SCANBARCODE = 1;
-	
+	private static final int MENU_SEARCH = 2;
+
 	public final static String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
 	public static final Uri SCANNER_MARKET_URI = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
 	private static final int ACTIVITY_BARCODE = 0;
@@ -79,12 +84,14 @@ public class SearchFragment extends RateBeerFragment {
 	private LayoutInflater inflater;
 	private ViewPager pager;
 	private ListView beersView;
+	private ListView brewersView;
 	private ListView placesView;
 	private ListView usersView;
 
 	private String lastQuery = null;
 	private boolean startBarcodeScanner = false;
 	private ArrayList<BeerSearchResult> beerResults = null;
+	private ArrayList<BrewerSearchResult> brewerResults = null;
 	private ArrayList<PlaceSearchResult> placeResults = null;
 	private ArrayList<UserSearchResult> userResults = null;
 
@@ -125,12 +132,15 @@ public class SearchFragment extends RateBeerFragment {
 		titles.setViewPager(pager);
 
 		beersView = cellarPagerAdapter.getBeersView();
+		brewersView = cellarPagerAdapter.getBrewersView();
 		placesView = cellarPagerAdapter.getPlacesView();
 		usersView = cellarPagerAdapter.getUsersView();
 		beersView.setOnItemClickListener(onBeerSelected);
+		brewersView.setOnItemClickListener(onBrewerSelected);
 		placesView.setOnItemClickListener(onPlaceSelected);
 		usersView.setOnItemClickListener(onUserSelected);
 		registerForContextMenu(beersView);
+		registerForContextMenu(brewersView);
 		registerForContextMenu(placesView);
 		registerForContextMenu(usersView);
 
@@ -138,6 +148,9 @@ public class SearchFragment extends RateBeerFragment {
 			lastQuery = savedInstanceState.getString(STATE_QUERY);
 			if (savedInstanceState.containsKey(STATE_BEERRESULTS)) {
 				beerResults = savedInstanceState.getParcelableArrayList(STATE_BEERRESULTS);
+			}
+			if (savedInstanceState.containsKey(STATE_BREWERRESULTS)) {
+				brewerResults = savedInstanceState.getParcelableArrayList(STATE_BREWERRESULTS);
 			}
 			if (savedInstanceState.containsKey(STATE_PLACERESULTS)) {
 				placeResults = savedInstanceState.getParcelableArrayList(STATE_PLACERESULTS);
@@ -157,6 +170,7 @@ public class SearchFragment extends RateBeerFragment {
 		}
 		// Publish the current wants and haves view, even when it is not loaded yet (and thus still empty)
 		publishBeerResults(beerResults);
+		publishBrewerResults(brewerResults);
 		publishPlaceResults(placeResults);
 		publishUserResults(userResults);
 
@@ -170,6 +184,13 @@ public class SearchFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
+			// For phones, the dashboard & search fragments show a search icon in the action bar
+			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
+			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, MENU_SEARCH, R.string.home_search);
+			item.setIcon(R.drawable.ic_action_search);
+			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		}
 		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, MENU_SCANBARCODE, R.string.search_barcodescanner);
 		item2.setIcon(R.drawable.ic_action_barcode);
 		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -187,13 +208,17 @@ public class SearchFragment extends RateBeerFragment {
 		case RateBeerActivity.MENU_REFRESH:
 			performSearch();
 			break;
-		case MENU_SCANBARCODE:
-	    	startScanner();
-			break;
 		case MENU_CLEARHISTORY:
 			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
 					SearchHistoryProvider.AUTHORITY, SearchHistoryProvider.MODE);
 			suggestions.clearHistory();
+			break;
+		case MENU_SCANBARCODE:
+	    	startScanner();
+			break;
+		case MENU_SEARCH:
+			// Open standard search interface
+			getActivity().onSearchRequested();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -230,6 +255,9 @@ public class SearchFragment extends RateBeerFragment {
 		if (beerResults != null) {
 			outState.putParcelableArrayList(STATE_BEERRESULTS, beerResults);
 		}
+		if (brewerResults != null) {
+			outState.putParcelableArrayList(STATE_BREWERRESULTS, brewerResults);
+		}
 		if (placeResults != null) {
 			outState.putParcelableArrayList(STATE_PLACERESULTS, placeResults);
 		}
@@ -258,6 +286,9 @@ public class SearchFragment extends RateBeerFragment {
 			if (beersView.getAdapter() != null) {
 				((BeerSearchResultsAdapter) beersView.getAdapter()).clear();
 			}
+			if (brewersView.getAdapter() != null) {
+				((BrewerSearchResultsAdapter) brewersView.getAdapter()).clear();
+			}
 			if (placesView.getAdapter() != null) {
 				((BeerSearchResultsAdapter) placesView.getAdapter()).clear();
 			}
@@ -268,6 +299,7 @@ public class SearchFragment extends RateBeerFragment {
 			execute(new SearchBeersCommand(getRateBeerActivity().getApi(), lastQuery,
 					getRateBeerActivity().getUser() != null ? getRateBeerActivity().getUser().getUserID()
 							: SearchBeersCommand.NO_USER));
+			execute(new SearchBrewersCommand(getRateBeerActivity().getApi(), lastQuery));
 			execute(new SearchPlacesCommand(getRateBeerActivity().getApi(), lastQuery));
 			execute(new SearchUsersCommand(getRateBeerActivity().getApi(), lastQuery));
 		}
@@ -284,6 +316,14 @@ public class SearchFragment extends RateBeerFragment {
 				return;
 			}
 			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId, item.rateCount));
+		}
+	};
+
+	private OnItemClickListener onBrewerSelected = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			BrewerSearchResult item = ((BrewerSearchResultsAdapter) brewersView.getAdapter()).getItem(position);
+			getRateBeerActivity().load(new BrewerViewFragment(item.brewerId));
 		}
 	};
 
@@ -307,6 +347,8 @@ public class SearchFragment extends RateBeerFragment {
 	public void onTaskSuccessResult(CommandSuccessResult result) {
 		if (result.getCommand().getMethod() == ApiMethod.SearchBeers) {
 			publishBeerResults(((SearchBeersCommand) result.getCommand()).getSearchResults());
+		} else if (result.getCommand().getMethod() == ApiMethod.SearchBrewers) {
+			publishBrewerResults(((SearchBrewersCommand) result.getCommand()).getSearchResults());
 		} else if (result.getCommand().getMethod() == ApiMethod.SearchPlaces) {
 			publishPlaceResults(((SearchPlacesCommand) result.getCommand()).getSearchResults());
 		} else if (result.getCommand().getMethod() == ApiMethod.SearchUsers) {
@@ -346,6 +388,20 @@ public class SearchFragment extends RateBeerFragment {
 			beersView.setAdapter(new BeerSearchResultsAdapter(getActivity(), result));
 		} else {
 			((BeerSearchResultsAdapter) beersView.getAdapter()).replace(result);
+		}
+	}
+
+	private void publishBrewerResults(ArrayList<BrewerSearchResult> result) {
+		this.brewerResults = result;
+		if (result == null) {
+			// Show empty result
+			result = new ArrayList<BrewerSearchResult>();
+			return;
+		}
+		if (brewersView.getAdapter() == null) {
+			brewersView.setAdapter(new BrewerSearchResultsAdapter(getActivity(), result));
+		} else {
+			((BrewerSearchResultsAdapter) brewersView.getAdapter()).replace(result);
 		}
 	}
 
@@ -409,12 +465,14 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			BeerSearchResult item = getItem(position);
-			holder.beer.setText(item.beerName);
-			holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
-			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
-			holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
-			holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
-			holder.alias.setVisibility(item.isAlias ? View.VISIBLE : View.GONE);
+			if (getActivity() != null) {
+				holder.beer.setText(item.beerName);
+				holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
+				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+				holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
+				holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
+				holder.alias.setVisibility(item.isAlias ? View.VISIBLE : View.GONE);
+			}
 
 			return convertView;
 		}
@@ -423,6 +481,43 @@ public class SearchFragment extends RateBeerFragment {
 
 	protected static class BeerViewHolder {
 		TextView beer, overall, count, rated, retired, alias;
+	}
+
+	private class BrewerSearchResultsAdapter extends ArrayAdapter<BrewerSearchResult> {
+
+		public BrewerSearchResultsAdapter(Context context, List<BrewerSearchResult> objects) {
+			super(context, objects);
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+
+			// Get the right view, using a ViewHolder
+			BrewerViewHolder holder;
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.list_item_placesearchresult, null);
+				holder = new BrewerViewHolder();
+				holder.name = (TextView) convertView.findViewById(R.id.name);
+				holder.city = (TextView) convertView.findViewById(R.id.city);
+				convertView.setTag(holder);
+			} else {
+				holder = (BrewerViewHolder) convertView.getTag();
+			}
+
+			// Bind the data
+			BrewerSearchResult item = getItem(position);
+			if (getActivity() != null) {
+				holder.name.setText(item.brewerName);
+				holder.city.setText(item.city);
+			}
+
+			return convertView;
+		}
+
+	}
+
+	protected static class BrewerViewHolder {
+		TextView name, city;
 	}
 
 	private class PlaceSearchResultsAdapter extends ArrayAdapter<PlaceSearchResult> {
@@ -448,8 +543,10 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			PlaceSearchResult item = getItem(position);
-			holder.name.setText(item.placeName);
-			holder.city.setText(item.city);
+			if (getActivity() != null) {
+				holder.name.setText(item.placeName);
+				holder.city.setText(item.city);
+			}
 
 			return convertView;
 		}
@@ -483,9 +580,11 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			UserSearchResult item = getItem(position);
-			holder.name.setText(item.userName);
-			holder.ratings.setText(getString(R.string.search_ratings, Integer.toString(item.ratings)));
-
+			if (getActivity() != null) {
+				holder.name.setText(item.userName);
+				holder.ratings.setText(getString(R.string.search_ratings, Integer.toString(item.ratings)));
+			}
+			
 			return convertView;
 		}
 
@@ -498,18 +597,24 @@ public class SearchFragment extends RateBeerFragment {
 	private class SearchPagerAdapter extends PagerAdapter implements TitleProvider {
 
 		private ListView pagerBeersView;
+		private ListView pagerBrewersView;
 		private ListView pagerPlacesView;
 		private ListView pagerUsersView;
 
 		public SearchPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			pagerBeersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerBrewersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 			pagerPlacesView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 			pagerUsersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 		}
 
 		public ListView getBeersView() {
 			return pagerBeersView;
+		}
+
+		public ListView getBrewersView() {
+			return pagerBrewersView;
 		}
 
 		public ListView getPlacesView() {
@@ -522,7 +627,7 @@ public class SearchFragment extends RateBeerFragment {
 
 		@Override
 		public int getCount() {
-			return 3;
+			return 4;
 		}
 
 		@Override
@@ -531,8 +636,10 @@ public class SearchFragment extends RateBeerFragment {
 			case 0:
 				return getActivity().getString(R.string.search_beers);
 			case 1:
-				return getActivity().getString(R.string.search_places);
+				return getActivity().getString(R.string.search_brewers);
 			case 2:
+				return getActivity().getString(R.string.search_places);
+			case 3:
 				return getActivity().getString(R.string.search_users);
 			}
 			return null;
@@ -545,9 +652,12 @@ public class SearchFragment extends RateBeerFragment {
 				((ViewPager) container).addView(pagerBeersView, 0);
 				return pagerBeersView;
 			case 1:
+				((ViewPager) container).addView(pagerBrewersView, 0);
+				return pagerBrewersView;
+			case 2:
 				((ViewPager) container).addView(pagerPlacesView, 0);
 				return pagerPlacesView;
-			case 2:
+			case 3:
 				((ViewPager) container).addView(pagerUsersView, 0);
 				return pagerUsersView;
 			}

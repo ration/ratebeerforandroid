@@ -62,7 +62,8 @@ public class GetPlaceDetailsCommand extends JsonCommand {
 				HttpHelper.cleanHtml(result.getString("City")), result.getString("StateID"),
 				result.getInt("CountryID"), HttpHelper.cleanHtml(result.getString("PostalCode")),
 				HttpHelper.cleanHtml(result.getString("PhoneNumber")), percentile.equals("null") ? -1
-						: (int) Float.parseFloat(percentile), result.getInt("RateCount"), HttpHelper.cleanHtml(result.getString("PhoneAC")),
+						: (int) Float.parseFloat(percentile), result.isNull("RateCount") ? 0
+						: result.getInt("RateCount"), HttpHelper.cleanHtml(result.getString("PhoneAC")),
 				result.getDouble("Latitude"), result.getDouble("Longitude"), -1D);
 
 	}

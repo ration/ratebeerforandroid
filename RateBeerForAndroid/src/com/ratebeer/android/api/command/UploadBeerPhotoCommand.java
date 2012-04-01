@@ -33,6 +33,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.ApiException.ExceptionType;
 
 public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 
@@ -56,11 +57,15 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 	@Override
 	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
 		RateBeerApi.ensureLogin(getUserSettings());
-		HttpPost post = new HttpPost("http://www.ratebeer.com/m/m_savebeerpic.asp");
+		HttpPost post = new HttpPost("http://www.ratebeer.com/ajax/m_savebeerpic.asp");
 		Part[] parts = { new StringPart("BeerID", Integer.toString(beerId)), 
-				new FilePart("File1", photo, FilePart.DEFAULT_CONTENT_TYPE, null) };
+				new FilePart("attach1", photo, FilePart.DEFAULT_CONTENT_TYPE, null) };
 		post.setEntity(new MultipartEntity(parts, post.getParams()));
-		HttpHelper.makeRawRBPost(post, HttpStatus.SC_OK);
+		String result = HttpHelper.makeRawRBPost(post, HttpStatus.SC_OK);
+		if (!result.contains("\"status\":\"success\"")) {
+			throw new ApiException(ExceptionType.CommandFailed, "Uploading of photo doesn't seem to be succesfull: "
+					+ result);
+		}
 	}
 
 }

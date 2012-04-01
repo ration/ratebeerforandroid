@@ -153,7 +153,7 @@ public class DashboardFragment extends RateBeerFragment {
 		item2.setIcon(R.drawable.ic_action_barcode);
 		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
-			// For phones, the dashboard (and the dashboard only) shows a search icon in the action bar
+			// For phones, the dashboard & search fragments show a search icon in the action bar
 			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
 			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, MENU_SEARCH, R.string.home_search);
 			item.setIcon(R.drawable.ic_action_search);

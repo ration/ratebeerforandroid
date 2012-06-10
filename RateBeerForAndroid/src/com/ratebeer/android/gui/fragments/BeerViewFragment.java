@@ -23,7 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -31,6 +34,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
@@ -39,8 +43,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -54,15 +58,15 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetBeerAvailabilityCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand;
+import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetBeerImageCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand;
-import com.ratebeer.android.api.command.GetUserRatingCommand;
-import com.ratebeer.android.api.command.PostRatingCommand;
-import com.ratebeer.android.api.command.Style;
-import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetRatingsCommand.BeerRating;
+import com.ratebeer.android.api.command.GetUserRatingCommand;
 import com.ratebeer.android.api.command.GetUserRatingCommand.OwnBeerRating;
+import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
+import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
@@ -87,6 +91,7 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	private static final int MENU_SHARE = 0;
 	private static final int ACTIVITY_CAMERA = 0;
+	private static final int ACTIVITY_PICKPHOTO = 1;
 
 	private LayoutInflater inflater;
 	private ViewPager pager;
@@ -329,6 +334,34 @@ public class BeerViewFragment extends RateBeerFragment {
 	}
 
 	protected void onStartPhotoUpload() {
+		
+	}
+	
+	protected class ChoosePhotoFragment extends DialogFragment {
+		public ChoosePhotoFragment() {
+			setRetainInstance(true);
+		}
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			return new AlertDialog.Builder(getActivity())
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setTitle(R.string.upload_choose)
+				.setPositiveButton(R.string.upload_newphoto, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						onStartPhotoSnapping();
+					}
+				})
+				.setNegativeButton(R.string.upload_pick, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						onStartPhotoPicking();
+					}
+				}).create();
+		}
+	}
+	
+	protected void onStartPhotoSnapping() {
 		// Start an intent to snap a picture
 		// http://stackoverflow.com/questions/1910608/android-action-image-capture-intent
 		try {
@@ -351,24 +384,40 @@ public class BeerViewFragment extends RateBeerFragment {
 			publishException(null, getString(R.string.error_nocamera));
 		}
 	}
+	
+	protected void onStartPhotoPicking() {
+		Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+		i.setType("image/*");
+		startActivityForResult(i, ACTIVITY_PICKPHOTO);
+	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		File photo = null;
 		switch (requestCode) {
+		case ACTIVITY_PICKPHOTO:
+
+			if (data != null && data.getStringExtra(Intent.EXTRA_TITLE) != null) {
+				// TODO: Test where the file location actually is...
+				photo = new File(data.getStringExtra(Intent.EXTRA_TITLE));
+			}
+			// Note fall through
+			
 		case ACTIVITY_CAMERA:
 			
-			File photo = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/photos/" + Integer.toString(beerId) + ".jpg");
-			if (resultCode == Activity.RESULT_OK && photo.exists()) {
+			if (photo == null) {
+				photo = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/photos/" + Integer.toString(beerId) + ".jpg");
+			}
+			if (resultCode == Activity.RESULT_OK && photo != null && photo.exists()) {
 				// Start an upload task for this photo
 				Intent i = new Intent(PosterService.ACTION_UPLOADBEERPHOTO);
 				i.putExtra(PosterService.EXTRA_BEERID, beerId);
 				i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
 				i.putExtra(PosterService.EXTRA_PHOTO, photo);
 				getActivity().startService(i);
-				break;
 			}
-			
+			break;
 		}
 	}
 

@@ -28,6 +28,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -334,7 +335,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	}
 
 	protected void onStartPhotoUpload() {
-		
+		new ChoosePhotoFragment().show(getSupportFragmentManager(), "");
 	}
 	
 	protected class ChoosePhotoFragment extends DialogFragment {
@@ -346,18 +347,17 @@ public class BeerViewFragment extends RateBeerFragment {
 			return new AlertDialog.Builder(getActivity())
 				.setIcon(android.R.drawable.ic_dialog_info)
 				.setTitle(R.string.upload_choose)
-				.setPositiveButton(R.string.upload_newphoto, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
-						onStartPhotoSnapping();
-					}
-				})
-				.setNegativeButton(R.string.upload_pick, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
-						onStartPhotoPicking();
-					}
-				}).create();
+				.setItems(new String[] { getString(R.string.upload_newphoto), getString(R.string.upload_pick) },
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								if (which == 0) {
+									onStartPhotoSnapping();
+								} else {
+									onStartPhotoPicking();
+								}
+							}
+						}).create();
 		}
 	}
 	
@@ -391,6 +391,18 @@ public class BeerViewFragment extends RateBeerFragment {
 		startActivityForResult(i, ACTIVITY_PICKPHOTO);
 	}
 
+	// Taken from http://stackoverflow.com/a/4470069/243165
+	public String getPath(Uri uri) {
+		String[] projection = { MediaStore.Images.Media.DATA };
+		Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
+		if (cursor != null) {
+			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			cursor.moveToFirst();
+			return cursor.getString(column_index);
+		} else
+			return null;
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -398,11 +410,15 @@ public class BeerViewFragment extends RateBeerFragment {
 		switch (requestCode) {
 		case ACTIVITY_PICKPHOTO:
 
-			if (data != null && data.getStringExtra(Intent.EXTRA_TITLE) != null) {
-				// TODO: Test where the file location actually is...
-				photo = new File(data.getStringExtra(Intent.EXTRA_TITLE));
+			if (data != null && data.getData() != null) {
+                String selectedImagePath = getPath(data.getData());
+                if (selectedImagePath != null) {
+                    photo = new File(selectedImagePath);
+                } else {
+    				photo = new File(data.getData().getPath());
+                }
 			}
-			// Note fall through
+			// Note the fall through
 			
 		case ACTIVITY_CAMERA:
 			

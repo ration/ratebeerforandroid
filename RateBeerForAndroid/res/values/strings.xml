@@ -174,7 +174,7 @@
 	<string name="details_sharebeer">Share beer&#8230;</string>
 	
 	<string name="upload_uploadphoto">Upload photo</string>
-	<string name="upload_choose">Choose photo</string>
+	<string name="upload_choose">Choose the photo source</string>
 	<string name="upload_newphoto">Take a new photo</string>
 	<string name="upload_pick">Select from gallery</string>
 	

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -160,7 +161,11 @@ public class DashboardFragment extends RateBeerFragment {
 			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
 		MenuItem item3 = menu.add(Menu.NONE, MENU_CALCULATOR, MENU_CALCULATOR, R.string.home_calculator);
-		item3.setIcon(R.drawable.ic_action_barcode);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			item3.setIcon(R.drawable.ic_menu_calculator);
+		} else {
+			item3.setIcon(R.drawable.ic_action_calculator);
+		}
 		item3.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		super.onCreateOptionsMenu(menu, inflater);
 	}

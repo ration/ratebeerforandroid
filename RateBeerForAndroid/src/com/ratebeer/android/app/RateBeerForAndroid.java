@@ -52,7 +52,7 @@ public class RateBeerForAndroid extends Application {
 	 */
 	public RateBeerApi getApi() {
 		if (api == null) {
-			api = new RateBeerApi(getSettings());
+			api = new RateBeerApi(getSettings().getUserSettings());
 		}
 		return api;
 	}

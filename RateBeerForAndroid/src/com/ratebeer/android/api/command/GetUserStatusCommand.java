@@ -20,32 +20,47 @@ package com.ratebeer.android.api.command;
 import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
 
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class SignInCommand extends EmptyResponseCommand {
-
-	private int userId;
-	private final String username;
-	private final String password;
-
-	public SignInCommand(RateBeerApi api, String username, String password) {
-		super(api, ApiMethod.SignIn);
-		this.username = username;
-		this.password = password;
+public class GetUserStatusCommand extends HtmlCommand {
+	
+	private String nowDrinking;
+	private boolean isPremium;
+	
+	public GetUserStatusCommand(RateBeerApi api) {
+		super(api, ApiMethod.GetUserStatus);
+	}
+		
+	public String getDrinkingStatus() {
+		return nowDrinking;
 	}
 
-	public int getUserId() {
-		return userId;
+	public boolean isPremium() {
+		return isPremium;
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		userId = HttpHelper.signIn(username, password);
+	protected String makeRequest() throws ClientProtocolException, IOException {
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/inbox");
 	}
 
+	@Override
+	protected void parse(String html) throws JSONException, ApiException {
+
+		// Whether this user has a premium account
+		int premiumStart = html.indexOf("<span class=premie>&nbsp;P&nbsp;</span>");
+		isPremium = (premiumStart >= 0);
+
+		// Also look for the drinking status
+		// TODO: Repair
+		nowDrinking = "";
+
+	}
+	
 }

@@ -33,7 +33,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
-import com.ratebeer.android.api.command.GetUserIdCommand;
+import com.ratebeer.android.api.command.GetUserStatusCommand;
 import com.ratebeer.android.api.command.SignInCommand;
 import com.ratebeer.android.api.command.SignOutCommand;
 import com.ratebeer.android.gui.SignIn;
@@ -142,18 +142,21 @@ public class SignInFragment extends RateBeerFragment {
 			getActivity().finish();
 		} else if (result.getCommand().getMethod() == ApiMethod.SignIn) {
 			// Successfully signed in
-			// Now retrieve the user ID as well
-			execute(new GetUserIdCommand(getRateBeerActivity().getApi()));
-		} else if (result.getCommand().getMethod() == ApiMethod.GetUserId) {
-			// We also have a user ID now
+			SignInCommand signInCommand = (SignInCommand) result.getCommand();
 			// Store this user as the new signed in user
 			String username = usernameEdit.getText().toString().trim();
 			String password = passwordEdit.getText().toString().trim();
-			GetUserIdCommand getCommand = (GetUserIdCommand) result.getCommand();
-			// Save the user's settings; this also notifies any listeners (activities) about the successful login
+			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(signInCommand.getUserId(), username, 
+					password, "", false));
+			// Try to retrieve the user status as well
+			execute(new GetUserStatusCommand(getRateBeerActivity().getApi()));
+		} else if (result.getCommand().getMethod() == ApiMethod.GetUserStatus) {
+			// We also have a user status now; update the stored user settings
+			GetUserStatusCommand getCommand = (GetUserStatusCommand) result.getCommand();
 			Toast.makeText(getRateBeerActivity(), R.string.signin_signinsuccess, Toast.LENGTH_LONG).show();
-			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(getCommand.getUserId(), username, 
-					password, getCommand.getDrinkingStatus(), getCommand.isPremium()));
+			UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
+			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
+					ex.getPassword(), getCommand.getDrinkingStatus(), getCommand.isPremium()));
 			getActivity().finish();
 		}
 	}

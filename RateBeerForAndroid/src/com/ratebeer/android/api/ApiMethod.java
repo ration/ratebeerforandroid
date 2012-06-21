@@ -24,7 +24,7 @@ public enum ApiMethod {
 	// Administrative
 	SignIn,
 	SignOut,
-	GetUserId,
+	GetUserStatus,
 	SetDrinkingStatus,
 	
 	// Users

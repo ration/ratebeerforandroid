@@ -20,6 +20,7 @@ package com.ratebeer.android.gui.components;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
@@ -218,7 +219,11 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
     	//getActivity().addTask(task);
     	tasksRunning++;
     	// Start execution
-    	task.execute();
+		if (Build.VERSION.SDK_INT >= 11) { // 11 = Build.VERSION_CODES.HONEYCOMB
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			task.execute();
+		}
     	if (onProgressChangedListener != null) {
     		onProgressChangedListener.setProgress(true);
     	}

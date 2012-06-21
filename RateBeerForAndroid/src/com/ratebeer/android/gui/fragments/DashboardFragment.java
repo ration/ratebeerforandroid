@@ -42,7 +42,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
-import com.ratebeer.android.api.command.GetUserIdCommand;
+import com.ratebeer.android.api.command.GetUserStatusCommand;
 import com.ratebeer.android.api.command.GetUserImageCommand;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
@@ -233,11 +233,12 @@ public class DashboardFragment extends RateBeerFragment {
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
-		if (result.getCommand().getMethod() == ApiMethod.GetUserId) {
-			GetUserIdCommand getCommand = (GetUserIdCommand) result.getCommand();
+		if (result.getCommand().getMethod() == ApiMethod.GetUserStatus) {
+			GetUserStatusCommand getCommand = (GetUserStatusCommand) result.getCommand();
 			// Override the user settings, in which the drinking status is contained
-			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(getCommand.getUserId(), getRateBeerActivity().getUser().getUsername(), 
-					getRateBeerActivity().getUser().getPassword(), getCommand.getDrinkingStatus(), getCommand.isPremium()));
+			UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
+			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
+					ex.getPassword(), getCommand.getDrinkingStatus(), getCommand.isPremium()));
 			showDrinkingStatus();
 		} else if (result.getCommand().getMethod() == ApiMethod.GetUserImage) {
 			GetUserImageCommand userImageCommand = (GetUserImageCommand) result.getCommand();
@@ -254,7 +255,7 @@ public class DashboardFragment extends RateBeerFragment {
 	
 	private void refreshDrinkingStatus() {
 		if (getRateBeerActivity() != null && getRateBeerActivity().getUser() != null) {
-			execute(new GetUserIdCommand(getRateBeerActivity().getApi()));
+			execute(new GetUserStatusCommand(getRateBeerActivity().getApi()));
 		}	
 	}
 

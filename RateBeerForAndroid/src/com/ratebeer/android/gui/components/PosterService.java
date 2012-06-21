@@ -95,7 +95,7 @@ public class PosterService extends RateBeerService {
 	private static final int NOTIFY_UPLOADPHOTO = 5;
 	private static final int NOTIFY_ADDUPCCODE = 6;
 
-	private static final int IMAGE_MAX_SIZE = 800; // Max pixels in one dimension
+	private static final int IMAGE_MAX_SIZE = 500; // Max pixels in one dimension
 
 	private NotificationManager notificationManager = null;
 

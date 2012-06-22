@@ -101,7 +101,6 @@ public class Style implements Parcelable {
 		addStyle("golden-ale-blond-ale", 54, "Golden Ale/Blond Ale");
 		addStyle("heller-bock", 105, "Heller Bock");
 		addStyle("ice-cider-perry", 112, "Ice Cider/Perry");
-		addStyle("imperial-pils-strong-pale-lager", 65, "Imperial Pils/Strong Pale Lager");
 		addStyle("imperial-stout", 24, "Imperial Stout");
 		addStyle("imperial-double-ipa", 81, "Imperial/Double IPA");
 		addStyle("imperial-strong-porter", 113, "Imperial/Strong Porter");
@@ -145,6 +144,7 @@ public class Style implements Parcelable {
 		addStyle("specialty-grain", 106, "Specialty Grain");
 		addStyle("spice-herb-vegetable", 57, "Spice/Herb/Vegetable");
 		addStyle("stout", 6, "Stout");
+		addStyle("imperial-pils-strong-pale-lager", 65, "Strong Pale Lager/Imperial Pils");
 		addStyle("sweet-stout", 23, "Sweet Stout");
 		addStyle("traditional-ale", 59, "Traditional Ale");
 		addStyle("vienna", 43, "Vienna");

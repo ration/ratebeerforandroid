@@ -19,6 +19,7 @@ package com.ratebeer.android.gui.fragments;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +65,6 @@ import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetBeerImageCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand.BeerRating;
-import com.ratebeer.android.api.command.GetUserRatingCommand;
-import com.ratebeer.android.api.command.GetUserRatingCommand.OwnBeerRating;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.api.command.Style;
@@ -86,7 +85,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	private static final String STATE_BEERID = "beerId";
 	private static final String STATE_RATINGSCOUNT = "ratingsCount";
 	private static final String STATE_DETAILS = "details";
-	private static final String STATE_OWNRATING = "ownRating";
+	private static final String STATE_OWNRATINGS = "ownRatings";
 	private static final String STATE_RATINGS = "ratings";
 	private static final String STATE_AVAILABILITY= "availability";
 	private static final int UNKNOWN_RATINGS_COUNT = -1;
@@ -107,12 +106,13 @@ public class BeerViewFragment extends RateBeerFragment {
 	private ListView availabilityView;
 	private BeerRatingsAdapter recentRatingsAdapter;
 	private ImageView imageView;
+	private DateFormat displayDateFormat;
 
 	protected String beerName;
 	protected int beerId;
 	protected int ratingsCount;
 	private BeerDetails details = null;
-	private OwnBeerRating ownRating = null;
+	private ArrayList<BeerRating> ownRatings = null;
 	private ArrayList<BeerRating> recentRatings = new ArrayList<BeerRating>();
 	private ArrayList<PlaceSearchResult> availability = new ArrayList<PlaceSearchResult>();
 
@@ -160,6 +160,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
+		displayDateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 		pager = (ViewPager) getView().findViewById(R.id.pager);
 		BeerPagerAdapter placePagerAdapter = new BeerPagerAdapter();
 		pager.setAdapter(placePagerAdapter);
@@ -173,8 +174,8 @@ public class BeerViewFragment extends RateBeerFragment {
 			if (savedInstanceState.containsKey(STATE_DETAILS)) {
 				details = savedInstanceState.getParcelable(STATE_DETAILS);
 			}
-			if (savedInstanceState.containsKey(STATE_OWNRATING)) {
-				ownRating = savedInstanceState.getParcelable(STATE_OWNRATING);
+			if (savedInstanceState.containsKey(STATE_OWNRATINGS)) {
+				ownRatings = savedInstanceState.getParcelable(STATE_OWNRATINGS);
 			}
 			if (savedInstanceState.containsKey(STATE_RATINGS)) {
 				recentRatings = savedInstanceState.getParcelableArrayList(STATE_RATINGS);
@@ -193,7 +194,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		}
 		// Publish the current details, even when it is not loaded yet (and thus still empty)
 		publishDetails(details);
-		publishOwnRating(ownRating);
+		publishOwnRating(ownRatings);
 		setRatings(recentRatings);
 		setAvailability(availability);
 		
@@ -240,8 +241,8 @@ public class BeerViewFragment extends RateBeerFragment {
 		if (details != null) {
 			outState.putParcelable(STATE_DETAILS, details);
 		}
-		if (ownRating != null) {
-			outState.putParcelable(STATE_OWNRATING, ownRating);
+		if (ownRatings != null) {
+			outState.putParcelableArrayList(STATE_OWNRATINGS, ownRatings);
 		}
 		if (recentRatings != null) {
 			outState.putParcelableArrayList(STATE_RATINGS, recentRatings);
@@ -261,7 +262,8 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	private void refreshOwnRating() {
 		if (getRateBeerActivity().getUser() != null) {
-			execute(new GetUserRatingCommand(getRateBeerActivity().getApi(), beerId));
+			execute(new GetRatingsCommand(getRateBeerActivity().getApi(), beerId, getRateBeerActivity().getUser()
+					.getUserID()));
 		}
 	}
 
@@ -275,11 +277,14 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	protected void onRateBeerClick() {
 		// Get the original rating if we already rated this beer
-		if (ownRating != null) {
+		if (ownRatings != null && ownRatings.size() > 0) {
+			BeerRating ownRating = ownRatings.get(0);
 			// Start new rating fragment, with pre-populated fields
-			getRateBeerActivity().load(new RateFragment(beerName, beerId, ownRating.ratingID, ownRating.origDate, 
-					ownRating.appearance, ownRating.aroma, ownRating.taste, ownRating.palate, ownRating.overall, 
-					ownRating.comments));
+			SimpleDateFormat df = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+			getRateBeerActivity().load(
+					new RateFragment(beerName, beerId, ownRating.ratingId, df.format(ownRating.timeEntered),
+							ownRating.appearance, ownRating.aroma, ownRating.flavor, ownRating.mouthfeel,
+							ownRating.overall, ownRating.comments));
 		} else {
 			// Start new rating fragment
 			getRateBeerActivity().load(new RateFragment(beerName, beerId));
@@ -450,9 +455,12 @@ public class BeerViewFragment extends RateBeerFragment {
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerImage) {
 			setImage(((GetBeerImageCommand) result.getCommand()).getImage());
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerRatings) {
-			publishRatings(((GetRatingsCommand) result.getCommand()).getRatings());
-		} else if (result.getCommand().getMethod() == ApiMethod.GetUserRating) {
-			publishOwnRating(((GetUserRatingCommand) result.getCommand()).getRating());
+			GetRatingsCommand grc = (GetRatingsCommand) result.getCommand();
+			if (grc.getForUserId() == GetRatingsCommand.NO_USER) {
+				publishRatings(grc.getRatings());
+			} else {
+				publishOwnRating(grc.getRatings());
+			}
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerAvailability) {
 			publishAvailability(((GetBeerAvailabilityCommand) result.getCommand()).getPlaces());
 		}
@@ -469,10 +477,10 @@ public class BeerViewFragment extends RateBeerFragment {
 		setDetails(details);
 	}
 	
-	private void publishOwnRating(OwnBeerRating ownRating) {
-		this.ownRating = ownRating;
+	private void publishOwnRating(ArrayList<BeerRating> ownRatings) {
+		this.ownRatings = ownRatings;
 		// Show the rating
-		setOwnRating(ownRating);
+		setOwnRating(this.ownRatings);
 	}
 
 	private void publishRatings(ArrayList<BeerRating> ratings) {
@@ -550,19 +558,26 @@ public class BeerViewFragment extends RateBeerFragment {
 		havethisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 	}
 	
-	public void setOwnRating(OwnBeerRating ownRating) {
-		if (ownRating != null) {
+	public void setOwnRating(ArrayList<BeerRating> ownRatings) {
+		if (ownRatings == null) {
+			// Still loading and we didn't have a retained rating object
+			return;
+		}
+		if (ownRatings.size() > 0) {
+			BeerRating ownRating = ownRatings.get(0);
 			ownratinglabel.setVisibility(View.VISIBLE);
 			ownratingRow.setVisibility(View.VISIBLE);
 			ownratingTotal.setText(Float.toString(PostRatingCommand.calculateTotal(ownRating.aroma, ownRating.appearance, 
-				ownRating.taste, ownRating.palate, ownRating.overall)));
+					ownRating.flavor, ownRating.mouthfeel, ownRating.overall)));
 			ownratingAroma.setText(Integer.toString(ownRating.aroma));
 			ownratingAppearance.setText(Integer.toString(ownRating.appearance));
-			ownratingTaste.setText(Integer.toString(ownRating.taste));
-			ownratingPalate.setText(Integer.toString(ownRating.palate));
+			ownratingTaste.setText(Integer.toString(ownRating.flavor));
+			ownratingPalate.setText(Integer.toString(ownRating.mouthfeel));
 			ownratingOverall.setText(Integer.toString(ownRating.overall));
-			ownratingUsername.setText(getRateBeerActivity().getUser().getUsername());
-			ownratingComments.setText(ownRating.comments);
+			ownratingUsername.setText(ownRating.userName + " (" + Integer.toString(ownRating.rateCount) + ")");
+			ownratingComments.setText(ownRating.comments + (ownRating.timeUpdated != null ? " ("
+					+ displayDateFormat.format(ownRating.timeUpdated) + ")" : ownRating.timeEntered != null ? " ("
+					+ displayDateFormat.format(ownRating.timeEntered) + ")" : ""));
 			rateThisButton.setText(R.string.details_viewrerate);
 		} else {
 			ownratinglabel.setVisibility(View.GONE);
@@ -584,8 +599,6 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	private class BeerRatingsAdapter extends ArrayAdapter<BeerRating> {
 
-		private final DateFormat dateFormat;
-		
 		private OnClickListener onRowClick = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -595,7 +608,6 @@ public class BeerViewFragment extends RateBeerFragment {
 
 		public BeerRatingsAdapter(Context context, List<BeerRating> objects) {
 			super(context, objects);
-			this.dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 		}
 
 		@Override
@@ -624,16 +636,16 @@ public class BeerViewFragment extends RateBeerFragment {
 			BeerRating item = getItem(position);
 			holder.total.setTag(new Integer(item.userId));
 			holder.total.setText(item.totalScore);
-			holder.aroma.setText(item.aroma);
-			holder.appearance.setText(item.appearance);
-			holder.taste.setText(item.flavor);
-			holder.palate.setText(item.mouthfeel);
-			holder.overall.setText(item.overall);
+			holder.aroma.setText(Integer.toString(item.aroma));
+			holder.appearance.setText(Integer.toString(item.appearance));
+			holder.taste.setText(Integer.toString(item.flavor));
+			holder.palate.setText(Integer.toString(item.mouthfeel));
+			holder.overall.setText(Integer.toString(item.overall));
 			holder.username.setTag(item.userName);
-			holder.username.setText(item.userName + " (" + item.rateCount + "), " + item.country);
+			holder.username.setText(item.userName + " (" + Integer.toString(item.rateCount) + "), " + item.country);
 			holder.comments.setText(item.comments + (item.timeUpdated != null ? " ("
-					+ dateFormat.format(item.timeUpdated) + ")" : item.timeEntered != null ? " ("
-					+ dateFormat.format(item.timeEntered) + ")" : ""));
+					+ displayDateFormat.format(item.timeUpdated) + ")" : item.timeEntered != null ? " ("
+					+ displayDateFormat.format(item.timeEntered) + ")" : ""));
 
 			return convertView;
 		}

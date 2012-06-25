@@ -32,7 +32,6 @@ public enum ApiMethod {
 	GetUserImage,
 	GetUserDetails,
 	GetUserRatings,
-	GetUserRating,
 	GetUserCellar,
 	PostRating, 
 	

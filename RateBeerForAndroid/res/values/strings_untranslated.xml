@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RateBeer for Android</string>
+    <!-- Debug key -->
+	<string name="app_googlemapskey">0tkfMrcfmFeOYepTmK7jTpCSyChzQ-a34wn0k7A</string>
+    <!-- Release key -->
+    <!-- <string name="app_googlemapskey">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string> -->
+
+	<string-array name="settings_frequency_values">
+		<item>60</item>
+		<item>600</item>
+		<item>1800</item>
+		<item>3600</item>
+		<item>14400</item>
+		<item>86400</item>
+	</string-array>
+	
+</resources>

@@ -17,23 +17,31 @@
  */
 package com.ratebeer.android.gui.fragments;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
+import com.google.android.maps.MapView;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -45,16 +53,23 @@ import com.ratebeer.android.app.location.MyLocation.LocationResult;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.SelectLocationDialog;
+import com.ratebeer.android.gui.components.SelectLocationDialog.OnLocationSelectedListener;
+import com.viewpagerindicator.TabPageIndicator;
+import com.viewpagerindicator.TitleProvider;
 
-public class PlacesFragment extends RateBeerFragment {
+public class PlacesFragment extends RateBeerFragment implements OnLocationSelectedListener {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
 	private static final String STATE_PLACES = "places";
+	private static final String STATE_LOCATION = "location";
 	private static final int DEFAULT_RADIUS = 25;
+	private static final int MENU_LOCATION = 0;
 	
 	private LayoutInflater inflater;
-	private TextView emptyText;
+	private ViewPager pager;
 	private ListView placesView;
+	private FrameLayout mapFrame;
 
 	private ArrayList<Place> places = null;
 	private Location lastLocation = null;
@@ -73,13 +88,18 @@ public class PlacesFragment extends RateBeerFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		emptyText = (TextView) getView().findViewById(R.id.empty);
-		placesView = (ListView) getView().findViewById(R.id.places);
-		placesView.setOnItemClickListener(onItemSelected);
+		pager = (ViewPager) getView().findViewById(R.id.pager);
+		PlacesPagerAdapter placesPagerAdapter = new PlacesPagerAdapter();
+		pager.setAdapter(placesPagerAdapter);
+		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
+		titles.setViewPager(pager);
 
 		if (savedInstanceState != null) {
 			if (savedInstanceState.containsKey(STATE_PLACES)) {
 				places = savedInstanceState.getParcelableArrayList(STATE_PLACES);
+			}
+			if (savedInstanceState.containsKey(STATE_LOCATION)) {
+				lastLocation = savedInstanceState.getParcelable(STATE_LOCATION);
 			}
 		}
 		
@@ -96,6 +116,9 @@ public class PlacesFragment extends RateBeerFragment {
 		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
 		item.setIcon(R.drawable.ic_action_refresh);
 		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		MenuItem location = menu.add(MENU_LOCATION, MENU_LOCATION, MENU_LOCATION, R.string.places_location);
+		location.setIcon(R.drawable.ic_action_location);
+		location.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -105,15 +128,47 @@ public class PlacesFragment extends RateBeerFragment {
 		case RateBeerActivity.MENU_REFRESH:
 			refreshPlaces();
 			break;
+		case MENU_LOCATION:
+			new SelectLocationDialog(this).show(getSupportFragmentManager(), "SelectLocationDialog");
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
+	public void onStartLocationSearch(String query) {
+		// Try to find a location for the user query, using a Geocoder
+		try {
+			List<Address> point = new Geocoder(getActivity()).getFromLocationName(query, 1);
+			if (point.size() <= 0) {
+				// Cannot find address: give an error
+				publishException(null, getString(R.string.error_nolocation));
+			} else {
+				// Found a location! Now look for places
+				lastLocation.setLongitude(point.get(0).getLongitude());
+				lastLocation.setLatitude(point.get(0).getLatitude());
+				execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, 
+						lastLocation.getLatitude(), lastLocation.getLongitude()));
+			}
+		} catch (IOException e) {
+			// Canot connect to geocoder server: give an error
+			publishException(null, getString(R.string.error_nolocation));
+		}		
+	}
+	
+	@Override
+	public void onUseCurrentLocation() {
+		refreshPlaces();
+	}
+	
+	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		if (places != null) {
 			outState.putParcelableArrayList(STATE_PLACES, places);
+		}
+		if (lastLocation != null) {
+			outState.putParcelable(STATE_LOCATION, lastLocation);
 		}
 	}
 
@@ -123,7 +178,7 @@ public class PlacesFragment extends RateBeerFragment {
 			// Force the progress indicator to start
 			getRateBeerActivity().setProgress(true);
 		} else {
-			publishException(emptyText, getString(R.string.error_locationnotsupported));
+			publishException(null, getString(R.string.error_locationnotsupported));
 		}
 	}
 
@@ -136,7 +191,7 @@ public class PlacesFragment extends RateBeerFragment {
 					@Override
 					public void run() {
 						if (getRateBeerActivity() != null) {
-							publishException(emptyText, getString(R.string.error_nolocation));
+							publishException(null, getString(R.string.error_nolocation));
 						}
 					}
 				});
@@ -179,13 +234,22 @@ public class PlacesFragment extends RateBeerFragment {
 		} else {
 			((PlacesAdapter) placesView.getAdapter()).replace(result);
 		}
-		placesView.setVisibility(result.size() == 0 ? View.GONE : View.VISIBLE);
-		emptyText.setVisibility(result.size() == 0 ? View.VISIBLE : View.GONE);
+
+		// Get the activity-wide MapView to show on this fragment and center on this place's location
+		if (lastLocation != null) {
+			MapView mapView = getRateBeerActivity().requestMapViewInstance();
+			mapView.getController().setCenter(getRateBeerActivity().getPoint(lastLocation.getLatitude(), 
+					lastLocation.getLongitude()));
+			mapView.getController().setZoom(15);
+			mapFrame.addView(mapView);
+			// TODO: Add overlay
+		}
+		
 	}
 
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {
-		publishException(emptyText, result.getException());
+		publishException(null, result.getException());
 	}
 	
 	@Override
@@ -260,6 +324,80 @@ public class PlacesFragment extends RateBeerFragment {
 
 	protected static class ViewHolder {
 		TextView placeName, placeType, distance, city, score;
+	}
+
+	private class PlacesPagerAdapter extends PagerAdapter implements TitleProvider {
+
+		private ListView pagerListView;
+		private FrameLayout pagerMapView;
+
+		public PlacesPagerAdapter() {
+			LayoutInflater inflater = getActivity().getLayoutInflater();
+			pagerListView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerMapView = (FrameLayout) inflater.inflate(R.layout.fragment_placesmap, null);
+			
+			placesView = pagerListView;
+			placesView.setOnItemClickListener(onItemSelected);
+			
+			mapFrame = pagerMapView;
+		}
+
+		@Override
+		public int getCount() {
+			return 2;
+		}
+
+		@Override
+		public String getTitle(int position) {
+			switch (position) {
+			case 0:
+				return getActivity().getString(R.string.places_nearby);
+			case 1:
+				return getActivity().getString(R.string.places_map);
+			}
+			return null;
+		}
+
+		@Override
+		public Object instantiateItem(View container, int position) {
+			switch (position) {
+			case 0:
+				((ViewPager) container).addView(pagerListView, 0);
+				return pagerListView;
+			case 1:
+				((ViewPager) container).addView(pagerMapView, 0);
+				return pagerMapView;
+			}
+			return null;
+		}
+
+		@Override
+		public void destroyItem(View container, int position, Object object) {
+			((ViewPager) container).removeView((View) object);
+		}
+
+		@Override
+		public boolean isViewFromObject(View view, Object object) {
+			return view == (View) object;
+		}
+
+		@Override
+		public void finishUpdate(View container) {
+		}
+
+		@Override
+		public Parcelable saveState() {
+			return null;
+		}
+
+		@Override
+		public void startUpdate(View container) {
+		}
+
+		@Override
+		public void restoreState(Parcelable state, ClassLoader loader) {
+		}
+
 	}
 
 }

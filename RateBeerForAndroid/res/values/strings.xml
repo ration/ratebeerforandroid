@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RateBeer for Android</string>
-    <!-- Debug key -->
-	<!-- <string name="app_googlemapskey">0tkfMrcfmFeMLyX_vX__k7wHmC3HwFnJWM_XBrg</string> -->
-    <!-- Release key -->
-    <string name="app_googlemapskey">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
 	<string name="app_ok">OK</string>
 	<string name="app_cancel">Cancel</string>
 	<string name="app_home">Home</string>
@@ -17,8 +12,8 @@
 	<string name="app_legal_title">Welcome!</string>
 
 	<string name="app_install">Install now</string>
-	<string name="app_nomarket">The Android Market is not installed on your device.</string>
-	<string name="app_scannernotfound">The barcode scanner can not be found.\nWould you like to install this from the Android Market?</string>
+	<string name="app_nomarket">The Play Store is not installed on your device.</string>
+	<string name="app_scannernotfound">The barcode scanner can not be found.\nWould you like to install this from the Play Store?</string>
 	<string name="app_onlyifsignedin">This feature is only available after signing in to RateBeer.</string>
 
 	<string name="app_newstatus">Enter new status</string>
@@ -107,6 +102,10 @@
 	<string name="topbeers_noitems">Select a country to view its top beers&#8230;</string>
 	
 	<string name="places_nearby">Places nearby</string>
+	<string name="places_map">Map</string>
+	<string name="places_location">Location</string>
+	<string name="places_findhint">Type the name of the search location</string>
+	<string name="places_usecurrent">Use your current location</string>
 	<string name="places_noitems">No beer places found in this area!</string>
 	<string name="places_brewpub">Brewpub</string>
 	<string name="places_bar">Bar</string>
@@ -272,14 +271,6 @@
 		<item>4 hours</item>
 		<item>24 hours</item>
 	</string-array>
-	<string-array name="settings_frequency_values">
-		<item>60</item>
-		<item>600</item>
-		<item>1800</item>
-		<item>3600</item>
-		<item>14400</item>
-		<item>86400</item>
-	</string-array>
 			
 	<string name="error_offline">You do not have an internet connection or RateBeer.com is offline</string>
 	<string name="error_authenticationfailed">Your username or password is incorrect</string>
@@ -293,7 +284,7 @@
 	<string name="error_cannotread">No file or cannot read from it</string>
 	<string name="error_filenotvalid">File does not contain offline ratings (in the correct format)</string>
 	<string name="error_nocamera">Cannot take a photo; either you have no camera or cannot write to the external SD storage</string>
-	<string name="error_lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Android Market?</string>
+	<string name="error_lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Play Store?</string>
 	<string name="error_lc_run">The Log Collector application will now collect the device log and send it to rb@2312.nl.\nYou will have an opportunity to review and modify the data being sent.</string>
 	
 </resources>

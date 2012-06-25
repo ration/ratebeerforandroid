@@ -38,6 +38,14 @@ smooth-wheel
     by Qixiang Chen of Sinkpoint
     Apache Software License 2.0
     http://code.google.com/p/smooth-wheel/
+Android MapView Balloons
+    by Jeff Gilfelt et al.
+    Apache Software License 2.0
+    https://github.com/jgilfelt/android-mapviewballoons
+ViewPagerIndicator
+    by Jake Wharton
+    Apache License Version 2.0
+    http://viewpagerindicator.com/
 bug.png
     by gentleface.com
     Attribution-NonCommercial 3.0 Unported

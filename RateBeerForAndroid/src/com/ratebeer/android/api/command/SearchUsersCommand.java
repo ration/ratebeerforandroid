@@ -78,7 +78,7 @@ public class SearchUsersCommand extends HtmlCommand {
 		if (tableStart < 0) {
 			
 			// Probably send directly to the single found user: parse that instead
-			String idText = "<div class=\"sitename\">";
+			String idText = "<span class=\"userIsDrinking\">";
 			int idStart = html.indexOf(idText);
 			if (idStart < 0) {
 				throw new ApiException(ApiException.ExceptionType.CommandFailed,

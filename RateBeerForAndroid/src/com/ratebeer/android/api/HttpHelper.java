@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -224,7 +225,7 @@ public class HttpHelper {
 		List<Cookie> beforeCookies = httpClient.getCookieStore().getCookies();
 		for (Iterator<Cookie> iterator = beforeCookies.iterator(); iterator.hasNext();) {
 			Cookie cookie = iterator.next();
-			if (cookie.getName().equalsIgnoreCase("SessionCode")) {
+			if (cookie.getName().equalsIgnoreCase("SessionCode") && !cookie.isExpired(new Date())) {
 				return true;
 			}
 		}

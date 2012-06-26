@@ -3,9 +3,9 @@
 
     <string name="app_name">RateBeer for Android</string>
     <!-- Debug key -->
-	<string name="app_googlemapskey">0tkfMrcfmFeOYepTmK7jTpCSyChzQ-a34wn0k7A</string>
+	<!-- <string name="app_googlemapskey">0tkfMrcfmFeOYepTmK7jTpCSyChzQ-a34wn0k7A</string> -->
     <!-- Release key -->
-    <!-- <string name="app_googlemapskey">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string> -->
+    <string name="app_googlemapskey">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
 
 	<string-array name="settings_frequency_values">
 		<item>60</item>

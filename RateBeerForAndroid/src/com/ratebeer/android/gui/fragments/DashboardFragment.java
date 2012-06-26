@@ -238,6 +238,9 @@ public class DashboardFragment extends RateBeerFragment {
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
+		if (getActivity() == null) {
+			return;
+		}
 		if (result.getCommand().getMethod() == ApiMethod.GetUserStatus) {
 			GetUserStatusCommand getCommand = (GetUserStatusCommand) result.getCommand();
 			// Override the user settings, in which the drinking status is contained

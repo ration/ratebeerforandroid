@@ -117,8 +117,6 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		pager.setAdapter(brewerPagerAdapter);
 		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
 		titles.setViewPager(pager);
-		nameText = (TextView) getView().findViewById(R.id.name);
-		descriptionText = (TextView) getView().findViewById(R.id.description);
 		beersView.setOnItemClickListener(onBeerSelected);
 
 		if (savedInstanceState != null) {
@@ -214,7 +212,12 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 	private OnClickListener onWebsiteClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(brewer.website));
+			String web = brewer.website;
+			if (!web.startsWith("http://")) {
+				// http:// should be explicit in the web address
+				web = "http://" + web;
+			}
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(web));
 		    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			if (ActivityUtil.isIntentAvailable(getActivity(), i)) {
 				startActivity(i);
@@ -398,6 +401,8 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 
 			beersView = pagerBeersView;
 
+			nameText = (TextView) pagerDetailsView.findViewById(R.id.name);
+			descriptionText = (TextView) pagerDetailsView.findViewById(R.id.description);
 			locationText = (Button) pagerDetailsView.findViewById(R.id.location);
 			websiteButton = (Button) pagerDetailsView.findViewById(R.id.website);
 			facebookButton = (Button) pagerDetailsView.findViewById(R.id.facebook);

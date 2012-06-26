@@ -104,6 +104,8 @@
 	<string name="places_nearby">Places nearby</string>
 	<string name="places_map">Map</string>
 	<string name="places_location">Location</string>
+	<string name="places_rateandcount">Rating: %1$s</string>
+	<string name="places_notyetrated">Not yet rated</string>
 	<string name="places_findhint">Type the name of the search location</string>
 	<string name="places_usecurrent">Use your current location</string>
 	<string name="places_noitems">No beer places found in this area!</string>

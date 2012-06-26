@@ -19,30 +19,32 @@ package com.ratebeer.android.gui.components;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.CommandFailureResult;
-import com.ratebeer.android.api.CommandResult;
-import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
+import com.ratebeer.android.gui.components.tasks.LegacyTaskExecutor;
+import com.ratebeer.android.gui.components.tasks.RateBeerTask;
+import com.ratebeer.android.gui.components.tasks.RateBeerTaskCaller;
+import com.ratebeer.android.gui.components.tasks.SinglePoolTaskExecutor;
+import com.ratebeer.android.gui.components.tasks.TaskExecutor;
+import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
 public abstract class RateBeerActivity extends FragmentActivity implements OnProgressChangedListener {
 
@@ -54,6 +56,7 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 	private static final int MENU_ERRORREPORT = 9903;
 	
 	// Tracking of any running tasks
+	TaskExecutor strategy;
 	private int tasksRunning = 0;
 	private boolean inProgress = false; // Whether there is any progress going on (which is not exclusively a RateBeerTask)
 	// Local progress reporter (showing progress in the action bar)
@@ -67,6 +70,16 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 	// Google Maps container management
 	private MapView mapViewInstance = null;
 
+	public RateBeerActivity() {
+		if (Build.VERSION.SDK_INT >= 11) { // 11 = Build.VERSION_CODES.HONEYCOMB
+			// SinglePoolTaskExecutor encapsulates the new AsyncTask.THREAD_POOL_EXECUTOR
+			// Note that this can't be used here directly because pre-2.1 devices do not know about this property
+			strategy = new SinglePoolTaskExecutor();
+		} else {
+			strategy = new LegacyTaskExecutor();
+		}
+	}
+	
 	public void onCreate(Bundle savedInstanceState, int layoutResID) {
 
 		// Set up database helper
@@ -215,15 +228,11 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
      * @param command The command to execute
      */
     public void execute(RateBeerTaskCaller caller, Command command) {
-    	RateBeerTask task = new RateBeerTask(caller, command);
+    	RateBeerTask task = new RateBeerTask(this, caller, command);
     	//getActivity().addTask(task);
     	tasksRunning++;
     	// Start execution
-		if (Build.VERSION.SDK_INT >= 11) { // 11 = Build.VERSION_CODES.HONEYCOMB
-			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		} else {
-			task.execute();
-		}
+		strategy.execute(task);
     	if (onProgressChangedListener != null) {
     		onProgressChangedListener.setProgress(true);
     	}
@@ -236,51 +245,22 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 		}
 	};
 
-	/**
-	 * Executes a forum command as an asynchronous task and posts back the result to
-	 * either onTaskSuccessResult or onTaskFailureResult.
-	 */
-	private class RateBeerTask extends AsyncTask<Void, Void, CommandResult> {
-		
-		private Command rbCommand;
-		private RateBeerTaskCaller caller;
-		
-		public RateBeerTask(RateBeerTaskCaller caller, Command rbCommand) {
-			this.caller = caller;
-			this.rbCommand = rbCommand;
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected CommandResult doInBackground(Void... params) {
-			return rbCommand.execute();
-		}
-
-		@Override
-		protected void onPostExecute(CommandResult result) {
-			onTaskFinished(this);
-			Log.d(RateBeerForAndroid.LOG_NAME, result.toString());
-			if (caller.isBound()) {
-				if (result instanceof CommandSuccessResult) {
-					caller.onTaskSuccessResult((CommandSuccessResult) result);
-				} else if (result instanceof CommandFailureResult) {
-					caller.onTaskFailureResult((CommandFailureResult) result);
-				}
-			}
-		}
-
-	}
-
+	@SuppressWarnings("rawtypes")
 	public MapView requestMapViewInstance() {
 
 		// Create the map view if if we didn't have one yet
 		if (mapViewInstance == null) {
 			mapViewInstance = new MapView(this, getString(R.string.app_googlemapskey));
+			mapViewInstance.setClickable(true);
+			mapViewInstance.setBuiltInZoomControls(true);
+			mapViewInstance.getController().setZoom(15);
 		}
+		for (Overlay overlay : mapViewInstance.getOverlays()) {
+			if (overlay instanceof BalloonItemizedOverlay) {
+				((BalloonItemizedOverlay) overlay).hideAllBalloons();
+			}
+		}
+		mapViewInstance.getOverlays().clear();
 		
 		// Make sure it is not attached to any view
 		if (mapViewInstance.getParent() != null && mapViewInstance.getParent() instanceof FrameLayout) {
@@ -292,7 +272,7 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 	}
 
 	public GeoPoint getPoint(double lat, double lon) {
-		return(new GeoPoint((int)(lat*1000000.0), (int)(lon*1000000.0)));
+		return new GeoPoint((int)(lat * 1E6), (int)(lon * 1E6));
 	}
 
 	/**

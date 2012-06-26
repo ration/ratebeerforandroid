@@ -34,6 +34,7 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.SignOutCommand;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SignIn;
+import com.ratebeer.android.gui.components.tasks.RateBeerTaskCaller;
 import com.ratebeer.android.gui.fragments.UserViewFragment;
 
 public class RateBeerFragment extends Fragment implements RateBeerTaskCaller {

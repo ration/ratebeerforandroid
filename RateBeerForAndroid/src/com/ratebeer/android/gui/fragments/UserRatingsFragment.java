@@ -256,6 +256,10 @@ public class UserRatingsFragment extends RateBeerFragment {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
+			if (getRateBeerActivity() == null) {
+				return convertView;
+			}
+			
 			// Bind the data
 			UserRating item = getItem(position);
 			if (getActivity() != null) {

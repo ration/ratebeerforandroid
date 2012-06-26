@@ -100,7 +100,7 @@ public class GetAvailableBeersCommand extends JsonCommand {
 			out.writeInt(beerId);
 			out.writeString(beerName);
 			out.writeInt(averageRating);
-			out.writeLong(timeEntered.getTime());
+			out.writeLong(timeEntered == null? -1: timeEntered.getTime());
 		}
 
 		public static final Parcelable.Creator<AvailableBeer> CREATOR = new Parcelable.Creator<AvailableBeer>() {
@@ -117,7 +117,8 @@ public class GetAvailableBeersCommand extends JsonCommand {
 			beerId = in.readInt();
 			beerName = in.readString();
 			averageRating = in.readInt();
-			timeEntered = new Date(in.readLong());
+			long timeEnteredInt = in.readLong();
+			timeEntered = timeEnteredInt == -1? null: new Date(timeEnteredInt);
 		}
 
 	}

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -42,6 +43,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -49,7 +51,11 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 import com.ratebeer.android.app.location.MyLocation;
+import com.ratebeer.android.app.location.PlaceOverlayItem;
 import com.ratebeer.android.app.location.MyLocation.LocationResult;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
+import com.ratebeer.android.app.location.TouchableMapViewPager;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
@@ -58,7 +64,7 @@ import com.ratebeer.android.gui.components.SelectLocationDialog.OnLocationSelect
 import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitleProvider;
 
-public class PlacesFragment extends RateBeerFragment implements OnLocationSelectedListener {
+public class PlacesFragment extends RateBeerFragment implements OnLocationSelectedListener, OnBalloonClickListener {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
 	private static final String STATE_PLACES = "places";
@@ -67,7 +73,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 	private static final int MENU_LOCATION = 0;
 	
 	private LayoutInflater inflater;
-	private ViewPager pager;
+	private TouchableMapViewPager pager;
 	private ListView placesView;
 	private FrameLayout mapFrame;
 
@@ -88,11 +94,12 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		pager = (ViewPager) getView().findViewById(R.id.pager);
+		pager = (TouchableMapViewPager) getView().findViewById(R.id.pager);
 		PlacesPagerAdapter placesPagerAdapter = new PlacesPagerAdapter();
 		pager.setAdapter(placesPagerAdapter);
 		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
 		titles.setViewPager(pager);
+		titles.setOnPageChangeListener(pager);
 
 		if (savedInstanceState != null) {
 			if (savedInstanceState.containsKey(STATE_PLACES)) {
@@ -235,18 +242,65 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			((PlacesAdapter) placesView.getAdapter()).replace(result);
 		}
 
-		// Get the activity-wide MapView to show on this fragment and center on this place's location
 		if (lastLocation != null) {
+			
+			// Get the activity-wide MapView to show on this fragment and center on this current location
 			MapView mapView = getRateBeerActivity().requestMapViewInstance();
-			mapView.getController().setCenter(getRateBeerActivity().getPoint(lastLocation.getLatitude(), 
+			mapView.getController().animateTo(getRateBeerActivity().getPoint(lastLocation.getLatitude(), 
 					lastLocation.getLongitude()));
-			mapView.getController().setZoom(15);
 			mapFrame.addView(mapView);
-			// TODO: Add overlay
+			
+			// Add an overlay of different type of places
+			SimpleItemizedOverlay brewpubOverlay = getPlaceTypeMarker(mapView, 1, this);
+			SimpleItemizedOverlay barOverlay = getPlaceTypeMarker(mapView, 2, this);
+			SimpleItemizedOverlay storeOverlay = getPlaceTypeMarker(mapView, 3, this);
+			SimpleItemizedOverlay restaurantOverlay = getPlaceTypeMarker(mapView, 4, this);
+			SimpleItemizedOverlay brewerOverlay = getPlaceTypeMarker(mapView, 5, this);
+			for (Place place : this.places) {
+				// Create an overlay item with a specific point and a name/description for the balloon
+				OverlayItem item = new PlaceOverlayItem(getRateBeerActivity().getPoint(place.latitude, place.longitude),
+						place.placeName, place.avgRating > 0 ? getString(R.string.places_rateandcount,
+								Integer.toString(place.avgRating)) : getString(R.string.places_notyetrated), place);
+				// Place it in the right overlay to get the right icon
+				switch (place.placeType) {
+				case 1:
+					brewpubOverlay.addOverlay(item);
+					break;
+				case 2:
+					barOverlay.addOverlay(item);
+					break;
+				case 3:
+					storeOverlay.addOverlay(item);
+					break;
+				case 4:
+					restaurantOverlay.addOverlay(item);
+					break;
+				case 5:
+					brewerOverlay.addOverlay(item);
+					break;
+				default:
+					brewpubOverlay.addOverlay(item);
+					break;
+				}
+				mapView.getOverlays().add(brewpubOverlay);
+				mapView.getOverlays().add(barOverlay);
+				mapView.getOverlays().add(storeOverlay);
+				mapView.getOverlays().add(restaurantOverlay);
+				mapView.getOverlays().add(brewerOverlay);
+				
+			}
+			
 		}
 		
 	}
 
+	@Override
+	public void onBalloonClicked(OverlayItem item) {
+		if (item instanceof PlaceOverlayItem) {
+			getRateBeerActivity().load(new PlaceViewFragment(((PlaceOverlayItem) item).getPlace()));
+		}
+	}
+	
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {
 		publishException(null, result.getException());
@@ -321,6 +375,24 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			return context.getString(R.string.places_unknown);
 		}
 	}
+	
+	public static SimpleItemizedOverlay getPlaceTypeMarker(MapView mapView, int placeType, OnBalloonClickListener bcl) {
+		Resources res = mapView.getContext().getResources();
+		switch (placeType) {
+		case 1:
+			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_red), mapView, bcl);
+		case 2:
+			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_blue), mapView, bcl);
+		case 3:
+			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_green), mapView, bcl);
+		case 4:
+			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_yellow), mapView, bcl);
+		case 5:
+			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_purple), mapView, bcl);
+		default:
+			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_red), mapView, bcl);
+		}
+	}
 
 	protected static class ViewHolder {
 		TextView placeName, placeType, distance, city, score;
@@ -341,7 +413,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			
 			mapFrame = pagerMapView;
 		}
-
+		
 		@Override
 		public int getCount() {
 			return 2;

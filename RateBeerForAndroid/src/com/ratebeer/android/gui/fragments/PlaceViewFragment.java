@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -56,6 +57,8 @@ import com.ratebeer.android.api.command.GetCheckinsCommand;
 import com.ratebeer.android.api.command.GetCheckinsCommand.CheckedInUser;
 import com.ratebeer.android.api.command.GetPlaceDetailsCommand;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
@@ -63,7 +66,7 @@ import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitleProvider;
 
-public class PlaceViewFragment extends RateBeerFragment {
+public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
 	private static final String STATE_PLACEID = "placeId";
 	private static final String STATE_PLACE = "place";
@@ -307,8 +310,12 @@ public class PlaceViewFragment extends RateBeerFragment {
 		// Get the activity-wide MapView to show on this fragment and center on this place's location
 		MapView mapView = getRateBeerActivity().requestMapViewInstance();
 		mapView.getController().setCenter(getRateBeerActivity().getPoint(place.latitude, place.longitude));
-		mapView.getController().setZoom(15);
 		mapFrame.addView(mapView);
+		final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, place.placeType, this);
+		to.addOverlay(new OverlayItem(getRateBeerActivity().getPoint(place.latitude, place.longitude), place.placeName,
+				place.avgRating > 0 ? getString(R.string.places_rateandcount, Integer.toString(place.avgRating))
+						: getString(R.string.places_notyetrated)));
+		mapView.getOverlays().add(to);
 		
 		// Make fields visible too
 		ratingText.setVisibility(View.VISIBLE);
@@ -316,6 +323,11 @@ public class PlaceViewFragment extends RateBeerFragment {
 		phoneText.setVisibility(View.VISIBLE);
 		checkinhereButton.setVisibility(View.VISIBLE);
 		
+	}
+
+	@Override
+	public void onBalloonClicked(OverlayItem item) {
+		// No action, for now
 	}
 
 	private class CheckinsAdapter extends ArrayAdapter<CheckedInUser> {

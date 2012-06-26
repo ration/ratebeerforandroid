@@ -508,7 +508,7 @@ public class SearchFragment extends RateBeerFragment {
 			BrewerSearchResult item = getItem(position);
 			if (getActivity() != null) {
 				holder.name.setText(item.brewerName);
-				holder.city.setText(item.city);
+				holder.city.setText(item.city + ", " + item.country);
 			}
 
 			return convertView;

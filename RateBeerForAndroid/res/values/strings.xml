@@ -288,5 +288,6 @@
 	<string name="error_nocamera">Cannot take a photo; either you have no camera or cannot write to the external SD storage</string>
 	<string name="error_lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Play Store?</string>
 	<string name="error_lc_run">The Log Collector application will now collect the device log and send it to rb@2312.nl.\nYou will have an opportunity to review and modify the data being sent.</string>
+	<string name="error_invalidurl">The website URL does not seem to be valid</string>
 	
 </resources>

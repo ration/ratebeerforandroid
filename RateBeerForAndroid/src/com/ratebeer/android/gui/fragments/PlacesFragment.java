@@ -336,6 +336,10 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 				holder = (ViewHolder) convertView.getTag();
 			}
 
+			if (getRateBeerActivity() == null) {
+				return convertView;
+			}
+			
 			// Bind the data
 			Place item = getItem(position);
 			holder.placeName.setText(item.placeName);

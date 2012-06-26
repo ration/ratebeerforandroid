@@ -223,6 +223,10 @@ public class StyleViewFragment extends RateBeerFragment {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
+			if (getRateBeerActivity() == null) {
+				return convertView;
+			}
+			
 			// Bind the data
 			TopBeer item = getItem(position);
 			if (getActivity() != null) {

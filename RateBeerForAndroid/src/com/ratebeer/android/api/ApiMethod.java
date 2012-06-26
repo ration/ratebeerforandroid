@@ -32,8 +32,10 @@ public enum ApiMethod {
 	GetUserImage,
 	GetUserDetails,
 	GetUserRatings,
+	GetUserTicks,
 	GetUserCellar,
-	PostRating, 
+	PostRating,
+	PostTick,
 	
 	// Cellar
 	AddToCellar,
@@ -46,7 +48,7 @@ public enum ApiMethod {
 	GetBeerDetails,
 	GetBeerImage,
 	GetBeerRatings,
-	GetBeerRating,
+	GetBeerTicks,
 	GetTopBeers,
 	UploadBeerPhoto,
 	

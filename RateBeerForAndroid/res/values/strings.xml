@@ -22,10 +22,13 @@
 	<string name="app_settingdrinking">Setting drinking status</string>
 	<string name="app_sharerating">Share rating on Twitter/Facebook/&#8230;</string>
 	<string name="app_postingrating">Posting beer rating</string>
+	<string name="app_postingtick">Posting your tick</string>
+	<string name="app_removingtick">Removing your tick</string>
 	<string name="app_addingavailability">Publishing availability</string>
 	<string name="app_addingforbeer">Adding availability for %1$s</string>
 	<string name="app_addingavailability">Publishing availability</string>
 	<string name="app_rated">Rated %1$s with a %2$s</string>
+	<string name="app_forbeer">For %1$s</string>
 	<string name="app_addingtocellar">Adding to cellar</string>
 	<string name="app_addwant">I want %1$s</string>
 	<string name="app_addhave">I have %1$s</string>
@@ -169,6 +172,7 @@
 	<string name="details_drinkingthis">Drinking this</string>
 	<string name="details_recentratings">Ratings</string>
 	<string name="details_myrating">My rating:</string>
+	<string name="details_ticklabel">Or just tick:</string>
 	<string name="details_otherratings">Recent ratings:</string>
 	<string name="details_availability">Availability</string>
 	<string name="details_share">Check out %1$s at @ratebeer http://ratebeer.com/b/%2$s/</string>

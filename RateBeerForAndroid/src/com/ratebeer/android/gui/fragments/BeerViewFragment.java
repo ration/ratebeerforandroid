@@ -34,6 +34,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
@@ -51,6 +54,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
@@ -65,6 +69,8 @@ import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetBeerImageCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand.BeerRating;
+import com.ratebeer.android.api.command.GetUserTicksCommand;
+import com.ratebeer.android.api.command.GetUserTicksCommand.UserTick;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.api.command.Style;
@@ -86,6 +92,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	private static final String STATE_RATINGSCOUNT = "ratingsCount";
 	private static final String STATE_DETAILS = "details";
 	private static final String STATE_OWNRATINGS = "ownRatings";
+	private static final String STATE_OWNTICKS = "ownTicks";
 	private static final String STATE_RATINGS = "ratings";
 	private static final String STATE_AVAILABILITY= "availability";
 	private static final int UNKNOWN_RATINGS_COUNT = -1;
@@ -100,9 +107,10 @@ public class BeerViewFragment extends RateBeerFragment {
 	private TextView nameText, noscoreyetText, scoreText, stylepctlText, ratingsText, descriptionText;
 	private Button brewernameButton, abvstyleButton;
 	private Button rateThisButton, drinkingThisButton, addAvailabilityButton, havethisButton, wantthisButton, uploadphotoButton;
-	private View ownratingRow, ownratinglabel, otherratingslabel;
+	private View ownratingRow, ownratinglabel, ticklabel, otherratingslabel;
 	private TextView ownratingTotal, ownratingAroma, ownratingAppearance, ownratingTaste, ownratingPalate, 
 		ownratingOverall, ownratingUsername, ownratingComments;
+	private RatingBar tickBar;
 	private ListView availabilityView;
 	private BeerRatingsAdapter recentRatingsAdapter;
 	private ImageView imageView;
@@ -113,6 +121,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	protected int ratingsCount;
 	private BeerDetails details = null;
 	private ArrayList<BeerRating> ownRatings = null;
+	private ArrayList<UserTick> ownTicks = null;
 	private ArrayList<BeerRating> recentRatings = new ArrayList<BeerRating>();
 	private ArrayList<PlaceSearchResult> availability = new ArrayList<PlaceSearchResult>();
 
@@ -177,6 +186,9 @@ public class BeerViewFragment extends RateBeerFragment {
 			if (savedInstanceState.containsKey(STATE_OWNRATINGS)) {
 				ownRatings = savedInstanceState.getParcelable(STATE_OWNRATINGS);
 			}
+			if (savedInstanceState.containsKey(STATE_OWNTICKS)) {
+				ownTicks = savedInstanceState.getParcelable(STATE_OWNTICKS);
+			}
 			if (savedInstanceState.containsKey(STATE_RATINGS)) {
 				recentRatings = savedInstanceState.getParcelableArrayList(STATE_RATINGS);
 			}
@@ -189,12 +201,14 @@ public class BeerViewFragment extends RateBeerFragment {
 			refreshDetails();
 			refreshImage();
 			refreshOwnRating();
+			refreshOwnTick();
 			refreshRatings();
 			refreshAvailability();
 		}
 		// Publish the current details, even when it is not loaded yet (and thus still empty)
 		publishDetails(details);
 		publishOwnRating(ownRatings);
+		publishOwnTick(ownTicks);
 		setRatings(recentRatings);
 		setAvailability(availability);
 		
@@ -218,6 +232,7 @@ public class BeerViewFragment extends RateBeerFragment {
 			refreshDetails();
 			refreshImage();
 			refreshOwnRating();
+			refreshOwnTick();
 			refreshRatings();
 			refreshAvailability();
 			break;
@@ -244,6 +259,9 @@ public class BeerViewFragment extends RateBeerFragment {
 		if (ownRatings != null) {
 			outState.putParcelableArrayList(STATE_OWNRATINGS, ownRatings);
 		}
+		if (ownTicks != null) {
+			outState.putParcelableArrayList(STATE_OWNTICKS, ownTicks);
+		}
 		if (recentRatings != null) {
 			outState.putParcelableArrayList(STATE_RATINGS, recentRatings);
 		}
@@ -264,6 +282,13 @@ public class BeerViewFragment extends RateBeerFragment {
 		if (getRateBeerActivity().getUser() != null) {
 			execute(new GetRatingsCommand(getRateBeerActivity().getApi(), beerId, getRateBeerActivity().getUser()
 					.getUserID()));
+		}
+	}
+
+	private void refreshOwnTick() {
+		if (getRateBeerActivity().getUser() != null) {
+			// TODO: Unfortunately we have to retrieve all the user's ticks, since the RB API is limited...
+			execute(new GetUserTicksCommand(getRateBeerActivity().getApi(), beerId));
 		}
 	}
 
@@ -289,6 +314,33 @@ public class BeerViewFragment extends RateBeerFragment {
 			// Start new rating fragment
 			getRateBeerActivity().load(new RateFragment(beerName, beerId));
 		}
+	}
+	
+	protected void onTickBarUpdated(float rating) {
+		int newRating = (int) rating;
+		if (rating <= 0.1) {
+			// Force everything below 0.1 (since the user might not have the finger all the way at 0) as a tick removal
+			newRating = -1;
+		}
+		if (ownTicks != null && ownTicks.size() > 0 && ownTicks.get(0).liked == rating) {
+			// No need to update
+			return;
+		}
+		// Update the user's tick status of this beer
+		Intent i = new Intent(PosterService.ACTION_POSTTICK);
+		i.putExtra(PosterService.EXTRA_BEERID, beerId);
+		i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
+		i.putExtra(PosterService.EXTRA_USERID, getRateBeerActivity().getUser().getUserID());
+		i.putExtra(PosterService.EXTRA_LIKED, newRating);
+		i.putExtra(PosterService.EXTRA_MESSENGER, new Messenger(new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				// Callback from the poster service; just refresh the tick status
+				// if (msg.arg1 == PosterService.RESULT_SUCCESS)
+				refreshOwnTick();
+			}
+		}));
+		getActivity().startService(i);
 	}
 
 	protected void onDrinkingBeerClick() {
@@ -454,6 +506,8 @@ public class BeerViewFragment extends RateBeerFragment {
 			publishDetails(((GetBeerDetailsCommand) result.getCommand()).getDetails());
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerImage) {
 			setImage(((GetBeerImageCommand) result.getCommand()).getImage());
+		} else if (result.getCommand().getMethod() == ApiMethod.GetUserTicks) {
+			publishOwnTick(((GetUserTicksCommand) result.getCommand()).getUserTicks());
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerRatings) {
 			GetRatingsCommand grc = (GetRatingsCommand) result.getCommand();
 			if (grc.getForUserId() == GetRatingsCommand.NO_USER) {
@@ -481,6 +535,26 @@ public class BeerViewFragment extends RateBeerFragment {
 		this.ownRatings = ownRatings;
 		// Show the rating
 		setOwnRating(this.ownRatings);
+	}
+
+	private void publishOwnTick(ArrayList<UserTick> allUserTicks) {
+		if (allUserTicks == null) {
+			this.ownTicks = null;
+			setOwnTick(null);
+			return;
+		}
+		
+		// Unfortunately the API can only send all of the user's ticks at once so we have to find the current beer
+		this.ownTicks = new ArrayList<GetUserTicksCommand.UserTick>();
+		for (UserTick userTick : allUserTicks) {
+			if (userTick.beerdId == beerId) {
+				// Creat a list with only this beer's user tick in it
+				this.ownTicks.add(userTick);
+				break;
+			}
+		}
+		// Show the tick
+		setOwnTick(this.ownTicks);
 	}
 
 	private void publishRatings(ArrayList<BeerRating> ratings) {
@@ -557,7 +631,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		wantthisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 		havethisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 	}
-	
+
 	public void setOwnRating(ArrayList<BeerRating> ownRatings) {
 		if (ownRatings == null) {
 			// Still loading and we didn't have a retained rating object
@@ -588,6 +662,26 @@ public class BeerViewFragment extends RateBeerFragment {
 			@Override
 			public void onClick(View v) {
 				onRateBeerClick();
+			}
+		});
+	}
+
+	public void setOwnTick(ArrayList<UserTick> ownTicks) {
+		if (ownTicks == null) {
+			// Still loading and we didn't have a retained ticks object
+			return;
+		}
+		if (ownTicks.size() > 0) {
+			UserTick ownTick = ownTicks.get(0);
+			tickBar.setRating(ownTick.liked);
+		}
+		ticklabel.setVisibility(View.VISIBLE);
+		tickBar.setVisibility(View.VISIBLE);
+		tickBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+			@Override
+			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+				if (fromUser)
+					onTickBarUpdated(rating);
 			}
 		});
 	}
@@ -720,6 +814,8 @@ public class BeerViewFragment extends RateBeerFragment {
     			ownratingOverall = (TextView) fields.findViewById(R.id.overall);
     			ownratingUsername = (TextView) fields.findViewById(R.id.username);
     			ownratingComments = (TextView) fields.findViewById(R.id.comments);
+    			ticklabel = fields.findViewById(R.id.ticklabel);
+    			tickBar = (RatingBar) fields.findViewById(R.id.tick);
 
                 // Add the recent ratings
                 recentRatingsAdapter = new BeerRatingsAdapter(getActivity(), new ArrayList<BeerRating>());

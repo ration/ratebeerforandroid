@@ -84,6 +84,7 @@
 			<intent-filter>
 				<action android:name="com.ratebeer.android.SET_DRINKING_STATUS" />
 				<action android:name="com.ratebeer.android.POST_RATING" />
+				<action android:name="com.ratebeer.android.POST_TICK" />
 				<action android:name="com.ratebeer.android.ADD_AVAILABILITY" />
 				<action android:name="com.ratebeer.android.ADD_TO_CELLAR" />
 				<action android:name="com.ratebeer.android.SEND_BEERMAIL" />

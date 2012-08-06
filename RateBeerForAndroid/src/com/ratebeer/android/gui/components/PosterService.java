@@ -102,7 +102,7 @@ public class PosterService extends RateBeerService {
 	private static final int NOTIFY_ADDUPCCODE = 6;
 	private static final int NOTIFY_POSTINGTICK = 7;
 
-	private static final int IMAGE_MAX_SIZE = 500; // Max pixels in one dimension
+	private static final int IMAGE_MAX_SIZE = 400; // Max pixels in one dimension
 
 	private NotificationManager notificationManager = null;
 
@@ -411,7 +411,7 @@ public class PosterService extends RateBeerService {
 			createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto), getString(
 					R.string.app_photofor, beerName), true, recoverIntent);
 
-			// Make sure the photo is no bigger than 250kB
+			// Make sure the photo is no bigger than 50kB
 			try {
 				decodeFile(photo);
 			} catch (IOException e1) {

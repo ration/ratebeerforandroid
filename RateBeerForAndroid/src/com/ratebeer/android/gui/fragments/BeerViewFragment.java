@@ -40,6 +40,7 @@ import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -594,8 +595,8 @@ public class BeerViewFragment extends RateBeerFragment {
 		ratingsText.setText(ratingsCount == UNKNOWN_RATINGS_COUNT? "?": Integer.toString(ratingsCount));
 		abvstyleButton.setText(getString(R.string.details_abvstyle, details.beerStyle, String.format(DECIMAL_FORMATTER, details.alcohol)));
 		abvstyleButton.setVisibility(View.VISIBLE);
-		descriptionText.setText(details.description == null || details.description.equals("")? 
-				getString(R.string.details_nodescription): details.description);
+		descriptionText.setText(Html.fromHtml(details.description == null || details.description.equals("")? 
+				getString(R.string.details_nodescription): details.description.replace("\n", "<br />")));
 		descriptionText.setMovementMethod(new ScrollingMovementMethod());
 		// Only show the buttons bar if we have a signed in user
 		UserSettings user = getRateBeerApplication().getSettings().getUserSettings();

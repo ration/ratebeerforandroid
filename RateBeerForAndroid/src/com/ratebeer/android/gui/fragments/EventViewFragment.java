@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -214,7 +215,7 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 		timeText.setVisibility(View.VISIBLE);
 		locationText.setText(details.location + "\n" + (details.city != null? details.city + "\n": "") + details.address);
 		locationText.setVisibility(View.VISIBLE);
-		detailsText.setText(details.details);
+		detailsText.setText(Html.fromHtml(details.details.replace("\n", "<br />")));
 		contactText.setText(details.contact);
 		attendeeAdapter.replace(details.attendees);
 		attendeeslabel.setVisibility(View.VISIBLE);

@@ -106,7 +106,7 @@ public class HomePhone extends RateBeerActivity {
 		case android.R.id.home:
 			// Home button click in the action bar
 			Intent i = new Intent(getApplication(), HomePhone.class);
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			startActivity(i);
 			return true;
 		case MENU_PREFERENCES:

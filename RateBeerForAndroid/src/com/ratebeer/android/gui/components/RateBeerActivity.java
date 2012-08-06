@@ -135,11 +135,18 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 	protected void handleStartIntent(Intent intent) {};
 
 	/**
-	 * The extending activity should load the fragment into the activity's interface
+	 * The extending activity should load the fragment into the activity's interface, adding the fragment to the back stack
 	 * @param fragment The fragment to show
 	 */
 	public abstract void load(RateBeerFragment fragment);
 
+	/**
+	 * The extending activity should load the fragment into the activity's interface
+	 * @param fragment The fragment to show
+	 * @param addToBackStack Whether to also add this fragment to the backstack 
+	 */
+	public abstract void load(RateBeerFragment fragment, boolean addToBackStack);
+	
 	/**
 	 * The extending activity should load the fragment into the activity's interface
 	 * @param leftFragment The fragment to show on the left side of the screen

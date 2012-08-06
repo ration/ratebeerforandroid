@@ -178,9 +178,6 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 		i.putExtra(PosterService.EXTRA_UPCCODE, upcCode);
 		getActivity().startService(i);
 
-		// Close this fragment
-		getSupportActivity().getSupportFragmentManager().popBackStackImmediate();
-		
 	}
 
 	private OnItemClickListener onItemSelected = new OnItemClickListener() {
@@ -191,6 +188,9 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 			}
 			BeerSearchResult item = ((SearchResultsAdapter)resultsView.getAdapter()).getItem(position);
 			addUpcCode(item.beerId, item.beerName, upcCode);
+			// Also redirect to the beer in question
+			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId));
+			
 		}
 	};
 	

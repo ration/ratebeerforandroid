@@ -73,18 +73,20 @@ public class GetUserRatingsCommand extends HtmlCommand {
 	@Override
 	protected void parse(String html) throws JSONException, ApiException {
 
+		// Successful response?
+		if (html.indexOf("<a href=\"#\">Beer Reviews</a>") < 0) {
+			throw new ApiException(ApiException.ExceptionType.CommandFailed,
+					"The response HTML did not contain the unique ratings table begin HTML string");
+		}
+		
 		// Maybe no ratings?
-		if (html.indexOf("<b>0</b> <span class=\"userDetails\">beer ratings</span>") >= 0) {
+		int tableStart = html.indexOf("<!-- RATINGS -->");
+		if (tableStart < 0) {
 			ratings = new ArrayList<UserRating>();
 			return;
 		}
 		
 		// Parse the beer ratings table
-		int tableStart = html.indexOf("<!-- RATINGS -->");
-		if (tableStart < 0) {
-			throw new ApiException(ApiException.ExceptionType.CommandFailed,
-					"The response HTML did not contain the unique ratings table begin HTML string");
-		}
 		String rowText = "><A HREF=\"/beer/";
 		int rowStart = html.indexOf(rowText, tableStart) + rowText.length();
 		ratings = new ArrayList<UserRating>();

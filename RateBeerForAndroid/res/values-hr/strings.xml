@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_refresh">Osvježi</string>
+<string name="app_details">Detalji</string>
+<string name="app_share">Podijeli</string>
+<string name="app_loading">Učitavanje&#8230;</string>
+
+
+<string name="app_newstatus">Unesite novi status</string>
+<string name="app_noaccount">Nemate korisnički račun?\nhttp://www.ratebeer.com/NewUser.asp</string>
+
+<string name="signin_username">Korisničko ime:</string>
+<string name="signin_password">Šifra:</string>
+
+<string name="home_beers">Piva</string>
+<string name="home_events">Događanja</string>
+<string name="home_search">Pretraga</string>
+<string name="home_beermail">Pivska Pošta</string>
+
+
+<string-array name="myratings_sortby_names">
+<item>Name</item>
+<item>Brewer</item>
+<item>Style</item>
+<item>My rating</item>
+<item>Date</item>
+<item>Score</item>
+</string-array>
+
+
+
+<string name="places_availablebeers">Dostupno</string>
+
+
+<string name="events_addattendance">Da, dodajte moje ime</string>
+<string name="events_removeattendance">Ne, maknite moje ime</string>
+
+
+
+
+
+<string name="rate_comments">Komentari</string>
+
+
+
+
+<string name="mail_send">Šalji</string>
+<string name="mail_emptyfields">Molimo ispunite sva polja prije slanja</string>
+
+<string name="settings_display">Prikaži preferencije</string>
+<string name="settings_beermail">Pivska Pošta</string>
+<string name="settings_background_info">Povremeno provjeri za novu Pivsku Poštu</string>
+<string-array name="settings_frequency_names">
+<item>1 minuta</item>
+<item>10 minuta</item>
+<item>30 minuta</item>
+<item>1 sat</item>
+<item>4 sata</item>
+<item>24 sata</item>
+</string-array>
+
+<string name="error_offline">Niste spojeni na internet ili je Rate Beer.com offline</string>
+<string name="error_authenticationfailed">Vaše korisničko ime i/ili šifra su netočni</string>
+<string name="error_commandfailed">Naredba nenadano nije uspjela. Veza je slaba ili je Rate Beer offline.</string>
+<string name="error_nouserorpass">Potrebno je upisati i korisničko ime i šifru kako bi se ulogirali</string>
+<string name="error_nolocation">Vaša lokacija nije mogla biti utvrđena</string>
+<string name="error_locationnotsupported">Vaš uređaj ne podržava prikupljanje lokacije ili tu opciju imate isključenu</string>
+<string name="error_sendreport">Pošalji dojavu o pogrešci</string>
+<string name="error_stylenotfound">Ne možemo naći stil piva; molimo prijavite ovu pogrešku</string>
+<string name="error_cannotwrite">Datoteku se ne može editirati.</string>
+<string name="error_cannotread">Datoteka ne postoji ili se ne može očitati</string>
+<string name="error_filenotvalid">Datoteka ne sadržava offline ocjene (u pravilnom formatu)</string>
+<string name="error_nocamera">Fotografiranje nemoguće; ili nemate kameru ili je nemoguće </string>
+<string name="error_lc_install">Kako bi poslali dojavu o pogrešci, potrebna vam je besplatna, open-source aplikacija Log Collector. Želite li je instalirati s Play Storea?</string>
+
+</resources>

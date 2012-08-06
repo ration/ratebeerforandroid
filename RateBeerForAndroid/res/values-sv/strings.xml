@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Avbryt</string>
+<string name="app_home">Hem</string>
+<string name="app_refresh">Uppdatera</string>
+<string name="app_details">Detaljer</string>
+<string name="app_share">Dela</string>
+<string name="app_loading">Laddar&#8230;</string>
+<string name="app_legal">Vid använding av denna applikation godkänner du de villkor som beskrivs i RateBeers användaravtal. Detta finns att tillgå på http://www.ratebeer.com/UserAgreement.asp\n\nÄven utan användarkonto hos RateBeer kan du använda denna applikation för att visa information om öl, topplistor, kommande evenemang, närliggande ölrelaterande ställen och mycket mer. För att kunna använda alla funktioner, som att recensera öl och lägga till tillgänglighet på öl, behöver du skapa ett konto på http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">Välkommen!</string>
+
+<string name="app_install">Installera nu</string>
+<string name="app_nomarket">Play Store är inte installerat på din enhet.</string>
+<string name="app_scannernotfound">En Streckkodsläsare kunde inte hittas.\nSkulle du vilja installera en från Play Store?</string>
+<string name="app_onlyifsignedin">Denna funktion är endast tillgänglig efter inloggning på RateBeer.</string>
+
+<string name="app_newstatus">Lägg till ny status</string>
+<string name="app_nowdrinking">Just nu dricker jag</string>
+<string name="app_settingdrinking_expl">Du kan även välja \'Dricker denna\' från ett öls infomationssida.</string>
+<string name="app_settingdrinking">Ställer in din dryckesstatus</string>
+<string name="app_sharerating">Dela recension på Twitter/Facebook/&#8230;</string>
+<string name="app_postingrating">Laddar upp recension</string>
+<string name="app_postingtick">Laddar upp snabbetyg</string>
+<string name="app_removingtick">Tar bort snabbetyg</string>
+<string name="app_addingavailability">Publicerar tillgänglighet</string>
+<string name="app_addingforbeer">Lägger till information om tillgänglighet för %1$s</string>
+<string name="app_addingavailability">Publicerar tillgänglighet</string>
+<string name="app_rated">Recenserade %1$s med betyget %2$s</string>
+<string name="app_forbeer">För %1$s</string>
+<string name="app_addingtocellar">Lägger till i källare</string>
+<string name="app_addwant">Jag vill ha</string>
+<string name="app_addhave">Jag har</string>
+<string name="app_ratedwithurl">Recenserade %2$s med betyget %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+<string name="app_addingupccode">Lägger till läst strecckod till öl</string>
+<string name="app_addingcodefor">Lägger till streckkod för %1$s</string>
+<string name="app_requiressignin">Var god logga in på ditt RateBeer-konto för att använda denna funktion.</string>
+<string name="app_noaccount">Har du inget konto?\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmails">Du har %1$s nya meddelanden</string>
+<string name="app_newmail">Du har fått ett nytt meddelande</string>
+<string name="app_by">Av %1$s</string>
+<string name="app_andothers">med flera</string>
+<string name="app_uploadingphoto">Laddar upp ny bild</string>
+<string name="app_photofor">Laddar upp bild för %1$s</string>
+
+<string name="signin_username">Användarnamn </string>
+<string name="signin_password">Lösenord</string>
+<string name="signin_signin">Logga in</string>
+<string name="signin_signout">Logga ut</string>
+<string name="signin_connecting">Ansluter&#8230;</string>
+<string name="signin_signoutsuccess">Du har loggats ut</string>
+<string name="signin_signinsuccess">Du har loggats in</string>
+
+<string name="home_beers">Öl</string>
+<string name="home_places">Ställen</string>
+<string name="home_events">Evenemang</string>
+<string name="home_search">Sök</string>
+<string name="home_myprofile">Min Profil</string>
+<string name="home_top50">Topp 50</string>
+<string name="home_bycountry">Bäst efter land</string>
+<string name="home_offlineratings">Offline-anteckningar</string>
+<string name="home_beerstyles">Öltyper</string>
+<string name="home_beermail">Meddelanden</string>
+<string name="home_nowdrinking">Dricker %1$s just nu</string>
+<string name="home_preferences">Inställningar</string>
+<string name="home_calculator">Miniräknare</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_for">%1$s för</string>
+<string name="calc_euro">¤</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+<string name="calc_fillinall">Var god fyll i mängder och ett pris först</string>
+
+<string name="myratings_avg">%1$s i genomsnitt</string>
+<string name="myratings_noitems">Inga recensioner än; öppna en öl och sätt fart på dina smaklökar!</string>
+<string name="myratings_sortby">Sortera efter</string>
+<string-array name="myratings_sortby_names">
+<item>Namn</item>
+<item>Bryggeri</item>
+<item>Typ</item>
+<item>Min recension</item>
+<item>Datum</item>
+<item>Betyg</item>
+</string-array>
+
+<string name="cellar_viewcellar">Visa källare</string>
+<string name="cellar_wants">Önskar</string>
+<string name="cellar_haves">Har</string>
+<string name="cellar_wantthis">Önskar denna</string>
+<string name="cellar_havethis">Har denna</string>
+<string name="cellar_addingahave">Lägg till i källare</string>
+<string name="cellar_addingawant">Lägg till en önskan</string>
+<string name="cellar_memo">Kommentar</string>
+<string name="cellar_vintage">Årgång</string>
+<string name="cellar_quantity">Antal</string>
+<string name="cellar_addtocellar">Lägg till i källare</string>
+<string name="cellar_remove">Ta bort från källare</string>
+<string name="cellar_confirmremoval">Vill du ta bort %1$s från din källare?</string>
+
+<string name="topbeers_country">Land:</string>
+<string name="topbeers_state">Delstat:</string>
+<string name="topbeers_noitems">Välj ett land för att visa dess bästa öl&#8230;</string>
+
+<string name="places_nearby">Ställen nära dig</string>
+<string name="places_map">Karta</string>
+<string name="places_location">Plats</string>
+<string name="places_rateandcount">Betyg: %1$s</string>
+<string name="places_notyetrated">Ännu ej recenserad</string>
+<string name="places_findhint">Skriv in stället som du söker efter</string>
+<string name="places_usecurrent">Använd din nuvarande plats</string>
+<string name="places_noitems">Inga ställen hittades i detta område!</string>
+<string name="places_brewpub">Bryggeripub</string>
+<string name="places_bar">Bar</string>
+<string name="places_beerstore">Ölbutik</string>
+<string name="places_restaurant">Restaurang</string>
+<string name="places_brewer">Bryggeri</string>
+<string name="places_unknown">Okänt</string>
+<string name="places_km">km</string>
+<string name="places_m">meter</string>
+<string name="places_checkins">Incheckningar</string>
+<string name="places_checkinhere">Checka in här</string>
+<string name="places_checkedinnow">Du har checkat in (uppdaterar)</string>
+<string name="places_availablebeers">Tillgänglig</string>
+<string name="places_enteredat">Tillagd %1$s</string>
+<string name="places_share">Kolla in %1$s på @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
+<string name="places_shareplace">Dela ställe&#8230;</string>
+
+<string name="brewers_share">Kolla in %1$s på @ratebeer http://www.ratebeer.com/brewers/b/%2$s/</string>
+<string name="brewers_sharebrewer">Dela bryggeri&#8230;</string>
+<string name="brewers_beers">Öl</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Deltagare:</string>
+<string name="events_noitems">Inga evenemang är planerade i detta område!</string>
+<string name="events_addattendance">Ja, lägg till mitt namn</string>
+<string name="events_removeattendance">Nej, ta bort mitt namn</string>
+<string name="events_nowattending">Ditt namn lades till på listan över deltagare</string>
+<string name="events_nownotattending">Ditt namn togs bort från listan över deltagare</string>
+<string name="events_share">Kolla in %1$s på @ratebeer http://ratebeer.com/event/%2$s/</string>
+<string name="events_shareevent">Dela evenemang&#8230;</string>
+
+<string name="search_resultsfor">Sökresultat för \'%1$s\'</string>
+<string name="search_beersearch">RateBeer sök</string>
+<string name="search_hint">Sök efter öl, ställen &amp; användare</string>
+<string name="search_beers">Öl</string>
+<string name="search_brewers">Bryggerier</string>
+<string name="search_places">Ställen</string>
+<string name="search_users">Användare</string>
+<string name="search_barcodescanner">Streckkodsläsare</string>
+<string name="search_nobeerswithbarcode">Ingen öl kunde hittas för streckkoden %1$s. Överväg att lägga till det i databasen genom en enkel sökning.</string>
+<string name="search_clearhistory">Rensa historik</string>
+<string name="search_noitems">Inga resultat hittades för ditt sökord. Kanske ska du försöka igen med en mindre del av ölets namn, stället eller användarnamnet?</string>
+<string name="search_alias">alias</string>
+<string name="search_rated">recenserad</string>
+<string name="search_ratings">%1$s recensioner</string>
+<string name="search_aliasedbeer">Detta öl har ett alias: ingen tillgänglig info</string>
+
+<string name="details_bybrewer">av %1$s</string>
+<string name="details_score">Betyg</string>
+<string name="details_noscoreyet">Behöver fler recensioner</string>
+<string name="details_percentile">percentil</string>
+<string name="details_ratings">recensioner</string>
+<string name="details_style">öltyp</string>
+<string name="details_nodescription">Ingen kommersiell beskrivning tillgänlig</string>
+<string name="details_abvstyle">Öltyp: %1$s\nAlk./Vol.: %2$s</string>
+<string name="details_ratethis">Recensera denna</string>
+<string name="details_viewrerate">Recensera denna igen</string>
+<string name="details_drinkingthis">Dricker denna</string>
+<string name="details_recentratings">Recensioner</string>
+<string name="details_myrating">Min recension:</string>
+<string name="details_ticklabel">Eller ge endast ett betyg:</string>
+<string name="details_otherratings">Senaste recensioner:</string>
+<string name="details_availability">Tillgänglighet</string>
+<string name="details_share">Kolla in %1$s på @ratebeer http://ratebeer.com/b/%2$s/</string>
+<string name="details_sharebeer">Dela öl&#8230;</string>
+
+<string name="upload_uploadphoto">Ladda upp foto</string>
+<string name="upload_choose">Välj fotokälla</string>
+<string name="upload_newphoto">Ta ett nytt foto</string>
+<string name="upload_pick">Välj från album</string>
+
+<string name="user_dates">Gick med: %1$s\nSågs senast: %2$s</string>
+<string name="user_beersrated">%1$s recenserade öl\n%2$s recenserade ställen\nGenomsnittligt given poäng: %3$s\nGenomsnittligt betygsatt öl: %4$s</string>
+<string name="user_favsyle">Favoritöltyp: %1$s</string>
+<string name="user_nofavstyle">ingen</string>
+
+<string name="rate_aroma">Arom</string>
+<string name="rate_appearance">Utseende</string>
+<string name="rate_taste">Smak</string>
+<string name="rate_palate">Munkänsla</string>
+<string name="rate_overall">Övergripande betyg</string>
+<string name="rate_totalscore">Total poäng</string>
+<string name="rate_comments">Kommentarer</string>
+<string name="rate_addrating">Ladda upp min recension</string>
+<string name="rate_commenttooshort">Kommentaren måste vara minst 85 tecken lång.</string>
+<string name="rate_ratingnotcompleted">Din recension är inte färdig</string>
+<string name="rate_charstogo">%1$s tecken kvar&#8230;</string>
+<string name="rate_commentok">Kommentaren är tillräckligt lång!</string>
+<string name="rate_showassistance">Visa hjälp</string>
+<string name="rate_hideassistance">Dölj hjälp</string>
+<string name="rate_assistance_words">karamell, bröd, hö, säd, choklad, kaffe, nötter, rostat bröd, rostat, kåda, blommigt, gräs, gran, citrus, örter, deg, ladugård, ost, källararomer, läder, jordigt, löv, alkohol, banan, tuggummi, smörkola, nejlika, kokta grönsaker, hostmedicin, ingefära, lakrits, russin, ruttna ägg, soja, skunk, rök, vanilj, trä</string>
+
+<string name="rate_offline_title">Offline-recension</string>
+<string name="rate_offline_info">När du recenserar ditt öl sparas poängen och kommentarerna lokalt. Om du ej har tillgång till nätverk kan du ladda upp recensionen till RateBeer vid senare tillfälle. Offline-recensioner tas automatiskt bort om de framgångsrikt laddas upp till RateBeer.</string>
+<string name="rate_offline_availble">Offline-recension tillgänglig</string>
+<string name="rate_offline_notavailable">Offline-recension ej tillgänglig</string>
+<string name="rate_offline_savedat">Sparad %1$s</string>
+<string name="rate_offline_noitems">Inga offline-recensioner finns sparade</string>
+<string name="rate_offline_delete">Ta bort recension</string>
+<string name="rate_offline_confirmdelete">Radera offline-recensionen för %1$s?</string>
+<string name="rate_offline_addrating">Lägg till offline-recension</string>
+<string name="rate_offline_discard">Avbryt</string>
+<string name="rate_offline_customname">Du recenserar detta öl:</string>
+<string name="rate_offline_confirmdiscard">Du kommer att förlora din recension och kommentarer. Vill du fortsätta?</string>
+<string name="rate_offline_findbeer">Hitta detta öl&#8230;</string>
+<string name="rate_offline_name">Namn:</string>
+<string name="rate_offline_nonamegiven">Var god skriv in namnet på ölet som du recenserat</string>
+<string name="rate_offline_alreadyrated">Ledsen, men du har redan recenserat detta öl och du kan inte omrecensera öl från en endast offline-recension för närvarande</string>
+<string name="rate_offline_export">Exportera</string>
+<string name="rate_offline_export_info">Dina offline-recensioner kommer nu att exporteras till en JSON-kodad textfil på %1$s</string>
+<string name="rate_offline_import">Importera</string>
+<string name="rate_offline_import_info">En tidigare sparad offline-recension kommer nu att importeras från %1$s</string>
+
+<string name="addav_addavailability">Lägg till tillgänglighet</string>
+<string name="addav_favourites">Favoriter/troliga</string>
+<string name="addav_findaplace">Hitta ett ställe</string>
+<string name="addav_otherplace">Annat ställe:</string>
+<string name="addav_find">Sök</string>
+<string name="addav_on">På:</string>
+<string name="addav_ontap">fat</string>
+<string name="addav_onbottlecan">flaska/burk</string>
+<string name="addav_skip">Hoppa över</string>
+<string name="addav_noplacesselected">Du har ej valt några ställen</string>
+
+<string name="addupc_upccode">UPC-kod:</string>
+<string name="addupc_beer">Öl-namn:</string>
+<string name="addupc_find">Sök</string>
+
+<string name="mail_noitems">Du har inga meddelanden i din inkorg</string>
+<string name="mail_sendmail">Skicka meddelande</string>
+<string name="mail_couldnotretrieve">Kunde inte hämta dina meddelanden just nu</string>
+<string name="mail_notavailable">Meddelanden kan ej sparas lokalt vid detta tillfälle</string>
+<string name="mail_delete">Ta bort meddelande</string>
+<string name="mail_confirmdelete">Vill du ta bort meddelandet från %1$s?</string>
+<string name="mail_relpied">svarat</string>
+<string name="mail_new">nytt</string>
+<string name="mail_read">läst</string>
+<string name="mail_reply">Svara</string>
+<string name="mail_sendto">Skicka till:</string>
+<string name="mail_subject">Ämne:</string>
+<string name="mail_message">Meddelande:</string>
+<string name="mail_includeoriginal">Bifoga ursprungligt meddelande</string>
+<string name="mail_send">Skicka</string>
+<string name="mail_emptyfields">Var god fyll i samtliga fält innan du skickar</string>
+<string name="mail_sendingmail">Skickar meddelande</string>
+<string name="mail_sendingto">Skickar till %1$s</string>
+
+<string name="settings_display">Visa inställningar</string>
+<string name="settings_distanceinkm">Visa avstånd i km</string>
+<string name="settings_distanceinkm_info">Avstånd visas annars i miles</string>
+<string name="settings_sharetext">Text när du delar en recension</string>
+<string name="settings_sharetext_msg">Placeholders: %1$s för öl-ID, %2$s för ölnamn, %3$s för total poäng och %4$s för ditt användar-ID</string>
+<string name="settings_beermail">Meddelanden</string>
+<string name="settings_background">Tillåt aviseringar</string>
+<string name="settings_background_info">Uppdatera meddelanden löpande</string>
+<string name="settings_updatefrequency">Uppdateringsfrekvens</string>
+<string name="settings_vibrate">Vibrera vid avisering</string>
+<string-array name="settings_frequency_names">
+<item>1 minut</item>
+<item>10 minuter</item>
+<item>30 minuter</item>
+<item>1 timme</item>
+<item>4 timmar</item>
+<item>24 timmar</item>
+</string-array>
+
+<string name="error_offline">Du har ingen internetuppkoppling, alternativt är RateBeer offline</string>
+<string name="error_authenticationfailed">Ditt användarnamn eller lösenord är felaktigt</string>
+<string name="error_commandfailed">Kommandot avbröts oväntat. Uppkopplingen är dålig eller så är RateBeer offline</string>
+<string name="error_nouserorpass">Både användarnamns- och lösenordsfältet måste fyllas i för att logga in</string>
+<string name="error_nolocation">Din plats kunde ej bestämmas</string>
+<string name="error_locationnotsupported">Din enhet stödjer ej att fastställa en position, eller så är funktionen avaktiverad</string>
+<string name="error_sendreport">Skicka felrapport</string>
+<string name="error_stylenotfound">Kunde ej hitta öltypen; var god felrapportera</string>
+<string name="error_cannotwrite">Kan ej skriva till fil</string>
+<string name="error_cannotread">Filen kunde ej hittas eller är lässkyddad</string>
+<string name="error_filenotvalid">Filen innehåller inte offline-recensioner (i rätt format)</string>
+<string name="error_nocamera">Kunde ej ta foto; antingen har enheten ingen kamera eller så kan enheten ej skriva till ditt SD-kort</string>
+<string name="error_lc_install">För att skicka en felrapport måste du installera det kostnadsfria och open-source applikationen Log Collector. Vill du hämta det från Play Store?</string>
+<string name="error_lc_run">Log Collector-applikationen kommer nu att skapa en felrapport och skicka den till rb@2312.nl. Du kommer få möjlighet att kontrollera och modifiera informationen som skickas.</string>
+<string name="error_invalidurl">Hemsidans adress verkar ej vara giltig</string>
+
+</resources>

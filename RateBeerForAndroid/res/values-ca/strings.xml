@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Cancel·la</string>
+<string name="app_home">Inici</string>
+<string name="app_refresh">Actualitzar</string>
+<string name="app_details">Detalls</string>
+<string name="app_share">Compartir</string>
+<string name="app_loading">Carregant&#8230;</string>
+<string name="app_legal">Mitjançant l\'ús d\'aquesta aplicació estàs d\'acord amb els termes d\'us per part dels usuaris disponible a Ratebeer http://www.ratebeer.com/UserAgreement.asp\n\nFins i tot sense un compte a Ratebeer pots utilitzar aquesta aplicació per veure detalls de cerveses, llistes de les millors, esdeveniments, llocs relacionats amb la cervesa i molt més. Per tenir accés complet a característiques, poder qualificar o afegir la disponibilitat de cerveses, pots crear un compte http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">Benvingut!</string>
+
+<string name="app_install">Instal·lar ara</string>
+<string name="app_nomarket">No tens instal·lat Play Store al teu aparell</string>
+<string name="app_scannernotfound">No s\'ha trobat l\'aplicació de lectura de codis de barra.\nVols instal·lar-ne una des de Play Store?</string>
+<string name="app_onlyifsignedin">Aquesta funció només està disponible per usuaris registrats a RateBeer.</string>
+
+<string name="app_newstatus">Escriu un nou estat</string>
+<string name="app_nowdrinking">Bevent</string>
+<string name="app_settingdrinking_expl">També pot triar \'Bevent això\'des de la pàgina de característiques de la cerveesa</string>
+<string name="app_settingdrinking">Actualitzant l\'estat de beguda</string>
+<string name="app_sharerating">Compartir la puntuació a Twitter/Facebook/&#8230;</string>
+<string name="app_postingrating">Publicar la puntuació de la cervesa</string>
+<string name="app_postingtick">Marca\'l</string>
+<string name="app_removingtick">Desmarca\'l</string>
+<string name="app_addingavailability">Publicar disponibilitat</string>
+<string name="app_addingforbeer">Afegir disponibilitat per a %1$s</string>
+<string name="app_addingavailability">Publicar disponibilitat</string>
+<string name="app_rated">He puntuat %1$s amb un %2$s</string>
+<string name="app_forbeer">Per %1$s</string>
+<string name="app_addingtocellar">Afegint al celler</string>
+<string name="app_addwant">Em ve de gust %1$s</string>
+<string name="app_addhave">Tinc %1$s</string>
+<string name="app_ratedwithurl">He puntuat %2$s amb un %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+<string name="app_addingupccode">Afegir codi de barres a la cervesa</string>
+<string name="app_addingcodefor">Afegir codi a %1$s</string>
+<string name="app_requiressignin">Si us plau, accedeix al teu compte de RateBeer per usar aquesta funció</string>
+<string name="app_noaccount">No tens compte?\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmails">Tens %1$s correus cervesers nous</string>
+<string name="app_newmail">Tens un correu cerveser nou</string>
+<string name="app_by">Per %1$s</string>
+<string name="app_andothers">i altres</string>
+<string name="app_uploadingphoto">Pujar una foto nova</string>
+<string name="app_photofor">Pujar una foto de %1$s</string>
+
+<string name="signin_username">Usuari:</string>
+<string name="signin_password">Contrasenya:</string>
+<string name="signin_signin">Accedir:</string>
+<string name="signin_signout">Surt:</string>
+<string name="signin_connecting">Connectant&#8230;</string>
+<string name="signin_signoutsuccess">Sortida amb èxit</string>
+<string name="signin_signinsuccess">Accés amb èxit</string>
+
+<string name="home_beers">Cerveses</string>
+<string name="home_places">Llocs</string>
+<string name="home_events">Esdeveniments</string>
+<string name="home_search">Cerca</string>
+<string name="home_myprofile">El meu perfil</string>
+<string name="home_top50">Top 50</string>
+<string name="home_bycountry">Millors per països</string>
+<string name="home_offlineratings">Notes fora de connexió</string>
+<string name="home_beerstyles">Estils de cervesa</string>
+<string name="home_beermail">Correu cerveser</string>
+<string name="home_nowdrinking">Bevent %1$s</string>
+<string name="home_preferences">Preferències</string>
+<string name="home_calculator">Calculadora</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_for">%1$s per</string>
+<string name="calc_euro">¤</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+<string name="calc_fillinall">Si us plau ompli els camps de qualitat i preu de la cervesa</string>
+
+<string name="myratings_avg">%1$s prom.</string>
+<string name="myratings_noitems">Encara no té cap puntuació. Obre una cervesa i activa les teves papil·les gustatives!</string>
+<string name="myratings_sortby">Ordenat per</string>
+<string-array name="myratings_sortby_names">
+<item>Nom</item>
+<item>Cerveser</item>
+<item>Estil</item>
+<item>El meu vot</item>
+<item>Data</item>
+<item>Puntuació</item>
+</string-array>
+
+<string name="cellar_viewcellar">Veure celler</string>
+<string name="cellar_wants">Desitjos</string>
+<string name="cellar_haves">Fetes</string>
+<string name="cellar_wantthis">Vull aquesta</string>
+<string name="cellar_havethis">Tinc aquesta</string>
+<string name="cellar_addingahave">Afegint una feta</string>
+<string name="cellar_addingawant">Afegint un desig</string>
+<string name="cellar_memo">Memo</string>
+<string name="cellar_vintage">Vintage (any)</string>
+<string name="cellar_quantity">Quantitat</string>
+<string name="cellar_addtocellar">Afegir al celler</string>
+<string name="cellar_remove">Eliminar del celler</string>
+<string name="cellar_confirmremoval">Eliminar %1$s del teu celler?</string>
+
+<string name="topbeers_country">País:</string>
+<string name="topbeers_state">Estat:</string>
+<string name="topbeers_noitems">Sel·lecciona un país per veure les seves millors cerveses&#8230;</string>
+
+<string name="places_nearby">Llocs propers</string>
+<string name="places_map">Mapa</string>
+<string name="places_location">Localització</string>
+<string name="places_rateandcount">Valoració: %1$s</string>
+<string name="places_notyetrated">Encara no s\'ha votat</string>
+<string name="places_findhint">Escriu el nom del lloc que vols cercar</string>
+<string name="places_usecurrent">Utilitza la teva ubicació actual</string>
+<string name="places_noitems">No es troben llocs a prop!</string>
+<string name="places_brewpub">Pub cerveser</string>
+<string name="places_bar">Bar</string>
+<string name="places_beerstore">Botiga de cerveses</string>
+<string name="places_restaurant">Restaurant</string>
+<string name="places_brewer">Cerveser</string>
+<string name="places_unknown">Desconegut</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_checkins">Comprovar</string>
+<string name="places_checkinhere">Comprovar aquí</string>
+<string name="places_checkedinnow">Has comprovat (refrescant)</string>
+<string name="places_availablebeers">Disponible</string>
+<string name="places_enteredat">Va entrar a %1$s</string>
+<string name="places_share">Fes una ullada %1$s a @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
+<string name="places_shareplace">Compartir lloc&#8230;</string>
+
+<string name="brewers_share">Fes una ullada %1$s a @ratebeer http://www.ratebeer.com/brewers/b/%2$s/</string>
+<string name="brewers_sharebrewer">Compartir cerveser&#8230;</string>
+<string name="brewers_beers">Cerveses</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Assistents:</string>
+<string name="events_noitems">No hi ha events a prop!</string>
+<string name="events_addattendance">Sí, afegeix el meu nom</string>
+<string name="events_removeattendance">No, esborra el meu nom</string>
+<string name="events_nowattending">Afegit el meu nom a la llista d\'assistents</string>
+<string name="events_nownotattending">Eliminat el meu nom a la llista d\'assistents</string>
+<string name="events_share">Fes una ullada %1$s a @ratebeer http://ratebeer.com/event/%2$s/</string>
+<string name="events_shareevent">Compartir esdeveniment&#8230;</string>
+
+<string name="search_resultsfor">Resultats per \'%1$s\'</string>
+<string name="search_beersearch">Cerca RateBeer</string>
+<string name="search_hint">Cercar cerveses, llocs &amp; usuaris</string>
+<string name="search_beers">Cerveses</string>
+<string name="search_brewers">Cervesers</string>
+<string name="search_places">Llocs</string>
+<string name="search_users">Usuaris</string>
+<string name="search_barcodescanner">Scanner de codi de barres</string>
+<string name="search_nobeerswithbarcode">No hi ha cerveses pel codi de barres %1$s. Si us plau, consideri afegir a la base de dades mitjançant una cerca simple de la cervesa.</string>
+<string name="search_clearhistory">Netejar historial</string>
+<string name="search_noitems">No hi ha resultats per a la consulta. Provi-ho amb una part del nom de la cervesa, el lloc o l\'usuari?</string>
+<string name="search_retired">retirat</string>
+<string name="search_alias">alias</string>
+<string name="search_rated">classificat</string>
+<string name="search_ratings">%1$s puntuacions</string>
+<string name="search_aliasedbeer">Aquesta és una cervesa amb àlies: sense dades disponibles</string>
+
+<string name="details_bybrewer">per %1$s</string>
+<string name="details_score">Puntuació</string>
+<string name="details_noscoreyet">Requereix més puntuacions</string>
+<string name="details_percentile">Percentil</string>
+<string name="details_ratings">puntuacions</string>
+<string name="details_style">estil</string>
+<string name="details_nodescription">Sense descripció comercial</string>
+<string name="details_abvstyle">Estil: %1$s\nABV: %1$s</string>
+<string name="details_ratethis">Vota aquesta</string>
+<string name="details_viewrerate">Torna a votar aquesta</string>
+<string name="details_drinkingthis">Tastant aquesta</string>
+<string name="details_recentratings">Puntuacions</string>
+<string name="details_myrating">Les meves puntuacions</string>
+<string name="details_ticklabel">O només marca\'l:</string>
+<string name="details_otherratings">Puntuacions recents:</string>
+<string name="details_availability">Disponibilitat</string>
+<string name="details_share">Fes una ullada %1$s a @ratebeer http://ratebeer.com/b/%2$s/</string>
+<string name="details_sharebeer">Compartir cervesa &#8230;</string>
+
+<string name="upload_uploadphoto">Pujar foto</string>
+<string name="upload_choose">Triar la font de la foto</string>
+<string name="upload_newphoto">Fes una foto nova</string>
+<string name="upload_pick">Selecionra des de la galeria</string>
+
+<string name="user_dates">Registrat: %1$s\nÚltima visita: %2$s</string>
+<string name="user_beersrated">%1$s cerveses votades\n%2$s llocs votats\nMitjana de puntuacions: %3$s\nMitjana de cerveses votades: %4$s</string>
+<string name="user_favsyle">Estil preferit: %1$s</string>
+<string name="user_nofavstyle">cap</string>
+
+<string name="rate_aroma">Aroma</string>
+<string name="rate_appearance">Apariència</string>
+<string name="rate_taste">Gust</string>
+<string name="rate_palate">Paladar</string>
+<string name="rate_overall">Total</string>
+<string name="rate_totalscore">Puntuació total</string>
+<string name="rate_comments">Comentaris</string>
+<string name="rate_addrating">Puja la meva qualificació</string>
+<string name="rate_commenttooshort">Els comentaris no poden tenir més de 85 caràcters</string>
+<string name="rate_ratingnotcompleted">La teva puntuació no està completa</string>
+<string name="rate_charstogo">%1$s caràcters de &#8230;</string>
+<string name="rate_commentok">Llargada del comentari correcte!</string>
+<string name="rate_showassistance">Mostra assistència</string>
+<string name="rate_hideassistance">Amaga assistència</string>
+<string name="rate_assistance_words">carmel, pa, fenc, cereals, xocolata, cafè, fruita seca, torrat, torrat, resina, flors, herba, avet, cítrics, herbes, pasta, corral, el formatge, les aromes del soterrani, cuir, terra, fulles, l\'alcohol, el plàtan, goma de mastegar , mantega, clau d\'olor, verdures cuites, la caiguda de la tos, el gingebre, regalèssia, panses, ous podrits, salsa de soja, skunk, fum, vainilla, llenyosa</string>
+
+<string name="rate_offline_title">Puntuació fora de línia</string>
+<string name="rate_offline_info">Quant es tasta una cervesa i s\'escriu la puntuació i comentaris, aquests es guarden en local. Si té problemes de connexió pot puntuar a RateBeer.com més endavant. Les puntuacions fora de línia s\'esborren automàticament un cop s\'han afegit amb èxit a RateBeer.</string>
+<string name="rate_offline_availble">Puntuació fora de línia accessible</string>
+<string name="rate_offline_notavailable">Puntuació fora de línia no accessible</string>
+<string name="rate_offline_savedat">Guardat %1$s</string>
+<string name="rate_offline_noitems">Les puntuacions fora de línia no s\'han guardat</string>
+<string name="rate_offline_delete">Eliminar la puntuació</string>
+<string name="rate_offline_confirmdelete">Eliminar la puntuació des de %1$s?</string>
+<string name="rate_offline_addrating">Afegir puntuació fora de línia</string>
+<string name="rate_offline_discard">Descartar</string>
+<string name="rate_offline_customname">La cervesa que es valora:</string>
+<string name="rate_offline_confirmdiscard">Ha perdut la seva puntuació i comentaris. Segur?</string>
+<string name="rate_offline_findbeer">Trobar aquesta cervesa&#8230;</string>
+<string name="rate_offline_name">Nom:</string>
+<string name="rate_offline_nonamegiven">Si us plau, introduïu el nom de la cervesa que s\'ha votat</string>
+<string name="rate_offline_alreadyrated">Malauradament, ja has puntuat aquesta cervesa i no pot tornar a puntuar-la fora de línia en aquest moment</string>
+<string name="rate_offline_export">Exporta</string>
+<string name="rate_offline_export_info">Les seves puntuacions fora de línia es poden exportar a un fitxer de text JSON codificat %1$s</string>
+<string name="rate_offline_import">Importa</string>
+<string name="rate_offline_import_info">Un fitxer de puntuacions emmagatzemat prèviament fora de línia pot ser importat des de %1$s</string>
+
+<string name="addav_addavailability">Afegir la disponibilitat</string>
+<string name="addav_favourites">Preferides/M\'agraden</string>
+<string name="addav_findaplace">Busca un lloc</string>
+<string name="addav_otherplace">Un altre lloc:</string>
+<string name="addav_find">Buscar</string>
+<string name="addav_on">A:</string>
+<string name="addav_ontap">barril</string>
+<string name="addav_onbottlecan">ampolla/llauna</string>
+<string name="addav_skip">Salta</string>
+<string name="addav_noplacesselected">Encara no has seleccionat cap lloc</string>
+
+<string name="addupc_upccode">Codi UPC</string>
+<string name="addupc_beer">Nom de la cervesa:</string>
+<string name="addupc_find">Trobar</string>
+
+<string name="mail_noitems">No tens correus a la teba bústia</string>
+<string name="mail_sendmail">Enviar correu</string>
+<string name="mail_couldnotretrieve">Ara mateix no podem recuperar els teus correus</string>
+<string name="mail_notavailable">No està disponible l\'emmagatzematge local de correus.</string>
+<string name="mail_delete">Borrar correu</string>
+<string name="mail_confirmdelete">Segur vols esborrar aquest correu de %1$s?</string>
+<string name="mail_relpied">respós</string>
+<string name="mail_new">nou</string>
+<string name="mail_read">llegit</string>
+<string name="mail_reply">Respondre</string>
+<string name="mail_sendto">Enviar a</string>
+<string name="mail_subject">Títol</string>
+<string name="mail_message">Missatge:</string>
+<string name="mail_includeoriginal">Incloure el missatge original</string>
+<string name="mail_send">Enviar</string>
+<string name="mail_emptyfields">Si us plau omple tots els camps abans d\'enviar</string>
+<string name="mail_sendingmail">Enviant correu cerveser</string>
+<string name="mail_sendingto">Enviant a %1$s</string>
+
+<string name="settings_display">Mostrar preferències</string>
+<string name="settings_distanceinkm">Mostrar distància en quilòmetres</string>
+<string name="settings_distanceinkm_info">Distàncies mesurades en milles</string>
+<string name="settings_sharetext">Text publicat quan es comparteix una puntuació</string>
+<string name="settings_sharetext_msg">Posicionadors: %1$s per identificació de la cervesa, %2$s pel nom de la cervesa, %3$s puntuació total i %4$s pel teu nom d\'usuari</string>
+<string name="settings_beermail">Mail c erveser</string>
+<string name="settings_background">Habilitar notificacions</string>
+<string name="settings_background_info">Reviseu periòdicament si teniu nous correus cervesers</string>
+<string name="settings_updatefrequency">Freqüència d\'actualització</string>
+<string name="settings_vibrate">Vibrar amb les notificacions</string>
+<string-array name="settings_frequency_names">
+<item>1 minut</item>
+<item>10 minuts</item>
+<item>30 minuts</item>
+<item>1 hora</item>
+<item>4 hores</item>
+<item>24 hores</item>
+</string-array>
+
+<string name="error_offline">No té connexió a Internet o RateBeer.com no està en línia</string>
+<string name="error_authenticationfailed">El seu nom d\'usuari o contrasenya no són vàlids</string>
+<string name="error_commandfailed">La comanda ha fallat inesperadament, La connexió a Internet és dolenta o RateBeer és fora de línia</string>
+<string name="error_nouserorpass">Tant el nom d\'usuari com la contrasenya son camps requerits per autentificar-se</string>
+<string name="error_nolocation">La seva ubicació no està definida</string>
+<string name="error_locationnotsupported">Aquest dispositiu no és compatible amb la recuperació d\'una ubicació o aquesta està desactivada</string>
+<string name="error_sendreport">Enviar informe d\'errors</string>
+<string name="error_stylenotfound">No es pot trobar l\'estil de cervesa; si us plau informi d\'aquest error</string>
+<string name="error_cannotwrite">No es pot escriure el fitxer</string>
+<string name="error_cannotread">No existeix el fitxer o no es pot llegir</string>
+<string name="error_filenotvalid">El fitxer no conté vots fora de línia (en el format correcte)</string>
+<string name="error_nocamera">No es pot fer una foto, o bé vostè no té càmera o no pot escriure en l\'emmagatzematge extern SD</string>
+<string name="error_lc_install">Per enviar un informe d\'errors, cal l\'aplicació de codi obert Log Collector . T\'agradaria instal·lar-la des de Play Store?</string>
+<string name="error_lc_run">La aplicació Log Collector recollirà el registre del dispositiu i l\'enviarà a rb@2312.nl.\nVostè tindrà l\'oportunitat de revisar i modificar les dades que s\'envien.</string>
+<string name="error_invalidurl">La URL del lloc web no és vàlida</string>
+
+</resources>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Cancelar</string>
+<string name="app_home">Inicio</string>
+<string name="app_refresh">Actualizar</string>
+<string name="app_details">Detalles</string>
+<string name="app_share">Compartir</string>
+<string name="app_loading">Cargando&#8230;</string>
+<string name="app_legal">Al usar esta aplicación usted está de acuerdo con los términos del Acuerdo para Usuarios de RateBeer disponible en http://www.ratebeer.com/UserAgreement.asp\n\nUsted puede utilizar esta aplicación para acceder a detalles, listas, eventos, lugares en su localidad y mucho más relacionado con la cerveza, aún sin contar con una cuenta en RateBeer. Para acceder a todas las funciones como calificaciones y disponibilidad de alguna cerveza, usted puede crear una cuenta en http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">¡Bienvenido!</string>
+
+<string name="app_install">Instalar</string>
+<string name="app_nomarket">La aplicación Play Store no está instalada en su dispositivo.</string>
+<string name="app_scannernotfound">No se pudo encontrar el escáner de códigos de barras.\n¿Quiere instalar uno desde Play Store?</string>
+<string name="app_onlyifsignedin">Esta función está disponible únciamente para usuarios registrados de RateBeer.</string>
+
+<string name="app_newstatus">Ingrese nuevo estatus</string>
+<string name="app_nowdrinking">Ahora bebiendo</string>
+<string name="app_settingdrinking_expl">También puede elegir \'Bebiendo\'  desde la pantalla de detalles de una cerveza.</string>
+<string name="app_settingdrinking">Actualizando estatus de bebida</string>
+<string name="app_sharerating">Compartir calificación en Twitter/Facebook/&#8230;</string>
+<string name="app_postingrating">Calificando cerveza</string>
+<string name="app_addingavailability">Publicando disponibilidad</string>
+<string name="app_addingforbeer">Agregando disponibilidad para %1$s</string>
+<string name="app_addingavailability">Publicando disponibilidad</string>
+<string name="app_rated">Califiqué %1$s con un %2$s</string>
+<string name="app_forbeer">Para%1$s</string>
+<string name="app_addingtocellar">Agregando a bodega</string>
+<string name="app_addwant">Quiero %1$s</string>
+<string name="app_addhave">Tengo %1$s</string>
+<string name="app_ratedwithurl">Califiqué %2$s con un %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+<string name="app_addingupccode">Agregando código de barras escaneado a la cerveza</string>
+<string name="app_addingcodefor">Agregando código a %1$s</string>
+<string name="app_requiressignin">Por favor acceda a su cuenta de RateBeer para utilizar esta función.</string>
+<string name="app_noaccount">¿Aún no tiene una cuenta?\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmails">Tienes %1$s mensajes cerveceros nuevos</string>
+<string name="app_newmail">Tienes nuevos mensajes cerveceros</string>
+<string name="app_by">Por %1$s </string>
+<string name="app_andothers">y otros</string>
+<string name="app_uploadingphoto">Subiendo fotografía nueva</string>
+<string name="app_photofor">Subiendo fotografía de %1$s </string>
+
+<string name="signin_username">Usuario:</string>
+<string name="signin_password">Contraseña:</string>
+<string name="signin_signin">Acceder</string>
+<string name="signin_signout">Salir</string>
+<string name="signin_connecting">Conectando&#8230;</string>
+<string name="signin_signoutsuccess">Cuenta eliminada satisfactoriamente</string>
+<string name="signin_signinsuccess">Cuenta creada satisfactoriamente</string>
+
+<string name="home_beers">Cervezas</string>
+<string name="home_places">Lugares</string>
+<string name="home_events">Eventos</string>
+<string name="home_search">Buscar</string>
+<string name="home_myprofile">Mi Perfil</string>
+<string name="home_top50">Top 50</string>
+<string name="home_bycountry">Las mejores por país</string>
+<string name="home_offlineratings">Notas offline</string>
+<string name="home_beerstyles">Estilos de cerveza</string>
+<string name="home_beermail">Correo Cervecero</string>
+<string name="home_nowdrinking">Ahora bebiendo %1$s</string>
+<string name="home_preferences">Preferencias</string>
+<string name="home_calculator">Calculadora</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_for">%1$s  para</string>
+<string name="calc_euro">¤</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+<string name="calc_fillinall">Por favor llene campos de calidad y un precio de la cerveza</string>
+
+<string name="myratings_avg">%1$s prom.</string>
+<string name="myratings_noitems">Ninguna calificación hasta ahora. ¡Destapa una cerveza y activa tus papilas gustativas!</string>
+<string name="myratings_sortby">Ordenar por</string>
+<string-array name="myratings_sortby_names">
+<item>Nombre</item>
+<item>Cervecería</item>
+<item>Estilo</item>
+<item>My calificación</item>
+<item>Fecha</item>
+<item>Puntuación</item>
+</string-array>
+
+<string name="cellar_viewcellar">Ver Bodega</string>
+<string name="cellar_wants">Quiero</string>
+<string name="cellar_haves">Tengo</string>
+<string name="cellar_wantthis">Quiero esta</string>
+<string name="cellar_havethis">Tengo esta</string>
+<string name="cellar_addingahave">Añadir a Tengo</string>
+<string name="cellar_addingawant">Añadir a Quiero</string>
+<string name="cellar_memo">Memo</string>
+<string name="cellar_vintage">Cosecha (año)</string>
+<string name="cellar_quantity">Cantidad</string>
+<string name="cellar_addtocellar">Agregar a Bodega</string>
+<string name="cellar_remove">Eliminar de Bodega</string>
+<string name="cellar_confirmremoval">¿Eliminar %1$s de tu cava? </string>
+
+<string name="topbeers_country">País:</string>
+<string name="topbeers_state">Estado:</string>
+<string name="topbeers_noitems">Selecciona un país para ver sus mejores cervezas&#8230;</string>
+
+<string name="places_nearby">Lugares cercanos</string>
+<string name="places_map">Mapa</string>
+<string name="places_location">Localizacion</string>
+<string name="places_rateandcount">Calificacion</string>
+<string name="places_notyetrated">Aun no calificada</string>
+<string name="places_findhint">Escribe la localización de la búsqueda</string>
+<string name="places_usecurrent">Usa tu localización actual</string>
+<string name="places_noitems">¡No encontramos ningún lugar cervecero en esta zona!</string>
+<string name="places_brewpub">Brewpub</string>
+<string name="places_bar">Bar</string>
+<string name="places_beerstore">Tienda de cervezas</string>
+<string name="places_restaurant">Restaurante</string>
+<string name="places_brewer">Cervecera</string>
+<string name="places_unknown">Desconocido</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_checkins">Check ins</string>
+<string name="places_checkinhere">Haz Check in aquí</string>
+<string name="places_checkedinnow">Has hecho Check In (actualizando)</string>
+<string name="places_availablebeers">Disponible </string>
+
+<string name="brewers_beers">Cervezas</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Asistentes</string>
+<string name="events_noitems">¡No hay eventos planeados en esta zona!</string>
+<string name="events_addattendance">Si, agregue mi nombre</string>
+<string name="events_removeattendance">No, elimine mi nombre</string>
+<string name="events_nowattending">Agregar mi nombre a la lista de asistentes</string>
+<string name="events_nownotattending">Eliminar mi nombre de la lista de asistentes</string>
+<string name="events_share">Checa %1$s en @ratebeer http://ratebeer.com/event/%2$s/</string>
+<string name="events_shareevent">Compartir evento&#8230;</string>
+
+<string name="search_resultsfor">Resultados para \'%1$s\'</string>
+<string name="search_beersearch">Búsqueda RateBeer</string>
+<string name="search_hint">Buscar cervezas, lugares y usuarios</string>
+<string name="search_beers">Cervezas</string>
+<string name="search_brewers">Cervecerías</string>
+<string name="search_places">Lugares</string>
+<string name="search_users">Usuarios</string>
+<string name="search_barcodescanner">Escáner de Códigos de Barras</string>
+<string name="search_nobeerswithbarcode">No se encontro ninguna cerveza para el código de barra %1$s. Considere agregarla a la base de datos usando una busqueda simple de cerveza.</string>
+<string name="search_clearhistory">Limpiar historial</string>
+<string name="search_noitems">No hay resultados para su búsqueda. Podría intentar nuevamente usando una pequeña parte de la cerveza, el lugar o nombre de usuario</string>
+<string name="search_retired">retirada</string>
+<string name="search_alias">alias</string>
+<string name="search_rated">calificada</string>
+<string name="search_ratings">%1$s calificaciones</string>
+
+<string name="details_score">Puntaje</string>
+<string name="details_noscoreyet">Necesita mas calificaciones</string>
+<string name="details_percentile">percentil</string>
+<string name="details_style">estilo</string>
+<string name="details_nodescription">No hay descripción comercial</string>
+<string name="details_ratethis">Califique esto</string>
+<string name="details_viewrerate">Volver a Calificar esto</string>
+<string name="details_drinkingthis">Tomando esto</string>
+<string name="details_recentratings">Calificaciones</string>
+<string name="details_myrating">Mi calificación:</string>
+<string name="details_otherratings">Calificaciones recientes:</string>
+<string name="details_availability">Disponibilidad</string>
+<string name="details_sharebeer">Compartir cerveza&#8230;</string>
+
+<string name="upload_uploadphoto">Cargar una foto</string>
+<string name="upload_choose">Seleccione la fuente de la ímagen</string>
+<string name="upload_newphoto">Tomar una foto nueva</string>
+<string name="upload_pick">Seleccionar de la galería</string>
+
+<string name="user_favsyle">Estilo favorito: %1$s</string>
+<string name="user_nofavstyle">Ninguno</string>
+
+<string name="rate_aroma">Aroma</string>
+<string name="rate_appearance">Apariencia</string>
+<string name="rate_taste">Sabor</string>
+<string name="rate_palate">Paladar</string>
+<string name="rate_overall">Conjunto</string>
+<string name="rate_totalscore">Calificación total</string>
+<string name="rate_comments">Comentarios</string>
+<string name="rate_addrating">Cargar mi calificación</string>
+<string name="rate_commenttooshort">El comentario debe contener al menos 85 caracteres.</string>
+<string name="rate_ratingnotcompleted">Tu calificación no está completa</string>
+<string name="rate_commentok">Longitud del comentario esta correcta!</string>
+<string name="rate_showassistance">Mostrar ayuda</string>
+<string name="rate_hideassistance">Esconder ayuda</string>
+<string name="rate_assistance_words">caramelo, pan, heno, cereal, chocolate, café, nueces, tostado, resina, floral, pasto, pino, cítrico, hierbas, masa, granero, queso, aroma a sótano, piel, tierroso, hojas, alcohol, plátano, chicle, caramelo, clavo, vegetales cocidos, jarabe para la tos, genjibre, regaliz, pasas, huevo podrido, salsa de soya, azorrillado, humo, vainilla, maderas</string>
+
+<string name="rate_offline_discard">Descartar</string>
+<string name="rate_offline_customname">Cerveza que estas puntuando</string>
+<string name="rate_offline_confirmdiscard">Perderas tu puntuación i comentarios ¿Estas seguro?</string>
+
+<string name="addav_on">En:</string>
+<string name="addav_ontap">barril</string>
+<string name="addav_onbottlecan">botella/lata</string>
+
+
+
+<string name="settings_updatefrequency">Frecuencia de actualización</string>
+<string-array name="settings_frequency_names">
+<item>1 minuto</item>
+<item>10 minutos</item>
+<item>30 minutos</item>
+<item>1 hora</item>
+<item>4 horas</item>
+<item>24 horas</item>
+</string-array>
+
+<string name="error_nouserorpass">Nombre de usuario y contraseña son campos necesarios para darse de alta</string>
+<string name="error_nolocation">La localización no se puede determinar</string>
+<string name="error_locationnotsupported">Tu dispositivo no soporta el reporte de localización o este esta desactivado</string>
+<string name="error_sendreport">Enviar reporte de error</string>
+<string name="error_stylenotfound">No se puede encontrar el estilo de cerveza; por favor reportar este error.</string>
+<string name="error_cannotwrite">No se puede escribir el archivo</string>
+<string name="error_cannotread">No hay archivo o no se puede leer</string>
+<string name="error_filenotvalid">Archivos no contienen puntuacion offline (en el formato correcto)</string>
+<string name="error_nocamera">No se puede tomar una foto; o no tienes camara o no se puede almacenar en la SD externa.</string>
+<string name="error_lc_install">Para enviar un reporte necesitas la aplicación, libre y de código abierto, Log Collector. ¿Te gustaría instalarla des de Play Store?</string>
+<string name="error_lc_run">La aplicación Log Collector reecogera ahora la identificación de tu dispositivo y la enviará a rb@2312.nl. Tendrás la oportunidad de revisar y modificar los datos enviados.</string>
+<string name="error_invalidurl">La URL de la página parece no ser valida.</string>
+
+</resources>

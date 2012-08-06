@@ -82,6 +82,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 	private FrameLayout mapFrame;
 	private ListView checkinsView;
 	private ListView availableBeersView;
+	private TextView availableBeersEmpty;
 
 	private int placeId;
 	private Place place;
@@ -216,6 +217,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 
 	private void refreshAvailableBeers() {
 		execute(new GetAvailableBeersCommand(getRateBeerActivity().getApi(), placeId));
+		availableBeersEmpty.setText(R.string.details_noavailability);
 	}
 
 	private OnClickListener onAddressClick = new OnClickListener() {
@@ -431,15 +433,17 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 
 		private View pagerDetailsView;
 		private View pagerCheckinsView;
-		private ListView pagerAvailableBeersView;
+		private FrameLayout pagerAvailableBeersFrame;
 
 		public PlacePagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			pagerDetailsView = (LinearLayout) inflater.inflate(R.layout.fragment_placedetails, null);
 			pagerCheckinsView = (LinearLayout) inflater.inflate(R.layout.fragment_placecheckins, null);
-			pagerAvailableBeersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerAvailableBeersFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
 
-			availableBeersView = pagerAvailableBeersView;
+			availableBeersEmpty = (TextView) pagerAvailableBeersFrame.findViewById(R.id.empty);
+			availableBeersView = (ListView) pagerAvailableBeersFrame.findViewById(R.id.list);
+			availableBeersView.setEmptyView(availableBeersEmpty);
 
 			checkinsView = (ListView) pagerCheckinsView.findViewById(R.id.list);
 			checkinhereButton = (Button) pagerCheckinsView.findViewById(R.id.checkinhere);
@@ -482,8 +486,8 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 				((ViewPager) container).addView(pagerCheckinsView, 0);
 				return pagerCheckinsView;
 			case 2:
-				((ViewPager) container).addView(pagerAvailableBeersView, 0);
-				return pagerAvailableBeersView;
+				((ViewPager) container).addView(pagerAvailableBeersFrame, 0);
+				return pagerAvailableBeersFrame;
 			}
 			return null;
 		}

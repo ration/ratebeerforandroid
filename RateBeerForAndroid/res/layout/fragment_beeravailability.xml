@@ -21,4 +21,12 @@
 		android:layout_weight="1"
 		android:cacheColorHint="@color/BackgroundLight" />
 	
+	<TextView 
+		android:id="@+id/empty"
+		android:layout_height="0dip"
+		android:layout_width="match_parent"
+		android:layout_weight="1"
+		android:gravity="center"
+		android:visibility="gone" />
+	
 </LinearLayout>

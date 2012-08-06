@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,10 +84,8 @@ public class SearchFragment extends RateBeerFragment {
 
 	private LayoutInflater inflater;
 	private ViewPager pager;
-	private ListView beersView;
-	private ListView brewersView;
-	private ListView placesView;
-	private ListView usersView;
+	private ListView beersView, brewersView, placesView, usersView;
+	private TextView beersEmpty, brewersEmpty, placesEmpty, usersEmpty;
 
 	private String lastQuery = null;
 	private boolean startBarcodeScanner = false;
@@ -135,6 +134,10 @@ public class SearchFragment extends RateBeerFragment {
 		brewersView = cellarPagerAdapter.getBrewersView();
 		placesView = cellarPagerAdapter.getPlacesView();
 		usersView = cellarPagerAdapter.getUsersView();
+		beersEmpty = cellarPagerAdapter.getBeersEmpty();
+		brewersEmpty = cellarPagerAdapter.getBrewersEmpty();
+		placesEmpty = cellarPagerAdapter.getPlacesEmpty();
+		usersEmpty = cellarPagerAdapter.getUsersEmpty();
 		beersView.setOnItemClickListener(onBeerSelected);
 		brewersView.setOnItemClickListener(onBrewerSelected);
 		placesView.setOnItemClickListener(onPlaceSelected);
@@ -348,12 +351,16 @@ public class SearchFragment extends RateBeerFragment {
 	public void onTaskSuccessResult(CommandSuccessResult result) {
 		if (result.getCommand().getMethod() == ApiMethod.SearchBeers) {
 			publishBeerResults(((SearchBeersCommand) result.getCommand()).getSearchResults());
+			beersEmpty.setText(R.string.search_nobeers);
 		} else if (result.getCommand().getMethod() == ApiMethod.SearchBrewers) {
 			publishBrewerResults(((SearchBrewersCommand) result.getCommand()).getSearchResults());
+			brewersEmpty.setText(R.string.search_nobrewers);
 		} else if (result.getCommand().getMethod() == ApiMethod.SearchPlaces) {
 			publishPlaceResults(((SearchPlacesCommand) result.getCommand()).getSearchResults());
+			placesEmpty.setText(R.string.search_nopalces);
 		} else if (result.getCommand().getMethod() == ApiMethod.SearchUsers) {
 			publishUserResults(((SearchUsersCommand) result.getCommand()).getSearchResults());
+			usersEmpty.setText(R.string.search_nousers);
 		} else if (result.getCommand().getMethod() == ApiMethod.UpcSearch) {
 			// See if there were any results
 			UpcSearchCommand command = (UpcSearchCommand) result.getCommand();
@@ -601,13 +608,33 @@ public class SearchFragment extends RateBeerFragment {
 		private ListView pagerBrewersView;
 		private ListView pagerPlacesView;
 		private ListView pagerUsersView;
+		private FrameLayout pagerBeersFrame;
+		private FrameLayout pagerBrewersFrame;
+		private FrameLayout pagerPlacesFrame;
+		private FrameLayout pagerUsersFrame;
+		private TextView pagerBeersEmpty;
+		private TextView pagerBrewersEmpty;
+		private TextView pagerPlacesEmpty;
+		private TextView pagerUsersEmpty;
 
 		public SearchPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
-			pagerBeersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
-			pagerBrewersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
-			pagerPlacesView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
-			pagerUsersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerBeersFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
+			pagerBeersEmpty = (TextView) pagerBeersFrame.findViewById(R.id.empty);
+			pagerBeersView = (ListView) pagerBeersFrame.findViewById(R.id.list);
+			pagerBeersView.setEmptyView(pagerBeersEmpty);
+			pagerBrewersFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
+			pagerBrewersEmpty = (TextView) pagerBrewersFrame.findViewById(R.id.empty);
+			pagerBrewersView = (ListView) pagerBrewersFrame.findViewById(R.id.list);
+			pagerBrewersView.setEmptyView(pagerBrewersEmpty);
+			pagerPlacesFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
+			pagerPlacesEmpty = (TextView) pagerPlacesFrame.findViewById(R.id.empty);
+			pagerPlacesView = (ListView) pagerPlacesFrame.findViewById(R.id.list);
+			pagerPlacesView.setEmptyView(pagerPlacesEmpty);
+			pagerUsersFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
+			pagerUsersEmpty = (TextView) pagerUsersFrame.findViewById(R.id.empty);
+			pagerUsersView = (ListView) pagerUsersFrame.findViewById(R.id.list);
+			pagerUsersView.setEmptyView(pagerUsersEmpty);
 		}
 
 		public ListView getBeersView() {
@@ -624,6 +651,22 @@ public class SearchFragment extends RateBeerFragment {
 
 		public ListView getUsersView() {
 			return pagerUsersView;
+		}
+
+		public TextView getBeersEmpty() {
+			return pagerBeersEmpty;
+		}
+
+		public TextView getBrewersEmpty() {
+			return pagerBrewersEmpty;
+		}
+
+		public TextView getPlacesEmpty() {
+			return pagerPlacesEmpty;
+		}
+
+		public TextView getUsersEmpty() {
+			return pagerUsersEmpty;
 		}
 
 		@Override
@@ -650,17 +693,17 @@ public class SearchFragment extends RateBeerFragment {
 		public Object instantiateItem(View container, int position) {
 			switch (position) {
 			case 0:
-				((ViewPager) container).addView(pagerBeersView, 0);
-				return pagerBeersView;
+				((ViewPager) container).addView(pagerBeersFrame, 0);
+				return pagerBeersFrame;
 			case 1:
-				((ViewPager) container).addView(pagerBrewersView, 0);
-				return pagerBrewersView;
+				((ViewPager) container).addView(pagerBrewersFrame, 0);
+				return pagerBrewersFrame;
 			case 2:
-				((ViewPager) container).addView(pagerPlacesView, 0);
-				return pagerPlacesView;
+				((ViewPager) container).addView(pagerPlacesFrame, 0);
+				return pagerPlacesFrame;
 			case 3:
-				((ViewPager) container).addView(pagerUsersView, 0);
-				return pagerUsersView;
+				((ViewPager) container).addView(pagerUsersFrame, 0);
+				return pagerUsersFrame;
 			}
 			return null;
 		}

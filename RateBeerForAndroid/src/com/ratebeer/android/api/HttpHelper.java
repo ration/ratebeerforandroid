@@ -305,7 +305,10 @@ public class HttpHelper {
 	}
 
 	public static String normalizeSearchQuery(String query) {
-		// First translate diacritics
+		// RateBeer crashes down badly when providing a ' (apostrophe) in a search; replace it instead by a ? (wildcard)
+		query = query.replace("'", "?");
+		
+		// Now translate diacritics
 		// (from http://stackoverflow.com/questions/1008802/converting-symbols-accent-letters-to-english-alphabet)
 		// The Normalizer class is unavailable < API level 9, so use it through an interface using reflection
 		try {

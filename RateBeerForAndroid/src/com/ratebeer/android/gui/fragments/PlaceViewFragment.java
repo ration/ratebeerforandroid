@@ -25,6 +25,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -86,19 +87,22 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 
 	private int placeId;
 	private Place place;
+	private Location currentLocation;
 	private ArrayList<CheckedInUser> checkins = new ArrayList<CheckedInUser>();
 	private ArrayList<AvailableBeer> availableBeers = new ArrayList<AvailableBeer>();
 
 	public PlaceViewFragment() {
-		this(null);
+		this(null, null);
 	}
 
 	/**
 	 * Show the details of some place
 	 * @param place The place object to show the details of
+	 * @param currentLocation The current location of the user; to calculate the distance to the place
 	 */
-	public PlaceViewFragment(Place place) {
+	public PlaceViewFragment(Place place, Location currentLocation) {
 		this.place = place;
+		this.currentLocation = currentLocation;
 		if (place != null) {
 			this.placeId = place.placeID;
 		}
@@ -305,7 +309,8 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		nameText.setText(place.placeName);
 		typeText.setText(PlacesFragment.getPlaceTypeName(getActivity(), place.placeType));
 		ratingText.setText(place.avgRating == -1? "?": Integer.toString(place.avgRating));
-		String distanceText = place.distance == -1D? "": "\n" + PlacesFragment.getPlaceDistance(getRateBeerActivity(), place.distance);
+		String distanceText = place.distance == -1D? "": "\n" + PlacesFragment.getPlaceDistance(getRateBeerActivity(), 
+				place, currentLocation);
 		addressText.setText(place.address + "\n" + place.city + distanceText);
 		phoneText.setText(place.phoneNumber);
 

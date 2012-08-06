@@ -50,6 +50,7 @@ import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
+import com.ratebeer.android.app.location.LocationUtils;
 import com.ratebeer.android.app.location.MyLocation;
 import com.ratebeer.android.app.location.PlaceOverlayItem;
 import com.ratebeer.android.app.location.MyLocation.LocationResult;
@@ -223,7 +224,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Place item = ((PlacesAdapter)placesView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new PlaceViewFragment(item));
+			getRateBeerActivity().load(new PlaceViewFragment(item, lastLocation));
 		}
 	};
 	
@@ -298,7 +299,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 	@Override
 	public void onBalloonClicked(OverlayItem item) {
 		if (item instanceof PlaceOverlayItem) {
-			getRateBeerActivity().load(new PlaceViewFragment(((PlaceOverlayItem) item).getPlace()));
+			getRateBeerActivity().load(new PlaceViewFragment(((PlaceOverlayItem) item).getPlace(), lastLocation));
 		}
 	}
 	
@@ -345,7 +346,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			Place item = getItem(position);
 			holder.placeName.setText(item.placeName);
 			holder.placeType.setText(getPlaceTypeName(getActivity(), item.placeType));
-			holder.distance.setText(getPlaceDistance(getRateBeerActivity(), item.distance));
+			holder.distance.setText(getPlaceDistance(getRateBeerActivity(), item, lastLocation));
 			holder.city.setText(item.city);
 			holder.score.setText(item.avgRating == -1? "?": Integer.toString(item.avgRating));
 
@@ -354,7 +355,9 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 
 	}
 
-	public static String getPlaceDistance(RateBeerActivity rbActivity, double distance) {
+	public static String getPlaceDistance(RateBeerActivity rbActivity, Place place, Location currentLocation) {
+		// Calculate distance
+		double distance = LocationUtils.distanceInMiles(place.latitude, place.longitude, currentLocation.getLatitude(), currentLocation.getLongitude());
 		// Show in KM instead of miles?
 		if (rbActivity.getSettings().showDistanceInKm()) {
 			distance *= 1.609344;

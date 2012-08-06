@@ -250,8 +250,8 @@
 	<string name="mail_new">new</string>
 	<string name="mail_read">read</string>
 	<string name="mail_reply">Reply</string>
-	<string name="mail_sendto">Send to</string>
-	<string name="mail_subject">Subject</string>
+	<string name="mail_sendto">Send to:</string>
+	<string name="mail_subject">Subject:</string>
 	<string name="mail_message">Message:</string>
 	<string name="mail_includeoriginal">Include original message</string>
 	<string name="mail_send">Send</string>

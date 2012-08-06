@@ -280,7 +280,8 @@ public class UserRatingsFragment extends RateBeerFragment {
 		TextView beer, brewer, style, score, myrating, date;
 	}
 
-	protected class UserRatingsSortDialog extends DialogFragment {
+	public class UserRatingsSortDialog extends DialogFragment {
+		public UserRatingsSortDialog() {}
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			return new AlertDialog.Builder(getActivity()).setTitle(R.string.myratings_sortby).setItems(

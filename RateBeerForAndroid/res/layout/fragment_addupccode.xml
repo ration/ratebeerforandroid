@@ -22,7 +22,6 @@
 			android:layout_weight="3.5"
 			android:layout_height="wrap_content"
 			android:textStyle="bold"
-			android:text="98218196"
 			android:textSize="@dimen/HomeButtonTextSize" />
 	</LinearLayout>
 	

@@ -728,7 +728,7 @@ public class BeerViewFragment extends RateBeerFragment {
 
 			// Bind the data
 			BeerRating item = getItem(position);
-			holder.total.setTag(new Integer(item.userId));
+			holder.total.setTag(Integer.valueOf(item.userId));
 			holder.total.setText(item.totalScore);
 			holder.aroma.setText(Integer.toString(item.aroma));
 			holder.appearance.setText(Integer.toString(item.appearance));

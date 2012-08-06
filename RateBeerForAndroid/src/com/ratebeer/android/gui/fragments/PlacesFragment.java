@@ -152,6 +152,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 				publishException(null, getString(R.string.error_nolocation));
 			} else {
 				// Found a location! Now look for places
+				lastLocation = new Location("");
 				lastLocation.setLongitude(point.get(0).getLongitude());
 				lastLocation.setLatitude(point.get(0).getLatitude());
 				execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, 

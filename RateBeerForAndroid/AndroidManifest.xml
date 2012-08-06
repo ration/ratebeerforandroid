@@ -76,11 +76,12 @@
 		<activity android:name="com.ratebeer.android.gui.PreferencesInterface"></activity>
 
 		<!-- Default search provider -->
-		<provider android:name="com.ratebeer.android.gui.SearchHistoryProvider" android:authorities="com.ratebeer.android.gui.SearchHistoryProvider" />
+		<provider android:name="com.ratebeer.android.gui.SearchHistoryProvider" 
+			android:authorities="com.ratebeer.android.gui.SearchHistoryProvider" android:exported="false" />
 		<meta-data android:name="android.app.default_searchable" android:value="com.ratebeer.android.gui.Search" />
 		
 		<!-- Posting data to RateBeer -->
-		<service android:name="com.ratebeer.android.gui.components.PosterService">
+		<service android:name="com.ratebeer.android.gui.components.PosterService" android:exported="false">
 			<intent-filter>
 				<action android:name="com.ratebeer.android.SET_DRINKING_STATUS" />
 				<action android:name="com.ratebeer.android.POST_RATING" />

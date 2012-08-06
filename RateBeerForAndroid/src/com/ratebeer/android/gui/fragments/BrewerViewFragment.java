@@ -424,9 +424,9 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details);
+				return getActivity().getString(R.string.app_details).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.brewers_beers);
+				return getActivity().getString(R.string.brewers_beers).toUpperCase();
 			}
 			return null;
 		}

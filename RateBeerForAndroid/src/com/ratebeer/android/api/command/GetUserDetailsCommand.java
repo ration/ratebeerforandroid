@@ -98,7 +98,7 @@ public class GetUserDetailsCommand extends HtmlCommand {
 		String avgBeerRated = null;
 		if (avgBeerRatedPresent >= 0) {
 			int avgBeerRatedStart = avgBeerRatedPresent + "Avg Beer Rated: ".length();
-			avgBeerRated = HttpHelper.cleanHtml(html.substring(avgBeerRatedStart, html.indexOf("<", avgBeerRatedStart)));
+			avgBeerRated = HttpHelper.cleanHtml(html.substring(avgBeerRatedStart, html.indexOf(" ", avgBeerRatedStart)));
 		}
 
 		String styleText = "Favorite style: <a href=\"/beerstyles/";

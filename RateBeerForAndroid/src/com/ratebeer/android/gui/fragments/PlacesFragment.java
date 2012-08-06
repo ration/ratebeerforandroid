@@ -427,9 +427,9 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.places_nearby);
+				return getActivity().getString(R.string.places_nearby).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.places_map);
+				return getActivity().getString(R.string.places_map).toUpperCase();
 			}
 			return null;
 		}

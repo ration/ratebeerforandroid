@@ -32,8 +32,13 @@ public class SetDrinkingStatusDialogFragment extends DialogFragment {
 
 	private final OnDialogResult resultListener;
 
+	public SetDrinkingStatusDialogFragment() {
+		this(null);
+	}
+	
 	public SetDrinkingStatusDialogFragment(OnDialogResult resultListener) {
 		this.resultListener = resultListener;
+		setRetainInstance(true);
 	}
 	
 	@Override

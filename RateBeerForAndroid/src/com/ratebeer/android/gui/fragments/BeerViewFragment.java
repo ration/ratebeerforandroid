@@ -24,10 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -39,7 +36,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
@@ -393,33 +389,10 @@ public class BeerViewFragment extends RateBeerFragment {
 	}
 
 	protected void onStartPhotoUpload() {
-		new ChoosePhotoFragment().show(getSupportFragmentManager(), "");
+		new ChoosePhotoFragment(this).show(getSupportFragmentManager(), "");
 	}
 	
-	protected class ChoosePhotoFragment extends DialogFragment {
-		public ChoosePhotoFragment() {
-			setRetainInstance(true);
-		}
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			return new AlertDialog.Builder(getActivity())
-				.setIcon(android.R.drawable.ic_dialog_info)
-				.setTitle(R.string.upload_choose)
-				.setItems(new String[] { getString(R.string.upload_newphoto), getString(R.string.upload_pick) },
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								if (which == 0) {
-									onStartPhotoSnapping();
-								} else {
-									onStartPhotoPicking();
-								}
-							}
-						}).create();
-		}
-	}
-	
-	protected void onStartPhotoSnapping() {
+	public void onStartPhotoSnapping() {
 		// Start an intent to snap a picture
 		// http://stackoverflow.com/questions/1910608/android-action-image-capture-intent
 		try {
@@ -443,7 +416,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		}
 	}
 	
-	protected void onStartPhotoPicking() {
+	public void onStartPhotoPicking() {
 		Intent i = new Intent(Intent.ACTION_GET_CONTENT);
 		i.setType("image/*");
 		startActivityForResult(i, ACTIVITY_PICKPHOTO);

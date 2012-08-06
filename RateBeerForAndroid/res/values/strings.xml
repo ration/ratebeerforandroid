@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RateBeer for Android</string>
-    <!-- Debug key -->
-	<!-- <string name="app_googlemapskey">0tkfMrcfmFeMLyX_vX__k7wHmC3HwFnJWM_XBrg</string> -->
-    <!-- Release key -->
-    <string name="app_googlemapskey">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
 	<string name="app_ok">OK</string>
 	<string name="app_cancel">Cancel</string>
 	<string name="app_home">Home</string>
@@ -17,8 +12,8 @@
 	<string name="app_legal_title">Welcome!</string>
 
 	<string name="app_install">Install now</string>
-	<string name="app_nomarket">The Android Market is not installed on your device.</string>
-	<string name="app_scannernotfound">The barcode scanner can not be found.\nWould you like to install this from the Android Market?</string>
+	<string name="app_nomarket">The Play Store is not installed on your device.</string>
+	<string name="app_scannernotfound">The barcode scanner can not be found.\nWould you like to install this from the Play Store?</string>
 	<string name="app_onlyifsignedin">This feature is only available after signing in to RateBeer.</string>
 
 	<string name="app_newstatus">Enter new status</string>
@@ -27,10 +22,13 @@
 	<string name="app_settingdrinking">Setting drinking status</string>
 	<string name="app_sharerating">Share rating on Twitter/Facebook/&#8230;</string>
 	<string name="app_postingrating">Posting beer rating</string>
+	<string name="app_postingtick">Posting your tick</string>
+	<string name="app_removingtick">Removing your tick</string>
 	<string name="app_addingavailability">Publishing availability</string>
 	<string name="app_addingforbeer">Adding availability for %1$s</string>
 	<string name="app_addingavailability">Publishing availability</string>
 	<string name="app_rated">Rated %1$s with a %2$s</string>
+	<string name="app_forbeer">For %1$s</string>
 	<string name="app_addingtocellar">Adding to cellar</string>
 	<string name="app_addwant">I want %1$s</string>
 	<string name="app_addhave">I have %1$s</string>
@@ -107,6 +105,12 @@
 	<string name="topbeers_noitems">Select a country to view its top beers&#8230;</string>
 	
 	<string name="places_nearby">Places nearby</string>
+	<string name="places_map">Map</string>
+	<string name="places_location">Location</string>
+	<string name="places_rateandcount">Rating: %1$s</string>
+	<string name="places_notyetrated">Not yet rated</string>
+	<string name="places_findhint">Type the name of the search location</string>
+	<string name="places_usecurrent">Use your current location</string>
 	<string name="places_noitems">No beer places found in this area!</string>
 	<string name="places_brewpub">Brewpub</string>
 	<string name="places_bar">Bar</string>
@@ -148,7 +152,10 @@
 	<string name="search_barcodescanner">Barcode scanner</string>
 	<string name="search_nobeerswithbarcode">No beers found for barcode %1$s. Please consider adding it to the database using a simple beer search.</string>
 	<string name="search_clearhistory">Clear history</string>
-	<string name="search_noitems">No results for your query. Maybe try again with a small part of the beer, place or user\'s name?</string>
+	<string name="search_nobeers">No beers found.\n\nTry searching only a part of the beer name.</string>
+	<string name="search_nobrewers">No brewers found.\n\nTry searching only a part of the brewer\'s name.</string>
+	<string name="search_nopalces">No places found.\n\nTry searching only a part of the place name.</string>
+	<string name="search_nousers">No users found.\n\nTry searching only a part of the user\'s name.</string>
 	<string name="search_retired">retired</string>
 	<string name="search_alias">alias</string>
 	<string name="search_rated">rated</string>
@@ -168,12 +175,17 @@
 	<string name="details_drinkingthis">Drinking this</string>
 	<string name="details_recentratings">Ratings</string>
 	<string name="details_myrating">My rating:</string>
+	<string name="details_ticklabel">Or just tick:</string>
 	<string name="details_otherratings">Recent ratings:</string>
 	<string name="details_availability">Availability</string>
+	<string name="details_noavailability">No availability known yet</string>
 	<string name="details_share">Check out %1$s at @ratebeer http://ratebeer.com/b/%2$s/</string>
 	<string name="details_sharebeer">Share beer&#8230;</string>
 	
 	<string name="upload_uploadphoto">Upload photo</string>
+	<string name="upload_choose">Choose the photo source</string>
+	<string name="upload_newphoto">Take a new photo</string>
+	<string name="upload_pick">Select from gallery</string>
 	
 	<string name="user_dates">Joined: %1$s\nLast seen: %2$s</string>
 	<string name="user_beersrated">%1$s beers rated\n%2$s places rated\nAvg. score given: %3$s\nAvg. beer rated: %4$s</string>
@@ -242,8 +254,8 @@
 	<string name="mail_new">new</string>
 	<string name="mail_read">read</string>
 	<string name="mail_reply">Reply</string>
-	<string name="mail_sendto">Send to</string>
-	<string name="mail_subject">Subject</string>
+	<string name="mail_sendto">Send to:</string>
+	<string name="mail_subject">Subject:</string>
 	<string name="mail_message">Message:</string>
 	<string name="mail_includeoriginal">Include original message</string>
 	<string name="mail_send">Send</string>
@@ -269,14 +281,6 @@
 		<item>4 hours</item>
 		<item>24 hours</item>
 	</string-array>
-	<string-array name="settings_frequency_values">
-		<item>60</item>
-		<item>600</item>
-		<item>1800</item>
-		<item>3600</item>
-		<item>14400</item>
-		<item>86400</item>
-	</string-array>
 			
 	<string name="error_offline">You do not have an internet connection or RateBeer.com is offline</string>
 	<string name="error_authenticationfailed">Your username or password is incorrect</string>
@@ -290,7 +294,8 @@
 	<string name="error_cannotread">No file or cannot read from it</string>
 	<string name="error_filenotvalid">File does not contain offline ratings (in the correct format)</string>
 	<string name="error_nocamera">Cannot take a photo; either you have no camera or cannot write to the external SD storage</string>
-	<string name="error_lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Android Market?</string>
+	<string name="error_lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Play Store?</string>
 	<string name="error_lc_run">The Log Collector application will now collect the device log and send it to rb@2312.nl.\nYou will have an opportunity to review and modify the data being sent.</string>
+	<string name="error_invalidurl">The website URL does not seem to be valid</string>
 	
 </resources>

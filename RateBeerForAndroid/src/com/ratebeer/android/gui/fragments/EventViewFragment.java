@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -54,12 +56,14 @@ import com.ratebeer.android.api.command.GetEventDetailsCommand;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.Attendee;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.EventDetails;
 import com.ratebeer.android.api.command.SetEventAttendanceCommand;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
-public class EventViewFragment extends RateBeerFragment {
+public class EventViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
 	private static final String STATE_EVENTNAME = "eventName";
 	private static final String STATE_EVENTID = "eventId";
@@ -211,7 +215,7 @@ public class EventViewFragment extends RateBeerFragment {
 		timeText.setVisibility(View.VISIBLE);
 		locationText.setText(details.location + "\n" + (details.city != null? details.city + "\n": "") + details.address);
 		locationText.setVisibility(View.VISIBLE);
-		detailsText.setText(details.details);
+		detailsText.setText(Html.fromHtml(details.details.replace("\n", "<br />")));
 		contactText.setText(details.contact);
 		attendeeAdapter.replace(details.attendees);
 		attendeeslabel.setVisibility(View.VISIBLE);
@@ -223,19 +227,25 @@ public class EventViewFragment extends RateBeerFragment {
 		}
 		
 		// Get the activity-wide MapView to show on this fragment and center on this event's location
-		MapView mapView = getRateBeerActivity().requestMapViewInstance();
+		final MapView mapView = getRateBeerActivity().requestMapViewInstance();
+		mapFrame.addView(mapView);
 		try {
 			// Use Geocoder to look up the coordinates
 			try {
-				List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address + (details.city != null? " " + details.city: ""), 1);
+				List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address
+						+ (details.city != null ? " " + details.city : ""), 1);
 				if (point.size() <= 0) {
 					// Cannot find address: hide the map
 					mapFrame.setVisibility(View.GONE);
 				} else {
 					// Found a location! Center the map here
-					mapView.getController().setCenter(getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
-					mapView.getController().setZoom(15);
 					mapFrame.setVisibility(View.VISIBLE);
+					mapView.getController().setCenter(
+							getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
+					final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, 2, this);
+					to.addOverlay(new OverlayItem(getRateBeerActivity().getPoint(point.get(0).getLatitude(),
+							point.get(0).getLongitude()), details.name, details.times));
+					mapView.getOverlays().add(to);
 				}
 			} catch (IOException e) {
 				// Canot connect to geocoder server: hide the map
@@ -245,8 +255,12 @@ public class EventViewFragment extends RateBeerFragment {
 			// Geocoder is not available at all: hide the map
 			mapFrame.setVisibility(View.GONE);
 		}
-		mapFrame.addView(mapView);
 		
+	}
+
+	@Override
+	public void onBalloonClicked(OverlayItem item) {
+		// No action, for now
 	}
 
 	private OnClickListener onLocationClicked = new OnClickListener() {

@@ -237,10 +237,6 @@ public class TopBeersFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			if (getRateBeerActivity() == null) {
-				return null;
-			}
-			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
@@ -256,6 +252,10 @@ public class TopBeersFragment extends RateBeerFragment {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
+			if (getRateBeerActivity() == null) {
+				return convertView;
+			}
+			
 			// Bind the data
 			TopBeer item = getItem(position);
 			if (getActivity() != null) {

@@ -19,17 +19,15 @@ package com.ratebeer.android.api.command;
 
 import java.io.IOException;
 
-import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 
 import com.ratebeer.android.api.ApiException;
+import com.ratebeer.android.api.ApiException.ExceptionType;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
-import com.ratebeer.android.api.ApiException.ExceptionType;
-import com.ratebeer.android.app.ApplicationSettings;
 
 public class LoginCommandsTests extends AndroidTestCase {
 
@@ -57,10 +55,7 @@ public class LoginCommandsTests extends AndroidTestCase {
 		assertTrue(!HttpHelper.isSignedIn());
 
 		// Log in with an invalid user (note: signout needed to be succesful to properly test this!)
-		ApplicationSettings settings = new ApplicationSettings(getContext(), PreferenceManager
-				.getDefaultSharedPreferences(getContext()));
-		settings.saveUserSettings(new UserSettings(156822, "rbandroid", "wrongpassword", null, false));
-		RateBeerApi api2 = new RateBeerApi(settings);
+		RateBeerApi api2 = new RateBeerApi(new UserSettings(156822, "rbandroid", "wrongpassword", null, false));
 		try {
 			RateBeerApi.ensureLogin(api2.getUserSettings());
 			// We should be signed out still

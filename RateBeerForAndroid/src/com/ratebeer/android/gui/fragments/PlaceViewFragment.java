@@ -25,6 +25,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -45,6 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -56,6 +58,8 @@ import com.ratebeer.android.api.command.GetCheckinsCommand;
 import com.ratebeer.android.api.command.GetCheckinsCommand.CheckedInUser;
 import com.ratebeer.android.api.command.GetPlaceDetailsCommand;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
@@ -63,7 +67,7 @@ import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitleProvider;
 
-public class PlaceViewFragment extends RateBeerFragment {
+public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
 	private static final String STATE_PLACEID = "placeId";
 	private static final String STATE_PLACE = "place";
@@ -79,22 +83,26 @@ public class PlaceViewFragment extends RateBeerFragment {
 	private FrameLayout mapFrame;
 	private ListView checkinsView;
 	private ListView availableBeersView;
+	private TextView availableBeersEmpty;
 
 	private int placeId;
 	private Place place;
+	private Location currentLocation;
 	private ArrayList<CheckedInUser> checkins = new ArrayList<CheckedInUser>();
 	private ArrayList<AvailableBeer> availableBeers = new ArrayList<AvailableBeer>();
 
 	public PlaceViewFragment() {
-		this(null);
+		this(null, null);
 	}
 
 	/**
 	 * Show the details of some place
 	 * @param place The place object to show the details of
+	 * @param currentLocation The current location of the user; to calculate the distance to the place
 	 */
-	public PlaceViewFragment(Place place) {
+	public PlaceViewFragment(Place place, Location currentLocation) {
 		this.place = place;
+		this.currentLocation = currentLocation;
 		if (place != null) {
 			this.placeId = place.placeID;
 		}
@@ -213,6 +221,7 @@ public class PlaceViewFragment extends RateBeerFragment {
 
 	private void refreshAvailableBeers() {
 		execute(new GetAvailableBeersCommand(getRateBeerActivity().getApi(), placeId));
+		availableBeersEmpty.setText(R.string.details_noavailability);
 	}
 
 	private OnClickListener onAddressClick = new OnClickListener() {
@@ -300,15 +309,20 @@ public class PlaceViewFragment extends RateBeerFragment {
 		nameText.setText(place.placeName);
 		typeText.setText(PlacesFragment.getPlaceTypeName(getActivity(), place.placeType));
 		ratingText.setText(place.avgRating == -1? "?": Integer.toString(place.avgRating));
-		String distanceText = place.distance == -1D? "": "\n" + PlacesFragment.getPlaceDistance(getRateBeerActivity(), place.distance);
+		String distanceText = place.distance == -1D? "": "\n" + PlacesFragment.getPlaceDistance(getRateBeerActivity(), 
+				place, currentLocation);
 		addressText.setText(place.address + "\n" + place.city + distanceText);
 		phoneText.setText(place.phoneNumber);
 
 		// Get the activity-wide MapView to show on this fragment and center on this place's location
 		MapView mapView = getRateBeerActivity().requestMapViewInstance();
 		mapView.getController().setCenter(getRateBeerActivity().getPoint(place.latitude, place.longitude));
-		mapView.getController().setZoom(15);
 		mapFrame.addView(mapView);
+		final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, place.placeType, this);
+		to.addOverlay(new OverlayItem(getRateBeerActivity().getPoint(place.latitude, place.longitude), place.placeName,
+				place.avgRating > 0 ? getString(R.string.places_rateandcount, Integer.toString(place.avgRating))
+						: getString(R.string.places_notyetrated)));
+		mapView.getOverlays().add(to);
 		
 		// Make fields visible too
 		ratingText.setVisibility(View.VISIBLE);
@@ -316,6 +330,11 @@ public class PlaceViewFragment extends RateBeerFragment {
 		phoneText.setVisibility(View.VISIBLE);
 		checkinhereButton.setVisibility(View.VISIBLE);
 		
+	}
+
+	@Override
+	public void onBalloonClicked(OverlayItem item) {
+		// No action, for now
 	}
 
 	private class CheckinsAdapter extends ArrayAdapter<CheckedInUser> {
@@ -419,15 +438,17 @@ public class PlaceViewFragment extends RateBeerFragment {
 
 		private View pagerDetailsView;
 		private View pagerCheckinsView;
-		private ListView pagerAvailableBeersView;
+		private FrameLayout pagerAvailableBeersFrame;
 
 		public PlacePagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			pagerDetailsView = (LinearLayout) inflater.inflate(R.layout.fragment_placedetails, null);
 			pagerCheckinsView = (LinearLayout) inflater.inflate(R.layout.fragment_placecheckins, null);
-			pagerAvailableBeersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			pagerAvailableBeersFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
 
-			availableBeersView = pagerAvailableBeersView;
+			availableBeersEmpty = (TextView) pagerAvailableBeersFrame.findViewById(R.id.empty);
+			availableBeersView = (ListView) pagerAvailableBeersFrame.findViewById(R.id.list);
+			availableBeersView.setEmptyView(availableBeersEmpty);
 
 			checkinsView = (ListView) pagerCheckinsView.findViewById(R.id.list);
 			checkinhereButton = (Button) pagerCheckinsView.findViewById(R.id.checkinhere);
@@ -451,11 +472,11 @@ public class PlaceViewFragment extends RateBeerFragment {
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details);
+				return getActivity().getString(R.string.app_details).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.places_checkins);
+				return getActivity().getString(R.string.places_checkins).toUpperCase();
 			case 2:
-				return getActivity().getString(R.string.places_availablebeers);
+				return getActivity().getString(R.string.places_availablebeers).toUpperCase();
 			}
 			return null;
 		}
@@ -470,8 +491,8 @@ public class PlaceViewFragment extends RateBeerFragment {
 				((ViewPager) container).addView(pagerCheckinsView, 0);
 				return pagerCheckinsView;
 			case 2:
-				((ViewPager) container).addView(pagerAvailableBeersView, 0);
-				return pagerAvailableBeersView;
+				((ViewPager) container).addView(pagerAvailableBeersFrame, 0);
+				return pagerAvailableBeersFrame;
 			}
 			return null;
 		}

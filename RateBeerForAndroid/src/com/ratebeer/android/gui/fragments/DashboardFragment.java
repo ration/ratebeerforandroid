@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -42,7 +43,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
-import com.ratebeer.android.api.command.GetUserIdCommand;
+import com.ratebeer.android.api.command.GetUserStatusCommand;
 import com.ratebeer.android.api.command.GetUserImageCommand;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
@@ -149,18 +150,24 @@ public class DashboardFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, MENU_SCANBARCODE, R.string.search_barcodescanner);
-		item2.setIcon(R.drawable.ic_action_barcode);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
 			// For phones, the dashboard & search fragments show a search icon in the action bar
 			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
-			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, MENU_SEARCH, R.string.home_search);
+			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);
 			item.setIcon(R.drawable.ic_action_search);
 			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
-		MenuItem item3 = menu.add(Menu.NONE, MENU_CALCULATOR, MENU_CALCULATOR, R.string.home_calculator);
-		item3.setIcon(R.drawable.ic_action_barcode);
+		
+		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, Menu.NONE, R.string.search_barcodescanner);
+		item2.setIcon(R.drawable.ic_action_barcode);
+		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		MenuItem item3 = menu.add(Menu.NONE, MENU_CALCULATOR, Menu.NONE, R.string.home_calculator);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			item3.setIcon(R.drawable.ic_menu_calculator);
+		} else {
+			item3.setIcon(R.drawable.ic_action_calculator);
+		}
 		item3.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -233,11 +240,15 @@ public class DashboardFragment extends RateBeerFragment {
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
-		if (result.getCommand().getMethod() == ApiMethod.GetUserId) {
-			GetUserIdCommand getCommand = (GetUserIdCommand) result.getCommand();
+		if (getActivity() == null) {
+			return;
+		}
+		if (result.getCommand().getMethod() == ApiMethod.GetUserStatus) {
+			GetUserStatusCommand getCommand = (GetUserStatusCommand) result.getCommand();
 			// Override the user settings, in which the drinking status is contained
-			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(getCommand.getUserId(), getRateBeerActivity().getUser().getUsername(), 
-					getRateBeerActivity().getUser().getPassword(), getCommand.getDrinkingStatus(), getCommand.isPremium()));
+			UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
+			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
+					ex.getPassword(), getCommand.getDrinkingStatus(), getCommand.isPremium()));
 			showDrinkingStatus();
 		} else if (result.getCommand().getMethod() == ApiMethod.GetUserImage) {
 			GetUserImageCommand userImageCommand = (GetUserImageCommand) result.getCommand();
@@ -254,7 +265,7 @@ public class DashboardFragment extends RateBeerFragment {
 	
 	private void refreshDrinkingStatus() {
 		if (getRateBeerActivity() != null && getRateBeerActivity().getUser() != null) {
-			execute(new GetUserIdCommand(getRateBeerActivity().getApi()));
+			execute(new GetUserStatusCommand(getRateBeerActivity().getApi()));
 		}	
 	}
 

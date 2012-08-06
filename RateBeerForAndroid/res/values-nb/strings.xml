@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Avbryt</string>
+<string name="app_home">Hjem</string>
+<string name="app_refresh">Oppfrisk</string>
+<string name="app_details">Detaljer</string>
+<string name="app_share">Del</string>
+<string name="app_loading">Laster&#8230;</string>
+<string name="app_legal">Ved å bruke denne applikasjonen godkjenner du de vilkårene i RateBeer User Agreement som du kan se her: http://www.ratebeer.com/UserAgreement.asp\n\nSelv uten en RateBeer konto kan du bruke denne applikasjonen til å vise informasjon om øl, topplister, kommende arrangementer, lokale øl-relaterte steder og mye mer. For å benytte alle funksjoner, som å rate øl og legge til tilgjengelighet på øl, kan du opprette en konto på http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">Velkommen!</string>
+
+<string name="app_install">Installer nå</string>
+<string name="app_nomarket">Play Store er ikke installert på din enhet</string>
+<string name="app_scannernotfound">Strekkodeskanner ikke funnet. \nØnsker du å installere denne fra Play Store?</string>
+<string name="app_onlyifsignedin">Denne funksjonen er kun tilgjengelig etter at du har logget på RateBeer</string>
+
+<string name="app_newstatus">Skriv ny status</string>
+<string name="app_nowdrinking">Drikker</string>
+<string name="app_settingdrinking_expl">Du kan også velge \'Drikker denne\'  fra ølets detaljer </string>
+<string name="app_settingdrinking">Sett status</string>
+<string name="app_sharerating">Del på Twitter/Facebook/&#8230;</string>
+<string name="app_postingrating">Post ølratingen</string>
+<string name="app_postingtick">Post \'tikket\'</string>
+<string name="app_removingtick">Fjerner \'tikket\'</string>
+<string name="app_addingavailability">Publiserer tilgjengelighet</string>
+<string name="app_addingforbeer">Legg til tilgjengelighet for %1$s</string>
+<string name="app_addingavailability">Publiserer tilgjengelighet</string>
+<string name="app_rated">Ratet  %1$s med en %2$s</string>
+<string name="app_forbeer">For %1$s</string>
+<string name="app_addingtocellar">Legger til i kjeller</string>
+<string name="app_addwant">Jeg ønsker %1$s</string>
+<string name="app_addhave">Jeg har %1$s</string>
+<string name="app_ratedwithurl">Ratet %2$s med en %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+<string name="app_addingupccode">Legger til skannet kode</string>
+<string name="app_addingcodefor">Legg til kode på %1$s</string>
+<string name="app_requiressignin">Vennligst logg in med din RateBeer konto for å bruke denne funksjonen</string>
+<string name="app_noaccount">Ingen konto?\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmails">Du har %1$s nye meldinger</string>
+<string name="app_newmail">Du har en ny melding</string>
+<string name="app_by">Av %1$s</string>
+<string name="app_andothers">og andre</string>
+<string name="app_uploadingphoto">Last opp nytt bilde</string>
+<string name="app_photofor">Laster opp bilde for %1$s</string>
+
+<string name="signin_username">Brukernavn:</string>
+<string name="signin_password">Passord:</string>
+<string name="signin_signin">Logg inn</string>
+<string name="signin_signout">Logg ut</string>
+<string name="signin_connecting">Kobler til</string>
+<string name="signin_signoutsuccess">Du er logget ut</string>
+<string name="signin_signinsuccess">Du har logget inn</string>
+
+<string name="home_beers">Øl</string>
+<string name="home_places">Steder</string>
+<string name="home_events">Arrangementer</string>
+<string name="home_search">Søk</string>
+<string name="home_myprofile">Min profil</string>
+<string name="home_top50">Topp 50</string>
+<string name="home_bycountry">Beste sortert på land</string>
+<string name="home_offlineratings">Frakoblede notater</string>
+<string name="home_beerstyles">Ølstiler</string>
+<string name="home_beermail">Melding</string>
+<string name="home_nowdrinking">Drikker nå %1$s</string>
+<string name="home_preferences">Preferanser</string>
+<string name="home_calculator">Kalkulator</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_for">%1$s for</string>
+<string name="calc_euro">¤</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+<string name="calc_fillinall">Vennligst fyll inn sjekk-feltet og en av ølprisene først</string>
+
+<string name="myratings_avg">%1$s gjennomsnitt</string>
+<string name="myratings_noitems">Ingen ratinger enda; åpne deg en øl og smak på godsakene!</string>
+<string name="myratings_sortby">Sorter på</string>
+<string-array name="myratings_sortby_names">
+<item>Navn</item>
+<item>Brygger</item>
+<item>Stil</item>
+<item>Min rating</item>
+<item>Dato</item>
+<item>Poeng</item>
+</string-array>
+
+<string name="cellar_viewcellar">Vis kjeller</string>
+<string name="cellar_wants">Ønsker</string>
+<string name="cellar_haves">Har</string>
+<string name="cellar_wantthis">Ønsker denne</string>
+<string name="cellar_havethis">Har denne</string>
+<string name="cellar_addingahave">Legg til et ønske</string>
+<string name="cellar_addingawant">Legg til i kjeller</string>
+<string name="cellar_memo">Memo</string>
+<string name="cellar_vintage">Årgang</string>
+<string name="cellar_quantity">Mengde</string>
+<string name="cellar_addtocellar">Legg til i kjeller</string>
+<string name="cellar_remove">Fjern fra kjeller</string>
+<string name="cellar_confirmremoval">Fjern %1$s fra din kjeller</string>
+
+<string name="topbeers_country">Land</string>
+<string name="topbeers_state">Delstat:</string>
+<string name="topbeers_noitems">Velg et land for å se topp &#8230;</string>
+
+<string name="places_nearby">Steder i nærheten</string>
+<string name="places_map">Kart</string>
+<string name="places_location">Lokasjon</string>
+<string name="places_rateandcount">Vurdering: %1$s</string>
+<string name="places_notyetrated">Ikke vurdert enda</string>
+<string name="places_findhint">Skriv inn navn på lokasjon</string>
+<string name="places_usecurrent">Bruk din nåværende lokasjon</string>
+<string name="places_noitems">Ingen ølsteder funnet i dette området!</string>
+<string name="places_brewpub">Bryggeripub</string>
+<string name="places_bar">Bar</string>
+<string name="places_beerstore">Ølbutikk</string>
+<string name="places_restaurant">Resturant</string>
+<string name="places_brewer">Bryggeri</string>
+<string name="places_unknown">Ukjent</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_checkins">Innsjekkinger</string>
+<string name="places_checkinhere">Sjekk inn her</string>
+<string name="places_checkedinnow">Du har sjekket inn (oppdaterer)</string>
+<string name="places_availablebeers">Tilgjengelig</string>
+<string name="places_enteredat">Lagt til %1$s</string>
+<string name="places_share">Sjekket ut %1$s på @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
+<string name="places_shareplace">Del plassen&#8230;</string>
+
+<string name="brewers_share">Sjekket ut %1$s at @ratebeer http://www.ratebeer.com/brewers/b/%2$s/</string>
+<string name="brewers_sharebrewer">Del brygger&#8230;</string>
+<string name="brewers_beers">Øl</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Deltar:</string>
+<string name="events_noitems">Ingen arrangementer planlagt i dette området!</string>
+<string name="events_addattendance">Ja, legg til mitt navn</string>
+<string name="events_removeattendance">Nei, fjern mitt navn</string>
+<string name="events_nowattending">Mitt navn lagt til arrangementlisten</string>
+<string name="events_nownotattending">Mitt navn fjernet fra arrangementlisten</string>
+<string name="events_share">Sjekket ut %1$s at @ratebeer http://ratebeer.com/event/%2$s/</string>
+<string name="events_shareevent">Del arrangement</string>
+
+<string name="search_resultsfor">Resultater for \'%1$s\'</string>
+<string name="search_beersearch">RateBeer søk</string>
+<string name="search_hint">Søk i øl, plasser &amp; brukere</string>
+<string name="search_beers">Øl</string>
+<string name="search_brewers">Bryggere</string>
+<string name="search_places">Plasser</string>
+<string name="search_users">Brukere</string>
+<string name="search_barcodescanner">Strekkode-leser</string>
+<string name="search_nobeerswithbarcode">Ingen øl funnet for strekkode %1$s. Vennligst vurder å legge den til databasen ved å bruke et enkelt øl-søk</string>
+<string name="search_clearhistory">Fjern historikk</string>
+<string name="search_noitems">Ingen resultater for ditt søk. Prøv igjen med en mindre del av søkeoprdet</string>
+<string name="search_retired">utgått</string>
+<string name="search_alias">kallenavn</string>
+<string name="search_rated">ratet</string>
+<string name="search_ratings">%1$s ratinger</string>
+<string name="search_aliasedbeer">Dette er et øl med et kallenavn: ingen detaljer tingjengelig</string>
+
+<string name="details_bybrewer">av %1$s</string>
+<string name="details_score">Sum</string>
+<string name="details_noscoreyet">Trenger flere ratinger</string>
+<string name="details_percentile">prosent</string>
+<string name="details_ratings">ratinger</string>
+<string name="details_style">stil</string>
+<string name="details_nodescription">Ingen kommersiell beskrivelse</string>
+<string name="details_abvstyle">Stil: %1$s\nAlkoholprosent: %2$s</string>
+<string name="details_ratethis">Rate denne</string>
+<string name="details_viewrerate">Re-rate denne</string>
+<string name="details_drinkingthis">Drikker denne</string>
+<string name="details_recentratings">Ratinger</string>
+<string name="details_myrating">Min rating:</string>
+<string name="details_ticklabel">Eller bare tick:</string>
+<string name="details_otherratings">Nylige ratinger:</string>
+<string name="details_availability">Tilgjengelighet</string>
+<string name="details_share">Sjekk ut %1$s på @ratebeer http://ratebeer.com/b/%2$s/</string>
+<string name="details_sharebeer">Del øl&#8230;</string>
+
+<string name="upload_uploadphoto">Last opp bilde</string>
+<string name="upload_choose">Velg bilde</string>
+<string name="upload_newphoto">Ta et nytt bilde</string>
+<string name="upload_pick">Velg fra galleri</string>
+
+<string name="user_dates">Ble medlem: %1$s\nSist sett: %2$s</string>
+<string name="user_beersrated">%1$s øl ratet\n%2$s plasser ratet\nGjen. poeng gitt: %3$s\nGjen. øl ratet: %4$s</string>
+<string name="user_favsyle">Favorittstil: %1$s</string>
+<string name="user_nofavstyle">ingen</string>
+
+<string name="rate_aroma">Lukt</string>
+<string name="rate_appearance">Utseende</string>
+<string name="rate_taste">Smak</string>
+<string name="rate_palate">Munnfølelse</string>
+<string name="rate_overall">Samlet</string>
+<string name="rate_totalscore">Total </string>
+<string name="rate_comments">Kommentarer</string>
+<string name="rate_addrating">Last opp</string>
+<string name="rate_commenttooshort">Kommentarfeltet må inneholde minst 85 tegn</string>
+<string name="rate_ratingnotcompleted">Din rating er ikke fullført</string>
+<string name="rate_charstogo">%1$s tegn igjen &#8230;</string>
+<string name="rate_commentok">Kommentarlengde er ok!</string>
+<string name="rate_showassistance">Vis hjelp</string>
+<string name="rate_hideassistance">Skjul hjelp</string>
+<string name="rate_assistance_words">karamell, brød, høy, korn, sjokolade, kaffe, nøtter, toast, roasty, harpiks, floral, gress, gran, sitrus, urter, deig, Barnyard, ost, kjeller aromaer, lær, jordnær, blader, alkohol, banan, tyggis , butterscotch, nellik, kokte grønnsaker, hoste fall, ingefær, lakris, rosin, råtne egg, soyasaus, skunky, røyk, vanilje, Woody</string>
+
+<string name="rate_offline_title">Frakoblet rating</string>
+<string name="rate_offline_info">Når du smaker på øl og skriver ratinger blir vurderingen og kommentarene lagret lokalt. Hvis du er frakoblet eller opplever problemer med tilkobling kan du sende inn resultatet til RateBeer.com på et senere tidspunkt. Frakoblede lagrede ratinger blir automatisk fjernet etter at de er vellykket lastet opp til RateBeer.</string>
+<string name="rate_offline_availble">Frakoblet rating tilgjengelig</string>
+<string name="rate_offline_notavailable">Frakoblet rating ikke tilgjengelig</string>
+<string name="rate_offline_savedat">Lagret %1$s</string>
+<string name="rate_offline_noitems">Ingen frakoblete ratinger lagret</string>
+<string name="rate_offline_delete">Slett rating</string>
+<string name="rate_offline_confirmdelete">Slett frakoblet rating av %1$s?</string>
+<string name="rate_offline_addrating">Legg til frakoblet rating</string>
+<string name="rate_offline_discard">Avbryt</string>
+<string name="rate_offline_customname">Ølet du rater:</string>
+<string name="rate_offline_confirmdiscard">Ratingen og kommentaren din vil bli slettet. Er du sikker?</string>
+<string name="rate_offline_findbeer">Finn dette ølet&#8230;</string>
+<string name="rate_offline_name">Navn:</string>
+<string name="rate_offline_nonamegiven">Vennligst skriv navnet på ølen du har ratet</string>
+<string name="rate_offline_alreadyrated">Beklager men du har allerede ratet denne ølen og du kan ikke re-rate øl fra en frakoblet rating for øyeblikket</string>
+<string name="rate_offline_export">Eksporter</string>
+<string name="rate_offline_export_info">Dine frakoblete ratinger vil nå bli eksporterte til en JSON-kodet tekst file på %1$s</string>
+<string name="rate_offline_import">Importer</string>
+<string name="rate_offline_import_info">En tidligere lagret frakoblet-versjon vil nå bli importert fra %1$s</string>
+
+<string name="addav_addavailability">Legg til tilgjengelighet</string>
+<string name="addav_favourites">Favoritter</string>
+<string name="addav_findaplace">Finn ett sted</string>
+<string name="addav_otherplace">Annet sted:</string>
+<string name="addav_find">Finn</string>
+<string name="addav_on">På</string>
+<string name="addav_ontap">fat</string>
+<string name="addav_onbottlecan">flaske/boks</string>
+<string name="addav_skip">Hopp over</string>
+<string name="addav_noplacesselected">Du har ikke valgt noe sted enda</string>
+
+<string name="addupc_upccode">UPC code:</string>
+<string name="addupc_beer">Navn på øl:</string>
+<string name="addupc_find">Finn</string>
+
+<string name="mail_noitems">Det er ikke noe epost i innboksen din</string>
+<string name="mail_sendmail">Send epost</string>
+<string name="mail_couldnotretrieve">Kan ikke hente epost nå</string>
+<string name="mail_notavailable">Lokal epost-lagring er ikke tilgjengelig for øyeblikket</string>
+<string name="mail_delete">Slett epost</string>
+<string name="mail_confirmdelete">Slett epost fra %1$s?</string>
+<string name="mail_relpied">svart</string>
+<string name="mail_new">ny</string>
+<string name="mail_read">les</string>
+<string name="mail_reply">Svar</string>
+<string name="mail_sendto">Send til</string>
+<string name="mail_subject">Emne</string>
+<string name="mail_message">Melding:</string>
+<string name="mail_includeoriginal">Inkluder orginal beskjed</string>
+<string name="mail_send">Send</string>
+<string name="mail_emptyfields">Vennligst fyll inn alle felter før du sender</string>
+<string name="mail_sendingmail">Sender beermail</string>
+<string name="mail_sendingto">Sender til %1$s</string>
+
+<string name="settings_display">Vis innstillinger</string>
+<string name="settings_distanceinkm">Vis avstand i km</string>
+<string name="settings_distanceinkm_info">Alternativt blir avstand vist i amerikanske miles</string>
+<string name="settings_sharetext">Tekst for å dele ratingen</string>
+<string name="settings_sharetext_msg">Plasser: %1$s for øl ID, %2$s for ølnavn, %3$s for en totalvurdering og %4$s for din bruker ID</string>
+<string name="settings_beermail">Beermail</string>
+<string name="settings_background">Skru på varslinger</string>
+<string name="settings_background_info">Periodevis sjekk for nye meldinger</string>
+<string name="settings_updatefrequency">Oppdateringsfrekvens</string>
+<string name="settings_vibrate">Vibrer ved varslinger</string>
+<string-array name="settings_frequency_names">
+<item>1 minutt</item>
+<item>10 minutter</item>
+<item>30 minutter</item>
+<item>1 time</item>
+<item>4 timer</item>
+<item>24 timer</item>
+</string-array>
+
+<string name="error_offline">Du har ingen internettforbindelse eller RateBeer.com er utilgjengelig</string>
+<string name="error_authenticationfailed">Ditt brukernavn eller passord er ikke riktig</string>
+<string name="error_commandfailed">Kommandoen feilet. Tilkoblingen er dårlig eller RateBeer er frakoblet</string>
+<string name="error_nouserorpass">Både brukernavn og passord er påkrevde felt for å logge inn</string>
+<string name="error_nolocation">Kan ikke fastslå din lokasjon</string>
+<string name="error_locationnotsupported">Din enhet støtter ikke lokasjonsbestemmelse eller du har skrudd det av</string>
+<string name="error_sendreport">Send feilmelding</string>
+<string name="error_stylenotfound">Kan ikke finne denne ølstilen; vennligst rapporter denne feilen</string>
+<string name="error_cannotwrite">Kan ikke skrive til fil</string>
+<string name="error_cannotread">Ingen fil eller kan ikke lese den</string>
+<string name="error_filenotvalid">Filen ikkeholder ikke frakoblete ratinger (i korrekt format)</string>
+<string name="error_nocamera">Kan ikke ta bilde; Enten har du ikke noe kamera eller vi kan ikke skrive til det eksterne SD-lagringskort</string>
+<string name="error_lc_install">For å sende en feilmeldings rapport trenger du å installere Log Collector som er gratis og open-source. Ønsker du å installere denne fra Play Store?</string>
+<string name="error_lc_run">Log Collector applikasjonen vill nå samle enhetsloggen for å sende den til rb@2312.nl.\nØnsker du å se gjennom loggen før den blir sendt?</string>
+<string name="error_invalidurl">Denne webside-adressen er ikke gyldig</string>
+
+</resources>

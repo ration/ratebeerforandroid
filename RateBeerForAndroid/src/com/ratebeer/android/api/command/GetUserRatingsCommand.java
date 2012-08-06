@@ -73,19 +73,21 @@ public class GetUserRatingsCommand extends HtmlCommand {
 	@Override
 	protected void parse(String html) throws JSONException, ApiException {
 
+		// Successful response?
+		if (html.indexOf("<a href=\"#\">Beer Reviews</a>") < 0) {
+			throw new ApiException(ApiException.ExceptionType.CommandFailed,
+					"The response HTML did not contain the unique ratings table begin HTML string");
+		}
+		
 		// Maybe no ratings?
-		if (html.indexOf("<b>0</b> <span class=\"userDetails\">beer ratings</span>") >= 0) {
+		int tableStart = html.indexOf("<!-- RATINGS -->");
+		if (tableStart < 0) {
 			ratings = new ArrayList<UserRating>();
 			return;
 		}
 		
 		// Parse the beer ratings table
-		int tableStart = html.indexOf("<!-- RATINGS -->");
-		if (tableStart < 0) {
-			throw new ApiException(ApiException.ExceptionType.CommandFailed,
-					"The response HTML did not contain the unique ratings table begin HTML string");
-		}
-		String rowText = "\"><A HREF=\"/beer/";
+		String rowText = "><A HREF=\"/beer/";
 		int rowStart = html.indexOf(rowText, tableStart) + rowText.length();
 		ratings = new ArrayList<UserRating>();
 
@@ -100,8 +102,8 @@ public class GetUserRatingsCommand extends HtmlCommand {
 			int brewerStart = html.indexOf("/\">", beerStart) + 3;
 			String brewerName = HttpHelper.cleanHtml(html.substring(brewerStart, html.indexOf("<", brewerStart)));
 
-			int styleStart = html.indexOf("\">", brewerStart) + "\">".length();
-			String styleName = HttpHelper.cleanHtml(html.substring(styleStart, html.indexOf("<", styleStart)));
+			int styleStart = html.indexOf("owrap>", brewerStart) + "owrap>".length();
+			String styleName = HttpHelper.cleanHtml(html.substring(styleStart, html.indexOf("</", styleStart)));
 
 			int scoreStart = html.indexOf("center>", styleStart) + "center>".length();
 			float score = Float.parseFloat(html.substring(scoreStart, html.indexOf("<", scoreStart)));

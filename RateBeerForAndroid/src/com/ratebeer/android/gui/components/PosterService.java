@@ -34,7 +34,9 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.AddAvailabilityCommand;
 import com.ratebeer.android.api.command.AddToCellarCommand;
 import com.ratebeer.android.api.command.AddUpcCodeCommand;
+import com.ratebeer.android.api.command.DeleteTickCommand;
 import com.ratebeer.android.api.command.PostRatingCommand;
+import com.ratebeer.android.api.command.PostTickCommand;
 import com.ratebeer.android.api.command.SendBeerMailCommand;
 import com.ratebeer.android.api.command.SetDrinkingStatusCommand;
 import com.ratebeer.android.api.command.UploadBeerPhotoCommand;
@@ -49,6 +51,7 @@ public class PosterService extends RateBeerService {
 	public static final String ACTION_SETDRINKINGSTATUS = "com.ratebeer.android.SET_DRINKING_STATUS";
 	public static final String ACTION_POSTRATING = "com.ratebeer.android.POST_RATING";
 	public static final String ACTION_EDITRATING = "com.ratebeer.android.EDIT_RATING";
+	public static final String ACTION_POSTTICK = "com.ratebeer.android.POST_TICK";
 	public static final String ACTION_ADDAVAILABILITY = "com.ratebeer.android.ADD_AVAILABILITY";
 	public static final String ACTION_ADDTOCELLAR = "com.ratebeer.android.ADD_TO_CELLAR";
 	public static final String ACTION_SENDMAIL = "com.ratebeer.android.SEND_BEERMAIL";
@@ -58,6 +61,7 @@ public class PosterService extends RateBeerService {
 	public static final String EXTRA_MESSENGER = "MESSENGER";
 	public static final String EXTRA_NEWSTATUS = "NEW_STATUS";
 	public static final String EXTRA_BEERID = "BEER_ID";
+	public static final String EXTRA_USERID = "USER_ID";
 	public static final String EXTRA_OFFLINEID = "OFFLINE_ID";
 	public static final String EXTRA_ORIGRATINGID = "ORIGRATING_ID";
 	public static final String EXTRA_ORIGRATINGDATE = "ORIGRATING_DATE";
@@ -68,6 +72,7 @@ public class PosterService extends RateBeerService {
 	public static final String EXTRA_PALATE = "PALATE";
 	public static final String EXTRA_OVERALL = "OVERALL";
 	public static final String EXTRA_COMMENT = "COMMENT";
+	public static final String EXTRA_LIKED = "LIKED";
 	public static final String EXTRA_SELECTEDPLACES = "SELECTEDPLACES";
 	public static final String EXTRA_EXTRAPLACENAME = "EXTRAPLACENAME";
 	public static final String EXTRA_EXTRAPLACEID = "EXTRAPLACEID";
@@ -82,6 +87,7 @@ public class PosterService extends RateBeerService {
 	public static final String EXTRA_BODY = "BODY";
 	public static final String EXTRA_PHOTO = "PHOTO";
 	public static final String EXTRA_UPCCODE = "UPCCODE";
+	public static final int EXTRA_TICK_DELETE = -1;
 	public static final int NO_BEER_EXTRA = -1;
 	public static final int NO_OFFLINE_EXTRA = -1;
 	public static final int RESULT_SUCCESS = 0;
@@ -94,8 +100,9 @@ public class PosterService extends RateBeerService {
 	private static final int NOTIFY_SENDMAIL = 4;
 	private static final int NOTIFY_UPLOADPHOTO = 5;
 	private static final int NOTIFY_ADDUPCCODE = 6;
+	private static final int NOTIFY_POSTINGTICK = 7;
 
-	private static final int IMAGE_MAX_SIZE = 800; // Max pixels in one dimension
+	private static final int IMAGE_MAX_SIZE = 400; // Max pixels in one dimension
 
 	private NotificationManager notificationManager = null;
 
@@ -232,6 +239,52 @@ public class PosterService extends RateBeerService {
 
 		}
 
+		// Try to post a tick update
+		if (intent.getAction().equals(ACTION_POSTTICK)) {
+
+			// Get tick details
+			int beerId = intent.getIntExtra(EXTRA_BEERID, NO_BEER_EXTRA);
+			String beerName = intent.getStringExtra(EXTRA_BEERNAME);
+			int userId = intent.getIntExtra(EXTRA_USERID, -1);
+			int liked = intent.getIntExtra(EXTRA_LIKED, EXTRA_TICK_DELETE);
+			if (beerId == NO_BEER_EXTRA || beerName == null || userId <= 0 || liked == 0 || liked > 5 || liked < -1) {
+				Log.d(RateBeerForAndroid.LOG_NAME, "Missing extras in the POSTRATING intent; cancelling.");
+				return;
+			}
+
+			// Synchronously post the tick update
+			// During the operation a notification will be shown
+			Log.d(RateBeerForAndroid.LOG_NAME, "Now ticking " + beerName);
+			Intent recoverIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(URI_BEER, Integer
+					.toString(beerId))));
+			// If liked (the actual tick) is set to -1 we delete this tick instead
+			boolean del = liked == EXTRA_TICK_DELETE;
+			createNotification(NOTIFY_POSTINGTICK,
+					getString(del ? R.string.app_removingtick : R.string.app_postingtick),
+					getString(R.string.app_forbeer, beerName), true, recoverIntent);
+			CommandResult result;
+			if (del) {
+				result = new DeleteTickCommand(app.getApi(), beerId, userId, beerName).execute();
+			} else {
+				result = new PostTickCommand(app.getApi(), beerId, userId, beerName, liked).execute();
+			}
+			if (result instanceof CommandSuccessResult) {
+				notificationManager.cancel(NOTIFY_POSTINGTICK);
+				// If requested, call back the messenger, i.e. the calling activity
+				callbackMessenger(intent, RESULT_SUCCESS);
+			} else {
+				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
+						.toString() : "Unknown error";
+				Log.d(RateBeerForAndroid.LOG_NAME, (del ? "Removing of tick for " : "Ticking of ") + beerName
+						+ " failed: " + e);
+				createNotification(NOTIFY_POSTINGRATING, getString(del ? R.string.app_removingtick
+						: R.string.app_postingtick), getString(R.string.error_commandfailed), true, recoverIntent);
+				// If requested, call back the messenger, i.e. the calling activity
+				callbackMessenger(intent, RESULT_FAILURE);
+			}
+
+		}
+
 		// Try to add beer availability info
 		if (intent.getAction().equals(ACTION_ADDAVAILABILITY)) {
 
@@ -358,7 +411,7 @@ public class PosterService extends RateBeerService {
 			createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto), getString(
 					R.string.app_photofor, beerName), true, recoverIntent);
 
-			// Make sure the photo is no bigger than 250kB
+			// Make sure the photo is no bigger than 50kB
 			try {
 				decodeFile(photo);
 			} catch (IOException e1) {

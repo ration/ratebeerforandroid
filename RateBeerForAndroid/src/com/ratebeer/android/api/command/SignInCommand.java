@@ -29,22 +29,23 @@ import com.ratebeer.android.api.RateBeerApi;
 
 public class SignInCommand extends EmptyResponseCommand {
 
+	private int userId;
 	private final String username;
 	private final String password;
-	
+
 	public SignInCommand(RateBeerApi api, String username, String password) {
 		super(api, ApiMethod.SignIn);
 		this.username = username;
 		this.password = password;
 	}
-	
+
+	public int getUserId() {
+		return userId;
+	}
+
 	@Override
 	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		if (HttpHelper.signIn(username, password)) {
-			return; // Success
-		}
-		throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
-				"Tried to sign in but no (login) cookies were returned by the server");
+		userId = HttpHelper.signIn(username, password);
 	}
 
 }

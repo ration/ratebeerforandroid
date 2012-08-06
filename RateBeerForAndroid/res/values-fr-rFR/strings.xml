@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Annuler</string>
+<string name="app_refresh">Rafraîchir</string>
+<string name="app_details">Détails</string>
+<string name="app_legal_title">Accueil</string>
+
+
+
+<string name="signin_username">Nom d\'utilisateur</string>
+<string name="signin_password">Mot de passe</string>
+
+<string name="home_beers">Bières</string>
+<string name="home_places">Endroits</string>
+<string name="home_calculator">Calculatrice</string>
+
+
+<string-array name="myratings_sortby_names">
+<item>Name</item>
+<item>Brewer</item>
+<item>Style</item>
+<item>My rating</item>
+<item>Date</item>
+<item>Score</item>
+</string-array>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<string-array name="settings_frequency_names">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>4 hours</item>
+<item>24 hours</item>
+</string-array>
+
+
+</resources>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Άκυρο</string>
+<string name="app_home">Αρχική</string>
+<string name="app_refresh">Ανανέωση</string>
+<string name="app_details">Λεπτομέρειες</string>
+<string name="app_share">Μοιράσου το</string>
+<string name="app_loading">Φόρτωση</string>
+<string name="app_legal">Χρησιμοποιώντας αυτή την εφαρμογή αποδέχεστε και τους όρους του RateBeer User Agreement που μπορείτε να βρείτε στο http://www.ratebeer.com/UserAgreement.asp\n\nΑκόμα και χωρίς λογαριασμό RateBeer μπορείτε να χρησιμοποιήσετε την εφαρμογή για να δείτε λεπτομέρειες για μια μπύρα, λιστες με τις καλύτερες, επερχόμενα γεγονότα, τοπικά μέρη που σχετίζονται με τη μπύρα και πολλά ακόμη. Για πλήρη χρηστικότητα, όπως βαθμολόγηση μπύρας και προσθήκη διαθεσιμότητας, μπορείτε να δημιουργήσετε λογαριασμό στο http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">Καλώς ήρθες!</string>
+
+<string name="app_install">Εγκατάσταση</string>
+<string name="app_nomarket">Το Play Store δεν εχει εγκατασταθεί στη συσκευή σου</string>
+<string name="app_scannernotfound">Δεν βρέθηκε σαρωτής barcode.\nΘέλεις να εγκαταστήσεις έναν από το Play Store;</string>
+<string name="app_onlyifsignedin">Αυτή η λειτουργία ειναι διαθέσιμη μόνο μετά την είσοδο σας στο RateBeer.</string>
+
+<string name="app_newstatus">Εισάγετε κατάσταση</string>
+<string name="app_nowdrinking">Πίνω τώρα</string>
+<string name="app_settingdrinking_expl">Μπορείτε επίσης να διαλέξετε \'Αυτό πίνω\' από την αναλυτική περιγραφή της μπύρας</string>
+<string name="app_settingdrinking">Σετάρετε την κατάσταση πόσης</string>
+<string name="app_sharerating">Κοινοποιήστε τη βαθμολογία σας σε Twitter/Facebook/&#8230;</string>
+<string name="app_postingrating">Περάστε τη βαθμολογία της μπύρας</string>
+<string name="app_postingtick">Ανέβασε τη γρήγορη αξιολόγηση</string>
+<string name="app_removingtick">Αφαίρεσε τη γρήγορη αξιολόγηση</string>
+<string name="app_addingavailability">Δημοσιέυστε τη διαθεσιμότητα</string>
+<string name="app_addingforbeer">Προσθέστε διαθεσιμότητα για %1$s</string>
+<string name="app_addingavailability">Δημοσιέυστε τη διαθεσιμότητα</string>
+<string name="app_rated">Βαθμολογήσατε την %1$s με %2$s</string>
+<string name="app_forbeer">Για %1$s</string>
+<string name="app_addingtocellar">Προσθέστε στο κελλάρι</string>
+<string name="app_addwant">Θέλω την %1$s</string>
+<string name="app_addhave">Έχω την %1$s</string>
+<string name="app_ratedwithurl">Βαθμολογήσατε την %2$s με %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+<string name="app_addingupccode">Προσθέστε σαρωμένο barcode της μπύρας</string>
+<string name="app_addingcodefor">Προσθέσθε κώδικο για %1$s</string>
+<string name="app_requiressignin">Παρακαλώ συνδεθείτε στο λογαριασμό σας του RateBeer για αυτό το χαρακτηριστικό.</string>
+<string name="app_noaccount">Δεν έχετε λογαριασμό;\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmails">Έχετε  %1$s νέα μπυρομηνύματα</string>
+<string name="app_newmail">Έχετε  νέο μπυρομηνύμα</string>
+<string name="app_by">Από  %1$s</string>
+<string name="app_andothers">και άλλους</string>
+<string name="app_uploadingphoto">Ανεβαίνει νέα φωτογραφία</string>
+<string name="app_photofor">Ανεβαίνει νέα φωτογραφία για %1$s</string>
+
+<string name="signin_username">Όνομα χρήστη:</string>
+<string name="signin_password">Κωδικός:</string>
+<string name="signin_signin">Είσοδος</string>
+<string name="signin_signout">Έξοδος</string>
+<string name="signin_connecting">Σύνδεση&#8230;</string>
+<string name="signin_signoutsuccess">Επιτυχής Έξοδος</string>
+<string name="signin_signinsuccess">Επιτυχής Είσοδος</string>
+
+<string name="home_beers">Μπύρες</string>
+<string name="home_places">Τοποθεσίες</string>
+<string name="home_events">Γεγονότα</string>
+<string name="home_search">Αναζήτηση</string>
+<string name="home_myprofile">Το Προφίλ μου</string>
+<string name="home_top50">Τοπ 50</string>
+<string name="home_bycountry">Καλύτερα ανά χώρα</string>
+<string name="home_offlineratings">Offline σημειώσεις</string>
+<string name="home_beerstyles">Είδη μπύρας</string>
+<string name="home_beermail">Μπυρομήνυμα</string>
+<string name="home_nowdrinking">Πίνωντας τώρα μία %1$s</string>
+<string name="home_preferences">Προτιμήσεις</string>
+<string name="home_calculator">Υπολογιστής</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_for">%1$s για</string>
+<string name="calc_euro">¤</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+<string name="calc_fillinall">Παρακαλώ συμπληρώστε το πεδίο ποσότητα και μια από τις τιμές πρώτα</string>
+
+<string name="myratings_avg">%1$s μ.ό.</string>
+<string name="myratings_noitems">Καμία βαθμολογία ακόμα, ανοίξτε μία και δοκιμάστε!</string>
+<string name="myratings_sortby">Αναδιάταξη ανα</string>
+<string-array name="myratings_sortby_names">
+<item>Όνομα</item>
+<item>Ζυθοποιϊα</item>
+<item>Είδος</item>
+<item>Βαθμολογία μου</item>
+<item>Ημερομηνία</item>
+<item>Βαθμός</item>
+</string-array>
+
+<string name="cellar_viewcellar">Δες το κελλάρι</string>
+<string name="cellar_wants">Θέλω</string>
+<string name="cellar_haves">Έχω</string>
+<string name="cellar_wantthis">Θέλω αυτήν</string>
+<string name="cellar_havethis">Έχω αυτήν</string>
+<string name="cellar_addingahave">Προσθέτω μία που θέλω</string>
+<string name="cellar_addingawant">Προσθέτω μία που έχω</string>
+<string name="cellar_memo">Σχόλιο</string>
+<string name="cellar_vintage">Χρονιά</string>
+<string name="cellar_quantity">Ποσότητα</string>
+<string name="cellar_addtocellar">Προσθήκη στο κελλάρι</string>
+<string name="cellar_remove">Απομάκρυνση από το κελλάρι</string>
+<string name="cellar_confirmremoval">Θέλεις να απομακρύνεις την %1$s απο το κελλάρι σου;</string>
+
+<string name="topbeers_country">Χώρα:</string>
+<string name="topbeers_state">Επαρχία:</string>
+<string name="topbeers_noitems">Διάλεξε μία χώρα για να δείς τις καλύτερες μπύρες της&#8230;</string>
+
+<string name="places_nearby">Τοποθεσίες κοντά</string>
+<string name="places_map">Χάρτης</string>
+<string name="places_location">Τοποθεσία</string>
+<string name="places_rateandcount">Βαθμολογία: %1$s</string>
+<string name="places_notyetrated">Δεν έχει βαθμολογηθεί ακόμα</string>
+<string name="places_findhint">Γράψε το όνομα της τοποθεσίας που ψάχνεις</string>
+<string name="places_usecurrent">Χρησιμοποίησε την τρέχουσα τοποθεσία</string>
+<string name="places_noitems">Δεν βρέθηκαν τοποθεσίες που σχετίζονται με τη μπύρα κοντά στην περιοχή!</string>
+<string name="places_brewpub">Ζυθεστιατόριο</string>
+<string name="places_bar">Μπαρ</string>
+<string name="places_beerstore">Κάβα</string>
+<string name="places_restaurant">Εστιατόριο</string>
+<string name="places_brewer">Ζυθοποιϊα</string>
+<string name="places_unknown">Άγνωστο</string>
+<string name="places_km">Χλμ.</string>
+<string name="places_m">μλ.</string>
+<string name="places_checkins">Check ins</string>
+<string name="places_checkinhere">Check in εδώ</string>
+<string name="places_checkedinnow">Κάνατε check in (επαναφόρτωση)</string>
+<string name="places_availablebeers">Διαθέσιμη</string>
+<string name="places_enteredat">Εισαγωγή στις %1$s</string>
+<string name="places_share">Check out %1$s στο @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
+<string name="places_shareplace">Μοιράσου την τοποθεσία&#8230;</string>
+
+<string name="brewers_share">Check out %1$s στο @ratebeer http://www.ratebeer.com/brewers/b/%2$s/</string>
+<string name="brewers_sharebrewer">Μοιράσου την ζυθοποιϊα&#8230;</string>
+<string name="brewers_beers">Μπύρες</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Συμμετέχοντες:</string>
+<string name="events_noitems">Δεν έχουν προγραμματιστεί γεγονότα σε αυτή την περιοχή!</string>
+<string name="events_addattendance">Ναί, πρόσθεσε το ονομά μου</string>
+<string name="events_removeattendance">Όχι, αφαίρεσε το όνομά μου</string>
+<string name="events_nowattending">Πρόσθεσα το όνομά μου στη λίστα με τις συμμετοχές</string>
+<string name="events_nownotattending">Αφαίρεσα το όνομά μου απο τη λίστα με τις συμμετοχές</string>
+<string name="events_share">Check out %1$s στο @ratebeer http://ratebeer.com/event/%2$s/</string>
+<string name="events_shareevent">Μοιράσου το γεγονός&#8230;</string>
+
+<string name="search_resultsfor">Αποτελέσματα για \'%1$s\'</string>
+<string name="search_beersearch">Αναζήτηση RateBeer </string>
+<string name="search_hint">Αναζήτηση  μπύρας, τοποθεσίας &amp; χρήστη</string>
+<string name="search_beers">Μπύρες</string>
+<string name="search_brewers">Ζυθοποιοι</string>
+<string name="search_places">Τοποθεσίες</string>
+<string name="search_users">Χρήστες</string>
+<string name="search_barcodescanner">Σαρωτής Barcode</string>
+<string name="search_nobeerswithbarcode">Δε βρέθηκαν μπύρες για το barcode %1$s.  Παρακαλώ προσθέστε το στη βάση χρησιμοποιώντας τον απλό τρόπο εισαγωγής.</string>
+<string name="search_clearhistory">Καθαρισμός ιστορικότητας</string>
+<string name="search_noitems">Δε βρέθηκαν αποτελέσματα για αυτό που ψάχνατε. Παρακαλώ δοκιμάστε ψάχνωντας κομμάτι της λέξης (μπύρας, τοποθεσίας ή χρήστη) που θέλεται.</string>
+<string name="search_retired">έχει αποσυρθεί</string>
+<string name="search_alias">ενναλλακτική ονομασία</string>
+<string name="search_rated">βαθμολογημένη</string>
+<string name="search_ratings">Βαθμολογίες του %1$s</string>
+<string name="search_aliasedbeer">Πρόκειται για μπύρα με εναλλακτική ονομασία: δεν υπάρχουν περαιτέρω λεπτομέρειες</string>
+
+<string name="details_bybrewer">από τον %1$s</string>
+<string name="details_score">Βαθμός</string>
+<string name="details_noscoreyet">Απαιτούνται περισσότερες αξιολογήσεις</string>
+<string name="details_percentile">ποσοστό</string>
+<string name="details_ratings">βαθμολογίες</string>
+<string name="details_style">είδος</string>
+<string name="details_nodescription">Δεν υπάρχει εμπορική περιγραφή</string>
+<string name="details_abvstyle">Είδος: %1$s\nABV: %2$s</string>
+<string name="details_ratethis">Βαθμολόγησέ το</string>
+<string name="details_viewrerate">Επαναβαθμολόγησέ το</string>
+<string name="details_drinkingthis">Πίνω αυτό</string>
+<string name="details_recentratings">Βαθμολογίες</string>
+<string name="details_myrating">Βαθμολογία μου:</string>
+<string name="details_ticklabel">Η απλά αξιολόγησε γρήγορα</string>
+<string name="details_otherratings">Πρόσφατες βαθμολογίες:</string>
+<string name="details_availability">Διαθεσιμότητα</string>
+<string name="details_share">Check out %1$s στο @ratebeer http://ratebeer.com/b/%2$s/</string>
+<string name="details_sharebeer">Μοιράσου τη μπύρα&#8230;</string>
+
+<string name="upload_uploadphoto">Ανέβασε φωτογραφία</string>
+<string name="upload_choose">Διάλεξε την τοποθεσία της φωτογραφίας</string>
+<string name="upload_newphoto">Βγάλε νέα φωτογραφία</string>
+<string name="upload_pick">Διάλεξε από αρχείο</string>
+
+<string name="user_dates">Εγγραφή: %1$s\nΤελευταία σύνδεση: %2$s</string>
+<string name="user_beersrated">%1$s μπύρες έχουν βαθμολογηθεί\n%2$s τοποθεσίες έχουν βαθμολογηθεί\nΜ.Ο. δωθέντος βαθμού: %3$s\nΜ.Ο. μπυρών που εχουν βαθμολογηθεί: %4$s</string>
+<string name="user_favsyle">Αγαπημένο είδος: %1$s</string>
+<string name="user_nofavstyle">κανένα</string>
+
+<string name="rate_aroma">Άρωμα</string>
+<string name="rate_appearance">Εμφάνιση</string>
+<string name="rate_taste">Γεύση</string>
+<string name="rate_palate">Αίσθηση</string>
+<string name="rate_overall">Συνολικά</string>
+<string name="rate_totalscore">Ολική βαθμολογία</string>
+<string name="rate_comments">Σχόλια</string>
+<string name="rate_addrating">Ανέβασε τη βαθμολογία σου</string>
+<string name="rate_commenttooshort">Το σχόλιο πρέπει να έχει τουλάχιστον 85 χαρακτήρες</string>
+<string name="rate_ratingnotcompleted">Η βαθμολόγησή σας δεν έχει ολοκληρωθεί</string>
+<string name="rate_charstogo">%1$s χαρακτήρες απομένουν&#8230;</string>
+<string name="rate_commentok">Το μη΄κος του σχολίου είναι εντάξει!</string>
+<string name="rate_showassistance">Δείξε βοήθημα</string>
+<string name="rate_hideassistance">Κρύψε βοήθημα</string>
+<string name="rate_assistance_words">καραμέλα, ψωμί, στάχι,  δημητριακά, σοκολάτα, καφές, ξηροί καρποί, ψημένο, καβουρδισμένα, ρετσίνι, λουλουδάτο, γρασίδι, ερυθρελάτης, εσπεριδοειδή, βότανα, ζύμη, φάρμα, τυρί, αρώματα υπογείου, δέρμα, γήινα, φύλλα, αλκοόλ, μπανάνα, τσιχλόφουσκα, καραμέλα βουτύρου, γαρίφαλο, μαγειρεμένα λαχανικά, σιρόπι βήχα, πιπερόριζα, γλυκόριζα, σταφίδα, χαλασμένα αυγά, σάλτσα σόγιας, καναβη, καπνός, βανίλια, ξυλώδη</string>
+
+<string name="rate_offline_title">Βαθμολογία Offline</string>
+<string name="rate_offline_info">Όταν δοκιμάζετε μια μπύρα και περνάτε τη βαθμολογία και τα σχόλια, αυτά σωζωνται τοπικά. Αν δεν ειστε συνδεδεμένοι ή η σύνδεση ειναι κακή μπορείτε να ανεβάσετε την αξιολόγηση στο RateBeer.com αργότερα. Αξιολογήσεις που έχουν σωθεί offline θα σβηστούν αυτόματα μολις περαστούν με επιτυχία στο RateBeer.</string>
+<string name="rate_offline_availble">Διαθέσιμη αξιολόγηση offline.</string>
+<string name="rate_offline_notavailable">Μη διαθέσιμη αξιολόγηση offline.</string>
+<string name="rate_offline_savedat">Σώθηκε %1$s</string>
+<string name="rate_offline_noitems">Δεν υπάρχουν σωσμένες offline αξιολογήσεις</string>
+<string name="rate_offline_delete">Σβήσε αξιολόγηση</string>
+<string name="rate_offline_confirmdelete">Σβήσε offline αξιολόγηση για%1$s?</string>
+<string name="rate_offline_addrating">Πρόσθεσε offline αξιολόγηση</string>
+<string name="rate_offline_discard">Ακύρωσε</string>
+<string name="rate_offline_customname">Μπύρα που βαθμολογείς:</string>
+<string name="rate_offline_confirmdiscard">Θα χάσεις τη βαθμολογία και τα σχόλιά σου. Είσαι σίγουρος ;</string>
+<string name="rate_offline_findbeer">Βρες αυτή τη μπύρα&#8230;</string>
+<string name="rate_offline_name">Όνομα:</string>
+<string name="rate_offline_nonamegiven">Παρακαλώ εισάγετε το όνομα της μπύρας που βαθμολογήσατε</string>
+<string name="rate_offline_alreadyrated">Συγνώμη, αλλά έχετε ηδη βαθμολογήσει αυτή τη μπύρα και αυτή τη στιγμή δεν υπάρχει η δυνατότητα επαναβαθμολόγησης μπύρας από offline αξιολόγησην</string>
+<string name="rate_offline_export">Εξαγωγή</string>
+<string name="rate_offline_export_info">Οι offline αξιολογήσεις σας θα εξαχθούν σε ενα κωδικοποιημένο JSON αρχείο κειμένου στο %1$s</string>
+<string name="rate_offline_import">Εισαγωγή</string>
+<string name="rate_offline_import_info">Ενα ήδη σωσμένο offline αρχείο αξιολογήσεων θα εισαχθεί από %1$s</string>
+
+<string name="addav_addavailability">Προσθέστε διαθεσιμότητα</string>
+<string name="addav_favourites">Αγαπημένα/πιθανά</string>
+<string name="addav_findaplace">Βρείτε μια τοποθεσία</string>
+<string name="addav_otherplace">Αλλη τοποθεσία:</string>
+<string name="addav_find">Βρες</string>
+<string name="addav_on">Σε:</string>
+<string name="addav_ontap">βαρέλι</string>
+<string name="addav_onbottlecan">μπουκάλι/κουτάκι</string>
+<string name="addav_skip">Παρέκαμψε</string>
+<string name="addav_noplacesselected">Δεν έχετε διαλέξει, ακόμα, κάποια τοποθεσία</string>
+
+<string name="addupc_upccode">Κωδικός UPC:</string>
+<string name="addupc_beer">Όνομα μπύρας:</string>
+<string name="addupc_find">Βρες</string>
+
+<string name="mail_noitems">Δεν υπάρχουν μηνύματα στο γραμματοκιβώτιο σας</string>
+<string name="mail_sendmail">Στείλε μήνυμα</string>
+<string name="mail_couldnotretrieve">Δε μπορούμε να καλέσουμε τα μηνύματά σας τώρα</string>
+<string name="mail_notavailable">Η τοπική αποθήκευση μηνυμάτων δεν είναι προσωρινά διαθέσιμη</string>
+<string name="mail_delete">Σβήσε το μήνυμα</string>
+<string name="mail_confirmdelete">Θα σβήσετε το μήνυμα από τον %1$s?</string>
+<string name="mail_relpied">έχει απαντηθεί</string>
+<string name="mail_new">νέο</string>
+<string name="mail_read">διάβασε</string>
+<string name="mail_reply">Απάντηση</string>
+<string name="mail_sendto">Στείλε σε</string>
+<string name="mail_subject">Θέμα</string>
+<string name="mail_message">Μήνυμα:</string>
+<string name="mail_includeoriginal">Με το αρχικό μήνυμα</string>
+<string name="mail_send">Στείλε</string>
+<string name="mail_emptyfields">Παρακαλώ συμπληρώστε όλα τα πεδία πριν στείλετε</string>
+<string name="mail_sendingmail">Αποστολή μπυρομηνύματος</string>
+<string name="mail_sendingto">Αποστολή στον %1$s</string>
+
+<string name="settings_display">Δείξε προτιμήσεις</string>
+<string name="settings_distanceinkm">Ένδειξη αποστάσεων σε χλμ.</string>
+<string name="settings_distanceinkm_info">Αλλιώς ένδειξη αποστάσεων σε μιλια</string>
+<string name="settings_sharetext">Κείμενο υπογραφής που θα εμφανίζεται με την αξιολόγησή σας</string>
+<string name="settings_sharetext_msg">Τα σύμβολα κράτησης θέσης: %1$s για κωδικό μπύρας, %2$s για όνομα μπύρας, %3$s για το συνολική βαθμολογία και %4$s για το όνομα χρήστη σας</string>
+<string name="settings_beermail">Μπυρομήνυμα</string>
+<string name="settings_background">Ενεργοποίηση ειδοποιήσεων</string>
+<string name="settings_background_info">Περιοδικός έλεγχος για νέο μπυρομήνυμα</string>
+<string name="settings_updatefrequency">Συχνή ανανέωση</string>
+<string name="settings_vibrate">Δόνηση κατά την ειδοποίηση</string>
+<string-array name="settings_frequency_names">
+<item>1 λεπτό</item>
+<item>10 λεπτά</item>
+<item>30 λεπτά</item>
+<item>1 ώρα</item>
+<item>4 ώρες</item>
+<item>24 ώρες</item>
+</string-array>
+
+<string name="error_offline">Δεν υπάρχει σύνδεση internet ή το RateBeer.com είναι προσωρινά εκτος λειτουργίας</string>
+<string name="error_authenticationfailed">Το όνομα χρήστη ή ο κωδικός σας είναι λάθος</string>
+<string name="error_commandfailed">Η ενέργεια απέτυχε απρόβλεπτα. Η η σύνδεση δεν είναι καλή η το Ratebeer είναι προσωρινά εκτος λειτουργίας</string>
+<string name="error_nouserorpass">Και το όνομα χρηστη και ο κωδικός είναι απαραίτητα πεδία για να συνδεθείτε</string>
+<string name="error_nolocation">Η τοποθεσία σας δε μπορεί να εξακριβωθεί</string>
+<string name="error_locationnotsupported">Η συσκευή σας δεν υποστηρίζει τι ενημέρωση τοποθεσίας η δεν έχετε ενεργοποιήσει αυτή τη λετουργία</string>
+<string name="error_sendreport">Στείλε την αναφορά λάθους</string>
+<string name="error_stylenotfound">Δεν βρέθηκε το είδος μπύρας, παρακαλώ αναφέρατε αυτό το λάθος</string>
+<string name="error_cannotwrite">Δε μπορεί να γίνει εγγραφή στο αρχείο</string>
+<string name="error_cannotread">Δεν υπάρχει αρχείο η δεν είναι δυνατή η ανάγνωση του</string>
+<string name="error_filenotvalid">Το αρχείο δεν περιέχει offline αξιολογήσεις (με σωστή διαμόρφωση)</string>
+<string name="error_nocamera">Δεν ήταν δυνατή η λήψη φωτογραφίας. Είτε δεν υπάρχει κάμερα στη συσκευή , είτε δεν υπάρχει δυνατότητα εγγραφης σε εξωτερική κάρτα SD</string>
+<string name="error_lc_install">Για να στείλετε αναφορά λάθους, χρειάζεστε την δωρεάν, ανοικτού κώδικα εφαρμογή Log Collector. Θέλετε να την εγκαταστήσετε από το Play Store?</string>
+<string name="error_lc_run">Η εφαρμογή Log Collector θα μαζέψει τις καταγεγραμμένες πληροφορίες της συσκευής και θα τις αποστείλει στο rb@2312.nl.\nΘα έχετε τη δυνατότητα να ελέγξετε τα δεδομένα και να τα τροποποιήσετε πριν τα στείλετε.</string>
+<string name="error_invalidurl">Η διεύθυνση της ιστοσελίδας δεν είναι έγκυρη</string>
+
+</resources>

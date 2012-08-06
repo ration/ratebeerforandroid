@@ -106,7 +106,7 @@ public class HomePhone extends RateBeerActivity {
 		case android.R.id.home:
 			// Home button click in the action bar
 			Intent i = new Intent(getApplication(), HomePhone.class);
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			startActivity(i);
 			return true;
 		case MENU_PREFERENCES:
@@ -117,14 +117,23 @@ public class HomePhone extends RateBeerActivity {
 	}
 
 	/**
-	 * Load a new screen into the content fragment
+	 * Load a new screen into the content fragment and add it to the backstack
 	 * @param fragment The fragment to show
 	 */
 	public void load(RateBeerFragment fragment) {
+		load(fragment, true);
+	}
+
+	/**
+	 * Load a new screen into the content fragment
+	 * @param fragment The fragment to show
+	 * @param addToBackStack Whether to also add this fragment to the backstack 
+	 */
+	public void load(RateBeerFragment fragment, boolean addToBackStack) {
 		FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
 		//trans.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 		trans.replace(R.id.frag_content, fragment);
-		if (getSupportFragmentManager().findFragmentById(R.id.frag_content) != null) {
+		if (getSupportFragmentManager().findFragmentById(R.id.frag_content) != null && addToBackStack) {
 			trans.addToBackStack(null);
 		}
 		trans.commit();

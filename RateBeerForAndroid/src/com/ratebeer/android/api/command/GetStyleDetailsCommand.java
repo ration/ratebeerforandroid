@@ -78,7 +78,7 @@ public class GetStyleDetailsCommand extends HtmlCommand {
 			servedInStart = html.indexOf(servedInText, servedInStart + 1);
 		}
 
-		String rowText = "<td class=\"listRank\">";
+		String rowText = "<td class=\"ratingsListRank\">";
 		int rowStart = html.indexOf(rowText, descriptionStart) + rowText.length();
 		ArrayList<TopBeer> beers = new ArrayList<TopBeer>();
 

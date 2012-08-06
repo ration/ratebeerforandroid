@@ -6,6 +6,7 @@
         <item name="abDisplayOptions">showHome|useLogo</item>
         <item name="abLogo">@drawable/logo</item>
         <item name="vpiTabPageIndicatorStyle">@style/TabPageIndicator</item>
+        <item name="vpiTabTextStyle">@style/TabPageIndicatorText</item>
         <item name="selectableItemBackground">@drawable/ab_background</item>
 	</style>
 	<style name="Theme.RateBeer.SignIn" parent="@style/Theme.Sherlock">

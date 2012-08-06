@@ -19,31 +19,39 @@ package com.ratebeer.android.gui.fragments;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
@@ -54,15 +62,15 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetBeerAvailabilityCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand;
+import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetBeerImageCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand;
-import com.ratebeer.android.api.command.GetUserRatingCommand;
-import com.ratebeer.android.api.command.PostRatingCommand;
-import com.ratebeer.android.api.command.Style;
-import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetRatingsCommand.BeerRating;
-import com.ratebeer.android.api.command.GetUserRatingCommand.OwnBeerRating;
+import com.ratebeer.android.api.command.GetUserTicksCommand;
+import com.ratebeer.android.api.command.GetUserTicksCommand.UserTick;
+import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
+import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
@@ -80,13 +88,15 @@ public class BeerViewFragment extends RateBeerFragment {
 	private static final String STATE_BEERID = "beerId";
 	private static final String STATE_RATINGSCOUNT = "ratingsCount";
 	private static final String STATE_DETAILS = "details";
-	private static final String STATE_OWNRATING = "ownRating";
+	private static final String STATE_OWNRATINGS = "ownRatings";
+	private static final String STATE_OWNTICKS = "ownTicks";
 	private static final String STATE_RATINGS = "ratings";
 	private static final String STATE_AVAILABILITY= "availability";
 	private static final int UNKNOWN_RATINGS_COUNT = -1;
 
 	private static final int MENU_SHARE = 0;
 	private static final int ACTIVITY_CAMERA = 0;
+	private static final int ACTIVITY_PICKPHOTO = 1;
 
 	private LayoutInflater inflater;
 	private ViewPager pager;
@@ -94,18 +104,22 @@ public class BeerViewFragment extends RateBeerFragment {
 	private TextView nameText, noscoreyetText, scoreText, stylepctlText, ratingsText, descriptionText;
 	private Button brewernameButton, abvstyleButton;
 	private Button rateThisButton, drinkingThisButton, addAvailabilityButton, havethisButton, wantthisButton, uploadphotoButton;
-	private View ownratingRow, ownratinglabel, otherratingslabel;
+	private View ownratingRow, ownratinglabel, ticklabel, otherratingslabel;
 	private TextView ownratingTotal, ownratingAroma, ownratingAppearance, ownratingTaste, ownratingPalate, 
 		ownratingOverall, ownratingUsername, ownratingComments;
+	private RatingBar tickBar;
 	private ListView availabilityView;
+	private TextView availabilityEmpty;
 	private BeerRatingsAdapter recentRatingsAdapter;
 	private ImageView imageView;
+	private DateFormat displayDateFormat;
 
 	protected String beerName;
 	protected int beerId;
 	protected int ratingsCount;
 	private BeerDetails details = null;
-	private OwnBeerRating ownRating = null;
+	private ArrayList<BeerRating> ownRatings = null;
+	private ArrayList<UserTick> ownTicks = null;
 	private ArrayList<BeerRating> recentRatings = new ArrayList<BeerRating>();
 	private ArrayList<PlaceSearchResult> availability = new ArrayList<PlaceSearchResult>();
 
@@ -153,6 +167,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
+		displayDateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 		pager = (ViewPager) getView().findViewById(R.id.pager);
 		BeerPagerAdapter placePagerAdapter = new BeerPagerAdapter();
 		pager.setAdapter(placePagerAdapter);
@@ -166,8 +181,11 @@ public class BeerViewFragment extends RateBeerFragment {
 			if (savedInstanceState.containsKey(STATE_DETAILS)) {
 				details = savedInstanceState.getParcelable(STATE_DETAILS);
 			}
-			if (savedInstanceState.containsKey(STATE_OWNRATING)) {
-				ownRating = savedInstanceState.getParcelable(STATE_OWNRATING);
+			if (savedInstanceState.containsKey(STATE_OWNRATINGS)) {
+				ownRatings = savedInstanceState.getParcelable(STATE_OWNRATINGS);
+			}
+			if (savedInstanceState.containsKey(STATE_OWNTICKS)) {
+				ownTicks = savedInstanceState.getParcelable(STATE_OWNTICKS);
 			}
 			if (savedInstanceState.containsKey(STATE_RATINGS)) {
 				recentRatings = savedInstanceState.getParcelableArrayList(STATE_RATINGS);
@@ -181,12 +199,14 @@ public class BeerViewFragment extends RateBeerFragment {
 			refreshDetails();
 			refreshImage();
 			refreshOwnRating();
+			refreshOwnTick();
 			refreshRatings();
 			refreshAvailability();
 		}
 		// Publish the current details, even when it is not loaded yet (and thus still empty)
 		publishDetails(details);
-		publishOwnRating(ownRating);
+		publishOwnRating(ownRatings);
+		publishOwnTick(ownTicks);
 		setRatings(recentRatings);
 		setAvailability(availability);
 		
@@ -210,6 +230,7 @@ public class BeerViewFragment extends RateBeerFragment {
 			refreshDetails();
 			refreshImage();
 			refreshOwnRating();
+			refreshOwnTick();
 			refreshRatings();
 			refreshAvailability();
 			break;
@@ -233,8 +254,11 @@ public class BeerViewFragment extends RateBeerFragment {
 		if (details != null) {
 			outState.putParcelable(STATE_DETAILS, details);
 		}
-		if (ownRating != null) {
-			outState.putParcelable(STATE_OWNRATING, ownRating);
+		if (ownRatings != null) {
+			outState.putParcelableArrayList(STATE_OWNRATINGS, ownRatings);
+		}
+		if (ownTicks != null) {
+			outState.putParcelableArrayList(STATE_OWNTICKS, ownTicks);
 		}
 		if (recentRatings != null) {
 			outState.putParcelableArrayList(STATE_RATINGS, recentRatings);
@@ -254,7 +278,15 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	private void refreshOwnRating() {
 		if (getRateBeerActivity().getUser() != null) {
-			execute(new GetUserRatingCommand(getRateBeerActivity().getApi(), beerId));
+			execute(new GetRatingsCommand(getRateBeerActivity().getApi(), beerId, getRateBeerActivity().getUser()
+					.getUserID()));
+		}
+	}
+
+	private void refreshOwnTick() {
+		if (getRateBeerActivity() != null && getRateBeerActivity().getUser() != null) {
+			// TODO: Unfortunately we have to retrieve all the user's ticks, since the RB API is limited...
+			execute(new GetUserTicksCommand(getRateBeerActivity().getApi(), beerId));
 		}
 	}
 
@@ -264,19 +296,50 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	private void refreshAvailability() {
 		execute(new GetBeerAvailabilityCommand(getRateBeerActivity().getApi(), beerId));
+		availabilityEmpty.setText(R.string.details_noavailability);
 	}
 
 	protected void onRateBeerClick() {
 		// Get the original rating if we already rated this beer
-		if (ownRating != null) {
+		if (ownRatings != null && ownRatings.size() > 0) {
+			BeerRating ownRating = ownRatings.get(0);
 			// Start new rating fragment, with pre-populated fields
-			getRateBeerActivity().load(new RateFragment(beerName, beerId, ownRating.ratingID, ownRating.origDate, 
-					ownRating.appearance, ownRating.aroma, ownRating.taste, ownRating.palate, ownRating.overall, 
-					ownRating.comments));
+			SimpleDateFormat df = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+			getRateBeerActivity().load(
+					new RateFragment(beerName, beerId, ownRating.ratingId, df.format(ownRating.timeEntered),
+							ownRating.appearance, ownRating.aroma, ownRating.flavor, ownRating.mouthfeel,
+							ownRating.overall, ownRating.comments));
 		} else {
 			// Start new rating fragment
 			getRateBeerActivity().load(new RateFragment(beerName, beerId));
 		}
+	}
+	
+	protected void onTickBarUpdated(float rating) {
+		int newRating = (int) rating;
+		if (rating <= 0.1) {
+			// Force everything below 0.1 (since the user might not have the finger all the way at 0) as a tick removal
+			newRating = -1;
+		}
+		if (ownTicks != null && ownTicks.size() > 0 && ownTicks.get(0).liked == rating) {
+			// No need to update
+			return;
+		}
+		// Update the user's tick status of this beer
+		Intent i = new Intent(PosterService.ACTION_POSTTICK);
+		i.putExtra(PosterService.EXTRA_BEERID, beerId);
+		i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
+		i.putExtra(PosterService.EXTRA_USERID, getRateBeerActivity().getUser().getUserID());
+		i.putExtra(PosterService.EXTRA_LIKED, newRating);
+		i.putExtra(PosterService.EXTRA_MESSENGER, new Messenger(new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				// Callback from the poster service; just refresh the tick status
+				// if (msg.arg1 == PosterService.RESULT_SUCCESS)
+				refreshOwnTick();
+			}
+		}));
+		getActivity().startService(i);
 	}
 
 	protected void onDrinkingBeerClick() {
@@ -329,6 +392,10 @@ public class BeerViewFragment extends RateBeerFragment {
 	}
 
 	protected void onStartPhotoUpload() {
+		new ChoosePhotoFragment(this).show(getSupportFragmentManager(), "");
+	}
+	
+	public void onStartPhotoSnapping() {
 		// Start an intent to snap a picture
 		// http://stackoverflow.com/questions/1910608/android-action-image-capture-intent
 		try {
@@ -351,24 +418,56 @@ public class BeerViewFragment extends RateBeerFragment {
 			publishException(null, getString(R.string.error_nocamera));
 		}
 	}
+	
+	public void onStartPhotoPicking() {
+		Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+		i.setType("image/*");
+		startActivityForResult(i, ACTIVITY_PICKPHOTO);
+	}
+
+	// Taken from http://stackoverflow.com/a/4470069/243165
+	public String getPath(Uri uri) {
+		String[] projection = { MediaStore.Images.Media.DATA };
+		Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
+		if (cursor != null) {
+			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			cursor.moveToFirst();
+			return cursor.getString(column_index);
+		} else
+			return null;
+	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		File photo = null;
 		switch (requestCode) {
+		case ACTIVITY_PICKPHOTO:
+
+			if (data != null && data.getData() != null) {
+                String selectedImagePath = getPath(data.getData());
+                if (selectedImagePath != null) {
+                    photo = new File(selectedImagePath);
+                } else {
+    				photo = new File(data.getData().getPath());
+                }
+			}
+			// Note the fall through
+			
 		case ACTIVITY_CAMERA:
 			
-			File photo = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/photos/" + Integer.toString(beerId) + ".jpg");
-			if (resultCode == Activity.RESULT_OK && photo.exists()) {
+			if (photo == null) {
+				photo = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/photos/" + Integer.toString(beerId) + ".jpg");
+			}
+			if (resultCode == Activity.RESULT_OK && photo != null && photo.exists()) {
 				// Start an upload task for this photo
 				Intent i = new Intent(PosterService.ACTION_UPLOADBEERPHOTO);
 				i.putExtra(PosterService.EXTRA_BEERID, beerId);
 				i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
 				i.putExtra(PosterService.EXTRA_PHOTO, photo);
 				getActivity().startService(i);
-				break;
 			}
-			
+			break;
 		}
 	}
 
@@ -383,10 +482,15 @@ public class BeerViewFragment extends RateBeerFragment {
 			publishDetails(((GetBeerDetailsCommand) result.getCommand()).getDetails());
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerImage) {
 			setImage(((GetBeerImageCommand) result.getCommand()).getImage());
+		} else if (result.getCommand().getMethod() == ApiMethod.GetUserTicks) {
+			publishOwnTick(((GetUserTicksCommand) result.getCommand()).getUserTicks());
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerRatings) {
-			publishRatings(((GetRatingsCommand) result.getCommand()).getRatings());
-		} else if (result.getCommand().getMethod() == ApiMethod.GetUserRating) {
-			publishOwnRating(((GetUserRatingCommand) result.getCommand()).getRating());
+			GetRatingsCommand grc = (GetRatingsCommand) result.getCommand();
+			if (grc.getForUserId() == GetRatingsCommand.NO_USER) {
+				publishRatings(grc.getRatings());
+			} else {
+				publishOwnRating(grc.getRatings());
+			}
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerAvailability) {
 			publishAvailability(((GetBeerAvailabilityCommand) result.getCommand()).getPlaces());
 		}
@@ -403,10 +507,30 @@ public class BeerViewFragment extends RateBeerFragment {
 		setDetails(details);
 	}
 	
-	private void publishOwnRating(OwnBeerRating ownRating) {
-		this.ownRating = ownRating;
+	private void publishOwnRating(ArrayList<BeerRating> ownRatings) {
+		this.ownRatings = ownRatings;
 		// Show the rating
-		setOwnRating(ownRating);
+		setOwnRating(this.ownRatings);
+	}
+
+	private void publishOwnTick(ArrayList<UserTick> allUserTicks) {
+		if (allUserTicks == null) {
+			this.ownTicks = null;
+			setOwnTick(null);
+			return;
+		}
+		
+		// Unfortunately the API can only send all of the user's ticks at once so we have to find the current beer
+		this.ownTicks = new ArrayList<GetUserTicksCommand.UserTick>();
+		for (UserTick userTick : allUserTicks) {
+			if (userTick.beerdId == beerId) {
+				// Creat a list with only this beer's user tick in it
+				this.ownTicks.add(userTick);
+				break;
+			}
+		}
+		// Show the tick
+		setOwnTick(this.ownTicks);
 	}
 
 	private void publishRatings(ArrayList<BeerRating> ratings) {
@@ -471,8 +595,9 @@ public class BeerViewFragment extends RateBeerFragment {
 		ratingsText.setText(ratingsCount == UNKNOWN_RATINGS_COUNT? "?": Integer.toString(ratingsCount));
 		abvstyleButton.setText(getString(R.string.details_abvstyle, details.beerStyle, String.format(DECIMAL_FORMATTER, details.alcohol)));
 		abvstyleButton.setVisibility(View.VISIBLE);
-		descriptionText.setText(details.description == null || details.description.equals("")? 
-				getString(R.string.details_nodescription): details.description);
+		descriptionText.setText(Html.fromHtml(details.description == null || details.description.equals("")? 
+				getString(R.string.details_nodescription): details.description.replace("\n", "<br />")));
+		descriptionText.setMovementMethod(new ScrollingMovementMethod());
 		// Only show the buttons bar if we have a signed in user
 		UserSettings user = getRateBeerApplication().getSettings().getUserSettings();
 		drinkingThisButton.setVisibility(user != null? View.VISIBLE: View.GONE);
@@ -482,20 +607,27 @@ public class BeerViewFragment extends RateBeerFragment {
 		wantthisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 		havethisButton.setVisibility(user != null && user.isPremium()? View.VISIBLE: View.GONE);
 	}
-	
-	public void setOwnRating(OwnBeerRating ownRating) {
-		if (ownRating != null) {
+
+	public void setOwnRating(ArrayList<BeerRating> ownRatings) {
+		if (ownRatings == null) {
+			// Still loading and we didn't have a retained rating object
+			return;
+		}
+		if (ownRatings.size() > 0) {
+			BeerRating ownRating = ownRatings.get(0);
 			ownratinglabel.setVisibility(View.VISIBLE);
 			ownratingRow.setVisibility(View.VISIBLE);
 			ownratingTotal.setText(Float.toString(PostRatingCommand.calculateTotal(ownRating.aroma, ownRating.appearance, 
-				ownRating.taste, ownRating.palate, ownRating.overall)));
+					ownRating.flavor, ownRating.mouthfeel, ownRating.overall)));
 			ownratingAroma.setText(Integer.toString(ownRating.aroma));
 			ownratingAppearance.setText(Integer.toString(ownRating.appearance));
-			ownratingTaste.setText(Integer.toString(ownRating.taste));
-			ownratingPalate.setText(Integer.toString(ownRating.palate));
+			ownratingTaste.setText(Integer.toString(ownRating.flavor));
+			ownratingPalate.setText(Integer.toString(ownRating.mouthfeel));
 			ownratingOverall.setText(Integer.toString(ownRating.overall));
-			ownratingUsername.setText(getRateBeerActivity().getUser().getUsername());
-			ownratingComments.setText(ownRating.comments);
+			ownratingUsername.setText(ownRating.userName + " (" + Integer.toString(ownRating.rateCount) + ")");
+			ownratingComments.setText(ownRating.comments + (ownRating.timeUpdated != null ? " ("
+					+ displayDateFormat.format(ownRating.timeUpdated) + ")" : ownRating.timeEntered != null ? " ("
+					+ displayDateFormat.format(ownRating.timeEntered) + ")" : ""));
 			rateThisButton.setText(R.string.details_viewrerate);
 		} else {
 			ownratinglabel.setVisibility(View.GONE);
@@ -509,6 +641,26 @@ public class BeerViewFragment extends RateBeerFragment {
 			}
 		});
 	}
+
+	public void setOwnTick(ArrayList<UserTick> ownTicks) {
+		if (ownTicks == null) {
+			// Still loading and we didn't have a retained ticks object
+			return;
+		}
+		if (ownTicks.size() > 0) {
+			UserTick ownTick = ownTicks.get(0);
+			tickBar.setRating(ownTick.liked);
+		}
+		ticklabel.setVisibility(View.VISIBLE);
+		tickBar.setVisibility(View.VISIBLE);
+		tickBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+			@Override
+			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+				if (fromUser)
+					onTickBarUpdated(rating);
+			}
+		});
+	}
 	
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {
@@ -517,8 +669,6 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	private class BeerRatingsAdapter extends ArrayAdapter<BeerRating> {
 
-		private final DateFormat dateFormat;
-		
 		private OnClickListener onRowClick = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -528,7 +678,6 @@ public class BeerViewFragment extends RateBeerFragment {
 
 		public BeerRatingsAdapter(Context context, List<BeerRating> objects) {
 			super(context, objects);
-			this.dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 		}
 
 		@Override
@@ -555,18 +704,18 @@ public class BeerViewFragment extends RateBeerFragment {
 
 			// Bind the data
 			BeerRating item = getItem(position);
-			holder.total.setTag(new Integer(item.userId));
+			holder.total.setTag(Integer.valueOf(item.userId));
 			holder.total.setText(item.totalScore);
-			holder.aroma.setText(item.aroma);
-			holder.appearance.setText(item.appearance);
-			holder.taste.setText(item.flavor);
-			holder.palate.setText(item.mouthfeel);
-			holder.overall.setText(item.overall);
+			holder.aroma.setText(Integer.toString(item.aroma));
+			holder.appearance.setText(Integer.toString(item.appearance));
+			holder.taste.setText(Integer.toString(item.flavor));
+			holder.palate.setText(Integer.toString(item.mouthfeel));
+			holder.overall.setText(Integer.toString(item.overall));
 			holder.username.setTag(item.userName);
-			holder.username.setText(item.userName + " (" + item.rateCount + "), " + item.country);
+			holder.username.setText(item.userName + " (" + Integer.toString(item.rateCount) + "), " + item.country);
 			holder.comments.setText(item.comments + (item.timeUpdated != null ? " ("
-					+ dateFormat.format(item.timeUpdated) + ")" : item.timeEntered != null ? " ("
-					+ dateFormat.format(item.timeEntered) + ")" : ""));
+					+ displayDateFormat.format(item.timeUpdated) + ")" : item.timeEntered != null ? " ("
+					+ displayDateFormat.format(item.timeEntered) + ")" : ""));
 
 			return convertView;
 		}
@@ -641,6 +790,8 @@ public class BeerViewFragment extends RateBeerFragment {
     			ownratingOverall = (TextView) fields.findViewById(R.id.overall);
     			ownratingUsername = (TextView) fields.findViewById(R.id.username);
     			ownratingComments = (TextView) fields.findViewById(R.id.comments);
+    			ticklabel = fields.findViewById(R.id.ticklabel);
+    			tickBar = (RatingBar) fields.findViewById(R.id.tick);
 
                 // Add the recent ratings
                 recentRatingsAdapter = new BeerRatingsAdapter(getActivity(), new ArrayList<BeerRating>());
@@ -666,7 +817,9 @@ public class BeerViewFragment extends RateBeerFragment {
 			pagerRecentRatingsView.setAdapter(new BeerRatingsViewAdapter());
 			
 			// Availability page
+			availabilityEmpty = (TextView) pagerAvailabilityView.findViewById(R.id.empty);
 			availabilityView = (ListView) pagerAvailabilityView.findViewById(R.id.list);
+			availabilityView.setEmptyView(availabilityEmpty);
 			addAvailabilityButton = (Button) pagerAvailabilityView.findViewById(R.id.addavailability);
 			addAvailabilityButton.setOnClickListener(new OnClickListener() {
 				@Override
@@ -750,11 +903,11 @@ public class BeerViewFragment extends RateBeerFragment {
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details);
+				return getActivity().getString(R.string.app_details).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.details_recentratings);
+				return getActivity().getString(R.string.details_recentratings).toUpperCase();
 			case 2:
-				return getActivity().getString(R.string.details_availability);
+				return getActivity().getString(R.string.details_availability).toUpperCase();
 			}
 			return null;
 		}

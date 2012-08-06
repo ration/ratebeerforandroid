@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fillViewport="true" >
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="10dip"
+		android:orientation="vertical" >
+
+		<TextView
+			android:id="@+id/name"
+			style="@style/DetailsHeadertext"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent" />
+	
+		<Button
+			android:id="@+id/location"
+			android:drawableLeft="@android:drawable/ic_menu_compass"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:visibility="invisible"
+			style="@style/DetailsButton" />
+			
+		<TextView
+			android:id="@+id/description"
+			style="@style/DetailsField"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="10dip"
+			android:visibility="invisible"
+			android:autoLink="all" />
+			
+		<FrameLayout
+			android:id="@+id/map"
+			android:layout_width="fill_parent"
+			android:layout_height="250dip"
+			android:layout_marginTop="10dip"
+			android:layout_marginBottom="10dip" />
+			
+		<Button
+			android:id="@+id/website"
+			style="@style/DetailsButtonSmall"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone" />
+
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+			<Button
+				android:id="@+id/facebook"
+				style="@style/DetailsButtonSmall"
+				android:layout_width="0dip"
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:text="@string/brewers_facebook"
+				android:visibility="gone" />
+			
+			<Button
+				android:id="@+id/twitter"
+				style="@style/DetailsButtonSmall"
+				android:layout_width="0dip"
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:visibility="gone" />
+		</LinearLayout>
+	
+	</LinearLayout>
+	
+</ScrollView>

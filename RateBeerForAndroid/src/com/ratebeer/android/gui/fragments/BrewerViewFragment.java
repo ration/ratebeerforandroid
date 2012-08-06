@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
@@ -48,23 +49,30 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.command.Country;
 import com.ratebeer.android.api.command.GetBrewerBeersCommand;
 import com.ratebeer.android.api.command.GetBrewerDetailsCommand;
+import com.ratebeer.android.api.command.State;
 import com.ratebeer.android.api.command.GetBrewerDetailsCommand.BrewerDetails;
 import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
+import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitleProvider;
 
-public class BrewerViewFragment extends RateBeerFragment {
+public class BrewerViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
 	protected static final String BASE_URI_FACEBOOK = "https://www.facebook.com/%1$s";
 	protected static final String BASE_URI_TWITTER = "https://twitter.com/%1$s";
@@ -109,8 +117,6 @@ public class BrewerViewFragment extends RateBeerFragment {
 		pager.setAdapter(brewerPagerAdapter);
 		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
 		titles.setViewPager(pager);
-		nameText = (TextView) getView().findViewById(R.id.name);
-		descriptionText = (TextView) getView().findViewById(R.id.description);
 		beersView.setOnItemClickListener(onBeerSelected);
 
 		if (savedInstanceState != null) {
@@ -206,7 +212,18 @@ public class BrewerViewFragment extends RateBeerFragment {
 	private OnClickListener onWebsiteClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(brewer.website)));
+			String web = brewer.website;
+			if (!web.startsWith("http://")) {
+				// http:// should be explicit in the web address
+				web = "http://" + web;
+			}
+			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(web));
+		    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			if (ActivityUtil.isIntentAvailable(getActivity(), i)) {
+				startActivity(i);
+			} else {
+				publishException(null, getString(R.string.error_invalidurl));
+			}
 		}
 	};
 
@@ -268,7 +285,18 @@ public class BrewerViewFragment extends RateBeerFragment {
 	private void setDetails(BrewerDetails details) {
 		nameText.setText(brewer.brewerName);
 		descriptionText.setText(brewer.description == null? "": brewer.description);
-		locationText.setText(brewer.address + "\n" + brewer.city);
+		String state = "";
+		String country = "";
+		if (brewer.countryID > 0 && Country.ALL_COUNTRIES.containsKey(brewer.countryID)) {
+			country = "\n" + Country.ALL_COUNTRIES.get(brewer.countryID).getName();
+			if (brewer.stateID > 0 && State.ALL_STATES.containsKey(brewer.countryID)) {
+				Map<Integer, State> states = State.ALL_STATES.get(brewer.countryID);
+				if (states.containsKey(brewer.stateID)) {
+					state = ", " + states.get(brewer.stateID).getName();
+				}
+			}
+		}
+		locationText.setText(brewer.address + "\n" + brewer.city + state + country);
 		websiteButton.setText(brewer.website);
 		//facebookButton.setText(brewer.facebook); // Just use the text 'Facebook', because often this isn't a nice looking name
 		twitterButton.setText("@" + brewer.twitter);
@@ -292,10 +320,12 @@ public class BrewerViewFragment extends RateBeerFragment {
 					mapFrame.setVisibility(View.GONE);
 				} else {
 					// Found a location! Center the map here
-					mapView.getController().setCenter(
-							getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
-					mapView.getController().setZoom(15);
+					GeoPoint center = getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude());
+					mapView.getController().setCenter(center);
 					mapFrame.setVisibility(View.VISIBLE);
+					final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, 5, this);
+					to.addOverlay(new OverlayItem(center, brewer.brewerName, brewer.city + state));
+					mapView.getOverlays().add(to);
 				}
 			} catch (IOException e) {
 				// Canot connect to geocoder server: hide the map
@@ -307,6 +337,11 @@ public class BrewerViewFragment extends RateBeerFragment {
 		}
 		mapFrame.addView(mapView);
 
+	}
+
+	@Override
+	public void onBalloonClicked(OverlayItem item) {
+		// No event, yet
 	}
 
 	private class BrewerBeersAdapter extends ArrayAdapter<BeerSearchResult> {
@@ -366,6 +401,8 @@ public class BrewerViewFragment extends RateBeerFragment {
 
 			beersView = pagerBeersView;
 
+			nameText = (TextView) pagerDetailsView.findViewById(R.id.name);
+			descriptionText = (TextView) pagerDetailsView.findViewById(R.id.description);
 			locationText = (Button) pagerDetailsView.findViewById(R.id.location);
 			websiteButton = (Button) pagerDetailsView.findViewById(R.id.website);
 			facebookButton = (Button) pagerDetailsView.findViewById(R.id.facebook);
@@ -387,9 +424,9 @@ public class BrewerViewFragment extends RateBeerFragment {
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details);
+				return getActivity().getString(R.string.app_details).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.brewers_beers);
+				return getActivity().getString(R.string.brewers_beers).toUpperCase();
 			}
 			return null;
 		}

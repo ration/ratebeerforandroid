@@ -299,9 +299,9 @@ public class CellarViewFragment extends RateBeerFragment {
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.cellar_wants);
+				return getActivity().getString(R.string.cellar_wants).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.cellar_haves);
+				return getActivity().getString(R.string.cellar_haves).toUpperCase();
 			}
 			return null;
 		}

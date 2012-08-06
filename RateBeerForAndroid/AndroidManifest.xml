@@ -18,8 +18,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ratebeer.android"
-	android:versionCode="21"
-	android:versionName="1.2.0"
+	android:versionCode="23"
+	android:versionName="1.2.2"
 	android:installLocation="auto">
 	
 	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="13" />
@@ -76,14 +76,16 @@
 		<activity android:name="com.ratebeer.android.gui.PreferencesInterface"></activity>
 
 		<!-- Default search provider -->
-		<provider android:name="com.ratebeer.android.gui.SearchHistoryProvider" android:authorities="com.ratebeer.android.gui.SearchHistoryProvider" />
+		<provider android:name="com.ratebeer.android.gui.SearchHistoryProvider" 
+			android:authorities="com.ratebeer.android.gui.SearchHistoryProvider" android:exported="false" />
 		<meta-data android:name="android.app.default_searchable" android:value="com.ratebeer.android.gui.Search" />
 		
 		<!-- Posting data to RateBeer -->
-		<service android:name="com.ratebeer.android.gui.components.PosterService">
+		<service android:name="com.ratebeer.android.gui.components.PosterService" android:exported="false">
 			<intent-filter>
 				<action android:name="com.ratebeer.android.SET_DRINKING_STATUS" />
 				<action android:name="com.ratebeer.android.POST_RATING" />
+				<action android:name="com.ratebeer.android.POST_TICK" />
 				<action android:name="com.ratebeer.android.ADD_AVAILABILITY" />
 				<action android:name="com.ratebeer.android.ADD_TO_CELLAR" />
 				<action android:name="com.ratebeer.android.SEND_BEERMAIL" />

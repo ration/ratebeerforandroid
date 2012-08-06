@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Cancelar</string>
+<string name="app_home">Início</string>
+<string name="app_refresh">Atualizar</string>
+<string name="app_details">Detalhes</string>
+<string name="app_share">Compartilhar</string>
+<string name="app_loading">Carregando&#8230;</string>
+<string name="app_legal">Ao utilizar esta aplicação você estará concordando com os termos do Contrato de Uso RateBeer disponível em  http://www.ratebeer.com/UserAgreement.asp\n\nMesmo sem ter uma conta no RateBeer você pode utilizar este aplicativo para verificar detalhes de cervejas, rankings, eventos, lugares próximos relacionados a cervejas e muito mais. Para ter acesso a todas as funcionalidades, como dar notas e adicionar cervejas, você pode criar uma conta em http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">Bem-vindo!</string>
+
+<string name="app_install">Instalar agora</string>
+<string name="app_nomarket">A Play Store não está instalada no seu aparelho</string>
+<string name="app_scannernotfound">O leitor de código de barras não foi encontrado. Gostaria de instalá-lo à partir da Play Store?</string>
+<string name="app_onlyifsignedin">Esta funcionalidade está disponível apenas após se logar no RateBeer</string>
+
+<string name="app_newstatus">Digite um novo status</string>
+<string name="app_nowdrinking">Bebendo</string>
+<string name="app_addingtocellar">Adicionando à adega</string>
+
+<string name="signin_username">Utilizador:</string>
+<string name="signin_password">Senha:</string>
+
+<string name="home_beers">Cervejas</string>
+<string name="home_places">Locais</string>
+<string name="home_events">Eventos</string>
+<string name="home_search">Procura</string>
+<string name="home_myprofile">O meu perfil</string>
+<string name="home_top50">Top 50</string>
+<string name="home_beerstyles">Estilos de cerveja</string>
+<string name="home_nowdrinking">Bebendo %1$s</string>
+
+
+<string-array name="myratings_sortby_names">
+<item>Name</item>
+<item>Brewer</item>
+<item>Style</item>
+<item>My rating</item>
+<item>Date</item>
+<item>Pontuação</item>
+</string-array>
+
+<string name="cellar_viewcellar">Ver adega</string>
+<string name="cellar_wants">Quer</string>
+<string name="cellar_haves">Tem</string>
+<string name="cellar_wantthis">Quer</string>
+<string name="cellar_havethis">Tem</string>
+<string name="cellar_quantity">Quantidade</string>
+<string name="cellar_addtocellar">Adicionar à adega</string>
+<string name="cellar_remove">Remover da adega</string>
+<string name="cellar_confirmremoval">Remover %1$s da sua adega?</string>
+
+<string name="topbeers_country">País:</string>
+<string name="topbeers_state">Estado:</string>
+
+<string name="places_brewpub">Brewpub</string>
+<string name="places_bar">Bar</string>
+<string name="places_restaurant">Restaurante</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_availablebeers">Disponível</string>
+
+<string name="brewers_beers">Cervejas</string>
+<string name="brewers_facebook">Facebook</string>
+
+
+<string name="search_beers">Cervejas</string>
+<string name="search_places">Locais</string>
+<string name="search_users">Utilizadores</string>
+
+<string name="details_score">Pontuação</string>
+<string name="details_style">estilo</string>
+<string name="details_nodescription">Sem descrição comercial</string>
+<string name="details_drinkingthis">Bebendo isto</string>
+<string name="details_availability">Disponibilidade</string>
+
+<string name="upload_newphoto">Tirar uma nova fotografia</string>
+
+<string name="user_favsyle">Estilo favorito %1$s</string>
+
+<string name="rate_aroma">Aroma</string>
+<string name="rate_appearance">Aparência</string>
+<string name="rate_taste">Sabor</string>
+<string name="rate_palate">Paladar</string>
+<string name="rate_overall">Geral</string>
+<string name="rate_totalscore">Pontuação total</string>
+<string name="rate_comments">Comentários</string>
+
+<string name="rate_offline_name">Nome:</string>
+<string name="rate_offline_export">Exportar</string>
+<string name="rate_offline_import">Importar</string>
+
+<string name="addav_ontap">pressão</string>
+<string name="addav_onbottlecan">garrafa/lata</string>
+
+<string name="addupc_beer">Nome da cerveja:</string>
+<string name="addupc_find">Encontrar</string>
+
+<string name="mail_noitems">Não há mails na sua inbox</string>
+<string name="mail_sendmail">Enviar mail</string>
+<string name="mail_delete">Apagar mail</string>
+<string name="mail_new">nova</string>
+<string name="mail_read">lida</string>
+<string name="mail_reply">Responder</string>
+<string name="mail_sendto">Enviar a</string>
+<string name="mail_subject">Assunto</string>
+<string name="mail_message">Mensagem:</string>
+<string name="mail_includeoriginal">Incluir mensagem original</string>
+<string name="mail_send">Enviar</string>
+
+<string-array name="settings_frequency_names">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>4 hours</item>
+<item>24 hours</item>
+</string-array>
+
+<string name="error_sendreport">Enviar relatório de erro</string>
+
+</resources>

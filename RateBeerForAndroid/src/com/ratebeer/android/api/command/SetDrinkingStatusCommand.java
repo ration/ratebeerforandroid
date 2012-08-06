@@ -44,8 +44,8 @@ public class SetDrinkingStatusCommand extends EmptyResponseCommand {
 		RateBeerApi.ensureLogin(getUserSettings());
 		HttpHelper.makeRBPost("http://www.ratebeer.com/userstatus-process.asp",
 				Arrays.asList(new BasicNameValuePair("MyStatus", newStatus)),
-				// Note that we get an HTTP 500 response even when the request is successfull...
-				HttpStatus.SC_INTERNAL_SERVER_ERROR);
+				// Note that we get an HTTP 404 response even when the request is successful...
+				HttpStatus.SC_NOT_FOUND);
 	}
 
 }

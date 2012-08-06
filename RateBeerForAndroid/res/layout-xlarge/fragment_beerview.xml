@@ -53,6 +53,8 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:drawableLeft="@android:drawable/ic_menu_info_details"
+		android:layout_toRightOf="@id/imageframe"
+		android:layout_below="@id/name"
 		android:visibility="invisible" />
 	
 	<com.viewpagerindicator.TabPageIndicator

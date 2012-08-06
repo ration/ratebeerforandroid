@@ -21,7 +21,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -41,6 +43,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -62,9 +65,9 @@ public class HttpHelper {
 	private static final int TIMEOUT = 5000;
 	private static final int RETRIES = 3;
 	private static final String USER_AGENT = "RateBeer for Android";
-	private static final String URL_SIGNIN = "http://www.ratebeer.com/signin/";
 	public static final String RB_KEY = "tTmwRTWT-W7tpBhtL";
 	public static final String UTF8 = "UTF-8";
+	private static final String URL_SIGNIN = "http://www.ratebeer.com/Signin_r.asp";
 
 	private static DefaultHttpClient httpClient = null;
 
@@ -126,6 +129,51 @@ public class HttpHelper {
 		return makeRawRBPost(post, expectedHttpCode);
 	}
 
+	public static int signIn(String username, String password) throws ApiException, UnsupportedEncodingException {
+		ensureClient();
+
+		// Set up POST request
+		HttpPost post = new HttpPost(URL_SIGNIN);
+		post.setEntity(new UrlEncodedFormEntity(Arrays.asList(new BasicNameValuePair("SaveInfo", "on"),
+				new BasicNameValuePair("username", username), new BasicNameValuePair("pwd", password))));
+		final String uidText = "?uid=";
+		for (int i = 0; i < RETRIES; i++) {
+			try {
+				HttpClientParams.setRedirecting(httpClient.getParams(), false);
+				HttpResponse response = httpClient.execute(post);
+				int code = response.getStatusLine().getStatusCode();
+				if (code == HttpStatus.SC_MOVED_TEMPORARILY) {
+					if (isSignedIn()) {
+						// Find the user ID in the redirect response header
+						// This should be encoded as a Location header, like
+						Header header = response.getFirstHeader("Location");
+						if (header != null && header.getValue().indexOf(uidText) >= 0) {
+							return Integer.parseInt(header.getValue().substring(header.getValue().indexOf(uidText) + uidText.length()));
+						}
+						throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
+								"Tried to sign in but the response header did not include the user ID. Header was: "
+										+ header.toString());
+					}
+					throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
+							"Tried to sign in but no (login) cookies were returned by the server");
+				}
+				// Just try again
+			} catch (NumberFormatException e) {
+				throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
+						"Tried to sign in but the returned user ID was not a number");
+			} catch (ClientProtocolException e) {
+				// Just try again
+			} catch (IOException e) {
+				// Just try again
+			} finally {
+				HttpClientParams.setRedirecting(httpClient.getParams(), true);
+			}
+		}
+
+		throw new ApiException(ApiException.ExceptionType.Offline,
+				"Tried to sign in but the request timed out; bad connection or server offline");
+	}
+
 	public static String makeRawRBPost(HttpPost post, int expectedHttpCode) throws ClientProtocolException, IOException {
 		ensureClient();
 
@@ -146,27 +194,6 @@ public class HttpHelper {
 		}
 
 		throw new IOException("ratebeer.com offline?");
-	}
-
-	public static boolean signIn(String username, String password) throws ClientProtocolException, IOException {
-		ensureClient();
-
-		// Set up POST request
-		// TODO: Use the API call to http://www.ratebeer.com/Signin_r.asp instead (which already returns the user ID too)
-		HttpPost post = new HttpPost(URL_SIGNIN);
-		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-		parameters.add(new BasicNameValuePair("SaveInfo", "on"));
-		parameters.add(new BasicNameValuePair("username", username));
-		parameters.add(new BasicNameValuePair("pwd", password));
-		post.setEntity(new UrlEncodedFormEntity(parameters));
-
-		// Execute a POST request to sign in
-		httpClient.execute(post);
-
-		boolean success = isSignedIn();
-		post.abort(); // Consume content
-		return success;
-
 	}
 
 	public static String getResponseString(InputStream is) throws IOException {
@@ -198,7 +225,7 @@ public class HttpHelper {
 		List<Cookie> beforeCookies = httpClient.getCookieStore().getCookies();
 		for (Iterator<Cookie> iterator = beforeCookies.iterator(); iterator.hasNext();) {
 			Cookie cookie = iterator.next();
-			if (cookie.getName().equalsIgnoreCase("SessionCode")) {
+			if (cookie.getName().equalsIgnoreCase("SessionCode") && !cookie.isExpired(new Date())) {
 				return true;
 			}
 		}
@@ -278,7 +305,10 @@ public class HttpHelper {
 	}
 
 	public static String normalizeSearchQuery(String query) {
-		// First translate diacritics
+		// RateBeer crashes down badly when providing a ' (apostrophe) in a search; replace it instead by a ? (wildcard)
+		query = query.replace("'", "?");
+		
+		// Now translate diacritics
 		// (from http://stackoverflow.com/questions/1008802/converting-symbols-accent-letters-to-english-alphabet)
 		// The Normalizer class is unavailable < API level 9, so use it through an interface using reflection
 		try {

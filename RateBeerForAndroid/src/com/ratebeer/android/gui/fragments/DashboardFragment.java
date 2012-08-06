@@ -150,17 +150,19 @@ public class DashboardFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, MENU_SCANBARCODE, R.string.search_barcodescanner);
-		item2.setIcon(R.drawable.ic_action_barcode);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
 			// For phones, the dashboard & search fragments show a search icon in the action bar
 			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
-			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, MENU_SEARCH, R.string.home_search);
+			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);
 			item.setIcon(R.drawable.ic_action_search);
 			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
-		MenuItem item3 = menu.add(Menu.NONE, MENU_CALCULATOR, MENU_CALCULATOR, R.string.home_calculator);
+		
+		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, Menu.NONE, R.string.search_barcodescanner);
+		item2.setIcon(R.drawable.ic_action_barcode);
+		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		MenuItem item3 = menu.add(Menu.NONE, MENU_CALCULATOR, Menu.NONE, R.string.home_calculator);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			item3.setIcon(R.drawable.ic_menu_calculator);
 		} else {

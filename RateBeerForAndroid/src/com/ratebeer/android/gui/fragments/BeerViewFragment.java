@@ -108,6 +108,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		ownratingOverall, ownratingUsername, ownratingComments;
 	private RatingBar tickBar;
 	private ListView availabilityView;
+	private TextView availabilityEmpty;
 	private BeerRatingsAdapter recentRatingsAdapter;
 	private ImageView imageView;
 	private DateFormat displayDateFormat;
@@ -294,6 +295,7 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	private void refreshAvailability() {
 		execute(new GetBeerAvailabilityCommand(getRateBeerActivity().getApi(), beerId));
+		availabilityEmpty.setText(R.string.details_noavailability);
 	}
 
 	protected void onRateBeerClick() {
@@ -814,7 +816,9 @@ public class BeerViewFragment extends RateBeerFragment {
 			pagerRecentRatingsView.setAdapter(new BeerRatingsViewAdapter());
 			
 			// Availability page
+			availabilityEmpty = (TextView) pagerAvailabilityView.findViewById(R.id.empty);
 			availabilityView = (ListView) pagerAvailabilityView.findViewById(R.id.list);
+			availabilityView.setEmptyView(availabilityEmpty);
 			addAvailabilityButton = (Button) pagerAvailabilityView.findViewById(R.id.addavailability);
 			addAvailabilityButton.setOnClickListener(new OnClickListener() {
 				@Override

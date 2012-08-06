@@ -152,7 +152,10 @@
 	<string name="search_barcodescanner">Barcode scanner</string>
 	<string name="search_nobeerswithbarcode">No beers found for barcode %1$s. Please consider adding it to the database using a simple beer search.</string>
 	<string name="search_clearhistory">Clear history</string>
-	<string name="search_noitems">No results for your query. Maybe try again with a small part of the beer, place or user\'s name?</string>
+	<string name="search_nobeers">No beers found.\n\nTry searching only a part of the beer name.</string>
+	<string name="search_nobrewers">No brewers found.\n\nTry searching only a part of the brewer\'s name.</string>
+	<string name="search_nopalces">No places found.\n\nTry searching only a part of the place name.</string>
+	<string name="search_nousers">No users found.\n\nTry searching only a part of the user\'s name.</string>
 	<string name="search_retired">retired</string>
 	<string name="search_alias">alias</string>
 	<string name="search_rated">rated</string>
@@ -175,6 +178,7 @@
 	<string name="details_ticklabel">Or just tick:</string>
 	<string name="details_otherratings">Recent ratings:</string>
 	<string name="details_availability">Availability</string>
+	<string name="details_noavailability">No availability known yet</string>
 	<string name="details_share">Check out %1$s at @ratebeer http://ratebeer.com/b/%2$s/</string>
 	<string name="details_sharebeer">Share beer&#8230;</string>
 	

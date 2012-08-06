@@ -286,7 +286,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	}
 
 	private void refreshOwnTick() {
-		if (getRateBeerActivity().getUser() != null) {
+		if (getRateBeerActivity() != null && getRateBeerActivity().getUser() != null) {
 			// TODO: Unfortunately we have to retrieve all the user's ticks, since the RB API is limited...
 			execute(new GetUserTicksCommand(getRateBeerActivity().getApi(), beerId));
 		}
@@ -925,11 +925,11 @@ public class BeerViewFragment extends RateBeerFragment {
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details);
+				return getActivity().getString(R.string.app_details).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.details_recentratings);
+				return getActivity().getString(R.string.details_recentratings).toUpperCase();
 			case 2:
-				return getActivity().getString(R.string.details_availability);
+				return getActivity().getString(R.string.details_availability).toUpperCase();
 			}
 			return null;
 		}

@@ -634,13 +634,13 @@ public class SearchFragment extends RateBeerFragment {
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.search_beers);
+				return getActivity().getString(R.string.search_beers).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.search_brewers);
+				return getActivity().getString(R.string.search_brewers).toUpperCase();
 			case 2:
-				return getActivity().getString(R.string.search_places);
+				return getActivity().getString(R.string.search_places).toUpperCase();
 			case 3:
-				return getActivity().getString(R.string.search_users);
+				return getActivity().getString(R.string.search_users).toUpperCase();
 			}
 			return null;
 		}

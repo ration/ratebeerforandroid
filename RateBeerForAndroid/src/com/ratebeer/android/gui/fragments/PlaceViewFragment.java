@@ -463,11 +463,11 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		public String getTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details);
+				return getActivity().getString(R.string.app_details).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.places_checkins);
+				return getActivity().getString(R.string.places_checkins).toUpperCase();
 			case 2:
-				return getActivity().getString(R.string.places_availablebeers);
+				return getActivity().getString(R.string.places_availablebeers).toUpperCase();
 			}
 			return null;
 		}

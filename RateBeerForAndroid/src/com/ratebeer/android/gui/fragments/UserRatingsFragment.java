@@ -12,12 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.view.LayoutInflater;
@@ -25,13 +21,13 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -125,7 +121,7 @@ public class UserRatingsFragment extends RateBeerFragment {
 			refreshRatings();
 			break;
 		case MENU_SORTBY:
-			new UserRatingsSortDialog().show(getSupportActivity().getSupportFragmentManager(), null);
+			new UserRatingsSortDialog(this).show(getSupportActivity().getSupportFragmentManager(), null);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -157,7 +153,7 @@ public class UserRatingsFragment extends RateBeerFragment {
 		}
 	};
 
-	protected void setSortOrder(int newSortOrder) {
+	public void setSortOrder(int newSortOrder) {
 		sortOrder = newSortOrder;
 		refreshRatings();
 	}
@@ -278,24 +274,6 @@ public class UserRatingsFragment extends RateBeerFragment {
 
 	protected static class ViewHolder {
 		TextView beer, brewer, style, score, myrating, date;
-	}
-
-	public class UserRatingsSortDialog extends DialogFragment {
-		public UserRatingsSortDialog() {}
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			return new AlertDialog.Builder(getActivity()).setTitle(R.string.myratings_sortby).setItems(
-					R.array.myratings_sortby_names, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// The (0-based) ID of which item was selected is directly matched with the (1-based)
-							// GetUserRatingsCommand's order ID, f.e. the fourth array item 'My rating' is the sort
-							// order with ID 5 (which is SORTBY_DATE)
-							setSortOrder(which + 1);
-						}
-					}).create();
-		}
-
 	}
 
 }

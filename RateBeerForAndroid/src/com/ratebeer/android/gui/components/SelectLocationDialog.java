@@ -37,6 +37,7 @@ public class SelectLocationDialog extends DialogFragment {
 	
 	public SelectLocationDialog(OnLocationSelectedListener placesFragment) {
 		this.placesFragment = placesFragment;
+		setRetainInstance(true);
 		setStyle(STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
 	}
 

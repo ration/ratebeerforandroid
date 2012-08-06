@@ -156,15 +156,24 @@ public class HomeTablet extends RateBeerActivity {
 	}
 
 	/**
-	 * Load a new screen into the content fragment
+	 * Load a new screen into the content fragment and add it to the backstack
 	 * @param contentFragment The fragment to show 
 	 */
 	public void load(RateBeerFragment contentFragment) {
+		load(contentFragment, true);
+	}
+
+	/**
+	 * Load a new screen into the content fragment
+	 * @param contentFragment The fragment to show 
+	 * @param addToBackStack Whether to also add this fragment to the backstack 
+	 */
+	public void load(RateBeerFragment contentFragment, boolean addToBackStack) {
 		FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
 		//trans.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 		trans.replace(R.id.frag_content, contentFragment);
 		switchLayout(false);
-		if (getSupportFragmentManager().findFragmentById(R.id.frag_content) != null) {
+		if (getSupportFragmentManager().findFragmentById(R.id.frag_content) != null && addToBackStack) {
 			trans.addToBackStack(null);
 		}
 		trans.commit();

@@ -101,7 +101,7 @@ public class SearchFragment extends RateBeerFragment {
 
 	public SearchFragment(boolean startBarcodeScanner) {
 		this(null);
-		this.startBarcodeScanner  = startBarcodeScanner;
+		this.startBarcodeScanner = startBarcodeScanner;
 	}
 
 	public SearchFragment(String query) {
@@ -179,7 +179,7 @@ public class SearchFragment extends RateBeerFragment {
 			// Don't start again when returning to this screen
 			startBarcodeScanner = false;
 		}
-		
+
 	}
 
 	@Override
@@ -187,17 +187,18 @@ public class SearchFragment extends RateBeerFragment {
 		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
 			// For phones, the dashboard & search fragments show a search icon in the action bar
 			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
-			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, MENU_SEARCH, R.string.home_search);
+			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);
 			item.setIcon(R.drawable.ic_action_search);
 			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, MENU_SCANBARCODE, R.string.search_barcodescanner);
-		item2.setIcon(R.drawable.ic_action_barcode);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		MenuItem item = menu.add(Menu.NONE, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH,
-				R.string.app_refresh);
+		MenuItem item = menu.add(Menu.NONE, RateBeerActivity.MENU_REFRESH, Menu.NONE, R.string.app_refresh);
 		item.setIcon(R.drawable.ic_action_refresh);
 		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, Menu.NONE, R.string.search_barcodescanner);
+		item2.setIcon(R.drawable.ic_action_barcode);
+		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
 		menu.add(MENU_CLEARHISTORY, MENU_CLEARHISTORY, MENU_CLEARHISTORY, R.string.search_clearhistory);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -214,7 +215,7 @@ public class SearchFragment extends RateBeerFragment {
 			suggestions.clearHistory();
 			break;
 		case MENU_SCANBARCODE:
-	    	startScanner();
+			startScanner();
 			break;
 		case MENU_SEARCH:
 			// Open standard search interface
@@ -226,14 +227,14 @@ public class SearchFragment extends RateBeerFragment {
 
 	private void startScanner() {
 		// Test to see if the ZXing barcode scanner is available that can handle the SCAN intent
-	    Intent scan = new Intent(SCAN_INTENT);
-	    scan.addCategory(Intent.CATEGORY_DEFAULT);
-	    scan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-    	if (ActivityUtil.isIntentAvailable(getActivity(), scan)) {
-    		// Ask the barcode scanner to allow the user to scan some code
-    		startActivityForResult(scan, ACTIVITY_BARCODE);
-    	} else {
-    		// Show a message if the user should install the barcode scanner for this feature
+		Intent scan = new Intent(SCAN_INTENT);
+		scan.addCategory(Intent.CATEGORY_DEFAULT);
+		scan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+		if (ActivityUtil.isIntentAvailable(getActivity(), scan)) {
+			// Ask the barcode scanner to allow the user to scan some code
+			startActivityForResult(scan, ACTIVITY_BARCODE);
+		} else {
+			// Show a message if the user should install the barcode scanner for this feature
 			new ConfirmDialogFragment(new OnDialogResult() {
 				@Override
 				public void onConfirmed() {
@@ -245,7 +246,7 @@ public class SearchFragment extends RateBeerFragment {
 					}
 				}
 			}, R.string.app_scannernotfound, "").show(getSupportFragmentManager(), "installscanner");
-    	}
+		}
 	}
 
 	@Override
@@ -273,14 +274,14 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Get scan results code
 			String contents = data.getStringExtra("SCAN_RESULT");
-			//String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
-			
+			// String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
+
 			// Start lookup for this code
 			execute(new UpcSearchCommand(getRateBeerApplication().getApi(), contents));
-			
+
 		}
 	}
-	
+
 	private void performSearch() {
 		if (lastQuery == null) {
 			if (beersView.getAdapter() != null) {
@@ -310,7 +311,7 @@ public class SearchFragment extends RateBeerFragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			BeerSearchResult item = ((BeerSearchResultsAdapter) beersView.getAdapter()).getItem(position);
 			if (item.isAlias) {
-				// Unfortunately this is the only possible workaround for now to prohibit viewing an aliased beer as 
+				// Unfortunately this is the only possible workaround for now to prohibit viewing an aliased beer as
 				// if it were a normal one (see issue 8)
 				Toast.makeText(getActivity(), getString(R.string.search_aliasedbeer), Toast.LENGTH_LONG).show();
 				return;
@@ -355,7 +356,7 @@ public class SearchFragment extends RateBeerFragment {
 			publishUserResults(((SearchUsersCommand) result.getCommand()).getSearchResults());
 		} else if (result.getCommand().getMethod() == ApiMethod.UpcSearch) {
 			// See if there were any results
-			UpcSearchCommand command = (UpcSearchCommand)result.getCommand();
+			UpcSearchCommand command = (UpcSearchCommand) result.getCommand();
 			List<UpcSearchResult> results = command.getUpcSearchResults();
 			if (results.size() > 0) {
 				// Beer found: redirect to beer details
@@ -372,11 +373,11 @@ public class SearchFragment extends RateBeerFragment {
 			@Override
 			public void onConfirmed() {
 				getSupportFragmentManager().popBackStack();
-				getRateBeerActivity().load(new AddUpcCodeFragment(code));
+				getRateBeerActivity().load(new AddUpcCodeFragment(code), false);
 			}
 		}, R.string.search_nobeerswithbarcode, code).show(getSupportFragmentManager(), "addupccode");
 	}
-	
+
 	private void publishBeerResults(ArrayList<BeerSearchResult> result) {
 		this.beerResults = result;
 		if (result == null) {
@@ -584,7 +585,7 @@ public class SearchFragment extends RateBeerFragment {
 				holder.name.setText(item.userName);
 				holder.ratings.setText(getString(R.string.search_ratings, Integer.toString(item.ratings)));
 			}
-			
+
 			return convertView;
 		}
 

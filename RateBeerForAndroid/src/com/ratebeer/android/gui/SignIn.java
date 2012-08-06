@@ -41,5 +41,10 @@ public class SignIn extends RateBeerActivity {
 	public void load(RateBeerFragment leftFragment, RateBeerFragment rightFragment) {
 		// Nothing to do
 	}
+
+	@Override
+	public void load(RateBeerFragment fragment, boolean addToBackStack) {
+		// Nothing to do
+	}
 	
 }

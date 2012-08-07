@@ -24,14 +24,13 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import com.ratebeer.android.R;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -41,7 +40,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ratebeer.android.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.components.ArrayAdapter;
@@ -86,7 +86,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		MenuItem item = menu.add(Menu.NONE, MENU_ADD, MENU_ADD, R.string.rate_offline_addrating);
-		item.setIcon(R.drawable.ic_action_add);
+		item.setIcon(R.drawable.ic_action_addrating);
 		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuItem item2 = menu.add(Menu.NONE, MENU_EXPORT, MENU_EXPORT, R.string.rate_offline_export);
 		item2.setIcon(R.drawable.ic_action_export);
@@ -118,7 +118,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 						Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
 					}
 				}
-			}, R.string.rate_offline_export_info, ImportExport.DEFAULT_RATINGS_FILE).show(getSupportFragmentManager(), "exportdialog");
+			}, R.string.rate_offline_export_info, ImportExport.DEFAULT_RATINGS_FILE).show(getFragmentManager(), "exportdialog");
 			break;
 		case MENU_IMPORT:
 			new ConfirmDialogFragment(new OnDialogResult() {
@@ -136,7 +136,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 					}
 					loadRatings();
 				}
-			}, R.string.rate_offline_import_info, ImportExport.DEFAULT_RATINGS_FILE).show(getSupportFragmentManager(), "importdialog");
+			}, R.string.rate_offline_import_info, ImportExport.DEFAULT_RATINGS_FILE).show(getFragmentManager(), "importdialog");
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -179,7 +179,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 	}
 	
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
 		final OfflineRating rating = (OfflineRating) ratingsView.getItemAtPosition(acmi.position);
 		new ConfirmDialogFragment(new OnDialogResult() {
@@ -188,7 +188,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 				deleteRating(rating);
 				loadRatings();
 			}
-		}, R.string.rate_offline_confirmdelete, rating.getBeerName()).show(getSupportFragmentManager(), "dialog");
+		}, R.string.rate_offline_confirmdelete, rating.getBeerName()).show(getFragmentManager(), "dialog");
 		return super.onContextItemSelected(item);
 	}
 

@@ -14,10 +14,8 @@ import java.util.List;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -29,6 +27,8 @@ import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -121,7 +121,7 @@ public class UserRatingsFragment extends RateBeerFragment {
 			refreshRatings();
 			break;
 		case MENU_SORTBY:
-			new UserRatingsSortDialog(this).show(getSupportActivity().getSupportFragmentManager(), null);
+			new UserRatingsSortDialog(this).show(getActivity().getSupportFragmentManager(), null);
 			break;
 		}
 		return super.onOptionsItemSelected(item);

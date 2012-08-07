@@ -24,14 +24,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -41,6 +38,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -215,7 +215,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		@Override
 		public void onClick(View v) {
 			// Just close this fragment
-			getSupportActivity().getSupportFragmentManager().popBackStackImmediate();
+			getActivity().getSupportFragmentManager().popBackStackImmediate();
 		}
 	};
 	
@@ -267,7 +267,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 			getActivity().startService(i);
 
 			// Close this fragment
-			getSupportActivity().getSupportFragmentManager().popBackStackImmediate();
+			getActivity().getSupportFragmentManager().popBackStackImmediate();
 			
 			
 		}

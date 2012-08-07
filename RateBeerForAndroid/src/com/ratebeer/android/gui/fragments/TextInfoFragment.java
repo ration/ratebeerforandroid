@@ -70,7 +70,7 @@ public class TextInfoFragment extends RateBeerFragment {
 		@Override
 		public void onClick(View v) {
 			// Just close this fragment
-			getSupportFragmentManager().popBackStackImmediate();
+			getFragmentManager().popBackStackImmediate();
 		}
 	};
 

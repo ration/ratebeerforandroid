@@ -19,6 +19,7 @@ package com.ratebeer.android.gui.fragments;
 
 import java.util.ArrayList;
 
+import com.ratebeer.android.R;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -26,10 +27,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -38,13 +37,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.ratebeer.android.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
-import com.ratebeer.android.api.command.GetUserStatusCommand;
 import com.ratebeer.android.api.command.GetUserImageCommand;
+import com.ratebeer.android.api.command.GetUserStatusCommand;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SignIn;
@@ -134,7 +134,7 @@ public class DashboardFragment extends RateBeerFragment {
 						}));
 						getActivity().startService(i);
 					}
-				}).show(getSupportFragmentManager(), "dialog");
+				}).show(getFragmentManager(), "dialog");
 			}
 		});
 		showDrinkingStatus();

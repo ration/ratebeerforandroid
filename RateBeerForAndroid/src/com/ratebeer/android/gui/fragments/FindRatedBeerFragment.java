@@ -21,24 +21,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ratebeer.android.R;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
-import com.ratebeer.android.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -117,7 +117,7 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 
 	private void cancelScreen() {
 		Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
-		getSupportFragmentManager().popBackStack();
+		getFragmentManager().popBackStack();
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 				} else {
 					offline.update(item.beerId, item.beerName);
 					getRateBeerActivity().getHelper().getOfflineRatingDao().update(offline);
-					getSupportFragmentManager().popBackStack();
+					getFragmentManager().popBackStack();
 				}
 			} catch (SQLException e) {
 				cancelScreen();

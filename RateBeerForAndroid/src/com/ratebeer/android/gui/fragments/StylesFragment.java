@@ -20,17 +20,17 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ratebeer.android.R;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
-import com.ratebeer.android.R;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerFragment;

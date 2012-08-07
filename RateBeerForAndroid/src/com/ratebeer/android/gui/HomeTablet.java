@@ -24,16 +24,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.ActionBar;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.BeermailService;
@@ -66,9 +65,6 @@ public class HomeTablet extends RateBeerActivity {
 		singlePaneMargin = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE? 
 				SINGLE_PANE_MARGIN_LANDSCAPE: SINGLE_PANE_MARGIN_PORTRAIT;
 		switchLayout(false);
-		
-		ActionBar bar = getSupportActionBar();
-		bar.setDisplayUseLogoEnabled(true);
 		
 		showSearch();
         
@@ -177,6 +173,7 @@ public class HomeTablet extends RateBeerActivity {
 			trans.addToBackStack(null);
 		}
 		trans.commit();
+		getSupportActionBar().setDisplayHomeAsUpEnabled(!(contentFragment instanceof DashboardFragment));
 	}
 
 	/**
@@ -195,6 +192,7 @@ public class HomeTablet extends RateBeerActivity {
 			trans.addToBackStack(null);
 		}
 		trans.commit();
+		getSupportActionBar().setDisplayHomeAsUpEnabled(!(contentFragment instanceof DashboardFragment));
 	}
 
 	/**

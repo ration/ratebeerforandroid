@@ -1,12 +1,12 @@
 package com.ratebeer.android.gui.fragments;
 
+import com.ratebeer.android.R;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-
-import com.ratebeer.android.R;
 
 public class UserRatingsSortDialog extends DialogFragment {
 

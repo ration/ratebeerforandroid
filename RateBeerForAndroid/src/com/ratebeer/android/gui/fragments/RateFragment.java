@@ -23,17 +23,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ratebeer.android.R;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -43,7 +42,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ratebeer.android.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.components.PosterService;
@@ -259,7 +259,7 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 			if (offline == null) {
 				// This offline ID is no longer available; rating probably already uploaded
 				Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
-				getSupportFragmentManager().popBackStack();
+				getFragmentManager().popBackStack();
 				return;
 			}
 
@@ -383,9 +383,9 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 							// Ignore this; we probably don't have access to a database at all
 						}
 					}
-					getSupportFragmentManager().popBackStackImmediate();
+					getFragmentManager().popBackStackImmediate();
 				}
-			}, R.string.rate_offline_confirmdiscard).show(getSupportFragmentManager(), "dialog");
+			}, R.string.rate_offline_confirmdiscard).show(getFragmentManager(), "dialog");
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -588,7 +588,7 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 				}
 
 				// Close this fragment and open add availability screen
-				getSupportFragmentManager().popBackStack();
+				getFragmentManager().popBackStack();
 				getRateBeerActivity().load(new AddAvailabilityFragment(beerName, beerId));
 
 			} catch (NumberFormatException e) {

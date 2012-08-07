@@ -5,5 +5,5 @@
     android:versionCode="15"
     android:versionName="2.1.0">
 
-    <uses-sdk android:minSdkVersion="4" />
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16"/>
 </manifest>

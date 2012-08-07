@@ -17,18 +17,18 @@
  */
 package com.ratebeer.android.gui.fragments;
 
-import com.ratebeer.android.R;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.EditText;
 
-public class SetDrinkingStatusDialogFragment extends DialogFragment {
+import com.actionbarsherlock.app.SherlockDialogFragment;
+import com.ratebeer.android.R;
+
+public class SetDrinkingStatusDialogFragment extends SherlockDialogFragment {
 
 	private final OnDialogResult resultListener;
 

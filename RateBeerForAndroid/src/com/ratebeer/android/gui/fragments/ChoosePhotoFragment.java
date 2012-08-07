@@ -4,11 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 
+import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.ratebeer.android.R;
 
-public class ChoosePhotoFragment extends DialogFragment {
+public class ChoosePhotoFragment extends SherlockDialogFragment {
 
 	private BeerViewFragment beerViewFragment;
 

@@ -18,14 +18,14 @@
 package com.ratebeer.android.gui.components;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.Command;
@@ -37,7 +37,7 @@ import com.ratebeer.android.gui.SignIn;
 import com.ratebeer.android.gui.components.tasks.RateBeerTaskCaller;
 import com.ratebeer.android.gui.fragments.UserViewFragment;
 
-public class RateBeerFragment extends Fragment implements RateBeerTaskCaller {
+public class RateBeerFragment extends SherlockFragment implements RateBeerTaskCaller {
 
 	protected boolean showSignInMenuItem = true;
 

@@ -20,6 +20,7 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ratebeer.android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,12 +28,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.SearchRecentSuggestions;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -42,19 +41,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ratebeer.android.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.SearchBeersCommand;
+import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 import com.ratebeer.android.api.command.SearchBrewersCommand;
 import com.ratebeer.android.api.command.SearchBrewersCommand.BrewerSearchResult;
-import com.ratebeer.android.api.command.UpcSearchCommand;
-import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 import com.ratebeer.android.api.command.SearchPlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.api.command.SearchUsersCommand;
 import com.ratebeer.android.api.command.SearchUsersCommand.UserSearchResult;
+import com.ratebeer.android.api.command.UpcSearchCommand;
 import com.ratebeer.android.api.command.UpcSearchCommand.UpcSearchResult;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SearchHistoryProvider;
@@ -248,7 +248,7 @@ public class SearchFragment extends RateBeerFragment {
 						Toast.makeText(getActivity(), R.string.app_nomarket, Toast.LENGTH_LONG).show();
 					}
 				}
-			}, R.string.app_scannernotfound, "").show(getSupportFragmentManager(), "installscanner");
+			}, R.string.app_scannernotfound, "").show(getFragmentManager(), "installscanner");
 		}
 	}
 
@@ -379,10 +379,10 @@ public class SearchFragment extends RateBeerFragment {
 		new ConfirmDialogFragment(new OnDialogResult() {
 			@Override
 			public void onConfirmed() {
-				getSupportFragmentManager().popBackStack();
+				getFragmentManager().popBackStack();
 				getRateBeerActivity().load(new AddUpcCodeFragment(code), false);
 			}
-		}, R.string.search_nobeerswithbarcode, code).show(getSupportFragmentManager(), "addupccode");
+		}, R.string.search_nobeerswithbarcode, code).show(getFragmentManager(), "addupccode");
 	}
 
 	private void publishBeerResults(ArrayList<BeerSearchResult> result) {

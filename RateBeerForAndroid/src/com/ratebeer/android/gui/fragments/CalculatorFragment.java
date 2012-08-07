@@ -21,6 +21,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ratebeer.android.R;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
 public class CalculatorFragment extends RateBeerFragment {

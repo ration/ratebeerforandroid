@@ -21,11 +21,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.widget.FrameLayout;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -44,9 +47,10 @@ import com.ratebeer.android.gui.components.tasks.RateBeerTask;
 import com.ratebeer.android.gui.components.tasks.RateBeerTaskCaller;
 import com.ratebeer.android.gui.components.tasks.SinglePoolTaskExecutor;
 import com.ratebeer.android.gui.components.tasks.TaskExecutor;
+import com.ratebeer.android.gui.fragments.DashboardFragment;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
-public abstract class RateBeerActivity extends FragmentActivity implements OnProgressChangedListener {
+public abstract class RateBeerActivity extends SherlockFragmentActivity implements OnProgressChangedListener {
 
 	// Action bar items provided by RateBeerFragment
 	public static final int MENU_REFRESH = 9801;
@@ -69,7 +73,7 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 
 	// Google Maps container management
 	private MapView mapViewInstance = null;
-
+	
 	public RateBeerActivity() {
 		if (Build.VERSION.SDK_INT >= 11) { // 11 = Build.VERSION_CODES.HONEYCOMB
 			// SinglePoolTaskExecutor encapsulates the new AsyncTask.THREAD_POOL_EXECUTOR
@@ -90,6 +94,11 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 		
 		super.onCreate(savedInstanceState);
 		setContentView(layoutResID);
+		
+		// Set up action bar
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO,
+				ActionBar.DISPLAY_SHOW_TITLE);
+		getSupportFragmentManager().addOnBackStackChangedListener(onBackStackChanged);
 		
 		// DEBUG: Attach to ViewServer in order to use the HierarchyViewer tool
 		//ViewServer.get(this).addWindow(this);
@@ -209,6 +218,14 @@ public abstract class RateBeerActivity extends FragmentActivity implements OnPro
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	private OnBackStackChangedListener onBackStackChanged = new OnBackStackChangedListener() {
+		@Override
+		public void onBackStackChanged() {
+			Fragment now = getSupportFragmentManager().findFragmentById(R.id.frag_content);
+			getSupportActionBar().setDisplayHomeAsUpEnabled(now != null && !(now instanceof DashboardFragment));
+		}
+	};
 
 	/**
 	 * Called when a task (notably, but not exclusively, a {@link RateBeerTask}) starts or finishes progress. The activity's progress indicator (i.e.

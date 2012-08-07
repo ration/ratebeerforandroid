@@ -23,10 +23,10 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.util.Log;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.BeermailService;
@@ -52,9 +52,6 @@ public class HomePhone extends RateBeerActivity {
 
 	@Override
 	public void initialize(Bundle savedInstanceState) {
-
-		// Set up action bar
-		getSupportActionBar().setDisplayUseLogoEnabled(true);
 		
 		if (savedInstanceState == null) {
 			if (getIntent() != null && getIntent().hasExtra(SearchManager.QUERY)) {
@@ -137,6 +134,7 @@ public class HomePhone extends RateBeerActivity {
 			trans.addToBackStack(null);
 		}
 		trans.commit();
+		getSupportActionBar().setDisplayHomeAsUpEnabled(!(fragment instanceof DashboardFragment));
 	}
 
 	@Override

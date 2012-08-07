@@ -26,15 +26,19 @@ the GNU GPL v3 license as well. Thanks for sharing!
 
 RateBeer for Android contains (parts of) other projects:
 
-ActionBarSherlock
+ActionBarSherlock 4.1
     by Jake Wharton
     Apache License Version 2.0
     http://actionbarsherlock.com/
-CommonsWare Android Components - MergeAdapter
-    by Mark Murphy of CommonsWare, LLC
-    Apache Software License 2.0
-    https://github.com/commonsguy/cwac-merge
-smooth-wheel
+OrmLite
+    by Gray Watson
+    ISC license
+    http://ormlite.com/
+Android Compatibility Lib + Google Maps Hack
+	by Pete Doyle
+	Apache Software License 2.0
+	https://github.com/petedoyle/android-support-v4-googlemaps
+smooth-wheel (heavily modified)
     by Qixiang Chen of Sinkpoint
     Apache Software License 2.0
     http://code.google.com/p/smooth-wheel/
@@ -46,14 +50,14 @@ ViewPagerIndicator
     by Jake Wharton
     Apache License Version 2.0
     http://viewpagerindicator.com/
+CommonsWare Android Components - MergeAdapter
+    by Mark Murphy of CommonsWare, LLC
+    Apache Software License 2.0
+    https://github.com/commonsguy/cwac-merge
 bug.png
     by gentleface.com
     Attribution-NonCommercial 3.0 Unported
     http://www.gentleface.com/
-OrmLite
-    by Gray Watson
-    ISC license
-    http://ormlite.com/
 CheckableRelativeLayout
     by Cédric Caron of MarvinLabs
     Public Domain

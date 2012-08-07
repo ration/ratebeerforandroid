@@ -21,18 +21,17 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.List;
 
+import com.ratebeer.android.R;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -41,7 +40,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ratebeer.android.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -93,7 +93,7 @@ public class MailsFragment extends RateBeerFragment {
 		item.setIcon(R.drawable.ic_action_refresh);
 		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuItem item2 = menu.add(Menu.NONE, MENU_SEND, MENU_SEND, R.string.mail_sendmail);
-		item2.setIcon(R.drawable.ic_action_add);
+		item2.setIcon(R.drawable.ic_action_addmail);
 		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -177,7 +177,7 @@ public class MailsFragment extends RateBeerFragment {
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
 		final BeerMail mail = (BeerMail) mailsView.getItemAtPosition(acmi.position);
 		switch (item.getItemId()) {
@@ -188,7 +188,7 @@ public class MailsFragment extends RateBeerFragment {
 				public void onConfirmed() {
 					execute(new DeleteBeerMailCommand(getRateBeerActivity().getApi(), mail));
 				}
-			}, R.string.mail_confirmdelete, mail.getSenderName()).show(getSupportFragmentManager(), "dialog");
+			}, R.string.mail_confirmdelete, mail.getSenderName()).show(getFragmentManager(), "dialog");
 			break;
 		case MENU_REPLY:
 			// Start the mail reply screen

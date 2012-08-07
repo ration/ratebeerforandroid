@@ -20,20 +20,20 @@ package com.ratebeer.android.gui.fragments;
 import java.sql.SQLException;
 import java.text.DateFormat;
 
+import com.ratebeer.android.R;
 import android.os.Bundle;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ratebeer.android.R;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -129,7 +129,7 @@ public class MailViewFragment extends RateBeerFragment {
 		item2.setIcon(R.drawable.ic_action_reply);
 		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuItem item3 = menu.add(Menu.NONE, MENU_DELETE, MENU_DELETE, R.string.mail_delete);
-		item3.setIcon(R.drawable.ic_action_delete);
+		item3.setIcon(R.drawable.ic_action_discard);
 		item3.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -149,7 +149,7 @@ public class MailViewFragment extends RateBeerFragment {
 						execute(new DeleteBeerMailCommand(getRateBeerActivity().getApi(), mail));
 					}
 				}
-			}, R.string.mail_confirmdelete, mail.getSenderName()).show(getSupportFragmentManager(), "dialog");
+			}, R.string.mail_confirmdelete, mail.getSenderName()).show(getFragmentManager(), "dialog");
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -175,7 +175,7 @@ public class MailViewFragment extends RateBeerFragment {
 			// Remove the mail from the database and close the screen
 			try {
 				getRateBeerActivity().getHelper().getBeerMailDao().delete(dbmCommand.getMail());
-				getSupportFragmentManager().popBackStack();
+				getFragmentManager().popBackStack();
 			} catch (SQLException e) {
 				publishException(null, getString(R.string.mail_notavailable));
 			}

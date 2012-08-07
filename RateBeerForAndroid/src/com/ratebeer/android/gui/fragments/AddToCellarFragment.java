@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.gui.fragments;
 
+import com.ratebeer.android.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,7 +28,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
@@ -116,7 +116,7 @@ public class AddToCellarFragment extends RateBeerFragment {
 		@Override
 		public void onClick(View v) {
 			// Just close this fragment
-			getSupportFragmentManager().popBackStack();
+			getFragmentManager().popBackStack();
 		}
 	};
 	
@@ -135,7 +135,7 @@ public class AddToCellarFragment extends RateBeerFragment {
 			getActivity().startService(i);
 
 			// Close this fragment
-			getSupportFragmentManager().popBackStack();
+			getFragmentManager().popBackStack();
 			
 		}
 	};

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ratebeer.android.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.location.Address;
@@ -28,12 +29,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -42,9 +41,10 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
-import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -52,8 +52,8 @@ import com.ratebeer.android.api.command.GetPlacesAroundCommand;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 import com.ratebeer.android.app.location.LocationUtils;
 import com.ratebeer.android.app.location.MyLocation;
-import com.ratebeer.android.app.location.PlaceOverlayItem;
 import com.ratebeer.android.app.location.MyLocation.LocationResult;
+import com.ratebeer.android.app.location.PlaceOverlayItem;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.app.location.TouchableMapViewPager;
@@ -137,7 +137,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			refreshPlaces();
 			break;
 		case MENU_LOCATION:
-			new SelectLocationDialog(this).show(getSupportFragmentManager(), "SelectLocationDialog");
+			new SelectLocationDialog(this).show(getFragmentManager(), "SelectLocationDialog");
 			break;
 		}
 		return super.onOptionsItemSelected(item);

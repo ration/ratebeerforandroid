@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
 	<style name="Theme.RateBeer" parent="@style/Theme.Sherlock.Light">
 		<item name="android:textAppearance">@style/DefaultTextAppearance</item>
 		<item name="android:windowBackground">@color/BackgroundLight</item>
-        <item name="abDisplayOptions">showHome|useLogo</item>
-        <item name="abLogo">@drawable/logo</item>
-        <item name="vpiTabPageIndicatorStyle">@style/TabPageIndicator</item>
-        <item name="vpiTabTextStyle">@style/TabPageIndicatorText</item>
-        <item name="selectableItemBackground">@drawable/ab_background</item>
+		<item name="vpiTabPageIndicatorStyle">@style/TabPageIndicator</item>
+		<item name="vpiTabTextStyle">@style/TabPageIndicatorText</item>
+		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+        <item name="android:actionBarItemBackground">@drawable/ab_background</item>
+        <item name="actionBarItemBackground">@drawable/ab_background</item>
 	</style>
+
 	<style name="Theme.RateBeer.SignIn" parent="@style/Theme.Sherlock">
-        <item name="windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
+		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowBackground">@color/BackgroundDark</item>
 	</style>
+
+	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.Light.ActionBar">
+		<item name="background">#fff</item>
+		<item name="android:background">#fff</item>
+	</style>
+
 </resources>

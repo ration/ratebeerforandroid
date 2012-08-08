@@ -20,7 +20,6 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -42,7 +40,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -64,7 +64,6 @@ import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import com.viewpagerindicator.TabPageIndicator;
-import com.viewpagerindicator.TitleProvider;
 
 public class SearchFragment extends RateBeerFragment {
 
@@ -602,7 +601,7 @@ public class SearchFragment extends RateBeerFragment {
 		TextView name, ratings;
 	}
 
-	private class SearchPagerAdapter extends PagerAdapter implements TitleProvider {
+	private class SearchPagerAdapter extends PagerAdapter {
 
 		private ListView pagerBeersView;
 		private ListView pagerBrewersView;
@@ -675,7 +674,7 @@ public class SearchFragment extends RateBeerFragment {
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
 				return getActivity().getString(R.string.search_beers).toUpperCase();

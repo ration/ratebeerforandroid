@@ -256,8 +256,8 @@ public class BeermailService extends RateBeerService {
 					Intent viewIntent = new Intent(this, Home.class);
 					viewIntent.setAction(ACTION_VIEWBEERMAIL);
 					viewIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
-					builder.addAction(R.drawable.ic_stat_viewmail, getString(R.string.mail_reply),
-							PendingIntent.getActivity(this, 0, replyIntent, 0));
+					builder.addAction(R.drawable.ic_stat_viewmail, getString(R.string.mail_view),
+							PendingIntent.getActivity(this, 0, viewIntent, 0));
 				}
 
 				// Create notification, apply settings and release

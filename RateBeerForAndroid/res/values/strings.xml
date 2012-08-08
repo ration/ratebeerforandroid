@@ -254,6 +254,7 @@
 	<string name="mail_relpied">replied</string>
 	<string name="mail_new">new</string>
 	<string name="mail_read">read</string>
+	<string name="mail_view">View</string>
 	<string name="mail_reply">Reply</string>
 	<string name="mail_sendto">Send to:</string>
 	<string name="mail_subject">Subject:</string>

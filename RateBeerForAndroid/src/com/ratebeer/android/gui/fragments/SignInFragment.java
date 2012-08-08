@@ -33,7 +33,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
-import com.ratebeer.android.api.command.GetUserStatusCommand;
+import com.ratebeer.android.api.command.GetUserPremiumStatusCommand;
 import com.ratebeer.android.api.command.SignInCommand;
 import com.ratebeer.android.api.command.SignOutCommand;
 import com.ratebeer.android.gui.SignIn;
@@ -148,15 +148,15 @@ public class SignInFragment extends RateBeerFragment {
 			String password = passwordEdit.getText().toString().trim();
 			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(signInCommand.getUserId(), username, 
 					password, "", false));
-			// Try to retrieve the user status as well
-			execute(new GetUserStatusCommand(getRateBeerActivity().getApi()));
-		} else if (result.getCommand().getMethod() == ApiMethod.GetUserStatus) {
+			// Try to retrieve the user's account status as well
+			execute(new GetUserPremiumStatusCommand(getRateBeerActivity().getApi()));
+		} else if (result.getCommand().getMethod() == ApiMethod.GetUserPremiumStatus) {
 			// We also have a user status now; update the stored user settings
-			GetUserStatusCommand getCommand = (GetUserStatusCommand) result.getCommand();
+			GetUserPremiumStatusCommand getCommand = (GetUserPremiumStatusCommand) result.getCommand();
 			Toast.makeText(getRateBeerActivity(), R.string.signin_signinsuccess, Toast.LENGTH_LONG).show();
 			UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
 			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
-					ex.getPassword(), getCommand.getDrinkingStatus(), getCommand.isPremium()));
+					ex.getPassword(), "", getCommand.isPremium()));
 			getActivity().finish();
 		}
 	}

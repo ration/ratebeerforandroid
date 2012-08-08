@@ -28,38 +28,37 @@ import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class GetUserStatusCommand extends HtmlCommand {
+public class GetDrinkingStatusCommand extends HtmlCommand {
 	
 	private String nowDrinking;
-	private boolean isPremium;
 	
-	public GetUserStatusCommand(RateBeerApi api) {
-		super(api, ApiMethod.GetUserStatus);
+	public GetDrinkingStatusCommand(RateBeerApi api) {
+		super(api, ApiMethod.GetDrinkingStatus);
 	}
 		
 	public String getDrinkingStatus() {
 		return nowDrinking;
 	}
 
-	public boolean isPremium() {
-		return isPremium;
-	}
-
 	@Override
 	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/inbox");
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/user/" + getUserSettings().getUserID() + "/pics/");
 	}
 
 	@Override
 	protected void parse(String html) throws JSONException, ApiException {
 
-		// Whether this user has a premium account
-		int premiumStart = html.indexOf("<span class=premie>&nbsp;P&nbsp;</span>");
-		isPremium = (premiumStart >= 0);
-
-		// Also look for the drinking status
-		// TODO: Repair
+		// Look for the drinking status
 		nowDrinking = "";
+		int drinkingStart = html.indexOf("<span class=\"userIsDrinking\">");
+		if (drinkingStart >= 0) {
+			String beerStartText = "is drinking";
+			int beerStart = html.indexOf(beerStartText, drinkingStart);
+			int beerEnd = html.indexOf("<", beerStart + beerStartText.length());
+			if (beerStart >= 0) {
+				nowDrinking = HttpHelper.cleanHtml(html.substring(beerStart, beerEnd).trim());
+			}
+		}
 
 	}
 	

@@ -42,7 +42,6 @@ import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -53,6 +52,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.ratebeer.android.R;
@@ -79,7 +79,6 @@ import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 import com.viewpagerindicator.TabPageIndicator;
-import com.viewpagerindicator.TitleProvider;
 
 public class BeerViewFragment extends RateBeerFragment {
 
@@ -801,7 +800,7 @@ public class BeerViewFragment extends RateBeerFragment {
 
     }
     
-	private class BeerPagerAdapter extends PagerAdapter implements TitleProvider {
+	private class BeerPagerAdapter extends PagerAdapter {
 
 		private View pagerDetailsView;
 		private ListView pagerRecentRatingsView;
@@ -900,7 +899,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
 				return getActivity().getString(R.string.app_details).toUpperCase();

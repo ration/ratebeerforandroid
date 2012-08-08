@@ -23,7 +23,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -33,7 +32,6 @@ import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -45,9 +43,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
@@ -65,7 +65,6 @@ import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.viewpagerindicator.TabPageIndicator;
-import com.viewpagerindicator.TitleProvider;
 
 public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
@@ -434,7 +433,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		TextView score, beer, timerecorded;
 	}
 
-	private class PlacePagerAdapter extends PagerAdapter implements TitleProvider {
+	private class PlacePagerAdapter extends PagerAdapter {
 
 		private View pagerDetailsView;
 		private View pagerCheckinsView;
@@ -469,7 +468,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
 				return getActivity().getString(R.string.app_details).toUpperCase();

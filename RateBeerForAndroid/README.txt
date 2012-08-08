@@ -46,6 +46,10 @@ Android MapView Balloons
     by Jeff Gilfelt et al.
     Apache Software License 2.0
     https://github.com/jgilfelt/android-mapviewballoons
+Android-Universal-Image-Loader
+    by Sergey Tarasevich
+    BSD 3-clause
+    https://github.com/nostra13/Android-Universal-Image-Loader
 ViewPagerIndicator
     by Jake Wharton
     Apache License Version 2.0

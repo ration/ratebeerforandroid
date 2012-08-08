@@ -17,29 +17,57 @@
  */
 package com.ratebeer.android.gui;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.BootReceiver;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
-
-public class PreferencesInterface extends PreferenceActivity {
+public class PreferencesInterface extends SherlockPreferenceActivity {
 
 	private SharedPreferences prefs;
+
+	public PreferencesInterface() {
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO,
+				ActionBar.DISPLAY_SHOW_TITLE);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 		addPreferencesFromResource(R.xml.pref_interface);
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(onPreferenceChanged);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// Home button click in the action bar
+			Intent startActivity = null;
+			if (RateBeerForAndroid.isTablet(getResources())) {
+				startActivity = new Intent(this, HomeTablet.class);
+			} else {
+				startActivity = new Intent(this, HomePhone.class);
+			}
+			startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			startActivity(startActivity);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

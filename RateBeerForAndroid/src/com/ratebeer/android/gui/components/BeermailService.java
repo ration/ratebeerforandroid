@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.gui.components;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,11 +25,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.http.client.ClientProtocolException;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.Message;
 import android.os.Messenger;
@@ -36,10 +41,14 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
+import com.jakewharton.notificationcompat2.NotificationCompat2;
+import com.jakewharton.notificationcompat2.NotificationCompat2.Builder;
+import com.jakewharton.notificationcompat2.NotificationCompat2.InboxStyle;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
 import com.ratebeer.android.api.command.GetBeerMailCommand;
@@ -52,6 +61,7 @@ public class BeermailService extends RateBeerService {
 
 	public static final String ACTION_VIEWBEERMAILS = "VIEW_BEERMAILS";
 	public static final String ACTION_VIEWBEERMAIL = "VIEW_BEERMAIL";
+	public static final String ACTION_REPLYBEERMAIL = "REPLY_BEERMAIL";
 	public static final String EXTRA_MESSENGER = "MESSENGER";
 	public static final String EXTRA_MAIL = "MAIL";
 
@@ -88,8 +98,7 @@ public class BeermailService extends RateBeerService {
 		RateBeerForAndroid app = (RateBeerForAndroid) getApplication();
 		ApplicationSettings settings = app.getSettings();
 		if (settings.getUserSettings() == null) {
-			Log.d(RateBeerForAndroid.LOG_NAME, "Canceling " + intent.getAction()
-					+ " intent because there are no user settings known.");
+			Log.d(RateBeerForAndroid.LOG_NAME, "Canceling BeerMail check intent because there are no user settings known.");
 			return;
 		}
 
@@ -103,9 +112,11 @@ public class BeermailService extends RateBeerService {
 
 			Log.d(RateBeerForAndroid.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
 
+			final int MAX_CONTENTLENGTH = 50;
 			int unreadMails = 0;
 			BeerMail firstUnread = null;
 			List<String> mailBy = new ArrayList<String>();
+			List<String> mailLines = new ArrayList<String>();
 			try {
 
 				Dao<BeerMail, Integer> dao = getHelper().getBeerMailDao();
@@ -144,6 +155,7 @@ public class BeermailService extends RateBeerService {
 					if (!beerMail.isRead()) {
 						unreadMails++;
 						mailBy.add(beerMail.getSenderName());
+						mailLines.add(beerMail.getSomeContent(MAX_CONTENTLENGTH ));
 						if (firstUnread == null) {
 							firstUnread = beerMail;
 						}
@@ -193,6 +205,7 @@ public class BeermailService extends RateBeerService {
 			if (!intent.hasExtra(EXTRA_MESSENGER) && unreadMails > 0) {
 
 				// Prepare senders text
+				String newMailsText = getString(R.string.app_newmails, unreadMails);
 				String mailByText = "";
 				final int MAX_SENDERS = 3;
 				for (int i = 0; i < mailBy.size() && i < MAX_SENDERS; i++) {
@@ -202,21 +215,63 @@ public class BeermailService extends RateBeerService {
 				if (mailBy.size() > MAX_SENDERS) {
 					mailByText += getString(R.string.app_andothers);
 				}
+				
+				// Set notification action target
+				Intent contentIntent = new Intent(this, Home.class);
+				contentIntent.setAction(ACTION_VIEWBEERMAILS);
 
-				// Show notification about the new mails
-				Intent i = new Intent(this, Home.class);
-				String newMailText;
-				if (unreadMails > 1) {
-					newMailText = getString(R.string.app_newmails, unreadMails);
-					i.setAction(ACTION_VIEWBEERMAILS);
-				} else {
-					// Open directly into the single unread mail
-					newMailText = getString(R.string.app_newmail);
-					i.setAction(ACTION_VIEWBEERMAIL);
-					i.putExtra(EXTRA_MAIL, firstUnread);
+				// Retrieve user of some sender to show with the notification
+				Bitmap avatar = null;
+				try {
+					avatar = BitmapFactory.decodeStream(HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/"
+							+ firstUnread.getSenderName() + ".jpg"));
+				} catch (ClientProtocolException e) {
+				} catch (IOException e) {
+				} catch (Exception e) {
 				}
-				createNotification(NOTIFY_NEWBEERMAIL, newMailText,
-						getString(R.string.app_by, mailByText), true, settings.getVibrateOnNotification(), i);
+				
+				// Build old style notification
+				Builder builder = new NotificationCompat2.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
+						.setTicker(getString(R.string.app_newmail)).setContentTitle(newMailsText)
+						.setContentText(mailByText)
+						.setContentIntent(PendingIntent.getActivity(this, 0, contentIntent, 0));
+				if (avatar != null) {
+					builder.setLargeIcon(avatar);
+				}
+				
+				// Enrich notification with Jelly Bean inbox style
+				InboxStyle inbox = new NotificationCompat2.InboxStyle(builder).setBigContentTitle(newMailsText);
+				for (int i = 0; i < mailBy.size() && i < MAX_SENDERS; i++) {
+					inbox.addLine(mailBy.get(i) + ": " + mailLines.get(i));
+				}
+				if (unreadMails - 3 > 0) {
+					inbox.setSummaryText(getString(R.string.app_moremail, Integer.toString(unreadMails - 3)));
+				}
+				if (unreadMails == 1) {
+					Intent replyIntent = new Intent(this, Home.class);
+					replyIntent.setAction(ACTION_REPLYBEERMAIL);
+					replyIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
+					builder.addAction(R.drawable.ic_stat_reply, getString(R.string.mail_reply),
+							PendingIntent.getActivity(this, 0, replyIntent, 0));
+					Intent viewIntent = new Intent(this, Home.class);
+					viewIntent.setAction(ACTION_VIEWBEERMAIL);
+					viewIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
+					builder.addAction(R.drawable.ic_stat_viewmail, getString(R.string.mail_reply),
+							PendingIntent.getActivity(this, 0, replyIntent, 0));
+				}
+
+				// Create notification, apply settings and release
+				Notification notification = inbox.build();
+				notification.flags |= Notification.FLAG_AUTO_CANCEL;
+				if (settings.getVibrateOnNotification()) {
+					notification.defaults = Notification.DEFAULT_VIBRATE;
+				}
+				notification.ledARGB = 0xff003366;
+				notification.ledOnMS = 300;
+				notification.ledOffMS = 1000;
+				notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+				notificationManager.notify(NOTIFY_NEWBEERMAIL, notification);
+				
 			}
 
 			// If requested, call back the messenger, i.e. the calling activity
@@ -246,37 +301,6 @@ public class BeermailService extends RateBeerService {
 						+ "'");
 			}
 		}
-	}
-
-	private void createNotification(int id, String line1, String line2, boolean autoCancel, boolean vibrate, 
-			Intent contentIntent) {
-
-		// Set up notification (right now) with two lines of text (and optionally an intent)
-		Notification notification = new Notification(R.drawable.ic_stat_notification, line1, System.currentTimeMillis());
-		
-		// Allow removal of the notification?
-		if (autoCancel) {
-			notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		}
-
-		// Vibrate?
-		if (vibrate) {
-			notification.defaults = Notification.DEFAULT_VIBRATE;
-		}
-		
-		// Add coloured light
-		notification.ledARGB = 0xff003366;
-		notification.ledOnMS = 300;
-		notification.ledOffMS = 1000;
-		notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-		
-		// Set text
-		notification.setLatestEventInfo(getApplicationContext(), line1, line2,
-				PendingIntent.getActivity(this, 0, contentIntent, 0));
-
-		// Send notification
-		notificationManager.notify(id, notification);
-
 	}
 
 }

@@ -40,6 +40,7 @@ import com.ratebeer.android.gui.fragments.MailViewFragment;
 import com.ratebeer.android.gui.fragments.MailsFragment;
 import com.ratebeer.android.gui.fragments.RateFragment;
 import com.ratebeer.android.gui.fragments.SearchFragment;
+import com.ratebeer.android.gui.fragments.SendMailFragment;
 
 public class HomePhone extends RateBeerActivity {
 
@@ -81,6 +82,9 @@ public class HomePhone extends RateBeerActivity {
 			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAIL)) {
 				// Open the beermail screen to a specific mail
 				load(new MailViewFragment(getIntent().getExtras()));
+			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_REPLYBEERMAIL)) {
+				// Open the beermail reply screen to a specific mail
+				load(new SendMailFragment(getIntent().getExtras()));
 			} else {
 				// Normal startup; show dashboard
 				load(new DashboardFragment());

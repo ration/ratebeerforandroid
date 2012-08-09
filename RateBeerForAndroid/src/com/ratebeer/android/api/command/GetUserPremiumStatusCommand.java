@@ -28,17 +28,12 @@ import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 
-public class GetUserStatusCommand extends HtmlCommand {
+public class GetUserPremiumStatusCommand extends HtmlCommand {
 	
-	private String nowDrinking;
 	private boolean isPremium;
 	
-	public GetUserStatusCommand(RateBeerApi api) {
-		super(api, ApiMethod.GetUserStatus);
-	}
-		
-	public String getDrinkingStatus() {
-		return nowDrinking;
+	public GetUserPremiumStatusCommand(RateBeerApi api) {
+		super(api, ApiMethod.GetUserPremiumStatus);
 	}
 
 	public boolean isPremium() {
@@ -56,10 +51,6 @@ public class GetUserStatusCommand extends HtmlCommand {
 		// Whether this user has a premium account
 		int premiumStart = html.indexOf("<span class=premie>&nbsp;P&nbsp;</span>");
 		isPremium = (premiumStart >= 0);
-
-		// Also look for the drinking status
-		// TODO: Repair
-		nowDrinking = "";
 
 	}
 	

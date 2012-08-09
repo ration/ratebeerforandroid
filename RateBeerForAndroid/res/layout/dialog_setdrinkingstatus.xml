@@ -12,7 +12,7 @@
 		android:layout_marginTop="8dip"
 		android:layout_marginRight="10dip"
 		android:textSize="20dip"
-		android:textColor="@color/LabelColorLight"
+		android:textColor="@color/DialogTextColor"
 		android:text="@string/app_nowdrinking" />
 		
 	<EditText 
@@ -29,7 +29,7 @@
 		android:layout_below="@id/newstatus"
 		android:layout_marginTop="8dip"
 		android:textSize="18dip"
-		android:textColor="@color/LabelColorLight"
+		android:textColor="@color/DialogTextColor"
 		android:text="@string/app_settingdrinking_expl" />
 		
 </RelativeLayout>

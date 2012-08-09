@@ -98,17 +98,21 @@ public class RateBeerFragment extends SherlockFragment implements RateBeerTaskCa
 	private RateBeerTaskCaller signOutHandler = new RateBeerTaskCaller() {
 		@Override
 		public void onTaskSuccessResult(CommandSuccessResult result) {
-			// Successfully signed out
 			if (getRateBeerActivity() == null) {
 				// No longer visible
 				return;
 			}
+			// Successfully signed out
 			Toast.makeText(getRateBeerActivity(), R.string.signin_signoutsuccess, Toast.LENGTH_LONG).show();
 			getRateBeerActivity().getSettings().saveUserSettings(null);
 			getRateBeerActivity().invalidateOptionsMenu();
 		}
 		@Override
 		public void onTaskFailureResult(CommandFailureResult result) {
+			if (getRateBeerActivity() == null) {
+				// No longer visible
+				return;
+			}
 			// Sign out failure
 			String message = "";
 			switch (result.getException().getType()) {

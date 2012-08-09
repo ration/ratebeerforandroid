@@ -58,6 +58,9 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 
+import android.util.Log;
+
+import com.ratebeer.android.app.RateBeerForAndroid;
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 public class HttpHelper {
@@ -70,6 +73,7 @@ public class HttpHelper {
 	private static final String URL_SIGNIN = "http://www.ratebeer.com/Signin_r.asp";
 
 	private static DefaultHttpClient httpClient = null;
+	private static int signInRetries = 0;
 
 	private static void ensureClient() {
 		if (httpClient == null) {
@@ -110,7 +114,8 @@ public class HttpHelper {
 			}
 		}
 
-		throw new IOException("ratebeer.com offline?");
+		throw new IOException("We're tried " + RETRIES
+				+ " times, but ratebeer.com is offline or the user does not have a (stable) connection");
 	}
 
 	public static String makeRBPost(String url, List<? extends NameValuePair> parameters)
@@ -131,6 +136,7 @@ public class HttpHelper {
 
 	public static int signIn(String username, String password) throws ApiException, UnsupportedEncodingException {
 		ensureClient();
+		signInRetries++;
 
 		// Set up POST request
 		HttpPost post = new HttpPost(URL_SIGNIN);
@@ -144,18 +150,30 @@ public class HttpHelper {
 				int code = response.getStatusLine().getStatusCode();
 				if (code == HttpStatus.SC_MOVED_TEMPORARILY) {
 					if (isSignedIn()) {
+						signInRetries = 0;
 						// Find the user ID in the redirect response header
 						// This should be encoded as a Location header, like
 						Header header = response.getFirstHeader("Location");
 						if (header != null && header.getValue().indexOf(uidText) >= 0) {
-							return Integer.parseInt(header.getValue().substring(header.getValue().indexOf(uidText) + uidText.length()));
+							return Integer.parseInt(header.getValue().substring(
+									header.getValue().indexOf(uidText) + uidText.length()));
 						}
 						throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
 								"Tried to sign in but the response header did not include the user ID. Header was: "
 										+ header.toString());
 					}
-					throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
-							"Tried to sign in but no (login) cookies were returned by the server");
+					// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy
+					// authentication/cookie mess
+					if (signInRetries > RETRIES) {
+						// Stop retrying
+						signInRetries = 0;
+						throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
+								"Tried to sign in but no (login) cookies were returned by the server");
+					}
+					httpClient = null;
+					Log.d(RateBeerForAndroid.LOG_NAME,
+							"Tried to sign in but no (login) cookies were returned by the server: try to recover now...");
+					signIn(username, password);
 				}
 				// Just try again
 			} catch (NumberFormatException e) {

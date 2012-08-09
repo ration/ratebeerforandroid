@@ -28,7 +28,6 @@ import android.support.v4.view.ViewPager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -39,6 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -52,7 +52,6 @@ import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import com.viewpagerindicator.TabPageIndicator;
-import com.viewpagerindicator.TitleProvider;
 
 public class CellarViewFragment extends RateBeerFragment {
 
@@ -269,7 +268,7 @@ public class CellarViewFragment extends RateBeerFragment {
 		TextView beer, memo, quantity, vintage;
 	}
 
-	private class CellarPagerAdapter extends PagerAdapter implements TitleProvider {
+	private class CellarPagerAdapter extends PagerAdapter {
 
 		private ListView pagerWantsView;
 		private ListView pagerHavesView;
@@ -296,7 +295,7 @@ public class CellarViewFragment extends RateBeerFragment {
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
 				return getActivity().getString(R.string.cellar_wants).toUpperCase();

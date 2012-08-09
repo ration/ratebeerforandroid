@@ -18,8 +18,8 @@
 package com.ratebeer.android.gui.fragments;
 
 import java.util.ArrayList;
+import java.util.Date;
 
-import com.ratebeer.android.R;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -28,7 +28,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -38,13 +37,15 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
+import com.ratebeer.android.api.command.GetDrinkingStatusCommand;
 import com.ratebeer.android.api.command.GetUserImageCommand;
-import com.ratebeer.android.api.command.GetUserStatusCommand;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SignIn;
@@ -129,7 +130,7 @@ public class DashboardFragment extends RateBeerFragment {
 							public void handleMessage(Message msg) {
 								// Callback from the poster service; just refresh the drinking status
 								// if (msg.arg1 == PosterService.RESULT_SUCCESS)
-								refreshDrinkingStatus();
+								execute(new GetDrinkingStatusCommand(getRateBeerActivity().getApi()));
 							}
 						}));
 						getActivity().startService(i);
@@ -243,12 +244,12 @@ public class DashboardFragment extends RateBeerFragment {
 		if (getActivity() == null) {
 			return;
 		}
-		if (result.getCommand().getMethod() == ApiMethod.GetUserStatus) {
-			GetUserStatusCommand getCommand = (GetUserStatusCommand) result.getCommand();
+		if (result.getCommand().getMethod() == ApiMethod.GetDrinkingStatus) {
+			GetDrinkingStatusCommand getCommand = (GetDrinkingStatusCommand) result.getCommand();
 			// Override the user settings, in which the drinking status is contained
 			UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
 			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
-					ex.getPassword(), getCommand.getDrinkingStatus(), getCommand.isPremium()));
+					ex.getPassword(), getCommand.getDrinkingStatus(), ex.isPremium(), new Date()));
 			showDrinkingStatus();
 		} else if (result.getCommand().getMethod() == ApiMethod.GetUserImage) {
 			GetUserImageCommand userImageCommand = (GetUserImageCommand) result.getCommand();
@@ -264,8 +265,11 @@ public class DashboardFragment extends RateBeerFragment {
 	}
 	
 	private void refreshDrinkingStatus() {
-		if (getRateBeerActivity() != null && getRateBeerActivity().getUser() != null) {
-			execute(new GetUserStatusCommand(getRateBeerActivity().getApi()));
+		// At max refresh every 5 minutes
+		Date d = new Date((new Date()).getTime() - (5 * 60 * 1000)); // = 5 minutes ago
+		if (getRateBeerActivity() != null && getRateBeerActivity().getUser() != null && 
+				getRateBeerActivity().getUser().getLastDrinkingStatusUpdate().before(d)) {
+			execute(new GetDrinkingStatusCommand(getRateBeerActivity().getApi()));
 		}	
 	}
 

@@ -1,12 +1,14 @@
 Android ViewPagerIndicator
 ==========================
 
-Port of [Patrik Åkerfeldt][1]'s paging indicators that are compatible with the
-ViewPager from the [Android Compatibility Library][2] and
-[ActionBarSherlock][3].
+Paging indicator widgets that are compatible with the `ViewPager` from the
+[Android Support Library][2] to improve discoverability of content.
+
+Try out the sample application [on the Android Market][10].
 
 ![ViewPagerIndicator Sample Screenshots][9]
 
+These widgets can also be used in conjunction with [ActionBarSherlock][3]!
 
 
 
@@ -18,7 +20,7 @@ Usage
   1. Include one of the widgets in your view. This should usually be placed
      adjacent to the `ViewPager` it represents.
 
-        <com.jakewharton.android.viewpagerindicator.TitlePageIndicator
+        <com.viewpagerindicator.TitlePageIndicator
             android:id="@+id/titles"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent" />
@@ -68,11 +70,20 @@ standalone JAR is not possible due to the theming capabilities offered by the
 indicator widgets.
 
 You can include this project by [referencing it as a library project][8] in
-Eclipse or ant. If you are a Maven user, artifacts will be deployed to a repo
-once the project hits the 1.0 milestone.
+Eclipse or ant.
+
+If you are a Maven user you can easily include the library by specifying it as
+a dependency:
+
+    <dependency>
+      <groupId>com.viewpagerindicator</groupId>
+      <artifactId>library</artifactId>
+      <version>2.3.1</version>
+      <type>apklib</type>
+    </dependency>
 
 This project depends on the `ViewPager` class which is available in the
-[Android Compatibility Library][2] or [ActionBarSherlock][3]. Details for
+[Android Support Library][2] or [ActionBarSherlock][3]. Details for
 including one of those libraries is available on their respecitve web sites.
 
 
@@ -99,9 +110,9 @@ Credits
 License
 =======
 
+    Copyright 2012 Jake Wharton
     Copyright 2011 Patrik Åkerfeldt
     Copyright 2011 Francisco Figueiredo Jr.
-    Copyright 2011 Jake Wharton
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -129,3 +140,4 @@ License
  [7]: http://developer.android.com/guide/developing/projects/projects-eclipse.html
  [8]: http://developer.android.com/guide/developing/projects/projects-eclipse.html#ReferencingLibraryProject
  [9]: https://raw.github.com/JakeWharton/Android-ViewPagerIndicator/master/sample/screens.png
+ [10]: https://play.google.com/store/apps/details?id=com.viewpagerindicator.sample

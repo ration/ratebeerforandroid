@@ -17,6 +17,8 @@
  */
 package com.ratebeer.android.api;
 
+import java.util.Date;
+
 public final class UserSettings {
 
 	private final int userid;
@@ -24,13 +26,15 @@ public final class UserSettings {
 	private final String password;
 	private final String drinkingStatus;
 	private final boolean isPremium;
+	private final Date lastDrinkingStatusUpdate;
 	
-	public UserSettings(int userid, String username, String password, String drinkingStatus, boolean isPremium) {
+	public UserSettings(int userid, String username, String password, String drinkingStatus, boolean isPremium, Date lastDrinkingStatusUpdate) {
 		this.userid = userid;
 		this.username = username;
 		this.password = password;
 		this.drinkingStatus = drinkingStatus;
 		this.isPremium = isPremium;
+		this.lastDrinkingStatusUpdate = lastDrinkingStatusUpdate;
 	}
 
 	public int getUserID() {
@@ -52,9 +56,14 @@ public final class UserSettings {
 	public boolean isPremium() {
 		return isPremium;
 	}
+	
+	public Date getLastDrinkingStatusUpdate() {
+		return lastDrinkingStatusUpdate;
+	}
 
 	public String toSinglePreference() {
-		return userid + "|" + username + "|" + password + "|" + drinkingStatus + "|" + (isPremium? "1": "0");
+		return userid + "|" + username + "|" + password + "|" + drinkingStatus + "|" + (isPremium? "1": "0") + "|" + 
+				Long.toString(lastDrinkingStatusUpdate.getTime());
 	}
 
 	public static UserSettings fromSinglePreference(String storedPreference) {
@@ -66,13 +75,15 @@ public final class UserSettings {
 			return null;
 		}
 		try {
-			// Parse user settings from the |-delimited user setting, where drinkingStatus and isPremium may be missing
+			// Parse user settings from the |-delimited user setting, where drinkingStatus, isPremium and 
+			// lastDrinkingStatusUpdate may be missing
 			return new UserSettings(
 					Integer.parseInt(parts[0]), 
 					parts[1], 
 					parts[2], 
 					parts.length < 4? "": parts[3], 
-					parts.length < 5? false: parts[4].equals("1"));
+					parts.length < 5? false: parts[4].equals("1"),
+					parts.length < 6? new Date(): new Date(Long.parseLong(parts[5])));
 		} catch (NumberFormatException e) {}
 		return null;
 	}

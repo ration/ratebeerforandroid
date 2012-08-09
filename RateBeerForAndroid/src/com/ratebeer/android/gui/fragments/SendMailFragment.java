@@ -17,7 +17,6 @@
  */
 package com.ratebeer.android.gui.fragments;
 
-import com.ratebeer.android.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,6 +27,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.ratebeer.android.R;
+import com.ratebeer.android.app.persistance.BeerMail;
+import com.ratebeer.android.gui.components.BeermailService;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
@@ -46,6 +48,19 @@ public class SendMailFragment extends RateBeerFragment {
 	private String bodyField = null;
 
 	public SendMailFragment() {
+	}
+
+	/**
+	 * Reply to an existing message
+	 * @param extras A bundle that assumes a BeermailService.EXTRA_MAIL containing a BeerMail object to reply to
+	 */
+	public SendMailFragment(Bundle extras) {
+		// Assume there is an extra containing the BeerMail object
+		BeerMail replyTo = extras.getParcelable(BeermailService.EXTRA_MAIL);
+		String subject = replyTo.getSubject();
+		this.sendToField = replyTo.getSenderName();
+		this.subjectField = subject .startsWith(REPLY_SUBJECT_PREFIX)? subject: REPLY_SUBJECT_PREFIX + subject;
+		this.bodyField = REPLY_BODY_PREFIX + replyTo.getBody();
 	}
 
 	/**

@@ -54,7 +54,6 @@ import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.viewpagerindicator.TabPageIndicator;
-import com.viewpagerindicator.TitleProvider;
 
 public class AddAvailabilityFragment extends RateBeerFragment {
 
@@ -354,7 +353,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		TextView placeName, city;
 	}
 
-	private class PlacesPagerAdapter extends PagerAdapter implements TitleProvider {
+	private class PlacesPagerAdapter extends PagerAdapter {
 
 		private View pagerFavouritesView;
 		private View pagerFindResultsView;
@@ -395,7 +394,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
 				return getActivity().getString(R.string.addav_favourites);

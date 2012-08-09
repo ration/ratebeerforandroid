@@ -17,6 +17,8 @@
  */
 package com.ratebeer.android.gui.fragments;
 
+import java.util.Date;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -147,7 +149,7 @@ public class SignInFragment extends RateBeerFragment {
 			String username = usernameEdit.getText().toString().trim();
 			String password = passwordEdit.getText().toString().trim();
 			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(signInCommand.getUserId(), username, 
-					password, "", false));
+					password, "", false, new Date()));
 			// Try to retrieve the user's account status as well
 			execute(new GetUserPremiumStatusCommand(getRateBeerActivity().getApi()));
 		} else if (result.getCommand().getMethod() == ApiMethod.GetUserPremiumStatus) {
@@ -156,7 +158,7 @@ public class SignInFragment extends RateBeerFragment {
 			Toast.makeText(getRateBeerActivity(), R.string.signin_signinsuccess, Toast.LENGTH_LONG).show();
 			UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
 			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
-					ex.getPassword(), "", getCommand.isPremium()));
+					ex.getPassword(), "", getCommand.isPremium(), new Date(0)));
 			getActivity().finish();
 		}
 	}

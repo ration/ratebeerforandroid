@@ -17,6 +17,8 @@
 	</style>
 
 	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.Light.ActionBar">
+		<item name="android:displayOptions">useLogo|showHome</item>
+		<item name="displayOptions">useLogo|showHome</item>
 		<item name="background">#fff</item>
 		<item name="android:background">#fff</item>
 	</style>

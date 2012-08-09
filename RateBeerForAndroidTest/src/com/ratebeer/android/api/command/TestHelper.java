@@ -17,6 +17,8 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.util.Date;
+
 import android.content.Context;
 import android.preference.PreferenceManager;
 
@@ -37,7 +39,7 @@ public class TestHelper {
 			// - has 0 beer or place ratings
 			// - has joined Feb 10, 2012 and favourite style Saison
 			// http://www.ratebeer.com/View-User-156822.htm
-			settings.saveUserSettings(new UserSettings(156822, "rbandroid", "Andr01dAPP", "", false));
+			settings.saveUserSettings(new UserSettings(156822, "rbandroid", "Andr01dAPP", "", false, new Date()));
 			return new RateBeerApi(settings.getUserSettings());
 
 		} else {

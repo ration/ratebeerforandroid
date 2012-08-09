@@ -42,7 +42,7 @@ public class GetDrinkingStatusCommand extends HtmlCommand {
 
 	@Override
 	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/user/" + getUserSettings().getUserID() + "/pics/");
+		return HttpHelper.makeRBGet("http://www.ratebeer.com/user/" + getUserSettings().getUserID() + "/stats/");
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class GetDrinkingStatusCommand extends HtmlCommand {
 			int beerStart = html.indexOf(beerStartText, drinkingStart);
 			int beerEnd = html.indexOf("<", beerStart + beerStartText.length());
 			if (beerStart >= 0) {
-				nowDrinking = HttpHelper.cleanHtml(html.substring(beerStart, beerEnd).trim());
+				nowDrinking = HttpHelper.cleanHtml(html.substring(beerStart + beerStartText.length(), beerEnd).trim());
 			}
 		}
 

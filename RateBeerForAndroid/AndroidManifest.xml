@@ -47,7 +47,7 @@
 		android:theme="@style/Theme.RateBeer">
 		
 		<!-- Activities -->
-		<activity android:name="com.ratebeer.android.gui.Home" android:label="">
+		<activity android:name="com.ratebeer.android.gui.Home">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />

@@ -21,6 +21,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -347,6 +348,10 @@ public class BeerViewFragment extends RateBeerFragment {
 		i.putExtra(PosterService.EXTRA_NEWSTATUS, beerName);
 		i.putExtra(PosterService.EXTRA_BEERID, beerId);
 		getActivity().startService(i);
+		// Manually set the last update date of the drinking status back, so a visit to the home screen refreshes it
+		UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
+		getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
+				ex.getPassword(), ex.getDrinkingStatus(), ex.isPremium(), new Date(1)));
 	}
 
 	protected void onAddAvailability() {

@@ -20,7 +20,6 @@ package com.ratebeer.android.app.location;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -33,13 +32,13 @@ import com.ratebeer.android.R;
  * not handle any touch events that happen within a FrameLayout with R.id.map
  * @author erickok
  */
-public class TouchableMapViewPager extends ViewPager implements OnPageChangeListener {
+public class TouchableMapViewPager extends ViewPager {
 
 	private int activePage = 0;
 
 	public TouchableMapViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setOnPageChangeListener(this);
+        setOnPageChangeListener(pageChangeListener );
     }   
 	
 	@Override
@@ -56,18 +55,26 @@ public class TouchableMapViewPager extends ViewPager implements OnPageChangeList
 		return super.onInterceptTouchEvent(ev);
 	}
 
-	@Override
-	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		activePage = position;
-	}
+	private OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
 
-	@Override
-	public void onPageSelected(int position) {
-		activePage = position;
-	}
+		@Override
+		public void onPageSelected(int position) {
+			activePage = position;
+		}
 
-	@Override
-	public void onPageScrollStateChanged(int state) {
+		@Override
+		public void onPageScrollStateChanged(int state) {
+		}
+		
+		@Override
+		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels2) {
+			activePage = position;
+		}
+		
+	};
+
+	public OnPageChangeListener getOnPageChangeListener() {
+		return pageChangeListener;
 	}
 	
 }

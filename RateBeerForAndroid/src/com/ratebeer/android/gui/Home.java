@@ -65,6 +65,10 @@ public class Home extends Activity {
 			// Open the beermail screen to a specific mail
 			startActivity.replaceExtras(getIntent().getExtras());
 			startActivity.setAction(BeermailService.ACTION_VIEWBEERMAIL);
+		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_REPLYBEERMAIL)) {
+			// Open the beermail reply screen to a specific mail
+			startActivity.replaceExtras(getIntent().getExtras());
+			startActivity.setAction(BeermailService.ACTION_REPLYBEERMAIL);
 		}
 		
 		startActivity(startActivity);

@@ -21,6 +21,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -42,7 +43,6 @@ import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -53,6 +53,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.ratebeer.android.R;
@@ -79,7 +80,6 @@ import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 import com.viewpagerindicator.TabPageIndicator;
-import com.viewpagerindicator.TitleProvider;
 
 public class BeerViewFragment extends RateBeerFragment {
 
@@ -348,6 +348,10 @@ public class BeerViewFragment extends RateBeerFragment {
 		i.putExtra(PosterService.EXTRA_NEWSTATUS, beerName);
 		i.putExtra(PosterService.EXTRA_BEERID, beerId);
 		getActivity().startService(i);
+		// Manually set the last update date of the drinking status back, so a visit to the home screen refreshes it
+		UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
+		getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
+				ex.getPassword(), ex.getDrinkingStatus(), ex.isPremium(), new Date(1)));
 	}
 
 	protected void onAddAvailability() {
@@ -801,7 +805,7 @@ public class BeerViewFragment extends RateBeerFragment {
 
     }
     
-	private class BeerPagerAdapter extends PagerAdapter implements TitleProvider {
+	private class BeerPagerAdapter extends PagerAdapter {
 
 		private View pagerDetailsView;
 		private ListView pagerRecentRatingsView;
@@ -900,7 +904,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
 				return getActivity().getString(R.string.app_details).toUpperCase();

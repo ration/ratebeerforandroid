@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.location.Address;
@@ -32,7 +31,6 @@ import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -42,9 +40,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -63,7 +63,6 @@ import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.SelectLocationDialog;
 import com.ratebeer.android.gui.components.SelectLocationDialog.OnLocationSelectedListener;
 import com.viewpagerindicator.TabPageIndicator;
-import com.viewpagerindicator.TitleProvider;
 
 public class PlacesFragment extends RateBeerFragment implements OnLocationSelectedListener, OnBalloonClickListener {
 
@@ -100,7 +99,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		pager.setAdapter(placesPagerAdapter);
 		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
 		titles.setViewPager(pager);
-		titles.setOnPageChangeListener(pager);
+		titles.setOnPageChangeListener(pager.getOnPageChangeListener());
 
 		if (savedInstanceState != null) {
 			if (savedInstanceState.containsKey(STATE_PLACES)) {
@@ -406,7 +405,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		TextView placeName, placeType, distance, city, score;
 	}
 
-	private class PlacesPagerAdapter extends PagerAdapter implements TitleProvider {
+	private class PlacesPagerAdapter extends PagerAdapter {
 
 		private ListView pagerListView;
 		private FrameLayout pagerMapView;
@@ -428,7 +427,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
 				return getActivity().getString(R.string.places_nearby).toUpperCase();

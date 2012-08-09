@@ -36,11 +36,12 @@
 	<string name="app_addingupccode">Adding scanned barcode to beer</string>
 	<string name="app_addingcodefor">Adding code to %1$s</string>
 	<string name="app_requiressignin">Please sign in to your RateBeer account to use this feature.</string>
-	<string name="app_noaccount">No account?\nhttp://www.ratebeer.com/NewUser.asp</string>
-	<string name="app_newmails">You\'ve got %1$s new beer mails</string>
+	<string name="app_noaccount">No account?\nhttp://www.ratebeer.com/NewUser.asp</string>	
 	<string name="app_newmail">You\'ve got new beer mail</string>
+	<string name="app_newmails">%1$s new beer mails</string>
 	<string name="app_by">By %1$s</string>
 	<string name="app_andothers"> and others</string>
+	<string name="app_moremail">+%1$s more</string>
 	<string name="app_uploadingphoto">Uploading new photo</string>
 	<string name="app_photofor">Uploading photo for %1$s</string>
 			
@@ -253,6 +254,7 @@
 	<string name="mail_relpied">replied</string>
 	<string name="mail_new">new</string>
 	<string name="mail_read">read</string>
+	<string name="mail_view">View</string>
 	<string name="mail_reply">Reply</string>
 	<string name="mail_sendto">Send to:</string>
 	<string name="mail_subject">Subject:</string>

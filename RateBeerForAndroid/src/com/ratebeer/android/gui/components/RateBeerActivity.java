@@ -96,9 +96,11 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 		setContentView(layoutResID);
 		
 		// Set up action bar
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO,
-				ActionBar.DISPLAY_SHOW_TITLE);
-		getSupportFragmentManager().addOnBackStackChangedListener(onBackStackChanged);
+		if (getSupportActionBar() != null) {
+			getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO,
+					ActionBar.DISPLAY_SHOW_TITLE);
+			getSupportFragmentManager().addOnBackStackChangedListener(onBackStackChanged);
+		}
 		
 		// DEBUG: Attach to ViewServer in order to use the HierarchyViewer tool
 		//ViewServer.get(this).addWindow(this);

@@ -17,22 +17,31 @@
  */
 package com.ratebeer.android.app;
 
+import java.io.File;
+
 import android.app.Application;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
+import com.nostra13.universalimageloader.cache.disc.impl.FileCountLimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.ratebeer.android.api.RateBeerApi;
 
 public class RateBeerForAndroid extends Application {
 
 	public static final String LOG_NAME = "RateBeerForAndroid";
 
-	public static final String DEFAULT_FILES_DIR = Environment.getExternalStorageDirectory().toString() + "/RateBeerForAndroid";
-	
+	public static final String DEFAULT_FILES_DIR = Environment.getExternalStorageDirectory().toString()
+			+ "/RateBeerForAndroid";
+
 	private ApplicationSettings settings;
 	private RateBeerApi api;
+	private ImageLoader imageCache;
 
 	/**
 	 * Returns the application-wide user settings
@@ -40,7 +49,7 @@ public class RateBeerForAndroid extends Application {
 	 */
 	public ApplicationSettings getSettings() {
 		if (settings == null) {
-			settings = new ApplicationSettings(getApplicationContext(), 
+			settings = new ApplicationSettings(getApplicationContext(),
 					PreferenceManager.getDefaultSharedPreferences(this));
 		}
 		return settings;
@@ -57,6 +66,17 @@ public class RateBeerForAndroid extends Application {
 		return api;
 	}
 
+	public ImageLoader getImageCache() {
+		if (imageCache == null) {
+			imageCache = ImageLoader.getInstance();
+			File imageCacheDir = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/cache/");
+			imageCache.init(new ImageLoaderConfiguration.Builder(this)
+					.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
+					.discCache(new FileCountLimitedDiscCache(imageCacheDir, new Md5FileNameGenerator(), 25)).build());
+		}
+		return imageCache;
+	}
+
 	/**
 	 * Returns whether the device is a tablet (or better: whether it can fit a tablet layout)
 	 * @param r The application resources
@@ -64,9 +84,8 @@ public class RateBeerForAndroid extends Application {
 	 */
 	public static boolean isTablet(Resources r) {
 		// 'Tablets' are devices with an XLarge screen and at least API level 11 (i.e. supporting Honeycomb APIs)
-		boolean hasXLargeScreen = ((r.getConfiguration().screenLayout & 
-				Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE) && 
-				android.os.Build.VERSION.SDK_INT >= 11;
+		boolean hasXLargeScreen = ((r.getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE)
+				&& android.os.Build.VERSION.SDK_INT >= 11;
 		return hasXLargeScreen;
 	}
 

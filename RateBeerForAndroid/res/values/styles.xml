@@ -60,7 +60,7 @@
 		<item name="android:textColor">@color/HomeTextColor</item>
 		<item name="android:background">@drawable/btn_home</item>
 	</style>
-	<dimen name="HomeButtonTextSize">19dip</dimen>
+	<dimen name="HomeButtonTextSize">18dip</dimen>
 
 	<style name="ConnectBackground">
 		<item name="android:background">@color/BackgroundDark</item>

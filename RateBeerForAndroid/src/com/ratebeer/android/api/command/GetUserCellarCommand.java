@@ -81,7 +81,7 @@ public class GetUserCellarCommand extends HtmlCommand {
 
 			String memoText = "left: 46px;\">";
 			int memoStart = html.indexOf(memoText, beerStart) + memoText.length();
-			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("<", memoStart))).trim();
+			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("</span>", memoStart))).trim();
 
 			wants.add(new CellarBeer(beerId, beerName, memo, null, null));
 			wantRowStart = html.indexOf(wantRowText, beerStart) + wantRowText.length();

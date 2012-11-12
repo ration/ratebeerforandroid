@@ -21,10 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -34,6 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.ratebeer.android.R;
@@ -44,7 +43,7 @@ import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetUserDetailsCommand;
 import com.ratebeer.android.api.command.GetUserDetailsCommand.RecentBeerRating;
 import com.ratebeer.android.api.command.GetUserDetailsCommand.UserDetails;
-import com.ratebeer.android.api.command.GetUserImageCommand;
+import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
@@ -164,7 +163,7 @@ public class UserViewFragment extends RateBeerFragment {
 	}
 
 	private void refreshImage() {
-		execute(new GetUserImageCommand(getRateBeerActivity().getApi(), userName));
+		getRateBeerApplication().getImageCache().displayImage(ImageUrls.getUserPhotoUrl(userName), imageView);
 	}
 
 	private void refreshDetails() {
@@ -187,14 +186,6 @@ public class UserViewFragment extends RateBeerFragment {
 	
 	private void onRecentBeerRatingClick(int beerId) {
 		getRateBeerActivity().load(new BeerViewFragment(beerId));
-	}
-
-	/**
-	 * Overrides the user avatar shown
-	 * @param drawable The bitmap containing user avatar
-	 */
-	private void setImage(Drawable drawable) {
-		imageView.setImageDrawable(drawable == null? null: drawable);
 	}
 
 	/**
@@ -222,8 +213,6 @@ public class UserViewFragment extends RateBeerFragment {
 	public void onTaskSuccessResult(CommandSuccessResult result) {
 		if (result.getCommand().getMethod() == ApiMethod.GetUserDetails) {
 			publishDetails(((GetUserDetailsCommand) result.getCommand()).getDetails());
-		} else if (result.getCommand().getMethod() == ApiMethod.GetUserImage) {
-			setImage(((GetUserImageCommand) result.getCommand()).getImage());
 		}
 	}
 

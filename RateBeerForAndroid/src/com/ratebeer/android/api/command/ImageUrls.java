@@ -20,8 +20,8 @@ package com.ratebeer.android.api.command;
 
 public class ImageUrls {
 
-	public static String getBeerPhotoUrl(int beerdId) {
-		return "http://res.cloudinary.com/ratebeer/image/upload/w_300,c_limit,q_100,d_beer_def.png/beer_" + beerdId + ".jpg";
+	public static String getBeerPhotoUrl(int beerId) {
+		return "http://res.cloudinary.com/ratebeer/image/upload/w_300,c_limit,q_100,d_beer_def.png/beer_" + beerId + ".jpg";
 	}
 
 	public static String getUserPhotoUrl(String username) {

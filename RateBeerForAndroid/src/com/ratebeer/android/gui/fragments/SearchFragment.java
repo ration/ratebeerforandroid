@@ -55,7 +55,6 @@ import com.ratebeer.android.api.command.SearchUsersCommand;
 import com.ratebeer.android.api.command.SearchUsersCommand.UserSearchResult;
 import com.ratebeer.android.api.command.UpcSearchCommand;
 import com.ratebeer.android.api.command.UpcSearchCommand.UpcSearchResult;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SearchHistoryProvider;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;

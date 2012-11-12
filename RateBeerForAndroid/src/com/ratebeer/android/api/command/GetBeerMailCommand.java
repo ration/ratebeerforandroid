@@ -22,7 +22,6 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -50,15 +49,27 @@ public class GetBeerMailCommand extends JsonCommand {
 	@Override
 	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
 		RateBeerApi.ensureLogin(getUserSettings());
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/msg.asp?k=" + HttpHelper.RB_KEY + "&u="
+		String raw = HttpHelper.makeRBGet("http://www.ratebeer.com/json/message-view.asp?k=" + HttpHelper.RB_KEY + "&u="
 				+ Integer.toString(getUserSettings().getUserID()) + "&mid=" + Integer.toString(messageId));
+		// HACK: RateBeer returns invalid JSON; its two objects with mail data, something like:
+		// For now try to identify this (where the two objects end and begin at ][) and fix the JSON
+		int hackPoint = raw.indexOf("][");
+		if (hackPoint >= 0)
+			raw = raw.replace("][", ",");
+		return raw;
 	}
 
 	@Override
 	protected void parse(JSONArray json) throws JSONException {
 
-		JSONObject result = json.getJSONObject(0);
-		mail = new MailDetails(result.getInt("MessageID"), result.getString("Body"));
+		StringBuilder mailText = new StringBuilder();
+		// HACK: The first mail is given twice, so start at index 1 to skip the first mail
+		// TODO: Returns this as a list of messages to it can be displayed as properly threaded messages
+		for (int i = 1; i < json.length(); i++) {
+			mailText.append(json.getJSONObject(i).getString("Body"));
+			mailText.append("\n\n");
+		}
+		mail = new MailDetails(messageId, mailText.toString());
 
 	}
 

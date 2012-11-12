@@ -18,8 +18,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ratebeer.android"
-	android:versionCode="27"
-	android:versionName="1.3.2"
+	android:versionCode="28"
+	android:versionName="1.3.3"
 	android:installLocation="auto">
 	
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16" />
@@ -65,13 +65,6 @@
 			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
 		</activity>
  		
-		<activity android:name="com.ratebeer.android.gui.HomePhone" android:label="">
-			<meta-data android:name="android.app.default_searchable" android:value="com.ratebeer.android.gui.Home" />
-		</activity>
-		<activity android:name="com.ratebeer.android.gui.HomeTablet" android:label="">
-			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
-			<meta-data android:name="android.app.default_searchable" android:value="com.ratebeer.android.gui.Home" />
-		</activity>
 		<activity android:name="com.ratebeer.android.gui.SignIn" android:theme="@style/Theme.RateBeer.SignIn" android:label="" />
 		<activity android:name="com.ratebeer.android.gui.PreferencesInterface"></activity>
 

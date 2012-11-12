@@ -14,7 +14,7 @@
 			android:id="@+id/image"
 			android:layout_width="match_parent" 
 			android:layout_height="wrap_content"
-			android:maxHeight="350dip"
+			android:maxHeight="300dip"
 			android:adjustViewBounds="true"
 			android:layout_gravity="center_horizontal"
 			android:scaleType="fitCenter" />

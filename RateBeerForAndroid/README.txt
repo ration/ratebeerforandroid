@@ -46,6 +46,11 @@ Android MapView Balloons
     by Jeff Gilfelt et al.
     Apache Software License 2.0
     https://github.com/jgilfelt/android-mapviewballoons
+Crouton
+    by Benjamin Weiss of Neofonie Mobile GmbH
+    idea by Cyril Mottier
+    Apache License Version 2.0
+    https://github.com/keyboardsurfer/Crouton
 Android-Universal-Image-Loader
     by Sergey Tarasevich
     BSD 3-clause

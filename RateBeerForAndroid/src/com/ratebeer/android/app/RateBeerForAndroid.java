@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 import com.nostra13.universalimageloader.cache.disc.impl.FileCountLimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.ratebeer.android.api.RateBeerApi;
@@ -70,7 +71,9 @@ public class RateBeerForAndroid extends Application {
 		if (imageCache == null) {
 			imageCache = ImageLoader.getInstance();
 			File imageCacheDir = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/cache/");
+			imageCacheDir.mkdirs();
 			imageCache.init(new ImageLoaderConfiguration.Builder(this)
+					.defaultDisplayImageOptions(new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().build())
 					.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
 					.discCache(new FileCountLimitedDiscCache(imageCacheDir, new Md5FileNameGenerator(), 25)).build());
 		}

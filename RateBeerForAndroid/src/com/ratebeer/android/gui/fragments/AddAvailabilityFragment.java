@@ -219,6 +219,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 	};
 	
 	private OnClickListener onAddAvailability = new OnClickListener() {
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onClick(View v) {
 			

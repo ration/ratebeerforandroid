@@ -115,6 +115,10 @@ public class BeerMail implements Parcelable {
 		this.replied = messageRelied;
 	}
 
+	public void updateBody(String body) {
+		this.body = body;
+	}
+
 	public int describeContents() {
 		return 0;
 	}

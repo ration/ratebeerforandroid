@@ -14,6 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.apache.http.client.ClientProtocolException;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,16 +27,20 @@ import android.net.Uri;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
 
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
+import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.command.AddAvailabilityCommand;
 import com.ratebeer.android.api.command.AddToCellarCommand;
 import com.ratebeer.android.api.command.AddUpcCodeCommand;
 import com.ratebeer.android.api.command.DeleteTickCommand;
+import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.PostTickCommand;
 import com.ratebeer.android.api.command.SendBeerMailCommand;
@@ -160,7 +166,7 @@ public class PosterService extends RateBeerService {
 						.toString(beerId))));
 			}
 			createNotification(NOTIFY_SETDRINKINGSTATUS, getString(R.string.app_settingdrinking), getString(
-					R.string.home_nowdrinking, newStatus), true, recoverIntent);
+					R.string.home_nowdrinking, newStatus), true, recoverIntent, null, beerId);
 			CommandResult result = new SetDrinkingStatusCommand(app.getApi(), newStatus).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_SETDRINKINGSTATUS);
@@ -171,7 +177,7 @@ public class PosterService extends RateBeerService {
 						.toString() : "Unknown error";
 				Log.d(RateBeerForAndroid.LOG_NAME, "Setting drinking status to " + newStatus + " failed: " + e);
 				createNotification(NOTIFY_SETDRINKINGSTATUS, getString(R.string.app_settingdrinking),
-						getString(R.string.error_commandfailed), true, recoverIntent);
+						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 				// If requested, call back the messenger, i.e. the calling activity
 				callbackMessenger(intent, RESULT_FAILURE);
 			}
@@ -207,7 +213,7 @@ public class PosterService extends RateBeerService {
 			recoverIntent.setAction(ACTION_EDITRATING);
 			createNotification(NOTIFY_POSTINGRATING, getString(R.string.app_postingrating), getString(
 					R.string.app_rated, beerName, PostRatingCommand.calculateTotal(aroma, appearance, taste, palate,
-							overall)), true, recoverIntent);
+							overall)), true, recoverIntent, null, beerId);
 			CommandResult result = new PostRatingCommand(app.getApi(), beerId, ratingId, origDate, beerName, aroma,
 					appearance, taste, palate, overall, comment).execute();
 			if (result instanceof CommandSuccessResult) {
@@ -232,7 +238,7 @@ public class PosterService extends RateBeerService {
 						.toString() : "Unknown error";
 				Log.d(RateBeerForAndroid.LOG_NAME, "Posting of rating for " + beerName + " failed: " + e);
 				createNotification(NOTIFY_POSTINGRATING, getString(R.string.app_postingrating),
-						getString(R.string.error_commandfailed), true, recoverIntent);
+						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 				// If requested, call back the messenger, i.e. the calling activity
 				callbackMessenger(intent, RESULT_FAILURE);
 			}
@@ -261,7 +267,7 @@ public class PosterService extends RateBeerService {
 			boolean del = liked == EXTRA_TICK_DELETE;
 			createNotification(NOTIFY_POSTINGTICK,
 					getString(del ? R.string.app_removingtick : R.string.app_postingtick),
-					getString(R.string.app_forbeer, beerName), true, recoverIntent);
+					getString(R.string.app_forbeer, beerName), true, recoverIntent, null, beerId);
 			CommandResult result;
 			if (del) {
 				result = new DeleteTickCommand(app.getApi(), beerId, userId, beerName).execute();
@@ -278,7 +284,8 @@ public class PosterService extends RateBeerService {
 				Log.d(RateBeerForAndroid.LOG_NAME, (del ? "Removing of tick for " : "Ticking of ") + beerName
 						+ " failed: " + e);
 				createNotification(NOTIFY_POSTINGRATING, getString(del ? R.string.app_removingtick
-						: R.string.app_postingtick), getString(R.string.error_commandfailed), true, recoverIntent);
+						: R.string.app_postingtick), getString(R.string.error_commandfailed), true, recoverIntent,
+						null, beerId);
 				// If requested, call back the messenger, i.e. the calling activity
 				callbackMessenger(intent, RESULT_FAILURE);
 			}
@@ -307,7 +314,7 @@ public class PosterService extends RateBeerService {
 			Intent recoverIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(URI_BEER, Integer
 					.toString(beerId))));
 			createNotification(NOTIFY_ADDAVAILABILITY, getString(R.string.app_addingavailability), getString(
-					R.string.app_addingforbeer, beerName), true, recoverIntent);
+					R.string.app_addingforbeer, beerName), true, recoverIntent, null, beerId);
 			CommandResult result = new AddAvailabilityCommand(app.getApi(), beerId, selectedPlaces, extraPlaceName,
 					extraPlaceId, isOnBottleCan, isOnTap).execute();
 			if (result instanceof CommandSuccessResult) {
@@ -317,7 +324,7 @@ public class PosterService extends RateBeerService {
 						.toString() : "Unknown error";
 				Log.d(RateBeerForAndroid.LOG_NAME, "Adding of availability info for " + beerName + " failed: " + e);
 				createNotification(NOTIFY_ADDAVAILABILITY, getString(R.string.app_addingavailability),
-						getString(R.string.error_commandfailed), true, recoverIntent);
+						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 			}
 
 		}
@@ -344,7 +351,7 @@ public class PosterService extends RateBeerService {
 					.toString(beerId))));
 			createNotification(NOTIFY_ADDTOCELLAR, getString(R.string.app_addingtocellar), getString(
 					cellarType == CellarType.Have ? R.string.app_addhave : R.string.app_addwant, beerName), true,
-					recoverIntent);
+					recoverIntent, null, beerId);
 			CommandResult result = new AddToCellarCommand(app.getApi(), cellarType, beerId, memo, vintage, quantity)
 					.execute();
 			if (result instanceof CommandSuccessResult) {
@@ -354,7 +361,7 @@ public class PosterService extends RateBeerService {
 						.toString() : "Unknown error";
 				Log.d(RateBeerForAndroid.LOG_NAME, "Adding of " + beerName + " to cellar failed: " + e);
 				createNotification(NOTIFY_ADDTOCELLAR, getString(R.string.app_addingtocellar),
-						getString(R.string.error_commandfailed), true, recoverIntent);
+						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 			}
 
 		}
@@ -373,7 +380,7 @@ public class PosterService extends RateBeerService {
 			Intent recoverIntent = new Intent(Intent.ACTION_VIEW);
 			// TODO: Direct this recovery intent to the send mail screen
 			createNotification(NOTIFY_SENDMAIL, getString(R.string.mail_sendingmail), getString(
-					R.string.mail_sendingto, sendTo), true, recoverIntent);
+					R.string.mail_sendingto, sendTo), true, recoverIntent, sendTo, NO_BEER_EXTRA);
 			CommandResult result = new SendBeerMailCommand(app.getApi(), sendTo, subject, body).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_SENDMAIL);
@@ -382,7 +389,7 @@ public class PosterService extends RateBeerService {
 						.toString() : "Unknown error";
 				Log.d(RateBeerForAndroid.LOG_NAME, "Sending of mail to " + sendTo + " failed: " + e);
 				createNotification(NOTIFY_SENDMAIL, getString(R.string.mail_sendingmail),
-						getString(R.string.error_commandfailed), true, recoverIntent);
+						getString(R.string.error_commandfailed), true, recoverIntent, sendTo, NO_BEER_EXTRA);
 			}
 
 		}
@@ -409,7 +416,7 @@ public class PosterService extends RateBeerService {
 			Intent recoverIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(URI_BEER, Integer
 					.toString(beerId))));
 			createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto), getString(
-					R.string.app_photofor, beerName), true, recoverIntent);
+					R.string.app_photofor, beerName), true, recoverIntent, null, beerId);
 
 			// Make sure the photo is no bigger than 50kB
 			try {
@@ -418,7 +425,7 @@ public class PosterService extends RateBeerService {
 				Log.d(RateBeerForAndroid.LOG_NAME, "Resizing of photo + " + photo.toString() + " for " + beerName + 
 						" failed: " + e1);
 				createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto),
-						getString(R.string.error_commandfailed), true, recoverIntent);
+						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 				// If requested, call back the messenger, i.e. the calling activity
 				callbackMessenger(intent, RESULT_FAILURE);
 				return;
@@ -435,7 +442,7 @@ public class PosterService extends RateBeerService {
 						.toString() : "Unknown error";
 				Log.d(RateBeerForAndroid.LOG_NAME, "Uploading photo for " + beerName + " failed: " + e);
 				createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto),
-						getString(R.string.error_commandfailed), true, recoverIntent);
+						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 				// If requested, call back the messenger, i.e. the calling activity
 				callbackMessenger(intent, RESULT_FAILURE);
 			}
@@ -461,7 +468,7 @@ public class PosterService extends RateBeerService {
 			recoverIntent.replaceExtras(intent.getExtras());
 			recoverIntent.setAction(ACTION_ADDUPCCODE);
 			createNotification(NOTIFY_ADDUPCCODE, getString(R.string.app_addingupccode), getString(
-					R.string.app_addingcodefor, beerName), true, recoverIntent);
+					R.string.app_addingcodefor, beerName), true, recoverIntent, null, beerId);
 			CommandResult result = new AddUpcCodeCommand(app.getApi(), beerId, upcCode).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_ADDUPCCODE);
@@ -470,7 +477,7 @@ public class PosterService extends RateBeerService {
 						.toString() : "Unknown error";
 				Log.d(RateBeerForAndroid.LOG_NAME, "Adding of barcode " + upcCode + " to " + beerName + " failed: " + e);
 				createNotification(NOTIFY_ADDUPCCODE, getString(R.string.app_addingupccode),
-						getString(R.string.error_commandfailed), true, recoverIntent);
+						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 			}
 
 		}
@@ -525,17 +532,33 @@ public class PosterService extends RateBeerService {
 		}
 	}
 
-	private void createNotification(int id, String line1, String line2, boolean autoCancel, Intent contentIntent) {
+	private void createNotification(int id, String line1, String line2, boolean autoCancel, Intent contentIntent, String username, int beerId) {
 
-		// Set up notification (right now) with two lines of text (and optionally an intent)
-		Notification notification = new Notification(R.drawable.ic_stat_notification, line1, System.currentTimeMillis());
-		if (autoCancel) {
-			notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		// User/beer image to show?
+		Bitmap avatar = null;
+		try {
+			if (username != null)
+				avatar = BitmapFactory.decodeStream(HttpHelper.makeRawRBGet(ImageUrls.getUserPhotoUrl(username)));
+			if (beerId > 0)
+				avatar = BitmapFactory.decodeStream(HttpHelper.makeRawRBGet(ImageUrls.getBeerPhotoUrl(beerId)));
+		} catch (ClientProtocolException e) {
+		} catch (IOException e) {
+		} catch (Exception e) {
 		}
-		notification.setLatestEventInfo(getApplicationContext(), line1, line2,
-				PendingIntent.getActivity(this, 0, contentIntent, 0));
+
+		// Set up notification with user/beer image and two lines of text (and optionally an intent)
+		Builder builder = new NotificationCompat.Builder(getApplicationContext());
+		builder.setSmallIcon(R.drawable.ic_stat_notification);
+		if (avatar != null)
+			builder.setLargeIcon(avatar);
+		builder.setTicker(line1);
+		builder.setContentTitle(line1);
+		builder.setContentText(line2);
+		builder.setAutoCancel(autoCancel);
+		builder.setContentIntent(PendingIntent.getActivity(this, 0, contentIntent, 0));
 
 		// Send notification
+		Notification notification = builder.getNotification();
 		notificationManager.notify(id, notification);
 
 	}

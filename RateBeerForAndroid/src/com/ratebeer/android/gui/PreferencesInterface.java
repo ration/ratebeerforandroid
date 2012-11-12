@@ -57,7 +57,7 @@ public class PreferencesInterface extends SherlockPreferenceActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// Home button click in the action bar
-			Intent startActivity = new Intent(this, HomePhone.class);
+			Intent startActivity = new Intent(this, Home.class);
 			startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			startActivity(startActivity);
 			return true;

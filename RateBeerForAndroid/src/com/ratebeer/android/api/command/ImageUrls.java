@@ -21,11 +21,11 @@ package com.ratebeer.android.api.command;
 public class ImageUrls {
 
 	public static String getBeerPhotoUrl(int beerdId) {
-		return "http://res.cloudinary.com/ratebeer/image/upload/w_200,c_limit,q_100,d_beer_def.png/beer_" + beerdId + ".jpg";
+		return "http://res.cloudinary.com/ratebeer/image/upload/w_300,c_limit,q_100,d_beer_def.png/beer_" + beerdId + ".jpg";
 	}
 
 	public static String getUserPhotoUrl(String username) {
-		return "http://www.ratebeer.com/UserPics/" + username + ".jpg";
+		return "http://res.cloudinary.com/ratebeer/image/upload/w_300,c_limit,q_100,d_user_def.png/user_" + username + ".jpg";
 	}
 
 }

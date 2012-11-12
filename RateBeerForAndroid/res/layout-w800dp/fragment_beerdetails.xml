@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip"
+	android:paddingTop="0dip"
+	android:orientation="horizontal">
+	
+	<include 
+		android:id="@+id/scorecard"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:visibility="invisible"
+		layout="@layout/big_scorecard" />
+		
+	<TextView
+		android:id="@+id/noscoreyet"
+		android:layout_width="150dip"
+		android:layout_height="120dip"
+		android:background="#333" 
+		android:textColor="#fff" 
+		android:gravity="center"
+		android:text="@string/details_noscoreyet"
+		android:visibility="gone" />
+
+	<LinearLayout
+		android:layout_width="0dip"
+		android:layout_weight="1" 
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+		<Button
+			android:id="@+id/drinkingthis"
+			style="@style/DetailsButtonSmall"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/details_drinkingthis"
+			android:visibility="gone" />
+	
+		<Button
+			android:id="@+id/wantthis"
+			style="@style/DetailsButtonSmall"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/cellar_wantthis"
+			android:visibility="gone" />
+	
+		<Button
+			android:id="@+id/havethis"
+			style="@style/DetailsButtonSmall"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/cellar_havethis"
+			android:visibility="gone" />
+	
+		<Button 
+			android:id="@+id/uploadphoto"
+			android:layout_width="match_parent" 
+			android:layout_height="wrap_content"
+			android:text="@string/upload_uploadphoto"
+			android:visibility="gone"
+			style="@style/DetailsButtonSmall" />
+	</LinearLayout>
+	
+</LinearLayout>

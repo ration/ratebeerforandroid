@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	style="@style/ConnectBackground">
+	
+	<ProgressBar
+		android:id="@+id/progress"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		style="@android:style/Widget.ProgressBar"
+		android:layout_marginTop="12dip"
+		android:layout_marginRight="12dip"
+		android:indeterminate="true"
+		android:indeterminateOnly="true"
+		android:visibility="invisible" />
+		
+	<ImageView
+		android:id="@+id/ratebeer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:src="@drawable/logo_big"
+		android:layout_marginBottom="24dip"
+		android:layout_gravity="center" />
+	
+	<TextView 
+		android:id="@+id/requiressignin"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dip"
+		android:text="@string/app_requiressignin"
+		android:textSize="@dimen/LabelSize"
+		android:textColor="@color/LabelColorLight"
+		android:gravity="center_horizontal"
+		android:visibility="gone" />
+		
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:orientation="horizontal">
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:text="@string/signin_username"
+			android:paddingLeft="10dip"
+			style="@style/LabelInverse" />
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:text="@string/signin_password"
+			android:paddingLeft="10dip"
+			style="@style/LabelInverse" />
+	</LinearLayout>
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:orientation="horizontal"
+		android:layout_margin="3dip">
+		<EditText
+			android:id="@+id/username"
+			android:layout_height="wrap_content"
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:inputType="textFilter"
+			android:layout_marginRight="2dip" />
+		<EditText
+			android:id="@+id/password"
+			android:layout_height="wrap_content"
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:inputType="textPassword"
+			android:layout_marginLeft="2dip" />
+	</LinearLayout>
+	<Button
+		android:id="@+id/connect"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:text="@string/signin_signin"
+		android:layout_margin="3dip" />
+	
+	<TextView 
+		android:id="@+id/noaaccount"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dip"
+		android:text="@string/app_noaccount"
+		android:textSize="@dimen/LabelSize"
+		android:textColor="@color/LabelColorLight"
+		android:gravity="center_horizontal"
+		android:autoLink="all" />
+		
+</LinearLayout>

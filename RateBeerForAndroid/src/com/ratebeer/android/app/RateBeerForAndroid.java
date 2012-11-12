@@ -20,8 +20,6 @@ package com.ratebeer.android.app;
 import java.io.File;
 
 import android.app.Application;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -31,6 +29,7 @@ import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemor
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.ratebeer.android.api.RateBeerApi;
 
 public class RateBeerForAndroid extends Application {
@@ -73,23 +72,12 @@ public class RateBeerForAndroid extends Application {
 			File imageCacheDir = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/cache/");
 			imageCacheDir.mkdirs();
 			imageCache.init(new ImageLoaderConfiguration.Builder(this)
-					.defaultDisplayImageOptions(new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().build())
+					.defaultDisplayImageOptions(new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().
+							imageScaleType(ImageScaleType.IN_SAMPLE_INT).build())
 					.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
 					.discCache(new FileCountLimitedDiscCache(imageCacheDir, new Md5FileNameGenerator(), 25)).build());
 		}
 		return imageCache;
-	}
-
-	/**
-	 * Returns whether the device is a tablet (or better: whether it can fit a tablet layout)
-	 * @param r The application resources
-	 * @return True if the device is a tablet, false otherwise
-	 */
-	public static boolean isTablet(Resources r) {
-		// 'Tablets' are devices with an XLarge screen and at least API level 11 (i.e. supporting Honeycomb APIs)
-		boolean hasXLargeScreen = ((r.getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE)
-				&& android.os.Build.VERSION.SDK_INT >= 11;
-		return hasXLargeScreen;
 	}
 
 }

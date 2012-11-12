@@ -8,7 +8,8 @@
 		android:id="@+id/progress"
 		android:layout_width="20dip"
 		android:layout_height="20dip"
-		android:layout_marginLeft="12dip"
+		android:layout_marginLeft="22dip"
+		android:layout_marginRight="2dip"
 		android:layout_gravity="center_vertical"
 		style="@android:style/Widget.ProgressBar.Small.Inverse"
 		android:indeterminate="true"
@@ -19,13 +20,10 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical"
-		android:layout_marginLeft="8dip"
-		android:layout_marginRight="9dip"
+		android:layout_marginLeft="12dip"
+		android:layout_marginRight="16dip"
 		android:text="@string/app_refresh" 
-		android:textAllCaps="true"
-		style="@android:style/TextAppearance.Medium"
-		android:textStyle="bold"
-		android:textSize="12dip" />
+		style="@android:style/TextAppearance.Medium" />
 		<!--android:textColor="@color/TitleTextColor" />-->
 		
 </LinearLayout>

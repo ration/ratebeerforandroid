@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+
+	<FrameLayout 
+		android:id="@+id/imageframe"
+		android:layout_width="200dip"
+		android:layout_height="wrap_content"
+		android:padding="5dip"
+		android:layout_marginRight="20dip">
+		<ImageView 
+			android:id="@+id/image"
+			android:layout_width="match_parent" 
+			android:layout_height="wrap_content"
+			android:maxHeight="350dip"
+			android:adjustViewBounds="true"
+			android:layout_gravity="center_horizontal"
+			android:scaleType="fitCenter" />
+	</FrameLayout>
+	
+	<Button
+		android:id="@+id/abvstyle"
+		android:drawableLeft="@android:drawable/ic_menu_info_details"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:layout_below="@id/imageframe"
+		android:layout_alignRight="@id/imageframe"
+		android:visibility="invisible"
+		style="@style/DetailsButton" />
+	
+	<TextView 
+		android:id="@+id/description"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/abvstyle"
+		android:layout_alignRight="@id/imageframe"
+		android:autoLink="all"
+		android:scrollbars="vertical"
+		style="@style/DetailsField" />
+
+	<TextView
+		android:id="@+id/name"
+		style="@style/DetailsHeadertext"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:layout_toRightOf="@id/imageframe" />
+		
+	<Button
+		android:id="@+id/brewername"
+		style="@style/DetailsButton"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:drawableLeft="@android:drawable/ic_menu_info_details"
+		android:layout_toRightOf="@id/imageframe"
+		android:layout_below="@id/name"
+		android:visibility="invisible" />
+	
+	<com.viewpagerindicator.TabPageIndicator
+		android:id="@+id/titles" 
+		android:layout_below="@id/brewername"
+		android:layout_toRightOf="@id/imageframe"
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent" />
+
+	<android.support.v4.view.ViewPager
+		android:id="@+id/pager" 
+		android:layout_below="@id/titles"
+		android:layout_toRightOf="@id/imageframe"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_alignParentBottom="true" />
+        
+</RelativeLayout>

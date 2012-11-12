@@ -22,7 +22,6 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.BeermailService;
 import com.ratebeer.android.gui.components.BootReceiver;
 import com.ratebeer.android.gui.components.PosterService;
@@ -37,12 +36,7 @@ public class Home extends Activity {
 		BootReceiver.startAlarm(getApplicationContext());
 
 		// See which activity should be started
-		Intent startActivity = null;
-		if (RateBeerForAndroid.isTablet(getResources())) {
-			startActivity = new Intent(this, HomeTablet.class);
-		} else {
-			startActivity = new Intent(this, HomePhone.class);
-		}
+		Intent startActivity = new Intent(this, HomePhone.class);
 		if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_SEARCH)) {
 			// Home activity should start a search
 			startActivity.putExtra(SearchManager.QUERY, getIntent().getStringExtra(SearchManager.QUERY));

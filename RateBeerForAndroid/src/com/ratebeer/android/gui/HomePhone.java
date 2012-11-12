@@ -20,10 +20,12 @@ package com.ratebeer.android.gui;
 import java.util.List;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.SearchView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -48,57 +50,77 @@ public class HomePhone extends RateBeerActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState, R.layout.activity_phone);
+		super.onCreate(savedInstanceState, R.layout.activity_home);
 	}
 
 	@Override
 	public void initialize(Bundle savedInstanceState) {
-		
-		if (savedInstanceState == null) {
-			if (getIntent() != null && getIntent().hasExtra(SearchManager.QUERY)) {
-				// Start a search
-				load(new SearchFragment(getIntent().getStringExtra(SearchManager.QUERY)));
-			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getData() != null && 
-				getIntent().getAction().equals(Intent.ACTION_VIEW)) {
-				// Open details for some specific beer
-				List<String> segments = getIntent().getData().getPathSegments();
-				if (segments.size() > 1) {
-					try {
-						int beerId = Integer.parseInt(segments.get(1));
-						load(new BeerViewFragment(beerId));
-					} catch (NumberFormatException e) {
-						Log.d(RateBeerForAndroid.LOG_NAME, "Invalid ACTION_VIEW Intent data; " + segments.get(1) + " is not a number.");
-					}
-				}
-			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_EDITRATING)) {
-				// Open the rating screen for a beer
-				load(new RateFragment(getIntent().getExtras()));
-			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_ADDUPCCODE)) {
-				// Open the add UPC code screen again; this assumes the UPC code is given in the extras
-				load(new AddUpcCodeFragment(getIntent().getStringExtra(PosterService.EXTRA_UPCCODE)));
-			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAILS)) {
-				// Open the beermails screen
-				load(new MailsFragment());
-			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAIL)) {
-				// Open the beermail screen to a specific mail
-				load(new MailViewFragment(getIntent().getExtras()));
-			} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_REPLYBEERMAIL)) {
-				// Open the beermail reply screen to a specific mail
-				load(new SendMailFragment(getIntent().getExtras()));
-			} else {
-				// Normal startup; show dashboard
-				load(new DashboardFragment());
-			}
-		}
 
+		if (getResources().getConfiguration().screenWidthDp >= 800) {
+			showSearch();
+		}
+		
 	}
 
+	protected void showSearch() {
+		// Set up a SearchView
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = new SearchView(this);
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		searchView.setQueryRefinementEnabled(true);
+		searchView.setIconifiedByDefault(false);
+		searchView.setFocusable(false);
+		searchView.setFocusableInTouchMode(false);
+		getSupportActionBar().setCustomView(searchView);
+		getSupportActionBar().setDisplayShowCustomEnabled(true);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		MenuItem pref = menu.add(MENU_PREFERENCES, MENU_PREFERENCES, MENU_PREFERENCES, R.string.home_preferences);
 		pref.setIcon(android.R.drawable.ic_menu_preferences);
 		return true;
+	}
+
+	@Override
+	protected void handleStartIntent(Intent intent) {
+
+		if (getIntent() != null && getIntent().hasExtra(SearchManager.QUERY)) {
+			// Start a search
+			load(new SearchFragment(getIntent().getStringExtra(SearchManager.QUERY)));
+		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getData() != null && 
+			getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+			// Open details for some specific beer
+			List<String> segments = getIntent().getData().getPathSegments();
+			if (segments.size() > 1) {
+				try {
+					int beerId = Integer.parseInt(segments.get(1));
+					load(new BeerViewFragment(beerId));
+				} catch (NumberFormatException e) {
+					Log.d(RateBeerForAndroid.LOG_NAME, "Invalid ACTION_VIEW Intent data; " + segments.get(1) + " is not a number.");
+				}
+			}
+		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_EDITRATING)) {
+			// Open the rating screen for a beer
+			load(new RateFragment(getIntent().getExtras()));
+		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_ADDUPCCODE)) {
+			// Open the add UPC code screen again; this assumes the UPC code is given in the extras
+			load(new AddUpcCodeFragment(getIntent().getStringExtra(PosterService.EXTRA_UPCCODE)));
+		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAILS)) {
+			// Open the beermails screen
+			load(new MailsFragment());
+		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAIL)) {
+			// Open the beermail screen to a specific mail
+			load(new MailViewFragment(getIntent().getExtras()));
+		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_REPLYBEERMAIL)) {
+			// Open the beermail reply screen to a specific mail
+			load(new SendMailFragment(getIntent().getExtras()));
+		} else {
+			// Normal startup; show dashboard
+			load(new DashboardFragment());
+		}
+
 	}
 
 	@Override

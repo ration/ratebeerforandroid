@@ -41,20 +41,16 @@ import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
-import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
 import com.ratebeer.android.api.command.GetDrinkingStatusCommand;
+import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
 import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.Style;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SignIn;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
@@ -113,8 +109,8 @@ public class DashboardFragment extends RateBeerFragment {
 		updateProfileImage();
 		
 		// For tablets, also load the beer styles list
-		if (RateBeerForAndroid.isTablet(getResources())) {
-			stylesView = (ListView) getView().findViewById(R.id.styles);
+		stylesView = (ListView) getView().findViewById(R.id.styles);
+		if (stylesView != null) {
 			stylesView.setAdapter(new StylesFragment.StyleAdapter(getActivity(), 
 					new ArrayList<Style>(Style.ALL_STYLES.values()), inflater));
 			stylesView.setOnItemClickListener(onItemSelected);
@@ -158,7 +154,7 @@ public class DashboardFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
+		if (getResources().getConfiguration().screenWidthDp < 800) {
 			// For phones, the dashboard & search fragments show a search icon in the action bar
 			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
 			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);
@@ -219,7 +215,7 @@ public class DashboardFragment extends RateBeerFragment {
 							}
 							Drawable d = new BitmapDrawable(getResources(), arg0);
 							d.setBounds(0, 0, (int) (48 * density), (int) (48 * density));
-							myProfileButton.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
+							myProfileButton.setCompoundDrawables(null, d, null, null);
 						}
 
 						@Override

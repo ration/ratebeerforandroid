@@ -20,7 +20,6 @@ package com.ratebeer.android.gui.components;
 import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
@@ -36,6 +35,9 @@ import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SignIn;
 import com.ratebeer.android.gui.components.tasks.RateBeerTaskCaller;
 import com.ratebeer.android.gui.fragments.UserViewFragment;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class RateBeerFragment extends SherlockFragment implements RateBeerTaskCaller {
 
@@ -103,7 +105,7 @@ public class RateBeerFragment extends SherlockFragment implements RateBeerTaskCa
 				return;
 			}
 			// Successfully signed out
-			Toast.makeText(getRateBeerActivity(), R.string.signin_signoutsuccess, Toast.LENGTH_LONG).show();
+			Crouton.makeText(getActivity(), R.string.signin_signoutsuccess, Style.CONFIRM).show();
 			getRateBeerActivity().getSettings().saveUserSettings(null);
 			getRateBeerActivity().invalidateOptionsMenu();
 		}
@@ -126,7 +128,7 @@ public class RateBeerFragment extends SherlockFragment implements RateBeerTaskCa
 				message = getText(R.string.error_commandfailed).toString();
 				break;
 			}
-			Toast.makeText(getRateBeerActivity(), message, Toast.LENGTH_LONG).show();
+			Crouton.makeText(getActivity(), message, Style.INFO).show();
 		}
 		@Override
 		public boolean isBound() {
@@ -184,7 +186,7 @@ public class RateBeerFragment extends SherlockFragment implements RateBeerTaskCa
 	protected void publishException(TextView textview, String message) {
 			
 		// Show a toast message with the error
-		Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+		Crouton.makeText(getActivity(), message, Style.INFO).show();
 		
 		// Show the error on the given TextView as well
 		if (textview != null) {

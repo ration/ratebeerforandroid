@@ -21,11 +21,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -35,10 +33,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -48,6 +47,9 @@ import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class FindRatedBeerFragment extends RateBeerFragment {
 
@@ -116,7 +118,7 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 	}
 
 	private void cancelScreen() {
-		Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
+		Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
 		getFragmentManager().popBackStack();
 	}
 
@@ -150,7 +152,7 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 	private void refreshResults() {
 		// Search for beers with the custom specified name
 		if (beername.getText().length() <= 0) {
-			Toast.makeText(getActivity(), R.string.rate_offline_nonamegiven, Toast.LENGTH_LONG).show();
+			Crouton.makeText(getActivity(), R.string.rate_offline_nonamegiven, Style.INFO).show();
 			return;
 		}
 		execute(new SearchBeersCommand(getRateBeerActivity().getApi(), beername.getText().toString(), 
@@ -176,7 +178,7 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 				// Update the stored offline rating with the found beer ID and close the screen
 				OfflineRating offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
 				if (item.isRated) {
-					Toast.makeText(getActivity(), R.string.rate_offline_alreadyrated, Toast.LENGTH_LONG).show();
+					Crouton.makeText(getActivity(), R.string.rate_offline_alreadyrated, Style.ALERT).show();
 				} else {
 					offline.update(item.beerId, item.beerName);
 					getRateBeerActivity().getHelper().getOfflineRatingDao().update(offline);

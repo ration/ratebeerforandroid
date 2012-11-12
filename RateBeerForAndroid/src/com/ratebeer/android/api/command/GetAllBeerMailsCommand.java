@@ -65,7 +65,7 @@ public class GetAllBeerMailsCommand extends JsonCommand {
 			// A message is read when the MessageRead value not set to false
 			boolean messageRead = !result.getString("MessageRead").equals("false");
 			// A message is replied if it is not yet read and the Reply value is set to 1
-			boolean hasReplied = !messageRead && result.getString("Reply").equals("1");
+			boolean hasReplied = messageRead && result.getString("Reply").equals("1");
 			mails.add(new Mail(result.getInt("MessageID"), HttpHelper.cleanHtml(result.getString("UserName")),
 					messageRead, HttpHelper.cleanHtml(result.getString("Subject")), result.getInt("Source"), 
 					HttpHelper.cleanHtml(result.getString("Sent")), hasReplied));

@@ -192,7 +192,8 @@ public class BeermailService extends RateBeerService {
 							dao.delete(check);
 						} else {
 							// Update this entry
-							check.setIsRead(present.messageRead);
+							if (!check.isRead()) // Never make a message 'unread'
+								check.setIsRead(present.messageRead);
 							check.setIsReplied(present.replied);
 							dao.update(check);
 						}

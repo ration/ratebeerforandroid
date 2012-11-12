@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:padding="10dip"
+	android:orientation="vertical">
+	
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/app_name"
+		android:layout_marginTop="30dip"
+		android:layout_marginBottom="30dip"
+		style="@style/DetailsHeadertext"
+		android:gravity="center_horizontal" />
+		
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="30dip"
+		android:text="@string/app_by"
+		style="@style/DetailsHeadertext"
+		android:gravity="center_horizontal" />
+		
+	<Button 
+		android:id="@+id/rblink"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/app_rblink"
+		style="@style/DetailsButtonSmall"/>
+		
+	<Button 
+		android:id="@+id/weblink"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/app_weblink"
+		style="@style/DetailsButtonSmall"/>
+		
+	<Button 
+		android:id="@+id/maillink"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/app_maillink"
+		style="@style/DetailsButtonSmall"/>
+		
+</LinearLayout>

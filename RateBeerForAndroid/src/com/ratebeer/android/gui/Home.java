@@ -36,6 +36,7 @@ import com.ratebeer.android.gui.components.BootReceiver;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.fragments.AboutFragment;
 import com.ratebeer.android.gui.fragments.AddUpcCodeFragment;
 import com.ratebeer.android.gui.fragments.BeerViewFragment;
 import com.ratebeer.android.gui.fragments.DashboardFragment;
@@ -48,6 +49,7 @@ import com.ratebeer.android.gui.fragments.SendMailFragment;
 public class Home extends RateBeerActivity {
 
 	private static final int MENU_PREFERENCES = 10;
+	private static final int MENU_ABOUT = 11;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,8 @@ public class Home extends RateBeerActivity {
 		super.onCreateOptionsMenu(menu);
 		MenuItem pref = menu.add(MENU_PREFERENCES, MENU_PREFERENCES, MENU_PREFERENCES, R.string.home_preferences);
 		pref.setIcon(android.R.drawable.ic_menu_preferences);
+		MenuItem about = menu.add(MENU_ABOUT, MENU_ABOUT, MENU_ABOUT, R.string.home_about);
+		about.setIcon(android.R.drawable.ic_menu_info_details);
 		return true;
 	}
 
@@ -140,6 +144,9 @@ public class Home extends RateBeerActivity {
 			return true;
 		case MENU_PREFERENCES:
 			startActivity(new Intent(getApplication(), PreferencesInterface.class));
+			return true;
+		case MENU_ABOUT:
+			load(new AboutFragment());
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

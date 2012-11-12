@@ -66,6 +66,7 @@
 	<string name="home_nowdrinking">Now drinking %1$s</string>
 	<string name="home_preferences">Preferences</string>
 	<string name="home_calculator">Calculator</string>
+	<string name="home_about">About</string>
 	
 	<string name="calc_clear">X</string>
 	<string name="calc_for">%1$s for</string>

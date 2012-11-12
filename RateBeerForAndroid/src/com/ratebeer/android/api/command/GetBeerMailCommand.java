@@ -63,11 +63,14 @@ public class GetBeerMailCommand extends JsonCommand {
 	protected void parse(JSONArray json) throws JSONException {
 
 		StringBuilder mailText = new StringBuilder();
-		// HACK: The first mail is given twice, so start at index 1 to skip the first mail
+		// HACK: The first mail is given twice, so skip the second mail (which can also be null)
 		// TODO: Returns this as a list of messages to it can be displayed as properly threaded messages
-		for (int i = 1; i < json.length(); i++) {
-			mailText.append(json.getJSONObject(i).getString("Body"));
-			mailText.append("\n\n");
+		for (int i = 0; i < json.length(); i++) {
+			if (i != 1 && !json.isNull(i)) {
+				mailText.append(json.getJSONObject(i).getString("Body"));
+				if (i != json.length() - 1)
+					mailText.append("\n\n......................................................\n\n");
+			}
 		}
 		mail = new MailDetails(messageId, mailText.toString());
 

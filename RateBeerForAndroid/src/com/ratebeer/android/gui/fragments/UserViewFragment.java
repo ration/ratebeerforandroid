@@ -92,27 +92,10 @@ public class UserViewFragment extends RateBeerFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
+		imageView = (ImageView) getView().findViewById(R.id.image);
 		userView = (ListView) getView().findViewById(R.id.userview);
-		if (userView != null) {
-			// Phone
-			userView.setAdapter(new UserViewAdapter());
-			userView.setItemsCanFocus(true);
-		} else {
-			// Tablet
-			ListView recentRatingsView = (ListView) getView().findViewById(R.id.recentratings);
-			recentRatingsAdapter = new RecentBeerRatingsAdapter(getActivity(), new ArrayList<RecentBeerRating>());
-			recentRatingsView.setAdapter(recentRatingsAdapter);
-			imageView = (ImageView) getView().findViewById(R.id.image);
-			nameText = (TextView) getView().findViewById(R.id.name);
-			locationText = (TextView) getView().findViewById(R.id.location);
-			dates = (TextView) getView().findViewById(R.id.dates);
-			favStyleText = (TextView) getView().findViewById(R.id.favStyle);
-			recentratingslabel = (TextView) getView().findViewById(R.id.recentratingslabel);
-			beersratedButton = (Button) getView().findViewById(R.id.beersrated);
-			beersratedButton.setOnClickListener(onShowAllRatingsClick);
-			cellarButton = (Button) getView().findViewById(R.id.cellar);
-			cellarButton.setOnClickListener(onViewCellarClick);
-		}
+		userView.setAdapter(new UserViewAdapter());
+		userView.setItemsCanFocus(true);
 		
 		if (savedInstanceState != null) {
 			userName = savedInstanceState.getString(STATE_USERNAME);
@@ -237,7 +220,8 @@ public class UserViewFragment extends RateBeerFragment {
 			View fields = getActivity().getLayoutInflater().inflate(R.layout.fragment_userdetails, null);
 			addView(fields);
 
-			imageView = (ImageView) fields.findViewById(R.id.image);
+			if (imageView == null) // This is already set if in tablet mode
+				imageView = (ImageView) fields.findViewById(R.id.image);
 			nameText = (TextView) fields.findViewById(R.id.name);
 			locationText = (TextView) fields.findViewById(R.id.location);
 			dates = (TextView) fields.findViewById(R.id.dates);

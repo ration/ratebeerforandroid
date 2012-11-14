@@ -32,12 +32,12 @@
 <string name="app_addingtocellar">Ajouter au cellier</string>
 <string name="app_addwant">Je veux %1$s</string>
 <string name="app_addhave">J\'ai %1$s</string>
-<string name="app_ratedwithurl">J\'ai évalué %1$s avec un %1$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerPourAndroid</string>
+<string name="app_ratedwithurl">J\'ai évalué %2$s avec un %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerPourAndroid</string>
 <string name="app_addingupccode">Associer le code-barre lu à la bière</string>
 <string name="app_addingcodefor">Associer le code à %1$s</string>
 <string name="app_requiressignin">Veuillez vous connecter à votre compte RateBeer pour utiliser cette fonctionnalité</string>
 <string name="app_noaccount">Pas de compte?\nhttp://www.ratebeer.com/NewUser.asp</string>
-<string name="app_newmails">Vous avez %1$s nouveau(x) courriAle(s)</string>
+<string name="app_newmails">Vous avez %1$s nouveau(x) CourriAle(s)</string>
 <string name="app_newmail">Vous avez un nouveau CourriAle</string>
 <string name="app_by">Par %1$s</string>
 <string name="app_andothers">et autres</string>
@@ -57,8 +57,8 @@
 <string name="home_events">Évènements</string>
 <string name="home_search">Recherche</string>
 <string name="home_myprofile">Mon profil</string>
-<string name="home_top50">50 meilleurs</string>
-<string name="home_bycountry">Meilleurs par pays</string>
+<string name="home_top50">50 meilleures</string>
+<string name="home_bycountry">Meilleures par pays</string>
 <string name="home_offlineratings">Notes hors-ligne</string>
 <string name="home_beerstyles">Styles de bières</string>
 <string name="home_beermail">CourriAle</string>
@@ -79,7 +79,7 @@
 <string name="myratings_sortby">Trier par</string>
 <string-array name="myratings_sortby_names">
 <item>Nom</item>
-<item>Brasserie</item>
+<item>Brasseur</item>
 <item>Style</item>
 <item>Mon évaluation</item>
 <item>Date</item>
@@ -116,7 +116,7 @@
 <string name="places_bar">Bar</string>
 <string name="places_beerstore">Magasin de bière</string>
 <string name="places_restaurant">Restaurant</string>
-<string name="places_brewer">Brasserie</string>
+<string name="places_brewer">Brasseur</string>
 <string name="places_unknown">Inconnu</string>
 <string name="places_km">km</string>
 <string name="places_m">m</string>
@@ -124,12 +124,12 @@
 <string name="places_checkinhere">Je suis en visite ici</string>
 <string name="places_checkedinnow">Vous avez ajouté une visite (mise à jour)</string>
 <string name="places_availablebeers">Disponible</string>
-<string name="places_enteredat">Entré à %1$s</string>
+<string name="places_enteredat">Entrée à %1$s</string>
 <string name="places_share">Allez voir %1$s à @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
 <string name="places_shareplace">Partager l\'emplacement&#8230;</string>
 
 <string name="brewers_share">Allez voir %1$s à @ratebeer http://www.ratebeer.com/brewers/b/%2$s/</string>
-<string name="brewers_sharebrewer">Partager la brasserie&#8230;</string>
+<string name="brewers_sharebrewer">Partager le brasseur&#8230;</string>
 <string name="brewers_beers">Bières</string>
 <string name="brewers_facebook">Facebook</string>
 
@@ -146,7 +146,7 @@
 <string name="search_beersearch">Recherche RateBeer</string>
 <string name="search_hint">Rechercher des bières, des endroits et des utilisateurs</string>
 <string name="search_beers">Bières</string>
-<string name="search_brewers">Brasseries</string>
+<string name="search_brewers">Brasseurs</string>
 <string name="search_places">Endroits</string>
 <string name="search_users">Utilisateurs</string>
 <string name="search_barcodescanner">Lecteur de code-barre</string>
@@ -183,7 +183,7 @@
 <string name="upload_newphoto">Prendre une nouvelle photo</string>
 <string name="upload_pick">Choisir dans la galerie</string>
 
-<string name="user_dates">Inscrit depuis: %1$sà\nVu la dernière fois: %1$s\n\n</string>
+<string name="user_dates">Inscrit depuis: %1$s\nVu la dernière fois: %2$s\n</string>
 <string name="user_beersrated">%1$s bières évaluées\n%2$s Endroits évalués\nScore moyen donné: %3$s\nScore moyen par bière évaluée: %4$s \n</string>
 <string name="user_favsyle">Style préféré: %1$s</string>
 <string name="user_nofavstyle">aucun</string>
@@ -204,7 +204,7 @@
 <string name="rate_hideassistance">Cacher l\'aide</string>
 <string name="rate_assistance_words">caramel, pain, foin, céréale, chocolat, café, noix, pain grillé, roti, résine, floral, herbe, pin, agrume, fines herbes, pâte, écurie, fromage, odeurs de renfermé, cuir, terreux, feuilles, alcool, banane, gomme à bulle, caramel écossais, clou de girofle, légumes cuits, sirop pour la toux, gingembre, réglisse, raisin, oeufs pourris, sauce soya, moufette, fumée, vanille, boisé</string>
 
-<string name="rate_offline_title">Évaluarion hors-ligne</string>
+<string name="rate_offline_title">Évaluation hors-ligne</string>
 <string name="rate_offline_info">Lorsque vous dégustez votre bière et vous écrivez l\'évaluation, les pointages et les commentaires sont enregistrés localement. Si vous êtes hors-ligne ou vous avez des problèmes de connexion vous pourrez soumettre votre évaluation sur RateBeer.com ultérieurement. Les évaluation hors-ligne sont automatiquement enlevé de la mémoire locale lorsqu\'elles sont ajoutées sur le site.</string>
 <string name="rate_offline_availble">Évaluation hors-ligne disponible</string>
 <string name="rate_offline_notavailable">Évaluation hors-ligne indisponible</string>
@@ -214,7 +214,7 @@
 <string name="rate_offline_confirmdelete">Supprimer l\'évaluation en ligne pour %1$s?</string>
 <string name="rate_offline_addrating">Ajouter une évaluation hors-ligne</string>
 <string name="rate_offline_discard">Supprimer</string>
-<string name="rate_offline_customname">Bière actuellement évaluée</string>
+<string name="rate_offline_customname">Bière évaluée présentement:</string>
 <string name="rate_offline_confirmdiscard">Vous perdrez votre évaluation et vos commentaires. Voulez-vous continuer?</string>
 <string name="rate_offline_findbeer">Trouver cette bière&#8230;</string>
 <string name="rate_offline_name">Nom:</string>
@@ -280,9 +280,9 @@
 
 <string name="error_offline">Vous n\'êtes pas connecté à Internet ou RateBeer.com est indisponible</string>
 <string name="error_authenticationfailed">Le nom d\'utilisateur ou le mot de passe est incorrect.</string>
-<string name="error_commandfailed">La commande a échoué. La connexion est trop faible ou RateBeer.com est indisponible</string>
+<string name="error_commandfailed">La commande a échouée. La connexion est trop faible ou RateBeer.com est indisponible</string>
 <string name="error_nouserorpass">Le nom d\'utilisateur et le mot de passe sont des champs obligatoires</string>
-<string name="error_nolocation">Votre emplacement n\' pas pu être déterminé</string>
+<string name="error_nolocation">Votre emplacement n\'a pu être déterminé</string>
 <string name="error_locationnotsupported">Votre appareil ne supporte pas la géolocalisation ou elle est désactivée</string>
 <string name="error_sendreport">Envoyer le message d\'erreur</string>
 <string name="error_stylenotfound">Impossible de trouver le style de bière; veuillez s\'il vous plait signaler cette erreur</string>
@@ -291,7 +291,7 @@
 <string name="error_filenotvalid">Le fichier ne contient aucune évaluation hors-ligne (dans le format désiré)</string>
 <string name="error_nocamera">Impossible de prendre une photo; soit vous n\'avez pas de caméra soit il est impossible d\'écrire sur le stockage SD externe</string>
 <string name="error_lc_install">Pour envoyer un rapport d\'erreur, vous devez avoir l\'application gratuite et libre de droits Log Collector. Voulez-vous l\'installer à partir du Play Store?</string>
-<string name="error_lc_run">L\'application Log Collection va maintenant prendre le journal d\'erreurs de l\'appareil et l\'envoyer à rb@2313.nl.\nVous aurez l\'opportunité de réviser et de modifier les données qui seront envoyées.</string>
+<string name="error_lc_run">L\'application Log Collection va maintenant prendre le journal d\'erreurs de l\'appareil et l\'envoyer à rb@2312.nl.\nVous aurez l\'opportunité de réviser et de modifier les données qui seront envoyées.</string>
 <string name="error_invalidurl">L\'adresse URL semble être invalide</string>
 
 </resources>

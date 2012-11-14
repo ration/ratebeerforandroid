@@ -59,7 +59,7 @@
 <string name="home_myprofile">Min Profil</string>
 <string name="home_top50">Topp 50</string>
 <string name="home_bycountry">Bäst efter land</string>
-<string name="home_offlineratings">Offliner</string>
+<string name="home_offlineratings">Offline</string>
 <string name="home_beerstyles">Öltyper</string>
 <string name="home_beermail">Meddelanden</string>
 <string name="home_nowdrinking">Dricker %1$s just nu</string>

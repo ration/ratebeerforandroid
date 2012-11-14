@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">RateBeer for Android</string>
-    <string name="app_by">by Eric Kok\n2312 development</string>
+    <string name="app_developer">by Eric Kok\n2312 development</string>
     <string name="app_rblink">RateBeer: @erickok</string>
     <string name="app_weblink">Web: http://2312.nl</string>
     <string name="app_maillink">Mail: rb@2312.nl</string>

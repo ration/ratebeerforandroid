@@ -64,8 +64,10 @@ public class Home extends RateBeerActivity {
 
 		// Show search directly in action bar on larger screens
 		// For phones the DashboardFragment and SearchFragment will show an icon
-		if (getResources().getConfiguration().screenWidthDp >= 800) {
-			showSearch();
+		if (android.os.Build.VERSION.SDK_INT >= 16) { 
+			if (getResources().getConfiguration().screenWidthDp >= 800) {
+				showSearch();
+			}
 		}
 		
 	}

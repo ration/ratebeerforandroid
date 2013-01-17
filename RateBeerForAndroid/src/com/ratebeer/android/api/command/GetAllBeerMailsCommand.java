@@ -36,12 +36,10 @@ import com.ratebeer.android.api.RateBeerApi;
 
 public class GetAllBeerMailsCommand extends JsonCommand {
 
-	private final int count;
 	private ArrayList<Mail> mails;
 
-	public GetAllBeerMailsCommand(RateBeerApi api, int count) {
+	public GetAllBeerMailsCommand(RateBeerApi api) {
 		super(api, ApiMethod.GetAllBeerMails);
-		this.count = count;
 	}
 
 	public ArrayList<Mail> getMails() {
@@ -52,7 +50,7 @@ public class GetAllBeerMailsCommand extends JsonCommand {
 	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
 		RateBeerApi.ensureLogin(getUserSettings());
 		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/msg.asp?k=" + HttpHelper.RB_KEY + "&u="
-				+ Integer.toString(getUserSettings().getUserID()) + "&max=" + Integer.toString(count));
+				+ Integer.toString(getUserSettings().getUserID()) + "&max=" + 10);
 	}
 
 	@Override
@@ -62,10 +60,14 @@ public class GetAllBeerMailsCommand extends JsonCommand {
 		mails = new ArrayList<Mail>();
 		for (int i = 0; i < json.length(); i++) {
 			JSONObject result = json.getJSONObject(i);
-			mails.add(new Mail(result.getInt("MessageID"), HttpHelper.cleanHtml(result.getString("UserName")), result
-					.getBoolean("MessageRead"), HttpHelper.cleanHtml(result.getString("Subject")), result
-					.getInt("Source"), HttpHelper.cleanHtml(result.getString("Sent")), result.getString("Reply")
-					.equals("1")));
+			// TODO: MessageRead not set properly at the moment :(
+			// A message is read when the MessageRead value not set to false
+			boolean messageRead = !result.getString("MessageRead").equals("false");
+			// A message is replied if it is not yet read and the Reply value is set to 1
+			boolean hasReplied = messageRead && result.getString("Reply").equals("1");
+			mails.add(new Mail(result.getInt("MessageID"), HttpHelper.cleanHtml(result.getString("UserName")),
+					messageRead, HttpHelper.cleanHtml(result.getString("Subject")), result.getInt("Source"), 
+					HttpHelper.cleanHtml(result.getString("Sent")), hasReplied));
 		}
 
 	}

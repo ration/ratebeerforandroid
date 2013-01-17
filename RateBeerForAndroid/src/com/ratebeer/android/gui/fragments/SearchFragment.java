@@ -37,7 +37,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -56,7 +55,6 @@ import com.ratebeer.android.api.command.SearchUsersCommand;
 import com.ratebeer.android.api.command.SearchUsersCommand.UserSearchResult;
 import com.ratebeer.android.api.command.UpcSearchCommand;
 import com.ratebeer.android.api.command.UpcSearchCommand.UpcSearchResult;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SearchHistoryProvider;
 import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
@@ -64,6 +62,9 @@ import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import com.viewpagerindicator.TabPageIndicator;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class SearchFragment extends RateBeerFragment {
 
@@ -186,7 +187,13 @@ public class SearchFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
+		boolean showSearch = true;
+		if (android.os.Build.VERSION.SDK_INT >= 16) { 
+			if (getResources().getConfiguration().screenWidthDp >= 800) {
+				showSearch = false; // ALready shown as SearchView
+			}
+		}
+		if (showSearch) {
 			// For phones, the dashboard & search fragments show a search icon in the action bar
 			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
 			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);
@@ -244,7 +251,7 @@ public class SearchFragment extends RateBeerFragment {
 					if (ActivityUtil.isIntentAvailable(getActivity(), install)) {
 						startActivity(install);
 					} else {
-						Toast.makeText(getActivity(), R.string.app_nomarket, Toast.LENGTH_LONG).show();
+						Crouton.makeText(getActivity(), R.string.app_nomarket, Style.INFO).show();
 					}
 				}
 			}, R.string.app_scannernotfound, "").show(getFragmentManager(), "installscanner");
@@ -315,7 +322,7 @@ public class SearchFragment extends RateBeerFragment {
 			if (item.isAlias) {
 				// Unfortunately this is the only possible workaround for now to prohibit viewing an aliased beer as
 				// if it were a normal one (see issue 8)
-				Toast.makeText(getActivity(), getString(R.string.search_aliasedbeer), Toast.LENGTH_LONG).show();
+				Crouton.makeText(getActivity(), R.string.search_aliasedbeer, Style.INFO).show();
 				return;
 			}
 			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId, item.rateCount));

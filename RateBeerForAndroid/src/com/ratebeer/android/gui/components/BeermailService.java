@@ -106,7 +106,7 @@ public class BeermailService extends RateBeerService {
 
 		// Look for (new) beermail
 		SimpleDateFormat sentDateFormat = new SimpleDateFormat("M/d/yyyy h:m:s a");
-		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(app.getApi(), 15);
+		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(app.getApi());
 		CommandResult result = allMails.execute();
 		if (result instanceof CommandSuccessResult) {
 
@@ -124,7 +124,7 @@ public class BeermailService extends RateBeerService {
 
 					// Get the existing mail or retrieve new details
 					BeerMail beerMail = dao.queryForId(mail.messageID);
-					if (beerMail == null) {
+					if (beerMail == null || beerMail.getBody().equals(getString(R.string.mail_couldnotretrieve))) {
 
 						// Get the body too
 						String body;
@@ -137,18 +137,25 @@ public class BeermailService extends RateBeerService {
 							body = getString(R.string.mail_couldnotretrieve);
 						}
 
-						// Create a beer mail object to save to the database
-						Date sent = null;
-						try {
-							// Parse mail date
-							sent = sentDateFormat.parse(mail.sent);
-						} catch (ParseException e) {
-							// Cannot parse date; ignore and don't show instead
+						if (beerMail == null) {
+							// Create a beer mail object to save to the database
+							Date sent = null;
+							try {
+								// Parse mail date
+								sent = sentDateFormat.parse(mail.sent);
+							} catch (ParseException e) {
+								// Cannot parse date; ignore and don't show instead
+							}
+							// Add to the database
+							beerMail = new BeerMail(mail.messageID, mail.senderID, mail.senderName, mail.messageRead,
+									mail.replied, sent, mail.subject, body);
+							dao.create(beerMail);
+						} else {
+							// Update existing beermail object and pretend it isn't read yet
+							beerMail.updateBody(body);
+							beerMail.setIsRead(false);
+							dao.update(beerMail);
 						}
-						// Add to the database
-						beerMail = new BeerMail(mail.messageID, mail.senderID, mail.senderName, mail.messageRead,
-								mail.replied, sent, mail.subject, body);
-						dao.create(beerMail);
 					}
 
 					// Count unread mails
@@ -185,7 +192,8 @@ public class BeermailService extends RateBeerService {
 							dao.delete(check);
 						} else {
 							// Update this entry
-							check.setIsRead(present.messageRead);
+							if (!check.isRead()) // Never make a message 'unread'
+								check.setIsRead(present.messageRead);
 							check.setIsReplied(present.replied);
 							dao.update(check);
 						}

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -33,7 +32,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -41,13 +39,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -62,6 +61,9 @@ import com.ratebeer.android.gui.components.ActivityUtil;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class EventViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
@@ -191,8 +193,8 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 			publishDetails(((GetEventDetailsCommand) result.getCommand()).getDetails());
 		} else if (result.getCommand().getMethod() == ApiMethod.SetEventAttendance) {
 			boolean isGoing = ((SetEventAttendanceCommand)result.getCommand()).isGoing();
-			Toast.makeText(getActivity(), isGoing? R.string.events_nowattending: R.string.events_nownotattending, 
-					Toast.LENGTH_SHORT).show();
+			Crouton.makeText(getActivity(), isGoing? R.string.events_nowattending: R.string.events_nownotattending, 
+					Style.CONFIRM).show();
 			refreshDetails();
 		}
 	}
@@ -278,6 +280,7 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 	};
 	
 	private OnClickListener onTimeClicked = new OnClickListener() {
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onClick(View v) {
 			// Try to establish the time of the event

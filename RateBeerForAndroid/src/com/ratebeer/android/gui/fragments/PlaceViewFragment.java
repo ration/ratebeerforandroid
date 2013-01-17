@@ -40,7 +40,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -65,6 +64,9 @@ import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.viewpagerindicator.TabPageIndicator;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
@@ -262,7 +264,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		} else if (result.getCommand().getMethod() == ApiMethod.GetCheckins) {
 			publishCheckins(((GetCheckinsCommand) result.getCommand()).getCheckins());
 		} else if (result.getCommand().getMethod() == ApiMethod.CheckIn) {
-			Toast.makeText(getActivity(), R.string.places_checkedinnow, Toast.LENGTH_LONG).show();
+			Crouton.makeText(getActivity(), R.string.places_checkedinnow, Style.CONFIRM).show();
 			refreshCheckins();
 		} else if (result.getCommand().getMethod() == ApiMethod.GetAvailableBeers) {
 			publishAvailableBeers(((GetAvailableBeersCommand) result.getCommand()).getAvailableBeers());

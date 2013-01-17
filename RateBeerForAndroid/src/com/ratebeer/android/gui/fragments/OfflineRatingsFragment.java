@@ -24,13 +24,11 @@ import java.util.List;
 
 import org.json.JSONException;
 
-import com.ratebeer.android.R;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,16 +36,20 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.ImportExport;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class OfflineRatingsFragment extends RateBeerFragment {
 
@@ -111,11 +113,11 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 						ImportExport.exportRatings(getRateBeerActivity().getHelper().getOfflineRatingDao().queryForAll(), 
 								ImportExport.DEFAULT_RATINGS_FILE);
 					} catch (JSONException e) {
-						Toast.makeText(getActivity(), R.string.error_cannotread, Toast.LENGTH_LONG).show();
+						Crouton.makeText(getActivity(), R.string.error_cannotread, Style.ALERT).show();
 					} catch (IOException e) {
-						Toast.makeText(getActivity(), R.string.error_cannotread, Toast.LENGTH_LONG).show();
+						Crouton.makeText(getActivity(), R.string.error_cannotread, Style.ALERT).show();
 					} catch (SQLException e) {
-						Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
+						Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
 					}
 				}
 			}, R.string.rate_offline_export_info, ImportExport.DEFAULT_RATINGS_FILE).show(getFragmentManager(), "exportdialog");
@@ -128,11 +130,11 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 						ImportExport.importRatings(getRateBeerActivity().getHelper().getOfflineRatingDao(), 
 								ImportExport.DEFAULT_RATINGS_FILE);
 					} catch (JSONException e) {
-						Toast.makeText(getActivity(), R.string.error_filenotvalid, Toast.LENGTH_LONG).show();
+						Crouton.makeText(getActivity(), R.string.error_filenotvalid, Style.ALERT).show();
 					} catch (IOException e) {
-						Toast.makeText(getActivity(), R.string.error_cannotwrite, Toast.LENGTH_LONG).show();
+						Crouton.makeText(getActivity(), R.string.error_cannotwrite, Style.ALERT).show();
 					} catch (SQLException e) {
-						Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
+						Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
 					}
 					loadRatings();
 				}
@@ -196,7 +198,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 		try {
 			getRateBeerActivity().getHelper().getOfflineRatingDao().delete(rating);
 		} catch (SQLException e) {
-			Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_SHORT).show();
+			Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
 		}
 	}
 

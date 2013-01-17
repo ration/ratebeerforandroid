@@ -21,7 +21,6 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ratebeer.android.R;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +32,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class CalculatorFragment extends RateBeerFragment {
 
@@ -180,7 +182,7 @@ public class CalculatorFragment extends RateBeerFragment {
 			euro2.setText(df.format((price - price % 100) / 100));
 			cent2.setText(df.format(price % 100));
 		} catch (NumberFormatException e) {
-			Toast.makeText(getRateBeerApplication(), R.string.calc_fillinall, Toast.LENGTH_LONG).show();
+			Crouton.makeText(getActivity(), R.string.calc_fillinall, Style.INFO).show();
 		}
 	}
 

@@ -219,6 +219,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 	};
 	
 	private OnClickListener onAddAvailability = new OnClickListener() {
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onClick(View v) {
 			
@@ -397,9 +398,9 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.addav_favourites);
+				return getActivity().getString(R.string.addav_favourites).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.addav_findaplace);
+				return getActivity().getString(R.string.addav_findaplace).toUpperCase();
 			}
 			return null;
 		}

@@ -19,9 +19,6 @@ package com.ratebeer.android.gui.components;
 
 import java.util.List;
 
-import com.ratebeer.android.R;
-import com.ratebeer.android.app.RateBeerForAndroid;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,7 +32,12 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
+
+import com.ratebeer.android.R;
+import com.ratebeer.android.app.RateBeerForAndroid;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class ActivityUtil {
 
@@ -98,7 +100,7 @@ public class ActivityUtil {
 				if (ActivityUtil.isIntentAvailable(activity, install)) {
 					activity.startActivity(install);
 				} else {
-					Toast.makeText(activity, R.string.app_nomarket, Toast.LENGTH_LONG).show();
+					Crouton.makeText(activity, R.string.app_nomarket, Style.ALERT).show();
 					if (closeAfterInstallFailure) {
 						activity.finish();
 					}

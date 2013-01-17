@@ -119,6 +119,11 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 		
 		// Update the user settings indicator
 		invalidateOptionsMenu();
+
+		// Restore 'up' button state
+		Fragment now = getSupportFragmentManager().findFragmentById(R.id.frag_content);
+		if (getSupportActionBar() != null)
+			getSupportActionBar().setDisplayHomeAsUpEnabled(now != null && !(now instanceof DashboardFragment));
 		
 		// DEBUG: Detach to ViewServer in order to use the HierarchyViewer tool
 		//ViewServer.get(this).setFocusedWindow(this);

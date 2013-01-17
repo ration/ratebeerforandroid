@@ -28,7 +28,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -64,11 +63,11 @@ import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetBeerAvailabilityCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
-import com.ratebeer.android.api.command.GetBeerImageCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand.BeerRating;
 import com.ratebeer.android.api.command.GetUserTicksCommand;
 import com.ratebeer.android.api.command.GetUserTicksCommand.UserTick;
+import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.api.command.Style;
@@ -269,7 +268,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	}
 
 	private void refreshImage() {
-		execute(new GetBeerImageCommand(getRateBeerActivity().getApi(), beerId));
+		getRateBeerApplication().getImageCache().displayImage(ImageUrls.getBeerPhotoUrl(beerId), imageView);
 	}
 
 	private void refreshDetails() {
@@ -484,8 +483,6 @@ public class BeerViewFragment extends RateBeerFragment {
 	public void onTaskSuccessResult(CommandSuccessResult result) {
 		if (result.getCommand().getMethod() == ApiMethod.GetBeerDetails) {
 			publishDetails(((GetBeerDetailsCommand) result.getCommand()).getDetails());
-		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerImage) {
-			setImage(((GetBeerImageCommand) result.getCommand()).getImage());
 		} else if (result.getCommand().getMethod() == ApiMethod.GetUserTicks) {
 			publishOwnTick(((GetUserTicksCommand) result.getCommand()).getUserTicks());
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerRatings) {
@@ -573,14 +570,6 @@ public class BeerViewFragment extends RateBeerFragment {
 		} else {
 			((AvailabilityAdapter) availabilityView.getAdapter()).replace(places);
 		}
-	}
-
-	/**
-	 * Overrides the beer image shown
-	 * @param drawable The bitmap containing image of the beer
-	 */
-	public void setImage(Drawable drawable) {
-		imageView.setImageDrawable(drawable == null? null: drawable);
 	}
 
 	/**

@@ -66,6 +66,7 @@
 	<string name="home_nowdrinking">Now drinking %1$s</string>
 	<string name="home_preferences">Preferences</string>
 	<string name="home_calculator">Calculator</string>
+	<string name="home_about">About</string>
 	
 	<string name="calc_clear">X</string>
 	<string name="calc_for">%1$s for</string>
@@ -192,7 +193,8 @@
 	<string name="user_beersrated">%1$s beers rated\n%2$s places rated\nAvg. score given: %3$s\nAvg. beer rated: %4$s</string>
 	<string name="user_favsyle">Favourite style: %1$s</string>
 	<string name="user_nofavstyle">none</string>
-	
+	<string name="user_picture">User picture</string>
+		
 	<string name="rate_aroma">Aroma</string>
 	<string name="rate_appearance">Appearance</string>
 	<string name="rate_taste">Taste</string>

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,15 +41,16 @@ import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
-import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
 import com.ratebeer.android.api.command.GetDrinkingStatusCommand;
-import com.ratebeer.android.api.command.GetUserImageCommand;
+import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
+import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.Style;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SignIn;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
@@ -106,8 +109,8 @@ public class DashboardFragment extends RateBeerFragment {
 		updateProfileImage();
 		
 		// For tablets, also load the beer styles list
-		if (RateBeerForAndroid.isTablet(getResources())) {
-			stylesView = (ListView) getView().findViewById(R.id.styles);
+		stylesView = (ListView) getView().findViewById(R.id.styles);
+		if (stylesView != null) {
 			stylesView.setAdapter(new StylesFragment.StyleAdapter(getActivity(), 
 					new ArrayList<Style>(Style.ALL_STYLES.values()), inflater));
 			stylesView.setOnItemClickListener(onItemSelected);
@@ -151,7 +154,13 @@ public class DashboardFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if (getActivity() != null && !RateBeerForAndroid.isTablet(getResources())) {
+		boolean showSearch = true;
+		if (android.os.Build.VERSION.SDK_INT >= 16) { 
+			if (getResources().getConfiguration().screenWidthDp >= 800) {
+				showSearch = false; // Already shown as SearchView
+			}
+		}
+		if (showSearch) {
 			// For phones, the dashboard & search fragments show a search icon in the action bar
 			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
 			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);
@@ -194,7 +203,31 @@ public class DashboardFragment extends RateBeerFragment {
 
 	private void updateProfileImage() {
 		if (getRateBeerActivity().getUser() != null) {
-			execute(new GetUserImageCommand(getRateBeerActivity().getApi(), getRateBeerActivity().getUser().getUsername()));
+			getRateBeerApplication().getImageCache().loadImage(getActivity(),
+					ImageUrls.getUserPhotoUrl(getRateBeerActivity().getUser().getUsername()),
+					new ImageLoadingListener() {
+						@Override
+						public void onLoadingStarted() {
+						}
+
+						@Override
+						public void onLoadingFailed(FailReason arg0) {
+						}
+
+						@Override
+						public void onLoadingComplete(Bitmap arg0) {
+							if (density == null) {
+								density = getResources().getDisplayMetrics().density;
+							}
+							Drawable d = new BitmapDrawable(getResources(), arg0);
+							d.setBounds(0, 0, (int) (48 * density), (int) (48 * density));
+							myProfileButton.setCompoundDrawables(null, d, null, null);
+						}
+
+						@Override
+						public void onLoadingCancelled() {
+						}
+					});
 		}
 	}
 
@@ -251,16 +284,6 @@ public class DashboardFragment extends RateBeerFragment {
 			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
 					ex.getPassword(), getCommand.getDrinkingStatus(), ex.isPremium(), new Date()));
 			showDrinkingStatus();
-		} else if (result.getCommand().getMethod() == ApiMethod.GetUserImage) {
-			GetUserImageCommand userImageCommand = (GetUserImageCommand) result.getCommand();
-			if (userImageCommand.getImage() != null) {
-				if (density == null) {
-					density = getResources().getDisplayMetrics().density;
-				}
-				Drawable d = userImageCommand.getImage();
-				d.setBounds(0, 0, (int)(48 * density), (int)(48 * density));
-				myProfileButton.setCompoundDrawables(null, d, null, null);
-			}
 		}
 	}
 	

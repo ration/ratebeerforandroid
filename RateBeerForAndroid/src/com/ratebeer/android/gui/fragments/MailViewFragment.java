@@ -20,12 +20,11 @@ package com.ratebeer.android.gui.fragments;
 import java.sql.SQLException;
 import java.text.DateFormat;
 
-import com.ratebeer.android.R;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -33,11 +32,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.DeleteBeerMailCommand;
+import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.gui.components.BeermailService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
@@ -119,6 +121,12 @@ public class MailViewFragment extends RateBeerFragment {
 			
 			// Also set this mail to read (which should already be done on the server by now)
 			mail.setIsRead(true);
+			try {
+				getRateBeerActivity().getHelper().getBeerMailDao().update(mail);
+			} catch (SQLException e) {
+				Log.d(RateBeerForAndroid.LOG_NAME,
+						"Cannot write to database; wanted to save the read status of beer mail " + mail.getMessageId());
+			}
 		}
 
 	}

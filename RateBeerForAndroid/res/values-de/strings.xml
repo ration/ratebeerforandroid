@@ -7,8 +7,8 @@
 <string name="app_refresh">Neu laden</string>
 <string name="app_details">Details</string>
 <string name="app_share">Teilen</string>
-<string name="app_loading">Lädt&#8230;</string>
-<string name="app_legal">Mit Nutzung dieses Programms akzeptierst Du alls Bedingungen, die auf http://www.ratebeer.com/UserAgreement.asp aufgelistet sind.\n\nAuch ohne einen RateBeer Account kannst Du dieses Programm benutzen um Informationen über Biere, Top Listen, Events, lokale Bierlokale und vieles mehr abzurufen. Um alle Funktionen zu nutzen, wie Biere zu bewerten oder die Verfügbarkeit eines Bieres hinzuzufügen, kannst du einen Benutzerkonto auf http://www.ratebeer.com/NewUser.asp erstellen.</string>
+<string name="app_loading">Lädt</string>
+<string name="app_legal">Mit Nutzung dieses Programms akzeptierst Du alle Bedingungen, die auf http://www.ratebeer.com/UserAgreement.asp aufgelistet sind.\n\nAuch ohne einen RateBeer Account kannst Du dieses Programm benutzen um Informationen über Biere, Top Listen, Events, lokale Bierlokale und vieles mehr abzurufen. Um alle Funktionen zu nutzen, wie Biere zu bewerten oder die Verfügbarkeit eines Bieres hinzuzufügen, kannst du einen Benutzerkonto auf http://www.ratebeer.com/NewUser.asp erstellen.</string>
 <string name="app_legal_title">Willkommen</string>
 
 <string name="app_install">Installieren</string>
@@ -49,8 +49,8 @@
 <string name="signin_signin">Anmelden</string>
 <string name="signin_signout">Abmelden</string>
 <string name="signin_connecting">Verbinde&#8230;</string>
-<string name="signin_signoutsuccess">Anmeldung erfolgreich</string>
-<string name="signin_signinsuccess">Abmedung erfolgreich</string>
+<string name="signin_signoutsuccess">Abmeldung erfolgreich</string>
+<string name="signin_signinsuccess">Anmeldung erfolgreich</string>
 
 <string name="home_beers">Biere</string>
 <string name="home_places">Orte</string>
@@ -58,9 +58,9 @@
 <string name="home_search">Suchen</string>
 <string name="home_myprofile">Mein Profil</string>
 <string name="home_top50">Top 50</string>
-<string name="home_bycountry">Beste Biere je Land</string>
+<string name="home_bycountry">Landeslisten</string>
 <string name="home_offlineratings">Offline Notizen</string>
-<string name="home_beerstyles">Bierstile</string>
+<string name="home_beerstyles">Biersorten</string>
 <string name="home_beermail">Bier Mail</string>
 <string name="home_nowdrinking">trink jetzt %1$s</string>
 <string name="home_preferences">Einstellungen</string>
@@ -164,9 +164,9 @@
 <string name="details_noscoreyet">Benötigt mehr Bewertungen</string>
 <string name="details_percentile">Durchschnit</string>
 <string name="details_ratings">Bewertung</string>
-<string name="details_style">Bierstil</string>
+<string name="details_style">Sorte</string>
 <string name="details_nodescription">Keine kommerzielle Beschreibung verfügbar</string>
-<string name="details_abvstyle">Bierstil: %1$s\nAlkoholgehalt: %2$s</string>
+<string name="details_abvstyle">Biersorte: %1$s\nAlkoholgehalt: %2$s</string>
 <string name="details_ratethis">Bewerte es</string>
 <string name="details_viewrerate">Bewerte es neu</string>
 <string name="details_drinkingthis">Ich trinke dies gerade</string>
@@ -185,7 +185,7 @@
 
 <string name="user_dates">Anmeldung: %1$s\nLetzter Login: %2$s</string>
 <string name="user_beersrated">%1$s Biere bewertet\n%2$s Lokalitäten bewertet</string>
-<string name="user_favsyle">Lieblingsstil: %1$s</string>
+<string name="user_favsyle">Lieblingssorte: %1$s</string>
 <string name="user_nofavstyle">keine</string>
 
 <string name="rate_aroma">Aroma</string>
@@ -280,12 +280,12 @@
 
 <string name="error_offline">Du hast keine Internetverbindung oder RateBeer ist offline (Fehler)</string>
 <string name="error_authenticationfailed">Benutzername oder Passwort falsch</string>
-<string name="error_commandfailed">Die Aktion wurde unerwartet abgebrochen. Schlechte Internetverbindung oder RateBeer ist offlince</string>
+<string name="error_commandfailed">Die Aktion wurde unerwartet abgebrochen. Schlechte Internetverbindung oder RateBeer ist offline</string>
 <string name="error_nouserorpass">Sowohl Benutzername als auch Passwort werden zum Anmelden benötigt</string>
 <string name="error_nolocation">Dein Aufenthaltsort konnte nicht ermittelt werden</string>
 <string name="error_locationnotsupported">Dein Gerät unterstützt die Lokalisierung nicht oder sieist ausgeschaltet</string>
 <string name="error_sendreport">Einen Fehler senden</string>
-<string name="error_stylenotfound">Der Bierstil konnte nicht gefunden werden, bitte den Fehler melden!</string>
+<string name="error_stylenotfound">Die Biersorte konnte nicht gefunden werden, bitte den Fehler melden!</string>
 <string name="error_cannotwrite">Speichern fehlgeschlagen</string>
 <string name="error_cannotread">Keine Datei gefunden oder Datei nicht vorhanden</string>
 <string name="error_filenotvalid">Die Datei enthält keine Offline Tests (im richtigen Format)</string>

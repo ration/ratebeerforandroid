@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent">
+	
+	<LinearLayout
+		android:id="@+id/header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="10dip"
+		android:orientation="vertical">
+	
+		<TextView
+			android:id="@+id/name"
+			style="@style/DetailsHeadertext"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+	
+		<Button
+			android:id="@+id/location"
+			android:drawableLeft="@android:drawable/ic_menu_compass"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginRight="100dip"
+			android:visibility="invisible"
+			style="@style/DetailsButton" />
+	
+		<Button
+			android:id="@+id/time"
+			android:drawableLeft="@android:drawable/ic_menu_agenda"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginRight="100dip"
+			android:visibility="invisible"
+			style="@style/DetailsButton" />
+	
+		<TextView
+			android:id="@+id/details"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="all"
+			style="@style/DetailsField" />
+	
+		<TextView
+			android:id="@+id/contact"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="all"
+			style="@style/DetailsField" />
+	
+	</LinearLayout>
+	
+	<TextView
+		android:id="@+id/attendeeslabel"
+		android:layout_height="wrap_content"
+		android:layout_width="250dip"
+		android:layout_below="@id/header"
+		android:layout_alignParentRight="true"
+		android:text="@string/events_attendees"
+		android:visibility="invisible"
+		style="@style/Label" />
+		
+	<Button
+		android:id="@+id/setattendance"
+		android:layout_width="250dip"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/attendeeslabel"
+		android:layout_alignParentRight="true"
+		android:visibility="invisible"
+		style="@style/DetailsButtonSmall" />
+		
+	<ListView
+		android:id="@+id/attendees"
+		android:layout_width="250dip"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/setattendance"
+		android:layout_alignParentRight="true"
+		android:cacheColorHint="@color/BackgroundLight" />
+	
+	<FrameLayout
+		android:id="@+id/map"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/header"
+		android:layout_toLeftOf="@id/attendeeslabel" />
+	
+</RelativeLayout>

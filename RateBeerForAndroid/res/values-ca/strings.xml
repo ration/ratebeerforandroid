@@ -59,7 +59,7 @@
 <string name="home_myprofile">El meu perfil</string>
 <string name="home_top50">Top 50</string>
 <string name="home_bycountry">Millors per països</string>
-<string name="home_offlineratings">Notes fora de connexió</string>
+<string name="home_offlineratings">Fora de connexió</string>
 <string name="home_beerstyles">Estils de cervesa</string>
 <string name="home_beermail">Correu cerveser</string>
 <string name="home_nowdrinking">Bevent %1$s</string>

@@ -79,11 +79,12 @@ public class GetUserCellarCommand extends HtmlCommand {
 			int beerStart = html.indexOf("/\">", wantRowStart + 10) + 3;
 			String beerName = HttpHelper.cleanHtml(html.substring(beerStart, html.indexOf("<", beerStart)));
 
-			int memoStart = html.indexOf(" height=1 width=45>", beerStart) + " height=1 width=45>".length();
-			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("<", memoStart))).trim();
+			String memoText = "left: 46px;\">";
+			int memoStart = html.indexOf(memoText, beerStart) + memoText.length();
+			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("</span>", memoStart))).trim();
 
 			wants.add(new CellarBeer(beerId, beerName, memo, null, null));
-			wantRowStart = html.indexOf(wantRowText, memoStart) + wantRowText.length();
+			wantRowStart = html.indexOf(wantRowText, beerStart) + wantRowText.length();
 		}
 		String haveRowText = "/wishlist/want/";
 		int haveRowStart = html.indexOf(haveRowText, havesStart) + haveRowText.length();
@@ -97,23 +98,19 @@ public class GetUserCellarCommand extends HtmlCommand {
 			int beerStart = html.indexOf("/\">", haveRowStart + 10) + 3;
 			String beerName = HttpHelper.cleanHtml(html.substring(beerStart, html.indexOf("<", beerStart)));
 
-			int quantityStart = html.indexOf("valign=bottom align=center>", beerStart)
-					+ "valign=bottom align=center>".length();
-			String quantity = HttpHelper.cleanHtml(html.substring(quantityStart, html.indexOf("</td>", quantityStart)))
-					.trim();
-			if (quantity.equals(" <span class=beerfoot>available</span>")) {
-				quantity = "available";
+			String memoText = "left: 46px;\">";
+			int memoStart = html.indexOf(memoText, beerStart) + memoText.length();
+			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("</span>", memoStart))).trim();
+
+			String quantity = null;
+			int quantityEnd = memo.indexOf("<br>");
+			if (quantityEnd >= 0) {
+				quantity = memo.substring(0, quantityEnd);
+				memo = memo.substring(quantityEnd + "<br>".length());
 			}
-
-			int memoStart = html.indexOf("beerfoot valign=top>", quantityStart) + "beerfoot valign=top>".length();
-			String memo = HttpHelper.cleanHtml(html.substring(memoStart, html.indexOf("<br><span", memoStart))).trim();
-
-			int vintageStart = html.indexOf("class=beerfoot><i>", beerStart) + "class=beerfoot><i>".length();
-			String vintage = HttpHelper.cleanHtml(html.substring(vintageStart, html.indexOf("</i>", vintageStart)))
-					.trim();
-
-			haves.add(new CellarBeer(beerId, beerName, memo, vintage, quantity));
-			haveRowStart = html.indexOf(haveRowText, vintageStart) + haveRowText.length();
+			
+			haves.add(new CellarBeer(beerId, beerName, memo, null, quantity));
+			haveRowStart = html.indexOf(haveRowText, memoStart) + haveRowText.length();
 		}
 
 	}

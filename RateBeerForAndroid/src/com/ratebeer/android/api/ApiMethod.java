@@ -30,7 +30,6 @@ public enum ApiMethod {
 	
 	// Users
 	SearchUsers,
-	GetUserImage,
 	GetUserDetails,
 	GetUserRatings,
 	GetUserTicks,
@@ -47,7 +46,6 @@ public enum ApiMethod {
 	UpcSearch,
 	AddUpcCode,
 	GetBeerDetails,
-	GetBeerImage,
 	GetBeerRatings,
 	GetBeerTicks,
 	GetTopBeers,

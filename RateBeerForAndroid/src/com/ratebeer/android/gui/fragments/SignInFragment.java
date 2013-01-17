@@ -28,7 +28,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -41,6 +40,9 @@ import com.ratebeer.android.api.command.SignOutCommand;
 import com.ratebeer.android.gui.SignIn;
 import com.ratebeer.android.gui.components.OnProgressChangedListener;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class SignInFragment extends RateBeerFragment {
 
@@ -155,7 +157,7 @@ public class SignInFragment extends RateBeerFragment {
 		} else if (result.getCommand().getMethod() == ApiMethod.GetUserPremiumStatus) {
 			// We also have a user status now; update the stored user settings
 			GetUserPremiumStatusCommand getCommand = (GetUserPremiumStatusCommand) result.getCommand();
-			Toast.makeText(getRateBeerActivity(), R.string.signin_signinsuccess, Toast.LENGTH_LONG).show();
+			Crouton.makeText(getActivity(), R.string.signin_signinsuccess, Style.CONFIRM).show();
 			UserSettings ex = getRateBeerActivity().getSettings().getUserSettings();
 			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(ex.getUserID(), ex.getUsername(), 
 					ex.getPassword(), "", getCommand.isPremium(), new Date(0)));

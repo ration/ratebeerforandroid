@@ -20,14 +20,12 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -37,10 +35,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -50,6 +49,9 @@ import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class AddUpcCodeFragment extends RateBeerFragment {
 
@@ -154,7 +156,7 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 	private void refreshResults() {
 		// Search for beers with the custom specified name
 		if (beernameText.getText().length() <= 0) {
-			Toast.makeText(getActivity(), R.string.rate_offline_nonamegiven, Toast.LENGTH_LONG).show();
+			Crouton.makeText(getActivity(), R.string.rate_offline_nonamegiven, Style.INFO).show();
 			return;
 		}
 		execute(new SearchBeersCommand(getRateBeerActivity().getApi(), beernameText.getText().toString(),

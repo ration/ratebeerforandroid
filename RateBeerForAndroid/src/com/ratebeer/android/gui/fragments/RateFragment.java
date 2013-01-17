@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ratebeer.android.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -32,7 +31,6 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -40,10 +38,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.components.PosterService;
@@ -52,6 +51,9 @@ import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import com.ratebeer.android.gui.wheel.IntegerWheelAdapter;
 import com.ratebeer.android.gui.wheel.OnSelectionChangedListener;
 import com.ratebeer.android.gui.wheel.WheelView;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class RateFragment extends RateBeerFragment implements Runnable {
 
@@ -258,7 +260,7 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 			}
 			if (offline == null) {
 				// This offline ID is no longer available; rating probably already uploaded
-				Toast.makeText(getActivity(), R.string.rate_offline_notavailable, Toast.LENGTH_LONG).show();
+				Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
 				getFragmentManager().popBackStack();
 				return;
 			}

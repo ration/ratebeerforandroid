@@ -17,15 +17,17 @@
  */
 package com.ratebeer.android.gui.components;
 
-import com.ratebeer.android.R;
-import com.ratebeer.android.app.RateBeerForAndroid;
-
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.widget.Toast;
+
+import com.ratebeer.android.R;
+import com.ratebeer.android.app.RateBeerForAndroid;
+
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 public class ErrorLogSender {
 
@@ -39,12 +41,12 @@ public class ErrorLogSender {
     public static final String EXTRA_FORMAT = "com.xtralogic.logcollector.intent.extra.FORMAT";//$NON-NLS-1$
     public static final String EXTRA_BUFFER = "com.xtralogic.logcollector.intent.extra.BUFFER";//$NON-NLS-1$
 
-    public static void collectAndSendLog(final Context context, final String user){
+    public static void collectAndSendLog(final Activity activity, final String user){
         final Intent intent = new Intent(ACTION_SEND_LOG);
-        final boolean isInstalled = ActivityUtil.isIntentAvailable(context, intent);
+        final boolean isInstalled = ActivityUtil.isIntentAvailable(activity, intent);
         
         if (!isInstalled){
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(activity)
             .setTitle("RateBeer for Android")
             .setIcon(android.R.drawable.ic_dialog_info)
             .setMessage(R.string.error_lc_install)
@@ -52,10 +54,10 @@ public class ErrorLogSender {
                 public void onClick(DialogInterface dialog, int whichButton){
                     Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=pname:" + LOG_COLLECTOR_PACKAGE_NAME));
                     marketIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    if (ActivityUtil.isIntentAvailable(context, marketIntent)) {
-                    	context.startActivity(marketIntent);
+                    if (ActivityUtil.isIntentAvailable(activity, marketIntent)) {
+                    	activity.startActivity(marketIntent);
                     } else {
-						Toast.makeText(context, R.string.app_nomarket, Toast.LENGTH_LONG).show();
+    					Crouton.makeText(activity, R.string.app_nomarket, Style.ALERT).show();
                     }
                 }
             })
@@ -64,7 +66,7 @@ public class ErrorLogSender {
         }
         else
         {
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(activity)
             .setTitle("RateBeer for Android")
             .setIcon(android.R.drawable.ic_dialog_info)
             .setMessage(R.string.error_lc_run)
@@ -73,7 +75,7 @@ public class ErrorLogSender {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(EXTRA_SEND_INTENT_ACTION, Intent.ACTION_SENDTO);
                     intent.putExtra(EXTRA_DATA, Uri.parse("mailto:rb@2312.nl"));
-                    intent.putExtra(EXTRA_ADDITIONAL_INFO, "My problem:\n\n\nRateBeer for Android version " + ActivityUtil.getVersionNumber(context) + "\nUser: " + user + "\n");
+                    intent.putExtra(EXTRA_ADDITIONAL_INFO, "My problem:\n\n\nRateBeer for Android version " + ActivityUtil.getVersionNumber(activity) + "\nUser: " + user + "\n");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "RateBeer for Android error report");
                     intent.putExtra(EXTRA_FORMAT, "time");
                     
@@ -83,7 +85,7 @@ public class ErrorLogSender {
                     		"*:S" }; // "ActivityManager:*"
                     intent.putExtra(EXTRA_FILTER_SPECS, filterSpecs);
                     
-                    context.startActivity(intent);
+                    activity.startActivity(intent);
                 }
             })
             .setNegativeButton(android.R.string.cancel, null)

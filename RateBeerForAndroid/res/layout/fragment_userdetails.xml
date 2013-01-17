@@ -18,6 +18,7 @@
 				android:minHeight="120dip"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center_horizontal"
+				android:contentDescription="@string/user_picture"
 				android:scaleType="fitCenter" />
 		</FrameLayout>
 	

@@ -37,10 +37,11 @@
 <string name="app_addingcodefor">Code toevoegen aan %1$s</string>
 <string name="app_requiressignin">Je dient je aan te melden om deze functie te gebruiken.</string>
 <string name="app_noaccount">Geen account?\nhttp://www.ratebeer.com/NewUser.asp</string>
-<string name="app_newmails">Je hebt %1$s nieuwe biermails</string>
 <string name="app_newmail">Je hebt een nieuwe biermail</string>
+<string name="app_newmails">Je hebt %1$s nieuwe biermails</string>
 <string name="app_by">Van %1$s</string>
 <string name="app_andothers">en anderen</string>
+<string name="app_moremail">en nog %1$s</string>
 <string name="app_uploadingphoto">Foto wordt geüpload</string>
 <string name="app_photofor">Uploaden van foto van %1$s</string>
 
@@ -65,6 +66,7 @@
 <string name="home_nowdrinking">Drinkt nu %1$s</string>
 <string name="home_preferences">Voorkeuren</string>
 <string name="home_calculator">Rekenmachine</string>
+<string name="home_about">Over</string>
 
 <string name="calc_clear">X</string>
 <string name="calc_for">%1$s voor</string>
@@ -152,7 +154,10 @@
 <string name="search_barcodescanner">Barcodescanner</string>
 <string name="search_nobeerswithbarcode">Geen bieren gevonden voor %1$s. Overweeg om de barcode toe te voegen aan de database.</string>
 <string name="search_clearhistory">Zoekgeschiedenis wissen</string>
-<string name="search_noitems">Geen resultaten voor je zoekopdracht. Probeer het eens met slechts een deel van de bier-, plaats- of gebruikersnaam.</string>
+<string name="search_nobeers">Geen bieren gevonden.\n\nProbeer slechts een deel van de biernaam te gebruiken.</string>
+<string name="search_nobrewers">Geen brouwers gevonden.\n\nProbeer slechts een deel van de brouwerijnaam te gebruiken.</string>
+<string name="search_nopalces">Geen plaatsen gevonden.\n\nProbeer slechts een deel van de plaatsnaam te gebruiken.</string>
+<string name="search_nousers">Geen gebruikers gevonden.\n\nProbeer slechts een deel van de gebruikersnaam te gebruiken.</string>
 <string name="search_retired">stopgezet</string>
 <string name="search_alias">alias</string>
 <string name="search_rated">beoordeeld</string>
@@ -175,6 +180,7 @@
 <string name="details_ticklabel">Of alleen ticken:</string>
 <string name="details_otherratings">Recente beoordelingen:</string>
 <string name="details_availability">Beschikbaarheid</string>
+<string name="details_noavailability">Geen beschrikbaarheid bekend</string>
 <string name="details_share">Check %1$s op @ratebeer http://ratebeer.com/b/%2$s/</string>
 <string name="details_sharebeer">Bier delen&#8230;</string>
 
@@ -187,6 +193,7 @@
 <string name="user_beersrated">%1$s bieren beoordeeld\n%2$s plaatsen beoordeeld\nGem. gegeven score: %3$s\nGem. van beoordeelde bieren: %4$s</string>
 <string name="user_favsyle">Favoriete stijl: %1$s</string>
 <string name="user_nofavstyle">geen</string>
+<string name="user_picture">Gebruikersafbeelding</string>
 
 <string name="rate_aroma">Aroma</string>
 <string name="rate_appearance">Uiterlijk</string>
@@ -249,6 +256,7 @@
 <string name="mail_relpied">beantwoord</string>
 <string name="mail_new">nieuw</string>
 <string name="mail_read">gelezen</string>
+<string name="mail_view">Bekijken</string>
 <string name="mail_reply">Beantwoorden</string>
 <string name="mail_sendto">Verzenden naar</string>
 <string name="mail_subject">Onderwerp</string>

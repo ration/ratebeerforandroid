@@ -65,7 +65,6 @@ public class GetUserRatingsCommand extends HtmlCommand {
 
 	@Override
 	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
 		return HttpHelper.makeRBGet("http://www.ratebeer.com/user/" + forUserId + "/ratings/" + pageNr + "/"
 				+ sortOrder + "/");
 	}
@@ -74,7 +73,7 @@ public class GetUserRatingsCommand extends HtmlCommand {
 	protected void parse(String html) throws JSONException, ApiException {
 
 		// Successful response?
-		if (html.indexOf("<a href=\"#\">Beer Reviews</a>") < 0) {
+		if (html.indexOf("Beer Ratings</a></span>") < 0) {
 			throw new ApiException(ApiException.ExceptionType.CommandFailed,
 					"The response HTML did not contain the unique ratings table begin HTML string");
 		}

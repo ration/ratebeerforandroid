@@ -154,7 +154,13 @@ public class DashboardFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		if (getResources().getConfiguration().screenWidthDp < 800) {
+		boolean showSearch = true;
+		if (android.os.Build.VERSION.SDK_INT >= 16) { 
+			if (getResources().getConfiguration().screenWidthDp >= 800) {
+				showSearch = false; // Already shown as SearchView
+			}
+		}
+		if (showSearch) {
 			// For phones, the dashboard & search fragments show a search icon in the action bar
 			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
 			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);

@@ -31,13 +31,14 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetBeerMailCommand extends JsonCommand {
 
 	private final int messageId;
 	private MailDetails mail;
 
-	public GetBeerMailCommand(RateBeerApi api, int messageID) {
+	public GetBeerMailCommand(UserSettings api, int messageID) {
 		super(api, ApiMethod.GetBeerMail);
 		this.messageId = messageID;
 	}

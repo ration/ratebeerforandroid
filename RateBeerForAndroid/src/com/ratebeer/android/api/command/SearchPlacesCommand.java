@@ -33,14 +33,14 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SearchPlacesCommand extends JsonCommand {
 
 	private final String query;
 	private ArrayList<PlaceSearchResult> results;
 
-	public SearchPlacesCommand(RateBeerApi api, String query) {
+	public SearchPlacesCommand(UserSettings api, String query) {
 		super(api, ApiMethod.SearchPlaces);
 		this.query = query;
 	}

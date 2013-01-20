@@ -26,13 +26,14 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class AddUpcCodeCommand extends EmptyResponseCommand {
 
 	private final int beerId;
 	private final String upcCode;
 
-	public AddUpcCodeCommand(RateBeerApi api, int beerId, String upcCode) {
+	public AddUpcCodeCommand(UserSettings api, int beerId, String upcCode) {
 		super(api, ApiMethod.AddUpcCode);
 		this.beerId = beerId;
 		this.upcCode = upcCode;

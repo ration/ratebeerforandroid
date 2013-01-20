@@ -30,7 +30,7 @@ import org.json.JSONException;
  */
 public abstract class HtmlCommand extends Command {
 
-	protected HtmlCommand(RateBeerApi api, ApiMethod method) {
+	protected HtmlCommand(UserSettings api, ApiMethod method) {
 		super(api, method);
 	}
 

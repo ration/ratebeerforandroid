@@ -26,6 +26,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.googlecode.androidannotations.annotations.EReceiver;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.RateBeerForAndroid;
 
@@ -33,6 +34,7 @@ import com.ratebeer.android.app.RateBeerForAndroid;
  * Receives a broadcast message when the device has started and is used to manually start/stop the alarm service.
  * @author erickok
  */
+@EReceiver
 public class BootReceiver extends BroadcastReceiver {
 
 	private static AlarmManager mgr;

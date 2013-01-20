@@ -40,6 +40,8 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EService;
 import com.j256.ormlite.dao.Dao;
 import com.jakewharton.notificationcompat2.NotificationCompat2;
 import com.jakewharton.notificationcompat2.NotificationCompat2.Builder;
@@ -49,6 +51,7 @@ import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
 import com.ratebeer.android.api.command.GetBeerMailCommand;
@@ -57,7 +60,8 @@ import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.gui.Home;
 
-public class BeermailService extends RateBeerService {
+@EService
+public class BeermailService extends DatabaseConsumerService {
 
 	public static final String ACTION_VIEWBEERMAILS = "VIEW_BEERMAILS";
 	public static final String ACTION_VIEWBEERMAIL = "VIEW_BEERMAIL";
@@ -70,6 +74,9 @@ public class BeermailService extends RateBeerService {
 	public static final int RESULT_FAILURE = 1;
 	public static final int RESULT_STARTED = 2;
 
+	@Bean
+	protected ApplicationSettings applicationSettings;
+	
 	private NotificationManager notificationManager = null;
 
 	public BeermailService() {
@@ -95,9 +102,8 @@ public class BeermailService extends RateBeerService {
 		}
 
 		// Proper user settings?
-		RateBeerForAndroid app = (RateBeerForAndroid) getApplication();
-		ApplicationSettings settings = app.getSettings();
-		if (settings.getUserSettings() == null) {
+		UserSettings user = applicationSettings.getUserSettings();
+		if (user == null) {
 			Log.d(RateBeerForAndroid.LOG_NAME, "Canceling BeerMail check intent because there are no user settings known.");
 			return;
 		}
@@ -106,7 +112,7 @@ public class BeermailService extends RateBeerService {
 
 		// Look for (new) beermail
 		SimpleDateFormat sentDateFormat = new SimpleDateFormat("M/d/yyyy h:m:s a");
-		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(app.getApi());
+		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(user);
 		CommandResult result = allMails.execute();
 		if (result instanceof CommandSuccessResult) {
 
@@ -128,7 +134,7 @@ public class BeermailService extends RateBeerService {
 
 						// Get the body too
 						String body;
-						GetBeerMailCommand gbmCommand = new GetBeerMailCommand(app.getApi(), mail.messageID);
+						GetBeerMailCommand gbmCommand = new GetBeerMailCommand(user, mail.messageID);
 						CommandResult gbmResult = gbmCommand.execute();
 						if (gbmResult instanceof CommandSuccessResult) {
 							body = gbmCommand.getMail().body;
@@ -271,7 +277,7 @@ public class BeermailService extends RateBeerService {
 				// Create notification, apply settings and release
 				Notification notification = inbox.build();
 				notification.flags |= Notification.FLAG_AUTO_CANCEL;
-				if (settings.getVibrateOnNotification()) {
+				if (applicationSettings.getVibrateOnNotification()) {
 					notification.defaults = Notification.DEFAULT_VIBRATE;
 				}
 				notification.ledARGB = 0xff003366;

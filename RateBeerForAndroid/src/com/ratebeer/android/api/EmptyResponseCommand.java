@@ -29,7 +29,7 @@ import org.apache.http.conn.HttpHostConnectException;
  */
 public abstract class EmptyResponseCommand extends Command {
 
-	protected EmptyResponseCommand(RateBeerApi api, ApiMethod method) {
+	protected EmptyResponseCommand(UserSettings api, ApiMethod method) {
 		super(api, method);
 	}
 

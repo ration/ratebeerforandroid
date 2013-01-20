@@ -22,11 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -37,7 +33,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -49,62 +51,40 @@ import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
+@EFragment(R.layout.fragment_events)
 public class EventsFragment extends RateBeerFragment {
 
-	private static final String STATE_COUNTRY = "country";
-	private static final String STATE_STATE = "state";
-	private static final String STATE_EVENTS = "events";
 	private static final DateFormat localFormat = DateFormat.getDateInstance();
+	
+	protected Country country = null;
+	protected State state = null;
+	@InstanceState
+	protected ArrayList<Event> events = null;
 
-	private LayoutInflater inflater;
-	private TextView emptyText;
-	private ListView eventsView;
-	private Spinner countrySpinner;
-	private Spinner stateSpinner;
-
-	private Country country = null;
-	private State state = null;
-	private ArrayList<Event> events = null;
+	@ViewById(R.id.empty)
+	protected TextView emptyText;
+	@ViewById(R.id.events)
+	protected ListView eventsView;
+	@ViewById(R.id.country)
+	protected Spinner countrySpinner;
+	@ViewById(R.id.state)
+	protected Spinner stateSpinner;
 
 	public EventsFragment() {
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_events, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		emptyText = (TextView) getView().findViewById(R.id.empty);
-		eventsView = (ListView) getView().findViewById(R.id.events);
-		countrySpinner = (Spinner) getView().findViewById(R.id.country);
 		countrySpinner.setOnItemSelectedListener(onCountrySelected);
-		stateSpinner = (Spinner) getView().findViewById(R.id.state);
 		stateSpinner.setOnItemSelectedListener(onStateSelected);
-		//stateLabel = (TextView) getView().findViewById(R.id.statelabel);
 		eventsView.setOnItemClickListener(onItemSelected);
 		
-		if (savedInstanceState != null) {
-			if (savedInstanceState.containsKey(STATE_COUNTRY)) {
-				country = Country.ALL_COUNTRIES.get(savedInstanceState.getInt(STATE_COUNTRY));
-			}
-			if (savedInstanceState.containsKey(STATE_STATE)) {
-				state = State.ALL_STATES.get(country.getId()).get(savedInstanceState.getInt(STATE_STATE));
-			}
-			populateCountrySpinner();
-			populateStateSpinner();
-			if (savedInstanceState.containsKey(STATE_EVENTS)) {
-				ArrayList<Event> savedEvents = savedInstanceState.getParcelableArrayList(STATE_EVENTS);
-				publishResults(savedEvents);
-			}
+		populateCountrySpinner();
+		populateStateSpinner();
+		if (events != null) {
+			publishResults(events);
 		} else {
-			populateCountrySpinner();
-			populateStateSpinner();
 			refreshEvents();
 		}
 		
@@ -136,9 +116,9 @@ public class EventsFragment extends RateBeerFragment {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		countrySpinner.setAdapter(adapter);
 		// Select the last used country, if known
-		if (getRateBeerActivity().getSettings().getLastUsedCountry() != null) {
+		if (getSettings().getLastUsedCountry() != null) {
 			for (int j = 0; j < allCountries.length; j++) {
-				if (allCountries[j].getId() == getRateBeerActivity().getSettings().getLastUsedCountry().getId()) {
+				if (allCountries[j].getId() == getSettings().getLastUsedCountry().getId()) {
 					countrySpinner.setSelection(j);
 					break;
 				}
@@ -161,9 +141,9 @@ public class EventsFragment extends RateBeerFragment {
 		stateSpinner.setAdapter(adapter);
 		// Select the last used state, if known
 		state = null;
-		if (getRateBeerActivity().getSettings().getLastUsedState() != null) {
+		if (getSettings().getLastUsedState() != null) {
 			for (int j = 0; j < allStates.length; j++) {
-				if (allStates[j].getId() == getRateBeerActivity().getSettings().getLastUsedState().getId()) {
+				if (allStates[j].getId() == getSettings().getLastUsedState().getId()) {
 					stateSpinner.setSelection(j);
 					break;
 				}
@@ -176,7 +156,7 @@ public class EventsFragment extends RateBeerFragment {
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			// Some country was selected; load the new top beers list
 			country = (Country) countrySpinner.getSelectedItem();
-			getRateBeerActivity().getSettings().saveLastUsedCountry(country);
+			getSettings().saveLastUsedCountry(country);
 			populateStateSpinner();
 			if (country == null || State.ALL_STATES.get(country.getId()) == null) {
 				refreshEvents();
@@ -191,27 +171,16 @@ public class EventsFragment extends RateBeerFragment {
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			// Some country was selected; load the new top beers list
 			state = (State) stateSpinner.getSelectedItem();
-			getRateBeerActivity().getSettings().saveLastUsedState(state);
+			getSettings().saveLastUsedState(state);
 			refreshEvents();
 		}
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {}
 	};
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if (country != null) {
-			outState.putInt(STATE_COUNTRY, (int)countrySpinner.getSelectedItemId());
-		}
-		if (events != null) {
-			outState.putParcelableArrayList(STATE_EVENTS, events);
-		}
-	}
-	
 	private void refreshEvents() {
 		if (country != null) {
-			execute(new GetEventsCommand(getRateBeerActivity().getApi(), country, state));
+			execute(new GetEventsCommand(getUser(), country, state));
 		}
 	}
 
@@ -219,7 +188,7 @@ public class EventsFragment extends RateBeerFragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Event item = ((EventAdapter)eventsView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new EventViewFragment(item.eventName, item.eventID));
+			load(EventViewFragment_.builder().eventId(item.eventID).eventName(item.eventName).build());
 		}
 	};
 	
@@ -232,7 +201,6 @@ public class EventsFragment extends RateBeerFragment {
 
 	private void publishResults(ArrayList<Event> result) {
 		this.events = result;
-		//Collections.sort(result, new UserRatingComparator(sortOrder));
 		if (eventsView.getAdapter() == null) {
 			eventsView.setAdapter(new EventAdapter(getActivity(), result));
 		} else {
@@ -259,7 +227,7 @@ public class EventsFragment extends RateBeerFragment {
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_event, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_event, null);
 				holder = new ViewHolder();
 				holder.eventName = (TextView) convertView.findViewById(R.id.eventName);
 				holder.city = (TextView) convertView.findViewById(R.id.city);

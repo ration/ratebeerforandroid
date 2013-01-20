@@ -25,11 +25,11 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SignOutCommand extends EmptyResponseCommand {
 	
-	public SignOutCommand(RateBeerApi api) {
+	public SignOutCommand(UserSettings api) {
 		super(api, ApiMethod.SignOut);
 	}
 

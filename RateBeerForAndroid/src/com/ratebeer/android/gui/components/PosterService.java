@@ -31,11 +31,14 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
 
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EService;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.AddAvailabilityCommand;
 import com.ratebeer.android.api.command.AddToCellarCommand;
 import com.ratebeer.android.api.command.AddUpcCodeCommand;
@@ -52,7 +55,8 @@ import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.Home;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 
-public class PosterService extends RateBeerService {
+@EService
+public class PosterService extends DatabaseConsumerService {
 
 	public static final String ACTION_SETDRINKINGSTATUS = "com.ratebeer.android.SET_DRINKING_STATUS";
 	public static final String ACTION_POSTRATING = "com.ratebeer.android.POST_RATING";
@@ -110,6 +114,9 @@ public class PosterService extends RateBeerService {
 
 	private static final int IMAGE_MAX_SIZE = 400; // Max pixels in one dimension
 
+	@Bean
+	protected ApplicationSettings applicationSettings;
+	
 	private NotificationManager notificationManager = null;
 
 	public PosterService() {
@@ -134,9 +141,8 @@ public class PosterService extends RateBeerService {
 		}
 
 		// Proper user settings?
-		RateBeerForAndroid app = (RateBeerForAndroid) getApplication();
-		ApplicationSettings settings = app.getSettings();
-		if (settings.getUserSettings() == null) {
+		UserSettings user = applicationSettings.getUserSettings();
+		if (user == null) {
 			Log.d(RateBeerForAndroid.LOG_NAME, "Canceling " + intent.getAction()
 					+ " intent because there are no user settings known.");
 			return;
@@ -167,7 +173,7 @@ public class PosterService extends RateBeerService {
 			}
 			createNotification(NOTIFY_SETDRINKINGSTATUS, getString(R.string.app_settingdrinking), getString(
 					R.string.home_nowdrinking, newStatus), true, recoverIntent, null, beerId);
-			CommandResult result = new SetDrinkingStatusCommand(app.getApi(), newStatus).execute();
+			CommandResult result = new SetDrinkingStatusCommand(user, newStatus).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_SETDRINKINGSTATUS);
 				// If requested, call back the messenger, i.e. the calling activity
@@ -214,7 +220,7 @@ public class PosterService extends RateBeerService {
 			createNotification(NOTIFY_POSTINGRATING, getString(R.string.app_postingrating), getString(
 					R.string.app_rated, beerName, PostRatingCommand.calculateTotal(aroma, appearance, taste, palate,
 							overall)), true, recoverIntent, null, beerId);
-			CommandResult result = new PostRatingCommand(app.getApi(), beerId, ratingId, origDate, beerName, aroma,
+			CommandResult result = new PostRatingCommand(user, beerId, ratingId, origDate, beerName, aroma,
 					appearance, taste, palate, overall, comment).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_POSTINGRATING);
@@ -270,9 +276,9 @@ public class PosterService extends RateBeerService {
 					getString(R.string.app_forbeer, beerName), true, recoverIntent, null, beerId);
 			CommandResult result;
 			if (del) {
-				result = new DeleteTickCommand(app.getApi(), beerId, userId, beerName).execute();
+				result = new DeleteTickCommand(user, beerId, userId, beerName).execute();
 			} else {
-				result = new PostTickCommand(app.getApi(), beerId, userId, beerName, liked).execute();
+				result = new PostTickCommand(user, beerId, userId, beerName, liked).execute();
 			}
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_POSTINGTICK);
@@ -315,7 +321,7 @@ public class PosterService extends RateBeerService {
 					.toString(beerId))));
 			createNotification(NOTIFY_ADDAVAILABILITY, getString(R.string.app_addingavailability), getString(
 					R.string.app_addingforbeer, beerName), true, recoverIntent, null, beerId);
-			CommandResult result = new AddAvailabilityCommand(app.getApi(), beerId, selectedPlaces, extraPlaceName,
+			CommandResult result = new AddAvailabilityCommand(user, beerId, selectedPlaces, extraPlaceName,
 					extraPlaceId, isOnBottleCan, isOnTap).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_ADDAVAILABILITY);
@@ -352,7 +358,7 @@ public class PosterService extends RateBeerService {
 			createNotification(NOTIFY_ADDTOCELLAR, getString(R.string.app_addingtocellar), getString(
 					cellarType == CellarType.Have ? R.string.app_addhave : R.string.app_addwant, beerName), true,
 					recoverIntent, null, beerId);
-			CommandResult result = new AddToCellarCommand(app.getApi(), cellarType, beerId, memo, vintage, quantity)
+			CommandResult result = new AddToCellarCommand(user, cellarType, beerId, memo, vintage, quantity)
 					.execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_ADDTOCELLAR);
@@ -381,7 +387,7 @@ public class PosterService extends RateBeerService {
 			// TODO: Direct this recovery intent to the send mail screen
 			createNotification(NOTIFY_SENDMAIL, getString(R.string.mail_sendingmail), getString(
 					R.string.mail_sendingto, sendTo), true, recoverIntent, sendTo, NO_BEER_EXTRA);
-			CommandResult result = new SendBeerMailCommand(app.getApi(), sendTo, subject, body).execute();
+			CommandResult result = new SendBeerMailCommand(user, sendTo, subject, body).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_SENDMAIL);
 			} else {
@@ -432,7 +438,7 @@ public class PosterService extends RateBeerService {
 			}
 			
 			// Start actual upload of the now-resized file
-			CommandResult result = new UploadBeerPhotoCommand(app.getApi(), beerId, photo).execute();
+			CommandResult result = new UploadBeerPhotoCommand(user, beerId, photo).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_UPLOADPHOTO);
 				// If requested, call back the messenger, i.e. the calling activity
@@ -469,7 +475,7 @@ public class PosterService extends RateBeerService {
 			recoverIntent.setAction(ACTION_ADDUPCCODE);
 			createNotification(NOTIFY_ADDUPCCODE, getString(R.string.app_addingupccode), getString(
 					R.string.app_addingcodefor, beerName), true, recoverIntent, null, beerId);
-			CommandResult result = new AddUpcCodeCommand(app.getApi(), beerId, upcCode).execute();
+			CommandResult result = new AddUpcCodeCommand(user, beerId, upcCode).execute();
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_ADDUPCCODE);
 			} else {

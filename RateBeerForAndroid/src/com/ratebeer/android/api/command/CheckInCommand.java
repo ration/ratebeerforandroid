@@ -26,12 +26,13 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class CheckInCommand extends EmptyResponseCommand {
 
 	private final int placeID;
 
-	public CheckInCommand(RateBeerApi api, int placeID) {
+	public CheckInCommand(UserSettings api, int placeID) {
 		super(api, ApiMethod.CheckIn);
 		this.placeID = placeID;
 	}

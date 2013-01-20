@@ -34,6 +34,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetEventsCommand extends HtmlCommand {
 
@@ -41,7 +42,7 @@ public class GetEventsCommand extends HtmlCommand {
 	private final State state;
 	private ArrayList<Event> events;
 
-	public GetEventsCommand(RateBeerApi api, Country country, State state) {
+	public GetEventsCommand(UserSettings api, Country country, State state) {
 		super(api, ApiMethod.GetEvents);
 		this.country = country;
 		this.state = state;

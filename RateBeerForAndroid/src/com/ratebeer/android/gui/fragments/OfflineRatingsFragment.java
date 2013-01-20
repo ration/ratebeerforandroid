@@ -25,10 +25,8 @@ import java.util.List;
 import org.json.JSONException;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -40,8 +38,14 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.OrmLiteDao;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.j256.ormlite.dao.Dao;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.command.PostRatingCommand;
+import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.ImportExport;
@@ -51,6 +55,7 @@ import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_offlineratings)
 public class OfflineRatingsFragment extends RateBeerFragment {
 
 	private static final int MENU_ADD = 0;
@@ -58,29 +63,22 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 	private static final int MENU_IMPORT = 2;
 	private static final int MENU_DELETE = 10;
 	
-	private LayoutInflater inflater;
-	private TextView emptyText;
-	private ListView ratingsView;
+	@ViewById(R.id.empty)
+	protected TextView emptyText;
+	@ViewById(R.id.offlineratings)
+	protected ListView ratingsView;
+	
+	@OrmLiteDao(helper = DatabaseHelper.class, model = OfflineRating.class)
+	Dao<OfflineRating, Long> offlineRatingDao;
 	
 	public OfflineRatingsFragment() {
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_offlineratings, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		emptyText = (TextView) getView().findViewById(R.id.empty);
-		ratingsView = (ListView) getView().findViewById(R.id.offlineratings);
 		ratingsView.setOnItemClickListener(onItemSelected);
 		registerForContextMenu(ratingsView);
-
 		loadRatings();
 		
 	}
@@ -103,15 +101,14 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_ADD:
-			getRateBeerActivity().load(new RateFragment());
+			load(RateFragment_.builder().build());
 			break;
 		case MENU_EXPORT:
 			new ConfirmDialogFragment(new OnDialogResult() {
 				@Override
 				public void onConfirmed() {
 					try {
-						ImportExport.exportRatings(getRateBeerActivity().getHelper().getOfflineRatingDao().queryForAll(), 
-								ImportExport.DEFAULT_RATINGS_FILE);
+						ImportExport.exportRatings(offlineRatingDao.queryForAll(), ImportExport.DEFAULT_RATINGS_FILE);
 					} catch (JSONException e) {
 						Crouton.makeText(getActivity(), R.string.error_cannotread, Style.ALERT).show();
 					} catch (IOException e) {
@@ -127,8 +124,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 				@Override
 				public void onConfirmed() {
 					try {
-						ImportExport.importRatings(getRateBeerActivity().getHelper().getOfflineRatingDao(), 
-								ImportExport.DEFAULT_RATINGS_FILE);
+						ImportExport.importRatings(offlineRatingDao, ImportExport.DEFAULT_RATINGS_FILE);
 					} catch (JSONException e) {
 						Crouton.makeText(getActivity(), R.string.error_filenotvalid, Style.ALERT).show();
 					} catch (IOException e) {
@@ -149,7 +145,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 		// Get ratings from database
 		List<OfflineRating> result;
 		try {
-			result = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForAll();
+			result = offlineRatingDao.queryForAll();
 		} catch (SQLException e) {
 			// Not available!
 			publishException(emptyText, getString(R.string.rate_offline_notavailable));
@@ -171,7 +167,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			OfflineRating item = ((OfflineRatingsAdapter)ratingsView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new RateFragment(item.getOfflineId()));
+			load(RateFragment_.buildFromOfflineID(item.getOfflineId()));
 		}
 	};
 
@@ -196,7 +192,7 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 
 	protected void deleteRating(OfflineRating rating) {
 		try {
-			getRateBeerActivity().getHelper().getOfflineRatingDao().delete(rating);
+			offlineRatingDao.delete(rating);
 		} catch (SQLException e) {
 			Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
 		}
@@ -214,10 +210,14 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() == null) {
+				return convertView;
+			}
+			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_offlinerating, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_offlinerating, null);
 				holder = new ViewHolder();
 				holder.beerName = (TextView) convertView.findViewById(R.id.beerName);
 				holder.total = (TextView) convertView.findViewById(R.id.total);
@@ -233,10 +233,6 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			if (getRateBeerActivity() == null) {
-				return convertView;
-			}
-			
 			// Bind the data
 			OfflineRating item = getItem(position);
 			holder.beerName.setText(item.getBeerName());

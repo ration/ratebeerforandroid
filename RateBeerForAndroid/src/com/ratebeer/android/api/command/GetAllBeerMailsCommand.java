@@ -33,12 +33,13 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetAllBeerMailsCommand extends JsonCommand {
 
 	private ArrayList<Mail> mails;
 
-	public GetAllBeerMailsCommand(RateBeerApi api) {
+	public GetAllBeerMailsCommand(UserSettings api) {
 		super(api, ApiMethod.GetAllBeerMails);
 	}
 

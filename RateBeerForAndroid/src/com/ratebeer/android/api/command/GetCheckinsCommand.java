@@ -31,7 +31,7 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetCheckinsCommand extends JsonCommand {
 
@@ -45,7 +45,7 @@ public class GetCheckinsCommand extends JsonCommand {
 	public static final int SORTBY_DATE = 5;
 	public static final int SORTBY_SCORE = 6;
 
-	public GetCheckinsCommand(RateBeerApi api, int placeID) {
+	public GetCheckinsCommand(UserSettings api, int placeID) {
 		super(api, ApiMethod.GetCheckins);
 		this.placeID = placeID;
 	}

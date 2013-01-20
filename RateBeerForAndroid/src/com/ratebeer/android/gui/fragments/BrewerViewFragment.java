@@ -29,8 +29,6 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -51,6 +49,11 @@ import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -62,6 +65,7 @@ import com.ratebeer.android.api.command.GetBrewerDetailsCommand.BrewerDetails;
 import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 import com.ratebeer.android.api.command.State;
+import com.ratebeer.android.app.location.LocationUtils;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.gui.components.ActivityUtil;
@@ -73,70 +77,47 @@ import com.viewpagerindicator.TabPageIndicator;
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_brewerview)
 public class BrewerViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
 	protected static final String BASE_URI_FACEBOOK = "https://www.facebook.com/%1$s";
 	protected static final String BASE_URI_TWITTER = "https://twitter.com/%1$s";
+	protected static final int MENU_SHARE = 0;
 
-	private static final String STATE_BREWERID = "brewerId";
-	private static final String STATE_BREWER = "brewer";
-	private static final String STATE_BEERS = "beers";
+	@FragmentArg
+	@InstanceState
+	protected int brewerId;
+	@InstanceState
+	protected BrewerDetails brewer;
+	@InstanceState
+	protected ArrayList<BeerSearchResult> beers = null;
 
-	private static final int MENU_SHARE = 0;
-
-	private LayoutInflater inflater;
-	private ViewPager pager;
-	private TextView nameText, descriptionText;
-	private Button locationText, websiteButton, facebookButton, twitterButton;
-	private FrameLayout mapFrame;
-	private ListView beersView;
-
-	private int brewerId;
-	private BrewerDetails brewer;
-	private ArrayList<BeerSearchResult> beers = new ArrayList<BeerSearchResult>();
+	@ViewById
+	protected ViewPager pager;
+	@ViewById
+	protected TabPageIndicator titles;
+	protected ListView beersView;
+	protected TextView nameText, descriptionText;
+	protected Button locationText, websiteButton, facebookButton, twitterButton;
+	protected FrameLayout mapFrame;
 
 	public BrewerViewFragment() {
 	}
 
-	public BrewerViewFragment(int placeId) {
-		this.brewerId = placeId;
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_brewerview, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		pager = (ViewPager) getView().findViewById(R.id.pager);
-		BrewerPagerAdapter brewerPagerAdapter = new BrewerPagerAdapter();
-		pager.setAdapter(brewerPagerAdapter);
-		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
+		pager.setAdapter(new BrewerPagerAdapter());
 		titles.setViewPager(pager);
 		beersView.setOnItemClickListener(onBeerSelected);
 
-		if (savedInstanceState != null) {
-			brewerId = savedInstanceState.getInt(STATE_BREWERID);
-			if (savedInstanceState.containsKey(STATE_BREWER)) {
-				brewer = savedInstanceState.getParcelable(STATE_BREWER);
-			}
-			if (savedInstanceState.containsKey(STATE_BEERS)) {
-				beers = savedInstanceState.getParcelableArrayList(STATE_BEERS);
-			}
+		if (brewer != null) {
+			publishDetails(brewer);
+			publishBeers(beers);
 		} else {
-			// Retrieve brewer details and beers
 			refreshDetails();
 			refreshBeers();
 		}
-		// Publish the current details, even when it is not loaded yet (and thus still empty)
-		publishDetails(brewer);
-		publishBeers(beers);
-
 	}
 
 	@Override
@@ -173,26 +154,13 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(STATE_BREWERID, brewerId);
-		if (brewer != null) {
-			outState.putParcelable(STATE_BREWER, brewer);
-		}
-		if (beers != null) {
-			outState.putParcelableArrayList(STATE_BEERS, beers);
-		}
-	}
-
 	private void refreshDetails() {
-		execute(new GetBrewerDetailsCommand(getRateBeerActivity().getApi(), brewerId));
+		execute(new GetBrewerDetailsCommand(getUser(), brewerId));
 	}
 
 	private void refreshBeers() {
-		execute(new GetBrewerBeersCommand(getRateBeerActivity().getApi(), brewerId,
-				getRateBeerActivity().getUser() != null ? getRateBeerActivity().getUser().getUserID()
-						: SearchBeersCommand.NO_USER));
+		execute(new GetBrewerBeersCommand(getUser(), brewerId, getUser() != null ? getUser().getUserID()
+				: SearchBeersCommand.NO_USER));
 	}
 
 	private OnClickListener onLocationClick = new OnClickListener() {
@@ -249,10 +217,12 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 			if (item.isAlias) {
 				// Unfortunately this is the only possible workaround for now to prohibit viewing an aliased beer as
 				// if it were a normal one (see issue 8)
+				// TODO: Actually we might want to link to the full website or even parse that HTML page
 				Crouton.makeText(getActivity(), R.string.search_aliasedbeer, Style.INFO).show();
 				return;
 			}
-			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId, item.rateCount));
+			load(BeerViewFragment_.builder().beerId(item.beerId).beerName(item.beerName).ratingsCount(item.rateCount)
+					.build());
 		}
 	};
 
@@ -310,7 +280,7 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		twitterButton.setVisibility(brewer.twitter.equals("") || brewer.twitter.equals("null")? View.GONE: View.VISIBLE);
 
 		// Get the activity-wide MapView to show on this fragment and center on this brewer's location
-		MapView mapView = getRateBeerActivity().requestMapViewInstance();
+		MapView mapView = ((RateBeerActivity) getActivity()).requestMapViewInstance();
 		try {
 			// Use Geocoder to look up the coordinates
 			try {
@@ -321,7 +291,7 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 					mapFrame.setVisibility(View.GONE);
 				} else {
 					// Found a location! Center the map here
-					GeoPoint center = getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude());
+					GeoPoint center = LocationUtils.getPoint(point.get(0).getLatitude(), point.get(0).getLongitude());
 					mapView.getController().setCenter(center);
 					mapFrame.setVisibility(View.VISIBLE);
 					final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, 5, this);
@@ -354,10 +324,14 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() != null) {
+				return convertView;
+			}
+
 			// Get the right view, using a ViewHolder
 			BeerViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_beersearchresult, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_beersearchresult, null);
 				holder = new BeerViewHolder();
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
 				holder.overall = (TextView) convertView.findViewById(R.id.overall);
@@ -372,14 +346,12 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 
 			// Bind the data
 			BeerSearchResult item = getItem(position);
-			if (getActivity() != null) {
-				holder.beer.setText(item.beerName);
-				holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
-				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
-				holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
-				holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
-				holder.alias.setVisibility(item.isAlias ? View.VISIBLE : View.GONE);
-			}
+			holder.beer.setText(item.beerName);
+			holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
+			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+			holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
+			holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
+			holder.alias.setVisibility(item.isAlias ? View.VISIBLE : View.GONE);
 
 			return convertView;
 		}
@@ -393,14 +365,11 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 	private class BrewerPagerAdapter extends PagerAdapter {
 
 		private View pagerDetailsView;
-		private ListView pagerBeersView;
 
 		public BrewerPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			pagerDetailsView = (ScrollView) inflater.inflate(R.layout.fragment_brewerdetails, null);
-			pagerBeersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
-
-			beersView = pagerBeersView;
+			beersView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 
 			nameText = (TextView) pagerDetailsView.findViewById(R.id.name);
 			descriptionText = (TextView) pagerDetailsView.findViewById(R.id.description);
@@ -439,8 +408,8 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 				((ViewPager) container).addView(pagerDetailsView, 0);
 				return pagerDetailsView;
 			case 1:
-				((ViewPager) container).addView(pagerBeersView, 0);
-				return pagerBeersView;
+				((ViewPager) container).addView(beersView, 0);
+				return beersView;
 			}
 			return null;
 		}
@@ -453,23 +422,6 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		@Override
 		public boolean isViewFromObject(View view, Object object) {
 			return view == (View) object;
-		}
-
-		@Override
-		public void finishUpdate(View container) {
-		}
-
-		@Override
-		public Parcelable saveState() {
-			return null;
-		}
-
-		@Override
-		public void startUpdate(View container) {
-		}
-
-		@Override
-		public void restoreState(Parcelable state, ClassLoader loader) {
 		}
 
 	}

@@ -30,14 +30,14 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetBrewerDetailsCommand extends JsonCommand {
 
 	private final int brewerId;
 	private BrewerDetails details;
 
-	public GetBrewerDetailsCommand(RateBeerApi api, int beerId) {
+	public GetBrewerDetailsCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.GetBrewerDetails);
 		this.brewerId = beerId;
 	}

@@ -31,14 +31,14 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetUserDetailsCommand extends HtmlCommand {
 	
 	private final int userId;
 	private UserDetails details;
 	
-	public GetUserDetailsCommand(RateBeerApi api, int userId) {
+	public GetUserDetailsCommand(UserSettings api, int userId) {
 		super(api, ApiMethod.GetUserDetails);
 		this.userId = userId;
 	}

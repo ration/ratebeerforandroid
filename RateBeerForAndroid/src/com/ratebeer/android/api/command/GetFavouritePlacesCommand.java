@@ -28,6 +28,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 
 public class GetFavouritePlacesCommand extends HtmlCommand {
@@ -35,7 +36,7 @@ public class GetFavouritePlacesCommand extends HtmlCommand {
 	private final int beerId;
 	private ArrayList<PlaceSearchResult> places;
 	
-	public GetFavouritePlacesCommand(RateBeerApi api, int beerId) {
+	public GetFavouritePlacesCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.GetFavouritePlaces);
 		this.beerId = beerId;
 	}

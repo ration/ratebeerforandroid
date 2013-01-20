@@ -22,10 +22,8 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -39,6 +37,11 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -53,63 +56,40 @@ import com.ratebeer.android.gui.components.RateBeerFragment;
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_addupccode)
 public class AddUpcCodeFragment extends RateBeerFragment {
 
-	private static final String STATE_UPCCODE = "upcCode";
-	private static final String STATE_RESULTS = "results";
-
-	private LayoutInflater inflater;
-	private ListView resultsView;
-	private EditText beernameText;
-	private TextView emptyText, upccodeText;
-	private Button findButton;
-
+	@FragmentArg
+	@InstanceState
 	protected String upcCode;
-	private ArrayList<BeerSearchResult> results = null;
+	@InstanceState
+	protected ArrayList<BeerSearchResult> results = null;
+
+	@ViewById(R.id.results)
+	protected ListView resultsView;
+	@ViewById
+	protected EditText beername;
+	@ViewById
+	protected TextView empty;
+	@ViewById
+	protected TextView upccode;
+	@ViewById(R.id.findbeer)
+	protected Button findButton;
 
 	public AddUpcCodeFragment() {
-		this(null);
-	}
-
-	/**
-	 * Allow adding of a UPC code to the corresponding beer by search for the beer name
-	 * @param upcCode The UPC code to add
-	 */
-	public AddUpcCodeFragment(String upcCode) {
-		this.upcCode = upcCode;
 	}
 	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_addupccode, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		upccodeText = (TextView) getView().findViewById(R.id.upccode);
-		emptyText = (TextView) getView().findViewById(R.id.empty);
-		resultsView = (ListView) getView().findViewById(R.id.results);
 		resultsView.setOnItemClickListener(onItemSelected);
-		beernameText = (EditText) getView().findViewById(R.id.beername);
-		beernameText.addTextChangedListener(onBeerNameChanged);
-		findButton = (Button) getView().findViewById(R.id.findbeer);
+		beername.addTextChangedListener(onBeerNameChanged);
 		findButton.setOnClickListener(onFindClick);
 
-		if (savedInstanceState != null) {
-			upccodeText.setText(savedInstanceState.getString(STATE_UPCCODE));
-			if (savedInstanceState.containsKey(STATE_RESULTS)) {
-				results = savedInstanceState.getParcelableArrayList(STATE_RESULTS);
-				publishResults(results);
-			}
+		if (results != null) {
+			publishResults(results);
 		} else {
-			upccodeText.setText(upcCode);
-			if (results != null) {
-				publishResults(results);
-			}
+			upccode.setText(upcCode);
 		}
 		
 	}
@@ -132,15 +112,6 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(STATE_UPCCODE, upcCode);
-		if (results != null) {
-			outState.putParcelableArrayList(STATE_RESULTS, results);
-		}
-	}
-
 	private TextWatcher onBeerNameChanged = new TextWatcher() {
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -155,13 +126,12 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 
 	private void refreshResults() {
 		// Search for beers with the custom specified name
-		if (beernameText.getText().length() <= 0) {
+		if (beername.getText().length() <= 0) {
 			Crouton.makeText(getActivity(), R.string.rate_offline_nonamegiven, Style.INFO).show();
 			return;
 		}
-		execute(new SearchBeersCommand(getRateBeerActivity().getApi(), beernameText.getText().toString(),
-				getRateBeerActivity().getUser() != null ? getRateBeerActivity().getUser().getUserID()
-						: SearchBeersCommand.NO_USER));
+		execute(new SearchBeersCommand(getUser(), beername.getText().toString(), getUser() != null ? getUser()
+				.getUserID() : SearchBeersCommand.NO_USER));
 	}
 
 	private OnClickListener onFindClick = new OnClickListener() {
@@ -185,14 +155,13 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 	private OnItemClickListener onItemSelected = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			if (getRateBeerActivity() == null) {
+			if (getActivity() == null) {
 				return;
 			}
 			BeerSearchResult item = ((SearchResultsAdapter)resultsView.getAdapter()).getItem(position);
 			addUpcCode(item.beerId, item.beerName, upcCode);
 			// Also redirect to the beer in question
-			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId));
-			
+			load(BeerViewFragment_.builder().beerId(item.beerId).beerName(item.beerName).build());
 		}
 	};
 	
@@ -205,19 +174,18 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 	
 	private void publishResults(ArrayList<BeerSearchResult> result) {
 		this.results = result;
-		//Collections.sort(result);
 		if (resultsView.getAdapter() == null) {
 			resultsView.setAdapter(new SearchResultsAdapter(getActivity(), result));
 		} else {
 			((SearchResultsAdapter)resultsView.getAdapter()).replace(result);
 		}
 		resultsView.setVisibility(result.size() == 0? View.GONE: View.VISIBLE);
-		emptyText.setVisibility(result.size() == 0? View.VISIBLE: View.GONE);
+		empty.setVisibility(result.size() == 0? View.VISIBLE: View.GONE);
 	}
 
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {
-		publishException(emptyText, result.getException());
+		publishException(empty, result.getException());
 	}
 
 	private class SearchResultsAdapter extends ArrayAdapter<BeerSearchResult> {
@@ -232,7 +200,7 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_beersearchresult, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_beersearchresult, null);
 				holder = new ViewHolder();
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
 				holder.overall = (TextView) convertView.findViewById(R.id.overall);

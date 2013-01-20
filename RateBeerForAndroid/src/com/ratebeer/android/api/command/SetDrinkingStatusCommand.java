@@ -29,12 +29,13 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SetDrinkingStatusCommand extends EmptyResponseCommand {
 
 	private final String newStatus;
 
-	public SetDrinkingStatusCommand(RateBeerApi api, String newStatus) {
+	public SetDrinkingStatusCommand(UserSettings api, String newStatus) {
 		super(api, ApiMethod.SetDrinkingStatus);
 		this.newStatus = newStatus;
 	}

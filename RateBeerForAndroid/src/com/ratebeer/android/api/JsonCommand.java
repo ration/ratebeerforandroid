@@ -31,7 +31,7 @@ import org.json.JSONException;
  */
 public abstract class JsonCommand extends Command {
 
-	protected JsonCommand(RateBeerApi api, ApiMethod method) {
+	protected JsonCommand(UserSettings api, ApiMethod method) {
 		super(api, method);
 	}
 

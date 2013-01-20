@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 
 public class GetBeerAvailabilityCommand extends JsonCommand {
@@ -36,7 +36,7 @@ public class GetBeerAvailabilityCommand extends JsonCommand {
 	private final int beerId;
 	private ArrayList<PlaceSearchResult> results;
 
-	public GetBeerAvailabilityCommand(RateBeerApi api, int beerId) {
+	public GetBeerAvailabilityCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.GetBeerAvailability);
 		this.beerId = beerId;
 	}

@@ -20,8 +20,8 @@ package com.ratebeer.android.app;
 import java.io.File;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 
 import com.nostra13.universalimageloader.cache.disc.impl.FileCountLimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -30,7 +30,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.ratebeer.android.api.RateBeerApi;
 
 public class RateBeerForAndroid extends Application {
 
@@ -39,39 +38,14 @@ public class RateBeerForAndroid extends Application {
 	public static final String DEFAULT_FILES_DIR = Environment.getExternalStorageDirectory().toString()
 			+ "/RateBeerForAndroid";
 
-	private ApplicationSettings settings;
-	private RateBeerApi api;
-	private ImageLoader imageCache;
+	private static ImageLoader imageCache;
 
-	/**
-	 * Returns the application-wide user settings
-	 * @return The user settings object
-	 */
-	public ApplicationSettings getSettings() {
-		if (settings == null) {
-			settings = new ApplicationSettings(getApplicationContext(),
-					PreferenceManager.getDefaultSharedPreferences(this));
-		}
-		return settings;
-	}
-
-	/**
-	 * Returns the API to the ratebeer.com website
-	 * @return The RateBeer API object
-	 */
-	public RateBeerApi getApi() {
-		if (api == null) {
-			api = new RateBeerApi(getSettings().getUserSettings());
-		}
-		return api;
-	}
-
-	public ImageLoader getImageCache() {
+	public static ImageLoader getImageCache(Context context) {
 		if (imageCache == null) {
 			imageCache = ImageLoader.getInstance();
 			File imageCacheDir = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/cache/");
 			imageCacheDir.mkdirs();
-			imageCache.init(new ImageLoaderConfiguration.Builder(this)
+			imageCache.init(new ImageLoaderConfiguration.Builder(context)
 					.defaultDisplayImageOptions(new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().
 							imageScaleType(ImageScaleType.IN_SAMPLE_INT).build())
 					.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))

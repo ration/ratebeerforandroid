@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 
 public class GetBrewerBeersCommand extends JsonCommand {
@@ -39,11 +39,11 @@ public class GetBrewerBeersCommand extends JsonCommand {
 
 	public static final int NO_USER = -1;
 
-	public GetBrewerBeersCommand(RateBeerApi api, int brewerId) {
+	public GetBrewerBeersCommand(UserSettings api, int brewerId) {
 		this(api, brewerId, NO_USER);
 	}
 
-	public GetBrewerBeersCommand(RateBeerApi api, int brewerId, int userId) {
+	public GetBrewerBeersCommand(UserSettings api, int brewerId, int userId) {
 		super(api, ApiMethod.GetBrewerBeers);
 		this.brewerId = brewerId;
 		this.userId = userId;

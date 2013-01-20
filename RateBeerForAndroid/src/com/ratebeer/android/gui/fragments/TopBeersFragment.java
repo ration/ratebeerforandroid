@@ -20,11 +20,7 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,7 +31,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -47,73 +50,49 @@ import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
+@EFragment(R.layout.fragment_topbeers)
 public class TopBeersFragment extends RateBeerFragment {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
-	private static final String STATE_TOPLIST = "topList";
-	private static final String STATE_COUNTRY = "country";
-	private static final String STATE_BEERS = "beers";
-	
-	private LayoutInflater inflater;
-	private TextView emptyText;
-	private ListView beersView;
-	private TextView countryLabel;
-	private Spinner countrySpinner;
 
-	private TopListType topList;
-	private Country country = null;
-	private ArrayList<TopBeer> beers;
+	@FragmentArg
+	@InstanceState
+	protected TopListType topList = TopListType.Top50;
+	protected Country country = null;
+	@InstanceState
+	protected ArrayList<TopBeer> beers = null;
+
+	@ViewById(R.id.empty)
+	protected TextView emptyText;
+	@ViewById(R.id.beers)
+	protected ListView beersView;
+	@ViewById(R.id.countrylabel)
+	protected TextView countryLabel;
+	@ViewById(R.id.country)
+	protected Spinner countrySpinner;
+	@ViewById(R.id.state)
+	protected Spinner stateSpinner;
 
 	public TopBeersFragment() {
-		this(TopListType.Top50);
 	}
 
-	public TopBeersFragment(TopListType topList) {
-		this.topList = topList;
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_topbeers, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		emptyText = (TextView) getView().findViewById(R.id.empty);
-		beersView = (ListView) getView().findViewById(R.id.beers);
-		countryLabel = (TextView) getView().findViewById(R.id.countrylabel);
-		countrySpinner = (Spinner) getView().findViewById(R.id.country);
 		countrySpinner.setOnItemSelectedListener(onCountrySelected);
 		beersView.setOnItemClickListener(onItemSelected);
 
-		if (savedInstanceState != null) {
-			topList = TopListType.valueOf(savedInstanceState.getString(STATE_TOPLIST));
-			if (topList != TopListType.TopByCountry) {
-				countryLabel.setVisibility(View.GONE);
-				countrySpinner.setVisibility(View.GONE);
-			}
-			if (savedInstanceState.containsKey(STATE_COUNTRY)) {
-				country = Country.ALL_COUNTRIES.get(savedInstanceState.getInt(STATE_COUNTRY));
-			}
-			populateCountrySpinner();
-			if (savedInstanceState.containsKey(STATE_BEERS)) {
-				beers = savedInstanceState.getParcelableArrayList(STATE_BEERS);
-			}
+		if (topList != TopListType.TopByCountry) {
+			countryLabel.setVisibility(View.GONE);
+			countrySpinner.setVisibility(View.GONE);
 		} else {
-			if (topList == TopListType.TopByCountry) {
-				populateCountrySpinner();
-			} else {
-				countryLabel.setVisibility(View.GONE);
-				countrySpinner.setVisibility(View.GONE);
-			}
+			populateCountrySpinner();
+		}
+		if (beers != null) {
+			publishResults(beers);
+		} else {
 			refreshBeers();
 		}
-		// Publish the current details, even when it is not loaded yet (and thus still empty)
-		publishResults(beers);
 		
 	}
 
@@ -143,9 +122,9 @@ public class TopBeersFragment extends RateBeerFragment {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		countrySpinner.setAdapter(adapter);
 		// Select the last used country, if known
-		if (getRateBeerActivity().getSettings().getLastUsedCountry() != null) {
+		if (getSettings().getLastUsedCountry() != null) {
 			for (int j = 0; j < allCountries.length; j++) {
-				if (allCountries[j].getId() == getRateBeerActivity().getSettings().getLastUsedCountry().getId()) {
+				if (allCountries[j].getId() == getSettings().getLastUsedCountry().getId()) {
 					countrySpinner.setSelection(j);
 					break;
 				}
@@ -158,7 +137,7 @@ public class TopBeersFragment extends RateBeerFragment {
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			// Some country was selected; load the new top beers list
 			country = (Country) countrySpinner.getSelectedItem();
-			getRateBeerActivity().getSettings().saveLastUsedCountry(country);
+			getSettings().saveLastUsedCountry(country);
 			refreshBeers();
 		}
 
@@ -167,26 +146,14 @@ public class TopBeersFragment extends RateBeerFragment {
 		}
 	};
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(STATE_TOPLIST, topList.name());
-		if (country != null) {
-			outState.putInt(STATE_COUNTRY, (int) countrySpinner.getSelectedItemId());
-		}
-		if (beers != null) {
-			outState.putParcelableArrayList(STATE_BEERS, beers);
-		}
-	}
-
 	private void refreshBeers() {
 		switch (topList) {
 		case Top50:
-			execute(new GetTopBeersCommand(getRateBeerActivity().getApi()));
+			execute(new GetTopBeersCommand(getUser()));
 			break;
 		case TopByCountry:
 			if (country != null) {
-				execute(new GetTopBeersCommand(getRateBeerActivity().getApi(), country));
+				execute(new GetTopBeersCommand(getUser(), country));
 			}
 			break;
 		}
@@ -196,7 +163,7 @@ public class TopBeersFragment extends RateBeerFragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			TopBeer item = ((TopBeersAdapter) beersView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId));
+			load(BeerViewFragment_.builder().beerId(item.beerId).beerName(item.beerName).build());
 		}
 	};
 
@@ -237,10 +204,14 @@ public class TopBeersFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() == null) {
+				return convertView;
+			}
+			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_topbeer, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_topbeer, null);
 				holder = new ViewHolder();
 				holder.order = (TextView) convertView.findViewById(R.id.order);
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
@@ -252,10 +223,6 @@ public class TopBeersFragment extends RateBeerFragment {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			if (getRateBeerActivity() == null) {
-				return convertView;
-			}
-			
 			// Bind the data
 			TopBeer item = getItem(position);
 			if (getActivity() != null) {

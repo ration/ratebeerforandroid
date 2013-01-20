@@ -26,8 +26,6 @@ import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -44,6 +42,10 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -64,54 +66,36 @@ import com.ratebeer.android.gui.components.SelectLocationDialog;
 import com.ratebeer.android.gui.components.SelectLocationDialog.OnLocationSelectedListener;
 import com.viewpagerindicator.TabPageIndicator;
 
+@EFragment(R.layout.fragment_places)
 public class PlacesFragment extends RateBeerFragment implements OnLocationSelectedListener, OnBalloonClickListener {
 
-	private static final String DECIMAL_FORMATTER = "%.1f";
-	private static final String STATE_PLACES = "places";
-	private static final String STATE_LOCATION = "location";
 	private static final int DEFAULT_RADIUS = 25;
 	private static final int MENU_LOCATION = 0;
+
+	@InstanceState
+	protected ArrayList<Place> places = null;
+	@InstanceState
+	protected Location lastLocation = null;
 	
-	private LayoutInflater inflater;
-	private TouchableMapViewPager pager;
+	@ViewById
+	protected TouchableMapViewPager pager;
+	@ViewById
+	protected TabPageIndicator titles;
 	private ListView placesView;
 	private FrameLayout mapFrame;
 
-	private ArrayList<Place> places = null;
-	private Location lastLocation = null;
-	
 	public PlacesFragment() {
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_places, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		pager = (TouchableMapViewPager) getView().findViewById(R.id.pager);
-		PlacesPagerAdapter placesPagerAdapter = new PlacesPagerAdapter();
-		pager.setAdapter(placesPagerAdapter);
-		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
+		pager.setAdapter(new PlacesPagerAdapter());
 		titles.setViewPager(pager);
 		titles.setOnPageChangeListener(pager.getOnPageChangeListener());
 
-		if (savedInstanceState != null) {
-			if (savedInstanceState.containsKey(STATE_PLACES)) {
-				places = savedInstanceState.getParcelableArrayList(STATE_PLACES);
-			}
-			if (savedInstanceState.containsKey(STATE_LOCATION)) {
-				lastLocation = savedInstanceState.getParcelable(STATE_LOCATION);
-			}
-		}
-		
 		if (places != null) {
-			publishResults(places);
+			refreshPlaces();
 		} else {
 			refreshPlaces();
 		}		
@@ -155,8 +139,8 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 				lastLocation = new Location("");
 				lastLocation.setLongitude(point.get(0).getLongitude());
 				lastLocation.setLatitude(point.get(0).getLatitude());
-				execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, 
-						lastLocation.getLatitude(), lastLocation.getLongitude()));
+				execute(new GetPlacesAroundCommand(getUser(), DEFAULT_RADIUS, lastLocation.getLatitude(),
+						lastLocation.getLongitude()));
 			}
 		} catch (IOException e) {
 			// Canot connect to geocoder server: give an error
@@ -169,22 +153,11 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		refreshPlaces();
 	}
 	
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if (places != null) {
-			outState.putParcelableArrayList(STATE_PLACES, places);
-		}
-		if (lastLocation != null) {
-			outState.putParcelable(STATE_LOCATION, lastLocation);
-		}
-	}
-
 	private void refreshPlaces() {
 		// Get the current location (if possible)
 		if (new MyLocation().getLocation(getActivity(), onLocationResult)) {
 			// Force the progress indicator to start
-			getRateBeerActivity().setProgress(true);
+			((RateBeerActivity)getActivity()).setProgress(true);
 		} else {
 			publishException(null, getString(R.string.error_locationnotsupported));
 		}
@@ -198,7 +171,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 				getView().post(new Runnable() {
 					@Override
 					public void run() {
-						if (getRateBeerActivity() != null) {
+						if (getActivity() != null) {
 							publishException(null, getString(R.string.error_nolocation));
 						}
 					}
@@ -207,11 +180,11 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			}
 			// Now get the places at this location, if this fragment is still bound to an activity
 			PlacesFragment.this.lastLocation = location;
-			if (getRateBeerActivity() != null && PlacesFragment.this.lastLocation != null) {
+			if (getActivity() != null && PlacesFragment.this.lastLocation != null) {
 				getView().post(new Runnable() {
 					@Override
 					public void run() {
-						execute(new GetPlacesAroundCommand(getRateBeerActivity().getApi(), DEFAULT_RADIUS, 
+						execute(new GetPlacesAroundCommand(getUser(), DEFAULT_RADIUS, 
 								lastLocation.getLatitude(), lastLocation.getLongitude()));
 					}
 				});
@@ -223,7 +196,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Place item = ((PlacesAdapter)placesView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new PlaceViewFragment(item, lastLocation));
+			load(PlaceViewFragment_.builder().place(item).currentLocation(lastLocation).build());
 		}
 	};
 	
@@ -246,8 +219,8 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		if (lastLocation != null) {
 			
 			// Get the activity-wide MapView to show on this fragment and center on this current location
-			MapView mapView = getRateBeerActivity().requestMapViewInstance();
-			mapView.getController().animateTo(getRateBeerActivity().getPoint(lastLocation.getLatitude(), 
+			MapView mapView = ((RateBeerActivity)getActivity()).requestMapViewInstance();
+			mapView.getController().animateTo(LocationUtils.getPoint(lastLocation.getLatitude(), 
 					lastLocation.getLongitude()));
 			mapFrame.addView(mapView);
 			
@@ -259,7 +232,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			SimpleItemizedOverlay brewerOverlay = getPlaceTypeMarker(mapView, 5, this);
 			for (Place place : this.places) {
 				// Create an overlay item with a specific point and a name/description for the balloon
-				OverlayItem item = new PlaceOverlayItem(getRateBeerActivity().getPoint(place.latitude, place.longitude),
+				OverlayItem item = new PlaceOverlayItem(LocationUtils.getPoint(place.latitude, place.longitude),
 						place.placeName, place.avgRating > 0 ? getString(R.string.places_rateandcount,
 								Integer.toString(place.avgRating)) : getString(R.string.places_notyetrated), place);
 				// Place it in the right overlay to get the right icon
@@ -298,7 +271,8 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 	@Override
 	public void onBalloonClicked(OverlayItem item) {
 		if (item instanceof PlaceOverlayItem) {
-			getRateBeerActivity().load(new PlaceViewFragment(((PlaceOverlayItem) item).getPlace(), lastLocation));
+			load(PlaceViewFragment_.builder().place(((PlaceOverlayItem) item).getPlace()).currentLocation(lastLocation)
+					.build());
 		}
 	}
 	
@@ -309,7 +283,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 	
 	@Override
 	protected void publishException(TextView textview, String message) {
-		getRateBeerActivity().setProgress(false);
+		((RateBeerActivity)getActivity()).setProgress(false);
 		super.publishException(textview, message);
 	}
 
@@ -322,10 +296,14 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() == null) {
+				return convertView;
+			}
+			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_place, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_place, null);
 				holder = new ViewHolder();
 				holder.placeName = (TextView) convertView.findViewById(R.id.placeName);
 				holder.placeType = (TextView) convertView.findViewById(R.id.placeType);
@@ -337,33 +315,17 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			if (getRateBeerActivity() == null) {
-				return convertView;
-			}
-			
 			// Bind the data
 			Place item = getItem(position);
 			holder.placeName.setText(item.placeName);
 			holder.placeType.setText(getPlaceTypeName(getActivity(), item.placeType));
-			holder.distance.setText(getPlaceDistance(getRateBeerActivity(), item, lastLocation));
+			holder.distance.setText(LocationUtils.getPlaceDistance(getSettings(), getResources(), item, lastLocation));
 			holder.city.setText(item.city);
 			holder.score.setText(item.avgRating == -1? "?": Integer.toString(item.avgRating));
 
 			return convertView;
 		}
 
-	}
-
-	public static String getPlaceDistance(RateBeerActivity rbActivity, Place place, Location currentLocation) {
-		// Calculate distance
-		double distance = LocationUtils.distanceInMiles(place.latitude, place.longitude, currentLocation.getLatitude(), currentLocation.getLongitude());
-		// Show in KM instead of miles?
-		if (rbActivity.getSettings().showDistanceInKm()) {
-			distance *= 1.609344;
-		}
-		return String.format(DECIMAL_FORMATTER, distance) + 
-			(rbActivity.getSettings().showDistanceInKm()? rbActivity.getString(R.string.places_km): rbActivity.
-				getString(R.string.places_m));
 	}
 
 	public static String getPlaceTypeName(Context context, int placeType) {
@@ -458,23 +420,6 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		@Override
 		public boolean isViewFromObject(View view, Object object) {
 			return view == (View) object;
-		}
-
-		@Override
-		public void finishUpdate(View container) {
-		}
-
-		@Override
-		public Parcelable saveState() {
-			return null;
-		}
-
-		@Override
-		public void startUpdate(View container) {
-		}
-
-		@Override
-		public void restoreState(Parcelable state, ClassLoader loader) {
 		}
 
 	}

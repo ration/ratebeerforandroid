@@ -31,7 +31,7 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopBeer;
 
 public class GetStyleDetailsCommand extends HtmlCommand {
@@ -39,7 +39,7 @@ public class GetStyleDetailsCommand extends HtmlCommand {
 	private final int styleId;
 	private StyleDetails details;
 
-	public GetStyleDetailsCommand(RateBeerApi api, int styleId) {
+	public GetStyleDetailsCommand(UserSettings api, int styleId) {
 		super(api, ApiMethod.GetStyleDetails);
 		this.styleId = styleId;
 	}

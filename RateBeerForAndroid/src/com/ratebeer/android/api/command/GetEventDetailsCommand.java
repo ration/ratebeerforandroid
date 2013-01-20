@@ -32,13 +32,14 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetEventDetailsCommand extends HtmlCommand {
 
 	private final int eventId;
 	private EventDetails details;
 
-	public GetEventDetailsCommand(RateBeerApi api, int eventId) {
+	public GetEventDetailsCommand(UserSettings api, int eventId) {
 		super(api, ApiMethod.GetEventDetails);
 		this.eventId = eventId;
 	}

@@ -31,6 +31,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetUserCellarCommand extends HtmlCommand {
 
@@ -38,7 +39,7 @@ public class GetUserCellarCommand extends HtmlCommand {
 	private ArrayList<CellarBeer> wants;
 	private ArrayList<CellarBeer> haves;
 
-	public GetUserCellarCommand(RateBeerApi api, int forUserId) {
+	public GetUserCellarCommand(UserSettings api, int forUserId) {
 		super(api, ApiMethod.GetUserCellar);
 		this.forUserId = forUserId;
 	}

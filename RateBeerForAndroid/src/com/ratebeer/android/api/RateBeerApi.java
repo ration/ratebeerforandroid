@@ -25,26 +25,19 @@ import com.ratebeer.android.api.command.SignInCommand;
 
 public class RateBeerApi {
 
-	private final UserSettings userSettings;
-
-	public RateBeerApi(UserSettings userSettings) {
-		this.userSettings = userSettings;
+	private RateBeerApi() {
 	}
-
+	
 	public static void ensureLogin(UserSettings userSettings) throws ClientProtocolException, IOException, ApiException {
 		// Make sure we are logged in
 		if (!HttpHelper.isSignedIn()) {
-			new SignInCommand(new RateBeerApi(userSettings), userSettings.getUsername(), userSettings.getPassword()).execute();
+			new SignInCommand(userSettings, userSettings.getUsername(), userSettings.getPassword()).execute();
 			if (!HttpHelper.isSignedIn()) {
 				throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
 						"Tried to sign in but no (login) cookies were returned by the server");
 			}
 		}
 
-	}
-
-	public UserSettings getUserSettings() {
-		return userSettings;
 	}
 
 }

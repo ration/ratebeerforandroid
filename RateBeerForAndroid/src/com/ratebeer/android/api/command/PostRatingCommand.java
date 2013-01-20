@@ -31,6 +31,7 @@ import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class PostRatingCommand extends Command {
 
@@ -47,7 +48,7 @@ public class PostRatingCommand extends Command {
 	private final int overall;
 	private final String comment;
 
-	public PostRatingCommand(RateBeerApi api, int beerId, int ratingID, String origDate, String beerName, int aroma,
+	public PostRatingCommand(UserSettings api, int beerId, int ratingID, String origDate, String beerName, int aroma,
 			int appearance, int taste, int palate, int overall, String comment) {
 		super(api, ApiMethod.PostRating);
 		this.beerId = beerId;
@@ -62,7 +63,7 @@ public class PostRatingCommand extends Command {
 		this.comment = comment;
 	}
 
-	public PostRatingCommand(RateBeerApi api, int beerId, String beerName, int aroma, int appearance, int taste,
+	public PostRatingCommand(UserSettings api, int beerId, String beerName, int aroma, int appearance, int taste,
 			int palate, int overall, String comment) {
 		super(api, ApiMethod.PostRating);
 		this.beerId = beerId;

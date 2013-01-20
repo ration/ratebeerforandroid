@@ -26,7 +26,7 @@ import org.json.JSONException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class DeleteTickCommand extends JsonCommand {
 
@@ -34,7 +34,7 @@ public class DeleteTickCommand extends JsonCommand {
 	private final int userID;
 	private final String beerName;
 
-	public DeleteTickCommand(RateBeerApi api, int beerId, int userID, String beerName) {
+	public DeleteTickCommand(UserSettings api, int beerId, int userID, String beerName) {
 		super(api, ApiMethod.PostTick);
 		this.beerId = beerId;
 		this.userID = userID;

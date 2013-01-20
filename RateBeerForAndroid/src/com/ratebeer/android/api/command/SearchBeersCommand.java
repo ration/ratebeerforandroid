@@ -33,7 +33,7 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SearchBeersCommand extends JsonCommand {
 
@@ -43,11 +43,11 @@ public class SearchBeersCommand extends JsonCommand {
 
 	public static final int NO_USER = -1;
 
-	public SearchBeersCommand(RateBeerApi api, String query) {
+	public SearchBeersCommand(UserSettings api, String query) {
 		this(api, query, NO_USER);
 	}
 
-	public SearchBeersCommand(RateBeerApi api, String query, int userId) {
+	public SearchBeersCommand(UserSettings api, String query, int userId) {
 		super(api, ApiMethod.SearchBeers);
 		this.query = query;
 		this.userId = userId;

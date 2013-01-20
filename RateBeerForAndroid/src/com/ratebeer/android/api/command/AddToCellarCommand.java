@@ -28,6 +28,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 
 public class AddToCellarCommand extends EmptyResponseCommand {
@@ -38,7 +39,7 @@ public class AddToCellarCommand extends EmptyResponseCommand {
 	private final String vintage;
 	private final String quantity;
 
-	public AddToCellarCommand(RateBeerApi api, CellarType cellarType, int beerId, String memo, String vintage,
+	public AddToCellarCommand(UserSettings api, CellarType cellarType, int beerId, String memo, String vintage,
 			String quantity) {
 		super(api, ApiMethod.AddToCellar);
 		this.beerId = beerId;

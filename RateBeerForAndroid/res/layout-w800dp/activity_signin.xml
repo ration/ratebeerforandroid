@@ -4,7 +4,7 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical">
 	
-	<fragment class="com.ratebeer.android.gui.fragments.SignInFragment"
+	<fragment class="com.ratebeer.android.gui.fragments.SignInFragment_"
 		android:id="@+id/frag_signin"
 		android:layout_height="wrap_content"
 		android:layout_width="480dip"

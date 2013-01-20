@@ -31,7 +31,6 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -46,6 +45,10 @@ import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -55,6 +58,7 @@ import com.ratebeer.android.api.command.GetEventDetailsCommand;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.Attendee;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.EventDetails;
 import com.ratebeer.android.api.command.SetEventAttendanceCommand;
+import com.ratebeer.android.app.location.LocationUtils;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.gui.components.ActivityUtil;
@@ -65,77 +69,48 @@ import com.ratebeer.android.gui.components.RateBeerFragment;
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_eventview)
 public class EventViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
-	private static final String STATE_EVENTNAME = "eventName";
-	private static final String STATE_EVENTID = "eventId";
-	private static final String STATE_DETAILS = "details";
 	private static final int MENU_SHARE = 0;
+	
+	@FragmentArg
+	@InstanceState
+	protected String eventName = null;
+	@FragmentArg
+	@InstanceState
+	protected int eventId;
+	@InstanceState
+	protected EventDetails details = null;
 
-	private LayoutInflater inflater;
-	private ListView eventView;
-
+	@ViewById(R.id.eventview)
+	protected ListView eventView;
+	@ViewById(R.id.attendees)
+	protected ListView attendeesView;
 	private TextView nameText, detailsText, contactText, attendeeslabel;
 	private Button locationText, timeText, setattendanceButton;
 	private FrameLayout mapFrame;
 	private AttendeeAdapter attendeeAdapter;
 	
-	protected String eventName;
-	protected int eventId;
-	private EventDetails details = null;
-	
 	public EventViewFragment() {
-		this(null, -1);
-	}
-
-	/**
-	 * Show a specific event's details, with the event name known in advance
-	 * @param eventName The event name, or null if not known
-	 * @param eventId The beer ID
-	 */
-	public EventViewFragment(String eventName, int eventId) {
-		this.eventName = eventName;
-		this.eventId = eventId;
-	}
-	
-	/**
-	 * Show a specific event's details, without the event name known in advance
-	 * @param eventId The event ID
-	 */
-	public EventViewFragment(int eventId) {
-		this(null, eventId);
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_eventview, container, false);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		eventView = (ListView) getView().findViewById(R.id.eventview);
 		if (eventView != null) {
 			eventView.setAdapter(new EventViewAdapter());
 			eventView.setItemsCanFocus(true);
 		} else {
 			// Tablet
-			ListView attendeesView = (ListView) getView().findViewById(R.id.attendees);
 			attendeeAdapter = new AttendeeAdapter(getActivity(), new ArrayList<Attendee>());
 			attendeesView.setAdapter(attendeeAdapter);
 			initFields(getView());
 		}
 		
-		if (savedInstanceState != null) {
-			eventName = savedInstanceState.getString(STATE_EVENTNAME);
-			eventId = savedInstanceState.getInt(STATE_EVENTID);
-			if (savedInstanceState.containsKey(STATE_DETAILS)) {
-				EventDetails savedDetails = savedInstanceState.getParcelable(STATE_DETAILS);
-				publishDetails(savedDetails);
-			}
+		if (details != null) {
+			publishDetails(details);
 		} else {
 			refreshDetails();
 		}
@@ -169,22 +144,12 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(STATE_EVENTNAME, eventName);
-		outState.putInt(STATE_EVENTID, eventId);
-		if (details != null) {
-			outState.putParcelable(STATE_DETAILS, details);
-		}
-	}
-
 	private void refreshDetails() {
-		execute(new GetEventDetailsCommand(getRateBeerActivity().getApi(), eventId));
+		execute(new GetEventDetailsCommand(getUser(), eventId));
 	}
 
 	private void onAttendeeClick(int userId, String username) {
-		getRateBeerActivity().load(new UserViewFragment(username, userId));
+		load(UserViewFragment_.builder().userId(userId).userName(username).build());
 	}
 	
 	@Override
@@ -222,14 +187,14 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 		attendeeAdapter.replace(details.attendees);
 		attendeeslabel.setVisibility(View.VISIBLE);
 		setattendanceButton.setVisibility(View.VISIBLE);
-		if (details.isAttending(getRateBeerActivity().getUser().getUserID())) {
+		if (details.isAttending(getUser().getUserID())) {
 			setattendanceButton.setText(R.string.events_removeattendance);
 		} else {
 			setattendanceButton.setText(R.string.events_addattendance);
 		}
 		
 		// Get the activity-wide MapView to show on this fragment and center on this event's location
-		final MapView mapView = getRateBeerActivity().requestMapViewInstance();
+		final MapView mapView = ((RateBeerActivity)getActivity()).requestMapViewInstance();
 		mapFrame.addView(mapView);
 		try {
 			// Use Geocoder to look up the coordinates
@@ -243,10 +208,10 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 					// Found a location! Center the map here
 					mapFrame.setVisibility(View.VISIBLE);
 					mapView.getController().setCenter(
-							getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
+							LocationUtils.getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
 					final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, 2, this);
-					to.addOverlay(new OverlayItem(getRateBeerActivity().getPoint(point.get(0).getLatitude(),
-							point.get(0).getLongitude()), details.name, details.times));
+					to.addOverlay(new OverlayItem(LocationUtils.getPoint(point.get(0).getLatitude(), point.get(0)
+							.getLongitude()), details.name, details.times));
 					mapView.getOverlays().add(to);
 				}
 			} catch (IOException e) {
@@ -328,8 +293,7 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 		@Override
 		public void onClick(View v) {
 			// Set (flip) the attendance to this event
-			execute(new SetEventAttendanceCommand(getRateBeerActivity().getApi(), eventId, 
-					!details.isAttending(getRateBeerActivity().getUser().getUserID())));
+			execute(new SetEventAttendanceCommand(getUser(), eventId, !details.isAttending(getUser().getUserID())));
 		}
 	};
 	
@@ -373,7 +337,7 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_attendee, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_attendee, null);
 				ActivityUtil.makeListItemClickable(convertView, onRowClick);
 				holder = new ViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.user);

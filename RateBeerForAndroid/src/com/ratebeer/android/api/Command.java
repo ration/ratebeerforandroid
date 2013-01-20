@@ -25,21 +25,21 @@ package com.ratebeer.android.api;
  */
 public abstract class Command {
 
-	private final RateBeerApi api;
+	private final UserSettings userSettings;
 	private final ApiMethod method;
 
 	/**
 	 * Construct a command for a certain method
-	 * @param panel The panel to execute the command against
+	 * @param userSettings The currently signed in user settings
 	 * @param method The method to perform
 	 */
-	protected Command(RateBeerApi api, ApiMethod method) {
-		this.api = api;
+	protected Command(UserSettings userSettings, ApiMethod method) {
+		this.userSettings = userSettings;
 		this.method = method;
 	}
 
 	public UserSettings getUserSettings() {
-		return api.getUserSettings();
+		return userSettings;
 	}
 
 	public ApiMethod getMethod() {

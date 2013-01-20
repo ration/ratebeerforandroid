@@ -35,9 +35,9 @@ public class LoginCommandsTests extends AndroidTestCase {
 	public void testExecute() {
 
 		// Log in with a valid user
-		RateBeerApi api = TestHelper.getApi(getContext(), true);
+		UserSettings user = TestHelper.getUser(getContext(), true);
 		try {
-			RateBeerApi.ensureLogin(api.getUserSettings());
+			RateBeerApi.ensureLogin(user);
 			// If we are here, everything went fine, since the sign in was successful
 			assertTrue(HttpHelper.isSignedIn());
 		} catch (IOException e) {
@@ -47,7 +47,7 @@ public class LoginCommandsTests extends AndroidTestCase {
 		}
 		
 		// Sign out now
-		SignOutCommand signout = new SignOutCommand(api);
+		SignOutCommand signout = new SignOutCommand(user);
 		CommandResult result = signout.execute();
 		if (result instanceof CommandFailureResult) {
 			fail("Sign out failed: " + ((CommandFailureResult)result).getException().toString());
@@ -56,9 +56,9 @@ public class LoginCommandsTests extends AndroidTestCase {
 		assertTrue(!HttpHelper.isSignedIn());
 
 		// Log in with an invalid user (note: signout needed to be succesful to properly test this!)
-		RateBeerApi api2 = new RateBeerApi(new UserSettings(156822, "rbandroid", "wrongpassword", null, false, new Date()));
+		UserSettings user2 = new UserSettings(156822, "rbandroid", "wrongpassword", null, false, new Date());
 		try {
-			RateBeerApi.ensureLogin(api2.getUserSettings());
+			RateBeerApi.ensureLogin(user2);
 			// We should be signed out still
 			assertTrue(!HttpHelper.isSignedIn());
 			fail("We should not have been here, since our password was wrong!");

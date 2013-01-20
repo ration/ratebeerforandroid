@@ -30,6 +30,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class AddAvailabilityCommand extends EmptyResponseCommand {
 
@@ -42,7 +43,7 @@ public class AddAvailabilityCommand extends EmptyResponseCommand {
 	private final boolean onBottleCan;
 	private final boolean onTap;
 
-	public AddAvailabilityCommand(RateBeerApi api, int beerId, int[] selectedFavourites, String extraPlaceName,
+	public AddAvailabilityCommand(UserSettings api, int beerId, int[] selectedFavourites, String extraPlaceName,
 			int extraPlaceId, boolean onBottleCan, boolean onTap) {
 		super(api, ApiMethod.AddAvailability);
 		this.beerId = beerId;

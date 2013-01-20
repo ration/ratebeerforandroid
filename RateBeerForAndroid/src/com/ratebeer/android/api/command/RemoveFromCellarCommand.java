@@ -26,12 +26,13 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class RemoveFromCellarCommand extends EmptyResponseCommand {
 	
 	private final int beerId;
 
-	public RemoveFromCellarCommand(RateBeerApi api, int beerId) {
+	public RemoveFromCellarCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.RemoveFromCellar);
 		this.beerId = beerId;
 	}

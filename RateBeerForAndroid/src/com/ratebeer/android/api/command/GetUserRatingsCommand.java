@@ -34,7 +34,7 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetUserRatingsCommand extends HtmlCommand {
 
@@ -52,7 +52,7 @@ public class GetUserRatingsCommand extends HtmlCommand {
 	public static final int SORTBY_DATE = 5;
 	public static final int SORTBY_SCORE = 6;
 
-	public GetUserRatingsCommand(RateBeerApi api, int forUserId, int pageNr, int sortOrder) {
+	public GetUserRatingsCommand(UserSettings api, int forUserId, int pageNr, int sortOrder) {
 		super(api, ApiMethod.GetUserRatings);
 		this.forUserId = forUserId;
 		this.pageNr = pageNr;

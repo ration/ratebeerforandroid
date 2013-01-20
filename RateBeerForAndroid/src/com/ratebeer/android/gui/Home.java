@@ -22,13 +22,14 @@ import java.util.List;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EActivity;
 import com.ratebeer.android.R;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.BeermailService;
@@ -36,29 +37,25 @@ import com.ratebeer.android.gui.components.BootReceiver;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
-import com.ratebeer.android.gui.fragments.AboutFragment;
-import com.ratebeer.android.gui.fragments.AddUpcCodeFragment;
-import com.ratebeer.android.gui.fragments.BeerViewFragment;
+import com.ratebeer.android.gui.fragments.AboutFragment_;
+import com.ratebeer.android.gui.fragments.AddUpcCodeFragment_;
+import com.ratebeer.android.gui.fragments.BeerViewFragment_;
 import com.ratebeer.android.gui.fragments.DashboardFragment;
-import com.ratebeer.android.gui.fragments.MailViewFragment;
+import com.ratebeer.android.gui.fragments.DashboardFragment_;
+import com.ratebeer.android.gui.fragments.MailViewFragment_;
 import com.ratebeer.android.gui.fragments.MailsFragment;
-import com.ratebeer.android.gui.fragments.RateFragment;
-import com.ratebeer.android.gui.fragments.SearchFragment;
+import com.ratebeer.android.gui.fragments.RateFragment_;
+import com.ratebeer.android.gui.fragments.SearchFragment_;
 import com.ratebeer.android.gui.fragments.SendMailFragment;
 
+@EActivity(R.layout.activity_home)
 public class Home extends RateBeerActivity {
 
 	private static final int MENU_PREFERENCES = 10;
 	private static final int MENU_ABOUT = 11;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState, R.layout.activity_home);
-	}
-
-	@Override
-	public void initialize(Bundle savedInstanceState) {
-
+	@AfterViews
+	public void init() {
 		// Start the background service, if necessary
 		BootReceiver.startAlarm(getApplicationContext());
 
@@ -70,9 +67,10 @@ public class Home extends RateBeerActivity {
 			}
 		}
 		
+		handleStartIntent();
 	}
 
-	protected void showSearch() {
+	private void showSearch() {
 		// Set up a SearchView
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		SearchView searchView = new SearchView(this);
@@ -95,42 +93,43 @@ public class Home extends RateBeerActivity {
 		return true;
 	}
 
-	@Override
-	protected void handleStartIntent(Intent intent) {
+	@AfterViews
+	protected void handleStartIntent() {
 
-		if (getIntent() != null && getIntent().hasExtra(SearchManager.QUERY)) {
+		if (getIntent().hasExtra(SearchManager.QUERY)) {
 			// Start a search
-			load(new SearchFragment(getIntent().getStringExtra(SearchManager.QUERY)));
-		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getData() != null && 
+			load(SearchFragment_.builder().query(getIntent().getStringExtra(SearchManager.QUERY)).build());
+		} else if (getIntent().getAction() != null && getIntent().getData() != null && 
 			getIntent().getAction().equals(Intent.ACTION_VIEW)) {
 			// Open details for some specific beer
 			List<String> segments = getIntent().getData().getPathSegments();
 			if (segments.size() > 1) {
 				try {
 					int beerId = Integer.parseInt(segments.get(1));
-					load(new BeerViewFragment(beerId));
+					load(BeerViewFragment_.builder().beerId(beerId).build());
 				} catch (NumberFormatException e) {
 					Log.d(RateBeerForAndroid.LOG_NAME, "Invalid ACTION_VIEW Intent data; " + segments.get(1) + " is not a number.");
 				}
 			}
-		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_EDITRATING)) {
+		} else if (getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_EDITRATING)) {
 			// Open the rating screen for a beer
-			load(new RateFragment(getIntent().getExtras()));
-		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_ADDUPCCODE)) {
+			load(RateFragment_.buildFromExtras(getIntent().getExtras()));
+		} else if (getIntent().getAction() != null && getIntent().getAction().equals(PosterService.ACTION_ADDUPCCODE)) {
 			// Open the add UPC code screen again; this assumes the UPC code is given in the extras
-			load(new AddUpcCodeFragment(getIntent().getStringExtra(PosterService.EXTRA_UPCCODE)));
-		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAILS)) {
+			load(AddUpcCodeFragment_.builder().upcCode(getIntent().getStringExtra(PosterService.EXTRA_UPCCODE)).build());
+		} else if (getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAILS)) {
 			// Open the beermails screen
 			load(new MailsFragment());
-		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAIL)) {
+		} else if (getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_VIEWBEERMAIL)) {
 			// Open the beermail screen to a specific mail
-			load(new MailViewFragment(getIntent().getExtras()));
-		} else if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_REPLYBEERMAIL)) {
+			load(MailViewFragment_.buildFromExtras(getIntent().getExtras()));
+		} else if (getIntent().getAction() != null && getIntent().getAction().equals(BeermailService.ACTION_REPLYBEERMAIL)) {
 			// Open the beermail reply screen to a specific mail
-			load(new SendMailFragment(getIntent().getExtras()));
+			load(SendMailFragment.buildFromExtras(getIntent().getExtras()));
 		} else {
 			// Normal startup; show dashboard
-			load(new DashboardFragment());
+			load(DashboardFragment_.builder().build());
+			return;
 		}
 
 	}
@@ -140,22 +139,20 @@ public class Home extends RateBeerActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// Home button click in the action bar
-			Intent i = new Intent(getApplication(), Home.class);
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			startActivity(i);
+			Home_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET).start();
 			return true;
 		case MENU_PREFERENCES:
-			startActivity(new Intent(getApplication(), PreferencesInterface.class));
+			PreferencesInterface_.intent(this).start();
 			return true;
 		case MENU_ABOUT:
-			load(new AboutFragment());
+			load(AboutFragment_.builder().build());
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	/**
-	 * Load a new screen into the content fragment and add it to the backstack
+	 * Convenience method that calls load(fragment, true)
 	 * @param fragment The fragment to show
 	 */
 	public void load(RateBeerFragment fragment) {
@@ -167,6 +164,7 @@ public class Home extends RateBeerActivity {
 	 * @param fragment The fragment to show
 	 * @param addToBackStack Whether to also add this fragment to the backstack 
 	 */
+	@Override
 	public void load(RateBeerFragment fragment, boolean addToBackStack) {
 		FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
 		//trans.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
@@ -176,11 +174,6 @@ public class Home extends RateBeerActivity {
 		}
 		trans.commit();
 		getSupportActionBar().setDisplayHomeAsUpEnabled(!(fragment instanceof DashboardFragment));
-	}
-
-	@Override
-	public void load(RateBeerFragment leftFragment, RateBeerFragment rightFragment) {
-		load(leftFragment);
 	}
 
 }

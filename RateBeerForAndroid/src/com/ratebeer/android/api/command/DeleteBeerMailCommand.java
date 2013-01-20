@@ -26,13 +26,14 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.app.persistance.BeerMail;
 
 public class DeleteBeerMailCommand extends EmptyResponseCommand {
 	
 	private final BeerMail mail;
 
-	public DeleteBeerMailCommand(RateBeerApi api, BeerMail mail) {
+	public DeleteBeerMailCommand(UserSettings api, BeerMail mail) {
 		super(api, ApiMethod.DeleteBeerMail);
 		this.mail = mail;
 	}

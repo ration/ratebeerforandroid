@@ -24,16 +24,21 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OrmLiteDao;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.j256.ormlite.dao.Dao;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -41,58 +46,41 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.DeleteBeerMailCommand;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.BeerMail;
+import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.gui.components.BeermailService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 
+@EFragment(R.layout.fragment_mailview)
 public class MailViewFragment extends RateBeerFragment {
-
-	private static final String STATE_MAIL = "mail";
 
 	private static final int MENU_REPLY = 0;
 	private static final int MENU_DELETE = 1;
-
-	private TextView subjectText, bodyText;
-	private Button senderText;
 	private static DateFormat dateFormat = null;
 
-	private BeerMail mail;
+	@FragmentArg
+	@InstanceState
+	protected BeerMail mail;
 
+	@ViewById
+	protected TextView subject, body;
+	protected Button sender;
+
+	@OrmLiteDao(helper = DatabaseHelper.class, model = BeerMail.class)
+	Dao<BeerMail, Long> beerMailDao;
+	
 	public MailViewFragment() {
-		this.mail = null;
 	}
 
-	/**
-	 * Show the details of some mail
-	 * @param mail The mail object to show the details of
-	 */
-	public MailViewFragment(BeerMail mail) {
-		this.mail = mail;
-	}
-
-	public MailViewFragment(Bundle extras) {
+	public static MailViewFragment buildFromExtras(Bundle extras) {
 		// Assume there is an extra containing the BeerMail object
-		this.mail = extras.getParcelable(BeermailService.EXTRA_MAIL);
+		return MailViewFragment_.builder().mail((BeerMail) extras.getParcelable(BeermailService.EXTRA_MAIL)).build();
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_mailview, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		subjectText = (TextView) getView().findViewById(R.id.subject);
-		bodyText = (TextView) getView().findViewById(R.id.body);
-		senderText = (Button) getView().findViewById(R.id.sender);
-		senderText.setOnClickListener(onSenderClick);
-
-		if (savedInstanceState != null) {
-			mail = savedInstanceState.getParcelable(STATE_MAIL);
-		}
+		sender.setOnClickListener(onSenderClick);
 
 		if (dateFormat == null) {
 			dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
@@ -100,7 +88,7 @@ public class MailViewFragment extends RateBeerFragment {
 
 		if (mail != null) {
 			// Load mail details into the widgets
-			subjectText.setText(mail.getSubject());
+			subject.setText(mail.getSubject());
 			String dateText = "";
 			try {
 				if (mail.getSent() != null) {
@@ -109,20 +97,20 @@ public class MailViewFragment extends RateBeerFragment {
 			} catch (Exception e) {
 				// Cannot format date; ignore and don't show instead
 			}
-			senderText.setText(getString(R.string.app_by, mail.getSenderName()) + dateText);
-			bodyText.setMovementMethod(LinkMovementMethod.getInstance());
+			sender.setText(getString(R.string.app_by, mail.getSenderName()) + dateText);
+			body.setMovementMethod(LinkMovementMethod.getInstance());
 			try {
-				bodyText.setText(Html.fromHtml(mail.getBody().replace("\n", "<br />")));
+				body.setText(Html.fromHtml(mail.getBody().replace("\n", "<br />")));
 			} catch (Exception e) {
 				// This can happen if the mail is very long, in which case Html.fromHtml throws a RuntimeException
 				// As a fallback, don't parse the body as HTML but print the plain text instead
-				bodyText.setText(mail.getBody().replace("<br />", "\n"));
+				body.setText(mail.getBody().replace("<br />", "\n"));
 			}
 			
 			// Also set this mail to read (which should already be done on the server by now)
 			mail.setIsRead(true);
 			try {
-				getRateBeerActivity().getHelper().getBeerMailDao().update(mail);
+				beerMailDao.update(mail);
 			} catch (SQLException e) {
 				Log.d(RateBeerForAndroid.LOG_NAME,
 						"Cannot write to database; wanted to save the read status of beer mail " + mail.getMessageId());
@@ -146,15 +134,15 @@ public class MailViewFragment extends RateBeerFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_REPLY:
-			getRateBeerActivity().load(new SendMailFragment(mail.getSenderName(), mail.getSubject(), mail.getBody()));
+			load(SendMailFragment_.buildFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
 			break;
 		case MENU_DELETE:
 			// ASk to confirm the removal of this mail
 			new ConfirmDialogFragment(new OnDialogResult() {
 				@Override
 				public void onConfirmed() {
-					if (getRateBeerActivity() != null) {
-						execute(new DeleteBeerMailCommand(getRateBeerActivity().getApi(), mail));
+					if (getActivity() != null) {
+						execute(new DeleteBeerMailCommand(getUser(), mail));
 					}
 				}
 			}, R.string.mail_confirmdelete, mail.getSenderName()).show(getFragmentManager(), "dialog");
@@ -163,16 +151,10 @@ public class MailViewFragment extends RateBeerFragment {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putParcelable(STATE_MAIL, mail);
-	}
-
 	private OnClickListener onSenderClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			getRateBeerActivity().load(new UserViewFragment(mail.getSenderName(), mail.getSenderId()));
+			load(UserViewFragment_.builder().userId(mail.getSenderId()).userName(mail.getSenderName()).build());
 		}
 	};
 
@@ -182,7 +164,7 @@ public class MailViewFragment extends RateBeerFragment {
 			DeleteBeerMailCommand dbmCommand = (DeleteBeerMailCommand) result.getCommand();
 			// Remove the mail from the database and close the screen
 			try {
-				getRateBeerActivity().getHelper().getBeerMailDao().delete(dbmCommand.getMail());
+				beerMailDao.delete(dbmCommand.getMail());
 				getFragmentManager().popBackStack();
 			} catch (SQLException e) {
 				publishException(null, getString(R.string.mail_notavailable));

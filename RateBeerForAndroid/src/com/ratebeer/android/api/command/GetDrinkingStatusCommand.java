@@ -26,13 +26,13 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetDrinkingStatusCommand extends HtmlCommand {
 	
 	private String nowDrinking;
 	
-	public GetDrinkingStatusCommand(RateBeerApi api) {
+	public GetDrinkingStatusCommand(UserSettings api) {
 		super(api, ApiMethod.GetDrinkingStatus);
 	}
 		

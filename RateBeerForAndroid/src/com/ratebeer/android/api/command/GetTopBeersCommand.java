@@ -31,7 +31,7 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetTopBeersCommand extends JsonCommand {
 
@@ -39,15 +39,15 @@ public class GetTopBeersCommand extends JsonCommand {
 	private final Country country;
 	private ArrayList<TopBeer> beers;
 
-	public GetTopBeersCommand(RateBeerApi api) {
+	public GetTopBeersCommand(UserSettings api) {
 		this(api, TopListType.Top50, null);
 	}
 
-	public GetTopBeersCommand(RateBeerApi api, Country country) {
+	public GetTopBeersCommand(UserSettings api, Country country) {
 		this(api, TopListType.TopByCountry, country);
 	}
 
-	private GetTopBeersCommand(RateBeerApi api, TopListType topList, Country country) {
+	private GetTopBeersCommand(UserSettings api, TopListType topList, Country country) {
 		super(api, ApiMethod.GetTopBeers);
 		this.topList = topList;
 		this.country = country;

@@ -41,13 +41,13 @@ public class ImportExport {
 	
 	/**
 	 * Synchronously writes the offline ratings stored in the database
-	 * @param dao The database to write records to
+	 * @param offlineRatingDao The database to write records to
 	 * @param inputFile The file from which to read ratings
 	 * @throws JSONException Thrown when the file did not contain valid JSON content
 	 * @throws IOException Thrown when the file could not be read 
 	 * @throws SQLException Thrown when the database could not be written to
 	 */
-	public static void importRatings(Dao<OfflineRating, Integer> dao, File inputFile) throws JSONException, IOException, SQLException {
+	public static void importRatings(Dao<OfflineRating, Long> offlineRatingDao, File inputFile) throws JSONException, IOException, SQLException {
 		
 		// Read the settings file
 		String raw = HttpHelper.getResponseString(new FileInputStream(inputFile));
@@ -68,7 +68,7 @@ public class ImportExport {
 						item.getInt("overall"),
 						item.has("comments")? item.getString("comments"): null,
 						new Date(item.getLong("timeSaved")));
-				dao.create(rating);	
+				offlineRatingDao.create(rating);	
 			}
 		}
 		

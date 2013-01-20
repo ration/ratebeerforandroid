@@ -16,7 +16,7 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class UpcSearchCommand extends JsonCommand {
 
@@ -25,7 +25,7 @@ public class UpcSearchCommand extends JsonCommand {
 	private final String upcCode;
 	private final ArrayList<UpcSearchResult> upcSearchResults = new ArrayList<UpcSearchResult>();
 
-	public UpcSearchCommand(RateBeerApi api, String upcCode) {
+	public UpcSearchCommand(UserSettings api, String upcCode) {
 		super(api, ApiMethod.UpcSearch);
 		this.upcCode = upcCode;
 	}

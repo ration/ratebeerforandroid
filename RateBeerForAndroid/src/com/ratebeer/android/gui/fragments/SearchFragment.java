@@ -24,8 +24,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -41,6 +39,11 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
@@ -66,78 +69,49 @@ import com.viewpagerindicator.TabPageIndicator;
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_search)
 public class SearchFragment extends RateBeerFragment {
-
-	private static final String STATE_QUERY = "lastQuery";
-	private static final String STATE_BEERRESULTS = "beerResults";
-	private static final String STATE_BREWERRESULTS = "brewerResults";
-	private static final String STATE_PLACERESULTS = "placeResults";
-	private static final String STATE_USERRESULTS = "userResults";
+	
 	public static final String ARG_QUERY = "query";
 	private static final int MENU_CLEARHISTORY = 0;
 	private static final int MENU_SCANBARCODE = 1;
 	private static final int MENU_SEARCH = 2;
-
 	public final static String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
 	public static final Uri SCANNER_MARKET_URI = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
 	private static final int ACTIVITY_BARCODE = 0;
+	
+	@FragmentArg
+	@InstanceState
+	protected String query = null;
+	@FragmentArg
+	@InstanceState
+	protected boolean startBarcodeScanner = false;
+	@InstanceState
+	protected ArrayList<BeerSearchResult> beerResults = null;
+	@InstanceState
+	protected ArrayList<BrewerSearchResult> brewerResults = null;
+	@InstanceState
+	protected ArrayList<PlaceSearchResult> placeResults = null;
+	@InstanceState
+	protected ArrayList<UserSearchResult> userResults = null;
 
-	private LayoutInflater inflater;
-	private ViewPager pager;
+	@ViewById
+	protected ViewPager pager;
+	@ViewById
+	protected TabPageIndicator titles;
 	private ListView beersView, brewersView, placesView, usersView;
 	private TextView beersEmpty, brewersEmpty, placesEmpty, usersEmpty;
 
-	private String lastQuery = null;
-	private boolean startBarcodeScanner = false;
-	private ArrayList<BeerSearchResult> beerResults = null;
-	private ArrayList<BrewerSearchResult> brewerResults = null;
-	private ArrayList<PlaceSearchResult> placeResults = null;
-	private ArrayList<UserSearchResult> userResults = null;
-
 	public SearchFragment() {
-		this(null);
 	}
 
-	public SearchFragment(boolean startBarcodeScanner) {
-		this(null);
-		this.startBarcodeScanner = startBarcodeScanner;
-	}
-
-	public SearchFragment(String query) {
-		this.lastQuery = query;
-	}
-
-	/*
-	 * @Override public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); if
-	 * (savedInstanceState == null) { performSearch(); } }
-	 */
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_search, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	@AfterViews
+	public void init() {
 
 		// Get and set up ListViews and the ViewPager
-		pager = (ViewPager) getView().findViewById(R.id.pager);
-		SearchPagerAdapter cellarPagerAdapter = new SearchPagerAdapter();
-		pager.setAdapter(cellarPagerAdapter);
-		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
+		pager.setAdapter(new SearchPagerAdapter());
 		titles.setViewPager(pager);
 
-		beersView = cellarPagerAdapter.getBeersView();
-		brewersView = cellarPagerAdapter.getBrewersView();
-		placesView = cellarPagerAdapter.getPlacesView();
-		usersView = cellarPagerAdapter.getUsersView();
-		beersEmpty = cellarPagerAdapter.getBeersEmpty();
-		brewersEmpty = cellarPagerAdapter.getBrewersEmpty();
-		placesEmpty = cellarPagerAdapter.getPlacesEmpty();
-		usersEmpty = cellarPagerAdapter.getUsersEmpty();
 		beersView.setOnItemClickListener(onBeerSelected);
 		brewersView.setOnItemClickListener(onBrewerSelected);
 		placesView.setOnItemClickListener(onPlaceSelected);
@@ -147,35 +121,21 @@ public class SearchFragment extends RateBeerFragment {
 		registerForContextMenu(placesView);
 		registerForContextMenu(usersView);
 
-		if (savedInstanceState != null) {
-			lastQuery = savedInstanceState.getString(STATE_QUERY);
-			if (savedInstanceState.containsKey(STATE_BEERRESULTS)) {
-				beerResults = savedInstanceState.getParcelableArrayList(STATE_BEERRESULTS);
-			}
-			if (savedInstanceState.containsKey(STATE_BREWERRESULTS)) {
-				brewerResults = savedInstanceState.getParcelableArrayList(STATE_BREWERRESULTS);
-			}
-			if (savedInstanceState.containsKey(STATE_PLACERESULTS)) {
-				placeResults = savedInstanceState.getParcelableArrayList(STATE_PLACERESULTS);
-			}
-			if (savedInstanceState.containsKey(STATE_USERRESULTS)) {
-				userResults = savedInstanceState.getParcelableArrayList(STATE_USERRESULTS);
-			}
-		} else if (beerResults == null) {
+		if (beerResults != null && brewerResults != null && placeResults != null && userResults != null) {
+			publishBeerResults(beerResults);
+			publishBrewerResults(brewerResults);
+			publishPlaceResults(placeResults);
+			publishUserResults(userResults);
+		} else {
 			// Fresh start: save this query and perform the search
-			if (lastQuery != null) {
+			if (query != null) {
 				// Store query in search history
 				SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
 						SearchHistoryProvider.AUTHORITY, SearchHistoryProvider.MODE);
-				suggestions.saveRecentQuery(lastQuery, null);
+				suggestions.saveRecentQuery(query, null);
 			}
 			performSearch();
 		}
-		// Publish the current wants and haves view, even when it is not loaded yet (and thus still empty)
-		publishBeerResults(beerResults);
-		publishBrewerResults(brewerResults);
-		publishPlaceResults(placeResults);
-		publishUserResults(userResults);
 
 		if (startBarcodeScanner) {
 			startScanner();
@@ -258,24 +218,7 @@ public class SearchFragment extends RateBeerFragment {
 		}
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(STATE_QUERY, lastQuery);
-		if (beerResults != null) {
-			outState.putParcelableArrayList(STATE_BEERRESULTS, beerResults);
-		}
-		if (brewerResults != null) {
-			outState.putParcelableArrayList(STATE_BREWERRESULTS, brewerResults);
-		}
-		if (placeResults != null) {
-			outState.putParcelableArrayList(STATE_PLACERESULTS, placeResults);
-		}
-		if (userResults != null) {
-			outState.putParcelableArrayList(STATE_USERRESULTS, userResults);
-		}
-	}
-
+	// NOTE: The OnActivityResult annotation is not supported in Fragments
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -286,13 +229,13 @@ public class SearchFragment extends RateBeerFragment {
 			// String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
 
 			// Start lookup for this code
-			execute(new UpcSearchCommand(getRateBeerApplication().getApi(), contents));
+			execute(new UpcSearchCommand(getUser(), contents));
 
 		}
 	}
 
 	private void performSearch() {
-		if (lastQuery == null) {
+		if (query == null) {
 			if (beersView.getAdapter() != null) {
 				((BeerSearchResultsAdapter) beersView.getAdapter()).clear();
 			}
@@ -306,12 +249,11 @@ public class SearchFragment extends RateBeerFragment {
 				((BeerSearchResultsAdapter) usersView.getAdapter()).clear();
 			}
 		} else {
-			execute(new SearchBeersCommand(getRateBeerActivity().getApi(), lastQuery,
-					getRateBeerActivity().getUser() != null ? getRateBeerActivity().getUser().getUserID()
-							: SearchBeersCommand.NO_USER));
-			execute(new SearchBrewersCommand(getRateBeerActivity().getApi(), lastQuery));
-			execute(new SearchPlacesCommand(getRateBeerActivity().getApi(), lastQuery));
-			execute(new SearchUsersCommand(getRateBeerActivity().getApi(), lastQuery));
+			execute(new SearchBeersCommand(getUser(), query, getUser() != null ? getUser().getUserID()
+					: SearchBeersCommand.NO_USER));
+			execute(new SearchBrewersCommand(getUser(), query));
+			execute(new SearchPlacesCommand(getUser(), query));
+			execute(new SearchUsersCommand(getUser(), query));
 		}
 	}
 
@@ -325,7 +267,8 @@ public class SearchFragment extends RateBeerFragment {
 				Crouton.makeText(getActivity(), R.string.search_aliasedbeer, Style.INFO).show();
 				return;
 			}
-			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId, item.rateCount));
+			load(BeerViewFragment_.builder().beerName(item.beerName).beerId(item.beerId).ratingsCount(item.rateCount)
+					.build());
 		}
 	};
 
@@ -333,7 +276,7 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			BrewerSearchResult item = ((BrewerSearchResultsAdapter) brewersView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new BrewerViewFragment(item.brewerId));
+			load(BrewerViewFragment_.builder().brewerId(item.brewerId).build());
 		}
 	};
 
@@ -341,7 +284,7 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			PlaceSearchResult item = ((PlaceSearchResultsAdapter) placesView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new PlaceViewFragment(item.placeId));
+			load(PlaceViewFragment_.builder().placeId(item.placeId).build());
 		}
 	};
 
@@ -349,7 +292,7 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			UserSearchResult item = ((UserSearchResultsAdapter) usersView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new UserViewFragment(item.userName, item.userId));
+			load(UserViewFragment_.builder().userName(item.userName).userId(item.userId).build());
 		}
 	};
 
@@ -373,7 +316,8 @@ public class SearchFragment extends RateBeerFragment {
 			List<UpcSearchResult> results = command.getUpcSearchResults();
 			if (results.size() > 0) {
 				// Beer found: redirect to beer details
-				getRateBeerActivity().load(new BeerViewFragment(results.get(0).beerName, results.get(0).beerId));
+				load(BeerViewFragment_.builder().beerName(results.get(0).beerName).beerId(results.get(0).brewerId)
+						.build());
 			} else {
 				noBarcodeResult(command.getSearchedUpcCode());
 			}
@@ -386,7 +330,7 @@ public class SearchFragment extends RateBeerFragment {
 			@Override
 			public void onConfirmed() {
 				getFragmentManager().popBackStack();
-				getRateBeerActivity().load(new AddUpcCodeFragment(code), false);
+				load(AddUpcCodeFragment_.builder().upcCode(code).build());
 			}
 		}, R.string.search_nobeerswithbarcode, code).show(getFragmentManager(), "addupccode");
 	}
@@ -461,10 +405,14 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() != null) {
+				return convertView;
+			}
+
 			// Get the right view, using a ViewHolder
 			BeerViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_beersearchresult, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_beersearchresult, null);
 				holder = new BeerViewHolder();
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
 				holder.overall = (TextView) convertView.findViewById(R.id.overall);
@@ -479,14 +427,12 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			BeerSearchResult item = getItem(position);
-			if (getActivity() != null) {
-				holder.beer.setText(item.beerName);
-				holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
-				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
-				holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
-				holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
-				holder.alias.setVisibility(item.isAlias ? View.VISIBLE : View.GONE);
-			}
+			holder.beer.setText(item.beerName);
+			holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
+			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+			holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
+			holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
+			holder.alias.setVisibility(item.isAlias ? View.VISIBLE : View.GONE);
 
 			return convertView;
 		}
@@ -506,10 +452,15 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() != null) {
+				return convertView;
+			}
+
+			// Get the right 
 			// Get the right view, using a ViewHolder
 			BrewerViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_placesearchresult, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_placesearchresult, null);
 				holder = new BrewerViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.name);
 				holder.city = (TextView) convertView.findViewById(R.id.city);
@@ -520,10 +471,8 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			BrewerSearchResult item = getItem(position);
-			if (getActivity() != null) {
-				holder.name.setText(item.brewerName);
-				holder.city.setText(item.city + ", " + item.country);
-			}
+			holder.name.setText(item.brewerName);
+			holder.city.setText(item.city + ", " + item.country);
 
 			return convertView;
 		}
@@ -543,10 +492,15 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() != null) {
+				return convertView;
+			}
+
+			// Get the right 
 			// Get the right view, using a ViewHolder
 			PlaceViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_placesearchresult, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_placesearchresult, null);
 				holder = new PlaceViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.name);
 				holder.city = (TextView) convertView.findViewById(R.id.city);
@@ -557,10 +511,8 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			PlaceSearchResult item = getItem(position);
-			if (getActivity() != null) {
-				holder.name.setText(item.placeName);
-				holder.city.setText(item.city);
-			}
+			holder.name.setText(item.placeName);
+			holder.city.setText(item.city);
 
 			return convertView;
 		}
@@ -580,10 +532,15 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() != null) {
+				return convertView;
+			}
+
+			// Get the right 
 			// Get the right view, using a ViewHolder
 			UserViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_usersearchresult, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_usersearchresult, null);
 				holder = new UserViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.name);
 				holder.ratings = (TextView) convertView.findViewById(R.id.city);
@@ -594,10 +551,8 @@ public class SearchFragment extends RateBeerFragment {
 
 			// Bind the data
 			UserSearchResult item = getItem(position);
-			if (getActivity() != null) {
-				holder.name.setText(item.userName);
-				holder.ratings.setText(getString(R.string.search_ratings, Integer.toString(item.ratings)));
-			}
+			holder.name.setText(item.userName);
+			holder.ratings.setText(getString(R.string.search_ratings, Integer.toString(item.ratings)));
 
 			return convertView;
 		}
@@ -610,69 +565,29 @@ public class SearchFragment extends RateBeerFragment {
 
 	private class SearchPagerAdapter extends PagerAdapter {
 
-		private ListView pagerBeersView;
-		private ListView pagerBrewersView;
-		private ListView pagerPlacesView;
-		private ListView pagerUsersView;
 		private FrameLayout pagerBeersFrame;
 		private FrameLayout pagerBrewersFrame;
 		private FrameLayout pagerPlacesFrame;
 		private FrameLayout pagerUsersFrame;
-		private TextView pagerBeersEmpty;
-		private TextView pagerBrewersEmpty;
-		private TextView pagerPlacesEmpty;
-		private TextView pagerUsersEmpty;
 
 		public SearchPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			pagerBeersFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
-			pagerBeersEmpty = (TextView) pagerBeersFrame.findViewById(R.id.empty);
-			pagerBeersView = (ListView) pagerBeersFrame.findViewById(R.id.list);
-			pagerBeersView.setEmptyView(pagerBeersEmpty);
+			beersEmpty = (TextView) pagerBeersFrame.findViewById(R.id.empty);
+			beersView = (ListView) pagerBeersFrame.findViewById(R.id.list);
+			beersView.setEmptyView(beersEmpty);
 			pagerBrewersFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
-			pagerBrewersEmpty = (TextView) pagerBrewersFrame.findViewById(R.id.empty);
-			pagerBrewersView = (ListView) pagerBrewersFrame.findViewById(R.id.list);
-			pagerBrewersView.setEmptyView(pagerBrewersEmpty);
+			brewersEmpty = (TextView) pagerBrewersFrame.findViewById(R.id.empty);
+			brewersView = (ListView) pagerBrewersFrame.findViewById(R.id.list);
+			brewersView.setEmptyView(brewersEmpty);
 			pagerPlacesFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
-			pagerPlacesEmpty = (TextView) pagerPlacesFrame.findViewById(R.id.empty);
-			pagerPlacesView = (ListView) pagerPlacesFrame.findViewById(R.id.list);
-			pagerPlacesView.setEmptyView(pagerPlacesEmpty);
+			placesEmpty = (TextView) pagerPlacesFrame.findViewById(R.id.empty);
+			placesView = (ListView) pagerPlacesFrame.findViewById(R.id.list);
+			placesView.setEmptyView(placesEmpty);
 			pagerUsersFrame = (FrameLayout) inflater.inflate(R.layout.fragment_searchlist, null);
-			pagerUsersEmpty = (TextView) pagerUsersFrame.findViewById(R.id.empty);
-			pagerUsersView = (ListView) pagerUsersFrame.findViewById(R.id.list);
-			pagerUsersView.setEmptyView(pagerUsersEmpty);
-		}
-
-		public ListView getBeersView() {
-			return pagerBeersView;
-		}
-
-		public ListView getBrewersView() {
-			return pagerBrewersView;
-		}
-
-		public ListView getPlacesView() {
-			return pagerPlacesView;
-		}
-
-		public ListView getUsersView() {
-			return pagerUsersView;
-		}
-
-		public TextView getBeersEmpty() {
-			return pagerBeersEmpty;
-		}
-
-		public TextView getBrewersEmpty() {
-			return pagerBrewersEmpty;
-		}
-
-		public TextView getPlacesEmpty() {
-			return pagerPlacesEmpty;
-		}
-
-		public TextView getUsersEmpty() {
-			return pagerUsersEmpty;
+			usersEmpty = (TextView) pagerUsersFrame.findViewById(R.id.empty);
+			usersView = (ListView) pagerUsersFrame.findViewById(R.id.list);
+			usersView.setEmptyView(usersEmpty);
 		}
 
 		@Override
@@ -722,23 +637,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public boolean isViewFromObject(View view, Object object) {
 			return view == (View) object;
-		}
-
-		@Override
-		public void finishUpdate(View container) {
-		}
-
-		@Override
-		public Parcelable saveState() {
-			return null;
-		}
-
-		@Override
-		public void startUpdate(View container) {
-		}
-
-		@Override
-		public void restoreState(Parcelable state, ClassLoader loader) {
 		}
 
 	}

@@ -17,53 +17,43 @@
  */
 package com.ratebeer.android.gui.fragments;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
+@EFragment(R.layout.fragment_textinfo)
 public class TextInfoFragment extends RateBeerFragment {
 
-	private final String title;
-	private final String info;
-	
-	private TextView titleText, infoText;
-	private Button okButton;
+	@FragmentArg
+	protected String title;
+	@FragmentArg
+	protected String info;
+
+	@ViewById(R.id.title)
+	protected TextView titleText;
+	@ViewById(R.id.info)
+	protected TextView infoText;
+	@ViewById
+	protected Button ok;
 
 	public TextInfoFragment() {
-		this(null, null);
-	}
-	
-	public TextInfoFragment(String title, String infoText) {
-		this.title = title;
-		this.info = infoText;
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_textinfo, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+		titleText.setText(title);
+		infoText.setText(info);
+		ok.setOnClickListener(onOkClick);
 
-		titleText = (TextView) getView().findViewById(R.id.title);
-		infoText = (TextView) getView().findViewById(R.id.info);
-		okButton = (Button) getView().findViewById(R.id.ok);
-		okButton.setOnClickListener(onOkClick);
-
-		if (savedInstanceState == null) {
-			titleText.setText(title);
-			infoText.setText(info);
-		}
 	}
 
 	private OnClickListener onOkClick = new OnClickListener() {

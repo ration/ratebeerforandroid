@@ -34,14 +34,14 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetAvailableBeersCommand extends JsonCommand {
 
 	private final int placeId;
 	private ArrayList<AvailableBeer> results;
 
-	public GetAvailableBeersCommand(RateBeerApi api, int placeId) {
+	public GetAvailableBeersCommand(UserSettings api, int placeId) {
 		super(api, ApiMethod.GetAvailableBeers);
 		this.placeId = placeId;
 	}

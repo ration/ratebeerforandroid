@@ -32,14 +32,14 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SearchUsersCommand extends HtmlCommand {
 
 	private final String query;
 	private ArrayList<UserSearchResult> results;
 
-	public SearchUsersCommand(RateBeerApi api, String query) {
+	public SearchUsersCommand(UserSettings api, String query) {
 		super(api, ApiMethod.SearchUsers);
 		this.query = query;
 	}

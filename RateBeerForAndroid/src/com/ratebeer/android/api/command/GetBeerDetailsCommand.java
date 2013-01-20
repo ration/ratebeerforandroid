@@ -30,7 +30,7 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetBeerDetailsCommand extends JsonCommand {
 	
@@ -39,7 +39,7 @@ public class GetBeerDetailsCommand extends JsonCommand {
 	private final int beerId;
 	private BeerDetails details;
 	
-	public GetBeerDetailsCommand(RateBeerApi api, int beerId) {
+	public GetBeerDetailsCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.GetBeerDetails);
 		this.beerId = beerId;
 	}

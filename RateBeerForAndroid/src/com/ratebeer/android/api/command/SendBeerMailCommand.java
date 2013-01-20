@@ -28,6 +28,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SendBeerMailCommand extends EmptyResponseCommand {
 
@@ -35,7 +36,7 @@ public class SendBeerMailCommand extends EmptyResponseCommand {
 	private final String subject;
 	private final String body;
 
-	public SendBeerMailCommand(RateBeerApi api, String sendTo, String subject, String body) {
+	public SendBeerMailCommand(UserSettings api, String sendTo, String subject, String body) {
 		super(api, ApiMethod.SendBeerMail);
 		this.sendTo = sendTo;
 		this.subject = subject;

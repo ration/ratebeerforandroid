@@ -31,7 +31,7 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetPlacesAroundCommand extends JsonCommand {
 
@@ -47,7 +47,7 @@ public class GetPlacesAroundCommand extends JsonCommand {
 	public static final int SORTBY_DATE = 5;
 	public static final int SORTBY_SCORE = 6;
 
-	public GetPlacesAroundCommand(RateBeerApi api, int radius, double latitude, double longitude) {
+	public GetPlacesAroundCommand(UserSettings api, int radius, double latitude, double longitude) {
 		super(api, ApiMethod.GetPlacesAround);
 		this.radius = radius;
 		this.latitude = latitude;

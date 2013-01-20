@@ -26,7 +26,7 @@ import org.json.JSONException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class PostTickCommand extends JsonCommand {
 
@@ -35,7 +35,7 @@ public class PostTickCommand extends JsonCommand {
 	private final String beerName;
 	private final int liked;
 
-	public PostTickCommand(RateBeerApi api, int beerId, int userID, String beerName, int liked) {
+	public PostTickCommand(UserSettings api, int beerId, int userID, String beerName, int liked) {
 		super(api, ApiMethod.PostTick);
 		this.beerId = beerId;
 		this.userID = userID;

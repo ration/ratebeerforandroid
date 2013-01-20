@@ -20,12 +20,16 @@ package com.ratebeer.android.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
+import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.api.Scope;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.Country;
 import com.ratebeer.android.api.command.State;
 
+@EBean(scope = Scope.Singleton)
 public class ApplicationSettings {
 
 	private static final String USER_SETTINGS = "user_settings";
@@ -38,14 +42,13 @@ public class ApplicationSettings {
 	public static final String BEERMAIL_UPDATEFREQUENCY = "beermail_updatefrequency";
 	private static final String BEERMAIL_VIBRATE = "beermail_vibrate";
 	
-	private SharedPreferences prefs;
-	private Context context;
+	protected Context context;
+	protected SharedPreferences prefs;
 	
-	public ApplicationSettings(Context context, SharedPreferences prefs) {
-		this.context = context;
-		this.prefs = prefs;
+	public ApplicationSettings(Context context) {
+		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
-
+	
 	/**
 	 * Whether distances should be displayed in kilometers instead of miles
 	 * @return True if km should be used; false otherwise

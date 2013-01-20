@@ -27,7 +27,7 @@ import org.json.JSONObject;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 
 public class GetPlaceDetailsCommand extends JsonCommand {
@@ -35,7 +35,7 @@ public class GetPlaceDetailsCommand extends JsonCommand {
 	private final int placeId;
 	private Place details;
 
-	public GetPlaceDetailsCommand(RateBeerApi api, int placeId) {
+	public GetPlaceDetailsCommand(UserSettings api, int placeId) {
 		super(api, ApiMethod.GetPlaceDetails);
 		this.placeId = placeId;
 	}

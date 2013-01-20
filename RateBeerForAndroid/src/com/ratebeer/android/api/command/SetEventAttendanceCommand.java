@@ -29,13 +29,14 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SetEventAttendanceCommand extends EmptyResponseCommand {
 
 	private final int eventId;
 	private final boolean isGoing;
 
-	public SetEventAttendanceCommand(RateBeerApi api, int eventId, boolean isGoing) {
+	public SetEventAttendanceCommand(UserSettings api, int eventId, boolean isGoing) {
 		super(api, ApiMethod.SetEventAttendance);
 		this.eventId = eventId;
 		this.isGoing = isGoing;

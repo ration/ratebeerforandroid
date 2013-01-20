@@ -34,14 +34,14 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetUserTicksCommand extends JsonCommand {
 
 	private final int userId;
 	private ArrayList<UserTick> userTicks;
 
-	public GetUserTicksCommand(RateBeerApi api, int userId) {
+	public GetUserTicksCommand(UserSettings api, int userId) {
 		super(api, ApiMethod.GetUserTicks);
 		this.userId = userId;
 	}

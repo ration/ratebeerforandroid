@@ -20,18 +20,15 @@ package com.ratebeer.android.api.command;
 import java.util.Date;
 
 import android.content.Context;
-import android.preference.PreferenceManager;
 
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.app.ApplicationSettings;
 
 public class TestHelper {
 
-	public static RateBeerApi getApi(Context context, boolean withUser) {
+	public static UserSettings getUser(Context context, boolean withUser) {
 
-		ApplicationSettings settings = new ApplicationSettings(context, PreferenceManager
-				.getDefaultSharedPreferences(context));
+		ApplicationSettings settings = new ApplicationSettings();
 		if (withUser) {
 
 			// Set up API that connects to mock user rbandroid (156822)
@@ -40,13 +37,13 @@ public class TestHelper {
 			// - has joined Feb 10, 2012 and favourite style Saison
 			// http://www.ratebeer.com/View-User-156822.htm
 			settings.saveUserSettings(new UserSettings(156822, "rbandroid", "Andr01dAPP", "", false, new Date()));
-			return new RateBeerApi(settings.getUserSettings());
+			return settings.getUserSettings();
 
 		} else {
 
 			// Set up API without any user credentials
 			settings.saveUserSettings(null);
-			return new RateBeerApi(settings.getUserSettings());
+			return settings.getUserSettings();
 
 		}
 		

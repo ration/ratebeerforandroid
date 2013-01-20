@@ -25,7 +25,7 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SignInCommand extends EmptyResponseCommand {
 
@@ -33,7 +33,7 @@ public class SignInCommand extends EmptyResponseCommand {
 	private final String username;
 	private final String password;
 
-	public SignInCommand(RateBeerApi api, String username, String password) {
+	public SignInCommand(UserSettings api, String username, String password) {
 		super(api, ApiMethod.SignIn);
 		this.username = username;
 		this.password = password;

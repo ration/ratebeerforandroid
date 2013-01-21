@@ -59,6 +59,7 @@ import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.gui.Home;
+import com.ratebeer.android.gui.components.helpers.DatabaseConsumerService;
 
 @EService
 public class BeermailService extends DatabaseConsumerService {

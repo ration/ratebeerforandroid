@@ -75,11 +75,11 @@ import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
-import com.ratebeer.android.gui.components.ActivityUtil;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 import com.viewpagerindicator.TabPageIndicator;
 

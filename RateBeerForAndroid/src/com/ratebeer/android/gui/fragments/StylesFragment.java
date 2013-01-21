@@ -34,8 +34,8 @@ import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.command.Style;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 @EFragment(R.layout.fragment_styles)
 public class StylesFragment extends RateBeerFragment {

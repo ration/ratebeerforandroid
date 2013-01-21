@@ -15,7 +15,7 @@
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  *	
  */
-package com.ratebeer.android.gui.components;
+package com.ratebeer.android.gui.components.helpers;
 
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -50,9 +50,9 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.GetUserCellarCommand;
 import com.ratebeer.android.api.command.GetUserCellarCommand.CellarBeer;
 import com.ratebeer.android.api.command.RemoveFromCellarCommand;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import com.viewpagerindicator.TabPageIndicator;
 

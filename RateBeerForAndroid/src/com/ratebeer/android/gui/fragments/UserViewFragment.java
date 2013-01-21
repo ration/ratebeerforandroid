@@ -47,10 +47,10 @@ import com.ratebeer.android.api.command.GetUserDetailsCommand.RecentBeerRating;
 import com.ratebeer.android.api.command.GetUserDetailsCommand.UserDetails;
 import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.app.RateBeerForAndroid;
-import com.ratebeer.android.gui.components.ActivityUtil;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 @EFragment(R.layout.fragment_userview)
 public class UserViewFragment extends RateBeerFragment {

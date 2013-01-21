@@ -50,9 +50,9 @@ import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.app.persistance.OfflineRating;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;

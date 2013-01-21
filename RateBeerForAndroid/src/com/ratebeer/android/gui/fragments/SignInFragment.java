@@ -38,9 +38,9 @@ import com.ratebeer.android.api.command.GetUserPremiumStatusCommand;
 import com.ratebeer.android.api.command.SignInCommand;
 import com.ratebeer.android.api.command.SignOutCommand;
 import com.ratebeer.android.gui.SignIn;
-import com.ratebeer.android.gui.components.OnProgressChangedListener;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.OnProgressChangedListener;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;

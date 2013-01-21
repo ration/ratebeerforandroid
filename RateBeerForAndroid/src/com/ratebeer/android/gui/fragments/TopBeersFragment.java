@@ -46,9 +46,9 @@ import com.ratebeer.android.api.command.Country;
 import com.ratebeer.android.api.command.GetTopBeersCommand;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopBeer;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 @EFragment(R.layout.fragment_topbeers)
 public class TopBeersFragment extends RateBeerFragment {

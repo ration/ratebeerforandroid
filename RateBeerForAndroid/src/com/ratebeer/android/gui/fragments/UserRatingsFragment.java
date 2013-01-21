@@ -38,9 +38,9 @@ import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.GetUserRatingsCommand;
 import com.ratebeer.android.api.command.GetUserRatingsCommand.UserRating;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 @EFragment(R.layout.fragment_userratings)
 public class UserRatingsFragment extends RateBeerFragment {

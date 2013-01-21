@@ -44,10 +44,10 @@ import com.ratebeer.android.api.command.GetStyleDetailsCommand;
 import com.ratebeer.android.api.command.GetStyleDetailsCommand.StyleDetails;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopBeer;
 import com.ratebeer.android.api.command.Style;
-import com.ratebeer.android.gui.components.ActivityUtil;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 @EFragment(R.layout.fragment_styleview)
 public class StyleViewFragment extends RateBeerFragment {

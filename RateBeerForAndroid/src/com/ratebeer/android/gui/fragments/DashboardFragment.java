@@ -31,8 +31,6 @@ import android.os.Messenger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -40,7 +38,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.ItemClick;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
@@ -56,8 +56,8 @@ import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.SignIn_;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
 import com.ratebeer.android.gui.fragments.SetDrinkingStatusDialogFragment.OnDialogResult;
-import com.ratebeer.android.gui.fragments.StylesFragment.StyleAdapter;
 
 @EFragment(R.layout.fragment_dashboard)
 public class DashboardFragment extends RateBeerFragment {
@@ -81,7 +81,6 @@ public class DashboardFragment extends RateBeerFragment {
 	@AfterViews
 	public void init() {
 				
-		myprofile.setOnClickListener(onProfileButtonClick());
 		offlineratings.setOnClickListener(onButtonClick(OfflineRatingsFragment_.builder().build(), false));
 		beerstyles.setOnClickListener(onButtonClick(StylesFragment_.builder().build(), false));
 		top50.setOnClickListener(onButtonClick(TopBeersFragment_.builder().topList(TopListType.Top50).build(), false));
@@ -97,33 +96,9 @@ public class DashboardFragment extends RateBeerFragment {
 		if (styles != null) {
 			styles.setAdapter(new StylesFragment.StyleAdapter(getActivity(), 
 					new ArrayList<Style>(Style.ALL_STYLES.values()), inflater));
-			styles.setOnItemClickListener(onItemSelected);
 		}
 		
 		// Update drinking status
-		drinkingStatus.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new SetDrinkingStatusDialogFragment(new OnDialogResult() {
-					@Override
-					public void onSetNewStatus(String newStatus) {
-						// Update now drinking status
-						Intent i = new Intent(PosterService.ACTION_SETDRINKINGSTATUS);
-						i.putExtra(PosterService.EXTRA_NEWSTATUS, newStatus);
-						i.putExtra(PosterService.EXTRA_BEERID, PosterService.NO_BEER_EXTRA);
-						i.putExtra(PosterService.EXTRA_MESSENGER, new Messenger(new Handler() {
-							@Override
-							public void handleMessage(Message msg) {
-								// Callback from the poster service; just refresh the drinking status
-								// if (msg.arg1 == PosterService.RESULT_SUCCESS)
-								execute(new GetDrinkingStatusCommand(getUser()));
-							}
-						}));
-						getActivity().startService(i);
-					}
-				}).show(getFragmentManager(), "dialog");
-			}
-		});
 		showDrinkingStatus();
 		refreshDrinkingStatus();
 		
@@ -135,22 +110,32 @@ public class DashboardFragment extends RateBeerFragment {
 		}
 		
 	}
+	
+	@Click
+	protected void drinkingStatusClicked() {
+		new SetDrinkingStatusDialogFragment(new OnDialogResult() {
+			@Override
+			public void onSetNewStatus(String newStatus) {
+				// Update now drinking status
+				Intent i = new Intent(PosterService.ACTION_SETDRINKINGSTATUS);
+				i.putExtra(PosterService.EXTRA_NEWSTATUS, newStatus);
+				i.putExtra(PosterService.EXTRA_BEERID, PosterService.NO_BEER_EXTRA);
+				i.putExtra(PosterService.EXTRA_MESSENGER, new Messenger(new Handler() {
+					@Override
+					public void handleMessage(Message msg) {
+						// Callback from the poster service; just refresh the drinking status
+						// if (msg.arg1 == PosterService.RESULT_SUCCESS)
+						execute(new GetDrinkingStatusCommand(getUser()));
+					}
+				}));
+				getActivity().startService(i);
+			}
+		}).show(getFragmentManager(), "dialog");
+	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		boolean showSearch = true;
-		if (android.os.Build.VERSION.SDK_INT >= 16) { 
-			if (getResources().getConfiguration().screenWidthDp >= 800) {
-				showSearch = false; // Already shown as SearchView
-			}
-		}
-		if (showSearch) {
-			// For phones, the dashboard & search fragments show a search icon in the action bar
-			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
-			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);
-			item.setIcon(R.drawable.ic_action_search);
-			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		}
+		new SearchUiHelper(getActivity()).addSearchToMenu(menu, MENU_SEARCH);
 		
 		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, Menu.NONE, R.string.search_barcodescanner);
 		item2.setIcon(R.drawable.ic_action_barcode);
@@ -218,19 +203,15 @@ public class DashboardFragment extends RateBeerFragment {
 		}
 	}
 
-	private OnClickListener onProfileButtonClick() {
-		return new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (getUser() == null) {
-					// No user yet, but this is required so start the login screen
-					SignIn_.intent(getActivity()).extraIsRedirect(true).start();
-				} else {
-					load(UserViewFragment_.builder().userName(getUser().getUsername()).userId(getUser().getUserID())
-							.build());
-				}
-			}
-		};
+	@Click
+	protected void myprofileClicked() {
+		if (getUser() == null) {
+			// No user yet, but this is required so start the login screen
+			SignIn_.intent(getActivity()).extraIsRedirect(true).start();
+		} else {
+			load(UserViewFragment_.builder().userName(getUser().getUsername())
+					.userId(getUser().getUserID()).build());
+		}
 	}
 
 	private OnClickListener onButtonClick(final RateBeerFragment fragment, final boolean requiresUser) {
@@ -247,13 +228,10 @@ public class DashboardFragment extends RateBeerFragment {
 		};
 	}
 
-	private OnItemClickListener onItemSelected = new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Style item = ((StyleAdapter)styles.getAdapter()).getItem(position);
-			load(StyleViewFragment_.builder().style(item).build());
-		}
-	};
+	@ItemClick(R.id.styles)
+	protected void onStyleClicked(Style item) {
+		load(StyleViewFragment_.builder().style(item).build());
+	}
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {

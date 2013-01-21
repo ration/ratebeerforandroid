@@ -59,10 +59,11 @@ import com.ratebeer.android.api.command.SearchUsersCommand.UserSearchResult;
 import com.ratebeer.android.api.command.UpcSearchCommand;
 import com.ratebeer.android.api.command.UpcSearchCommand.UpcSearchResult;
 import com.ratebeer.android.gui.SearchHistoryProvider;
-import com.ratebeer.android.gui.components.ActivityUtil;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
+import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -147,19 +148,8 @@ public class SearchFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		boolean showSearch = true;
-		if (android.os.Build.VERSION.SDK_INT >= 16) { 
-			if (getResources().getConfiguration().screenWidthDp >= 800) {
-				showSearch = false; // ALready shown as SearchView
-			}
-		}
-		if (showSearch) {
-			// For phones, the dashboard & search fragments show a search icon in the action bar
-			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
-			MenuItem item = menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.home_search);
-			item.setIcon(R.drawable.ic_action_search);
-			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		}
+		new SearchUiHelper(getActivity()).addSearchToMenu(menu, MENU_SEARCH);
+		
 		MenuItem item = menu.add(Menu.NONE, RateBeerActivity.MENU_REFRESH, Menu.NONE, R.string.app_refresh);
 		item.setIcon(R.drawable.ic_action_refresh);
 		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);

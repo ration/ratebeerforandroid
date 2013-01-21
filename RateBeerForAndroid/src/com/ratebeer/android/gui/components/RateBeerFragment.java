@@ -35,7 +35,7 @@ import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SignOutCommand;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.gui.SignIn_;
-import com.ratebeer.android.gui.components.tasks.RateBeerTaskCaller;
+import com.ratebeer.android.gui.components.helpers.RateBeerTaskCaller;
 import com.ratebeer.android.gui.fragments.UserViewFragment_;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;

@@ -28,7 +28,7 @@ public class TestHelper {
 
 	public static UserSettings getUser(Context context, boolean withUser) {
 
-		ApplicationSettings settings = new ApplicationSettings();
+		ApplicationSettings settings = new ApplicationSettings(context);
 		if (withUser) {
 
 			// Set up API that connects to mock user rbandroid (156822)

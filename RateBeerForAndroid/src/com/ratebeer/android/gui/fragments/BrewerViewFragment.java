@@ -68,10 +68,10 @@ import com.ratebeer.android.api.command.State;
 import com.ratebeer.android.app.location.LocationUtils;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
-import com.ratebeer.android.gui.components.ActivityUtil;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;

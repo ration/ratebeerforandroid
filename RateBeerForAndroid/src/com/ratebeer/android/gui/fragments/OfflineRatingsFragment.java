@@ -47,9 +47,9 @@ import com.ratebeer.android.R;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.app.persistance.OfflineRating;
-import com.ratebeer.android.gui.components.ArrayAdapter;
-import com.ratebeer.android.gui.components.ImportExport;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
+import com.ratebeer.android.gui.components.helpers.ImportExport;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;

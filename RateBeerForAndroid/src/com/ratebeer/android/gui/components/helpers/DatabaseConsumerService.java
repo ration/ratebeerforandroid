@@ -15,7 +15,7 @@
     along with RateBeer for Android.  If not, see 
     <http://www.gnu.org/licenses/>.
  */
-package com.ratebeer.android.gui.components;
+package com.ratebeer.android.gui.components.helpers;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -25,9 +25,9 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
 
-public abstract class RateBeerService extends IntentService {
+public abstract class DatabaseConsumerService extends IntentService {
 
-	public RateBeerService(String name) {
+	public DatabaseConsumerService(String name) {
 		super(name);
 	}
 
@@ -42,7 +42,7 @@ public abstract class RateBeerService extends IntentService {
 		if (helper == null) {
 			if (!created) {
 				throw new IllegalStateException("A call has not been made to onCreate() yet so the helper is null");
-			} else if (destroyed) {
+		} else if (destroyed) {
 				throw new IllegalStateException(
 						"A call to onDestroy has already been made and the helper cannot be used after that point");
 			} else {

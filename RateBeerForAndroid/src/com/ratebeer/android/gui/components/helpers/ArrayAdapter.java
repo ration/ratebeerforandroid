@@ -20,7 +20,7 @@
  * of the resource id to show)
  */
 
-package com.ratebeer.android.gui.components;
+package com.ratebeer.android.gui.components.helpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;

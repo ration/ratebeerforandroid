@@ -51,10 +51,10 @@ import com.ratebeer.android.api.command.AddAvailabilityCommand;
 import com.ratebeer.android.api.command.GetFavouritePlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_addavailability)

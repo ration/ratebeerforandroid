@@ -47,9 +47,9 @@ import com.ratebeer.android.api.command.Country;
 import com.ratebeer.android.api.command.GetEventsCommand;
 import com.ratebeer.android.api.command.GetEventsCommand.Event;
 import com.ratebeer.android.api.command.State;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 @EFragment(R.layout.fragment_events)
 public class EventsFragment extends RateBeerFragment {

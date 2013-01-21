@@ -20,14 +20,12 @@ package com.ratebeer.android.gui;
 import java.util.List;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.ratebeer.android.R;
@@ -37,6 +35,7 @@ import com.ratebeer.android.gui.components.BootReceiver;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
 import com.ratebeer.android.gui.fragments.AboutFragment_;
 import com.ratebeer.android.gui.fragments.AddUpcCodeFragment_;
 import com.ratebeer.android.gui.fragments.BeerViewFragment_;
@@ -61,28 +60,11 @@ public class Home extends RateBeerActivity {
 
 		// Show search directly in action bar on larger screens
 		// For phones the DashboardFragment and SearchFragment will show an icon
-		if (android.os.Build.VERSION.SDK_INT >= 16) { 
-			if (getResources().getConfiguration().screenWidthDp >= 800) {
-				showSearch();
-			}
-		}
+		new SearchUiHelper(this).addSearchToActionBar(getSupportActionBar());
 		
 		handleStartIntent();
 	}
 
-	private void showSearch() {
-		// Set up a SearchView
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView = new SearchView(this);
-		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-		searchView.setQueryRefinementEnabled(true);
-		searchView.setIconifiedByDefault(false);
-		searchView.setFocusable(false);
-		searchView.setFocusableInTouchMode(false);
-		getSupportActionBar().setCustomView(searchView);
-		getSupportActionBar().setDisplayShowCustomEnabled(true);
-	}
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);

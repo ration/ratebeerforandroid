@@ -15,7 +15,7 @@
     along with RateBeer for Android.  If not, see 
     <http://www.gnu.org/licenses/>.
  */
-package com.ratebeer.android.gui.components;
+package com.ratebeer.android.gui.components.helpers;
 
 import java.util.List;
 

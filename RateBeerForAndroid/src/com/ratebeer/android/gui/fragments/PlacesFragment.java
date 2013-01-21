@@ -59,11 +59,11 @@ import com.ratebeer.android.app.location.PlaceOverlayItem;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.app.location.TouchableMapViewPager;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.SelectLocationDialog;
 import com.ratebeer.android.gui.components.SelectLocationDialog.OnLocationSelectedListener;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_places)

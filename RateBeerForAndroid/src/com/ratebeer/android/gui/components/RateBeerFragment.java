@@ -74,7 +74,7 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 		// If there is an action bar item representing MENU_REFRESH and we have tasks in progress, show custom view with an undetermined progress indicator
 		if (getActivity() != null && getRateBeerActivity().isInProgress()) {
 			for (int i = 0; i < menu.size(); i++) {
-				if (menu.getItem(i).getItemId() == RateBeerActivity.MENU_REFRESH) {
+				if (menu.getItem(i).getItemId() == RateBeerActivity.MENU_REFRESH || menu.getItem(i).getItemId() == R.id.menu_refresh) {
 					View view = getRateBeerActivity().getLayoutInflater().inflate(R.layout.actionbar_progressitem, null);
 					menu.getItem(i).setActionView(view);
 				}
@@ -230,5 +230,5 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 	private RateBeerActivity getRateBeerActivity() {
 		return (RateBeerActivity) getActivity();
 	}
-
+	
 }

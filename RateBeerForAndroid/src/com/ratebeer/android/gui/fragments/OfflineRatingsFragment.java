@@ -36,10 +36,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.j256.ormlite.dao.Dao;
@@ -56,11 +56,9 @@ import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_offlineratings)
+@OptionsMenu(R.menu.offlineratings)
 public class OfflineRatingsFragment extends RateBeerFragment {
 
-	private static final int MENU_ADD = 0;
-	private static final int MENU_EXPORT = 1;
-	private static final int MENU_IMPORT = 2;
 	private static final int MENU_DELETE = 10;
 	
 	@ViewById(R.id.empty)
@@ -82,62 +80,47 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 		loadRatings();
 		
 	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(Menu.NONE, MENU_ADD, MENU_ADD, R.string.rate_offline_addrating);
-		item.setIcon(R.drawable.ic_action_addrating);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item2 = menu.add(Menu.NONE, MENU_EXPORT, MENU_EXPORT, R.string.rate_offline_export);
-		item2.setIcon(R.drawable.ic_action_export);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item3 = menu.add(Menu.NONE, MENU_IMPORT, MENU_IMPORT, R.string.rate_offline_import);
-		item3.setIcon(R.drawable.ic_menu_import);
-		item3.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-		super.onCreateOptionsMenu(menu, inflater);
+	
+	@OptionsItem(R.id.menu_add)
+	protected void onAddRating() {
+		load(RateFragment_.builder().build());
 	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case MENU_ADD:
-			load(RateFragment_.builder().build());
-			break;
-		case MENU_EXPORT:
-			new ConfirmDialogFragment(new OnDialogResult() {
-				@Override
-				public void onConfirmed() {
-					try {
-						ImportExport.exportRatings(offlineRatingDao.queryForAll(), ImportExport.DEFAULT_RATINGS_FILE);
-					} catch (JSONException e) {
-						Crouton.makeText(getActivity(), R.string.error_cannotread, Style.ALERT).show();
-					} catch (IOException e) {
-						Crouton.makeText(getActivity(), R.string.error_cannotread, Style.ALERT).show();
-					} catch (SQLException e) {
-						Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
-					}
+	
+	@OptionsItem(R.id.menu_import)
+	protected void onImportRatings() {
+		new ConfirmDialogFragment(new OnDialogResult() {
+			@Override
+			public void onConfirmed() {
+				try {
+					ImportExport.importRatings(offlineRatingDao, ImportExport.DEFAULT_RATINGS_FILE);
+				} catch (JSONException e) {
+					Crouton.makeText(getActivity(), R.string.error_filenotvalid, Style.ALERT).show();
+				} catch (IOException e) {
+					Crouton.makeText(getActivity(), R.string.error_cannotwrite, Style.ALERT).show();
+				} catch (SQLException e) {
+					Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
 				}
-			}, R.string.rate_offline_export_info, ImportExport.DEFAULT_RATINGS_FILE).show(getFragmentManager(), "exportdialog");
-			break;
-		case MENU_IMPORT:
-			new ConfirmDialogFragment(new OnDialogResult() {
-				@Override
-				public void onConfirmed() {
-					try {
-						ImportExport.importRatings(offlineRatingDao, ImportExport.DEFAULT_RATINGS_FILE);
-					} catch (JSONException e) {
-						Crouton.makeText(getActivity(), R.string.error_filenotvalid, Style.ALERT).show();
-					} catch (IOException e) {
-						Crouton.makeText(getActivity(), R.string.error_cannotwrite, Style.ALERT).show();
-					} catch (SQLException e) {
-						Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
-					}
-					loadRatings();
+				loadRatings();
+			}
+		}, R.string.rate_offline_import_info, ImportExport.DEFAULT_RATINGS_FILE).show(getFragmentManager(), "importdialog");
+	}
+	
+	@OptionsItem(R.id.menu_export)
+	protected void onExportRatings() {
+		new ConfirmDialogFragment(new OnDialogResult() {
+			@Override
+			public void onConfirmed() {
+				try {
+					ImportExport.exportRatings(offlineRatingDao.queryForAll(), ImportExport.DEFAULT_RATINGS_FILE);
+				} catch (JSONException e) {
+					Crouton.makeText(getActivity(), R.string.error_cannotread, Style.ALERT).show();
+				} catch (IOException e) {
+					Crouton.makeText(getActivity(), R.string.error_cannotread, Style.ALERT).show();
+				} catch (SQLException e) {
+					Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();
 				}
-			}, R.string.rate_offline_import_info, ImportExport.DEFAULT_RATINGS_FILE).show(getFragmentManager(), "importdialog");
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+			}
+		}, R.string.rate_offline_export_info, ImportExport.DEFAULT_RATINGS_FILE).show(getFragmentManager(), "exportdialog");
 	}
 
 	private void loadRatings() {

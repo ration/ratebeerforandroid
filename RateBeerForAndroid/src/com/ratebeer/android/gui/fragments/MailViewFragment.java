@@ -29,13 +29,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.j256.ormlite.dao.Dao;
@@ -52,10 +51,9 @@ import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 
 @EFragment(R.layout.fragment_mailview)
+@OptionsMenu(R.menu.mailview)
 public class MailViewFragment extends RateBeerFragment {
 
-	private static final int MENU_REPLY = 0;
-	private static final int MENU_DELETE = 1;
 	private static DateFormat dateFormat = null;
 
 	@FragmentArg
@@ -119,38 +117,24 @@ public class MailViewFragment extends RateBeerFragment {
 
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item2 = menu.add(Menu.NONE, MENU_REPLY, MENU_REPLY, R.string.mail_reply);
-		item2.setIcon(R.drawable.ic_action_reply);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item3 = menu.add(Menu.NONE, MENU_DELETE, MENU_DELETE, R.string.mail_delete);
-		item3.setIcon(R.drawable.ic_action_discard);
-		item3.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		super.onCreateOptionsMenu(menu, inflater);
+	@OptionsItem(R.id.menu_reply)
+	protected void onReply() {
+		load(SendMailFragment_.buildFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case MENU_REPLY:
-			load(SendMailFragment_.buildFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
-			break;
-		case MENU_DELETE:
-			// ASk to confirm the removal of this mail
-			new ConfirmDialogFragment(new OnDialogResult() {
-				@Override
-				public void onConfirmed() {
-					if (getActivity() != null) {
-						execute(new DeleteBeerMailCommand(getUser(), mail));
-					}
+	@OptionsItem(R.id.menu_delete)
+	protected void onDelete() {
+		// ASk to confirm the removal of this mail
+		new ConfirmDialogFragment(new OnDialogResult() {
+			@Override
+			public void onConfirmed() {
+				if (getActivity() != null) {
+					execute(new DeleteBeerMailCommand(getUser(), mail));
 				}
-			}, R.string.mail_confirmdelete, mail.getSenderName()).show(getFragmentManager(), "dialog");
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+			}
+		}, R.string.mail_confirmdelete, mail.getSenderName()).show(getFragmentManager(), "dialog");
 	}
-
+	
 	private OnClickListener onSenderClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {

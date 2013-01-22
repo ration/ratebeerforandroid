@@ -36,22 +36,17 @@ public class SearchUiHelper {
 		}
 	}
 
-	@TargetApi(8)	
-	public void addSearchToMenu(Menu menu, int menuItemId) {
-		if (shouldShowInMenu()) {
-			// For phones, the dashboard & search fragments show a search icon in the action bar
-			// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
-			MenuItem item = menu.add(Menu.NONE, menuItemId, Menu.NONE, R.string.home_search);
-			item.setIcon(R.drawable.ic_action_search);
-			item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-			if (android.os.Build.VERSION.SDK_INT >= 8) {
-				SearchView searchView = new SearchView(context);
-				searchView.setSearchableInfo(searchManager.getSearchableInfo(context.getComponentName()));
-				searchView.setQueryRefinementEnabled(true);
-				item.setActionView(searchView);
-			}
+	@TargetApi(8)
+	public void enhanceSearchInMenu(Menu menu) {
+		// For phones, the dashboard & search fragments show a search icon in the action bar
+		// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
+		MenuItem item = menu.findItem(R.id.menu_search);
+		if (shouldShowInMenu() && item != null && android.os.Build.VERSION.SDK_INT >= 8) {
+			SearchView searchView = new SearchView(context);
+			searchView.setSearchableInfo(searchManager.getSearchableInfo(context.getComponentName()));
+			searchView.setQueryRefinementEnabled(true);
+			item.setActionView(searchView);
 		}
-		
 	}
 
 	@TargetApi(13)

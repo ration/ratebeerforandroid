@@ -39,15 +39,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -73,10 +72,9 @@ import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_placeview)
+@OptionsMenu({R.menu.refresh, R.menu.share})
 public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 	
-	private static final int MENU_SHARE = 0;
-
 	@FragmentArg
 	@InstanceState
 	protected int placeId;
@@ -133,37 +131,23 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SHARE, MENU_SHARE, R.string.app_share);
-		item2.setIcon(R.drawable.ic_action_share);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		super.onCreateOptionsMenu(menu, inflater);
+	@OptionsItem(R.id.menu_refresh)
+	protected void onRefresh() {
+		refreshDetails();
+		refreshCheckins();
+		refreshAvailableBeers();
 	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshDetails();
-			refreshCheckins();
-			refreshAvailableBeers();
-			break;
-		case MENU_SHARE:
-			if (place != null) {
-				// Start a share intent for this event
-				Intent s = new Intent(Intent.ACTION_SEND);
-			    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-				s.setType("text/plain");
-				s.putExtra(Intent.EXTRA_TEXT, getString(R.string.places_share, place.placeName, place.placeID));
-				startActivity(Intent.createChooser(s, getString(R.string.places_shareplace)));
-			}
-			break;
+	
+	@OptionsItem(R.id.menu_share)
+	protected void onShare() {
+		if (place != null) {
+			// Start a share intent for this event
+			Intent s = new Intent(Intent.ACTION_SEND);
+		    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			s.setType("text/plain");
+			s.putExtra(Intent.EXTRA_TEXT, getString(R.string.places_share, place.placeName, place.placeID));
+			startActivity(Intent.createChooser(s, getString(R.string.places_shareplace)));
 		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	private void refreshDetails() {

@@ -17,12 +17,10 @@
  */
 package com.ratebeer.android.gui.fragments;
 
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.ViewById;
@@ -41,27 +39,20 @@ public class TextInfoFragment extends RateBeerFragment {
 	protected TextView titleText;
 	@ViewById(R.id.info)
 	protected TextView infoText;
-	@ViewById
-	protected Button ok;
 
 	public TextInfoFragment() {
 	}
 
 	@AfterViews
 	public void init() {
-
 		titleText.setText(title);
 		infoText.setText(info);
-		ok.setOnClickListener(onOkClick);
-
 	}
-
-	private OnClickListener onOkClick = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			// Just close this fragment
-			getFragmentManager().popBackStackImmediate();
-		}
-	};
+	
+	@Click
+	protected void okClicked() {
+		// Just close this fragment
+		getFragmentManager().popBackStackImmediate();
+	}
 
 }

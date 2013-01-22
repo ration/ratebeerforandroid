@@ -30,13 +30,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -46,11 +45,11 @@ import com.ratebeer.android.api.command.Country;
 import com.ratebeer.android.api.command.GetTopBeersCommand;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopBeer;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 @EFragment(R.layout.fragment_topbeers)
+@OptionsMenu(R.menu.refresh)
 public class TopBeersFragment extends RateBeerFragment {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
@@ -96,24 +95,6 @@ public class TopBeersFragment extends RateBeerFragment {
 		
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshBeers();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
 	private void populateCountrySpinner() {
 		// Get an array with all the country names
 		Country[] allCountries = Country.ALL_COUNTRIES.values().toArray(new Country[Country.ALL_COUNTRIES.size()]);
@@ -146,7 +127,8 @@ public class TopBeersFragment extends RateBeerFragment {
 		}
 	};
 
-	private void refreshBeers() {
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshBeers() {
 		switch (topList) {
 		case Top50:
 			execute(new GetTopBeersCommand(getUser()));

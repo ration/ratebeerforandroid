@@ -32,13 +32,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.j256.ormlite.dao.Dao;
@@ -50,7 +49,6 @@ import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.app.persistance.OfflineRating;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
@@ -58,6 +56,7 @@ import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_findratedbeer)
+@OptionsMenu(R.menu.refresh)
 public class FindRatedBeerFragment extends RateBeerFragment {
 
 	@FragmentArg
@@ -114,25 +113,8 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 		getFragmentManager().popBackStack();
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshResults();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	private void refreshResults() {
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshResults() {
 		// Search for beers with the custom specified name
 		if (beername.getText().length() <= 0) {
 			Crouton.makeText(getActivity(), R.string.rate_offline_nonamegiven, Style.INFO).show();

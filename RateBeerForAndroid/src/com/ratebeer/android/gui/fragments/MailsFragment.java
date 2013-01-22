@@ -41,6 +41,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.j256.ormlite.dao.Dao;
@@ -58,6 +60,7 @@ import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 
 @EFragment(R.layout.fragment_mails)
+@OptionsMenu({R.menu.refresh, R.menu.mails})
 public class MailsFragment extends RateBeerFragment {
 
 	private static final int MENU_SEND = 0;
@@ -96,20 +99,14 @@ public class MailsFragment extends RateBeerFragment {
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshMails();
-			break;
-		case MENU_SEND:
-			load(SendMailFragment_.builder().build());
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+	@OptionsItem(R.id.menu_sendmail)
+	protected void onSendMail() {
+		load(SendMailFragment_.builder().build());
 	}
 
-	private void refreshMails() {
+
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshMails() {
 		// Start the background service to get new mail
 		Intent i = new Intent(getActivity(), BeermailService.class);
 		i.putExtra(BeermailService.EXTRA_MESSENGER, new Messenger(new Handler() {

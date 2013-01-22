@@ -37,14 +37,13 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -67,10 +66,10 @@ import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_places)
+@OptionsMenu(R.menu.places)
 public class PlacesFragment extends RateBeerFragment implements OnLocationSelectedListener, OnBalloonClickListener {
 
 	private static final int DEFAULT_RADIUS = 25;
-	private static final int MENU_LOCATION = 0;
 
 	@InstanceState
 	protected ArrayList<Place> places = null;
@@ -102,28 +101,9 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem location = menu.add(MENU_LOCATION, MENU_LOCATION, MENU_LOCATION, R.string.places_location);
-		location.setIcon(R.drawable.ic_action_location);
-		location.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshPlaces();
-			break;
-		case MENU_LOCATION:
-			new SelectLocationDialog(this).show(getFragmentManager(), "SelectLocationDialog");
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+	@OptionsItem(R.id.menu_location)
+	protected void onSelectNewLocation() {
+		new SelectLocationDialog(this).show(getFragmentManager(), "SelectLocationDialog");
 	}
 
 	@Override
@@ -153,7 +133,8 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		refreshPlaces();
 	}
 	
-	private void refreshPlaces() {
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshPlaces() {
 		// Get the current location (if possible)
 		if (new MyLocation().getLocation(getActivity(), onLocationResult)) {
 			// Force the progress indicator to start

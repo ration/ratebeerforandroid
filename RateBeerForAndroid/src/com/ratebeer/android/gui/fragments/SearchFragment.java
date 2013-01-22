@@ -38,11 +38,12 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -59,7 +60,6 @@ import com.ratebeer.android.api.command.SearchUsersCommand.UserSearchResult;
 import com.ratebeer.android.api.command.UpcSearchCommand;
 import com.ratebeer.android.api.command.UpcSearchCommand.UpcSearchResult;
 import com.ratebeer.android.gui.SearchHistoryProvider;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
@@ -71,12 +71,9 @@ import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_search)
+@OptionsMenu(R.menu.search)
 public class SearchFragment extends RateBeerFragment {
 	
-	public static final String ARG_QUERY = "query";
-	private static final int MENU_CLEARHISTORY = 0;
-	private static final int MENU_SCANBARCODE = 1;
-	private static final int MENU_SEARCH = 2;
 	public final static String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
 	public static final Uri SCANNER_MARKET_URI = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
 	private static final int ACTIVITY_BARCODE = 0;
@@ -148,43 +145,26 @@ public class SearchFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		new SearchUiHelper(getActivity()).addSearchToMenu(menu, MENU_SEARCH);
-		
-		MenuItem item = menu.add(Menu.NONE, RateBeerActivity.MENU_REFRESH, Menu.NONE, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, Menu.NONE, R.string.search_barcodescanner);
-		item2.setIcon(R.drawable.ic_action_barcode);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		
-		menu.add(MENU_CLEARHISTORY, MENU_CLEARHISTORY, MENU_CLEARHISTORY, R.string.search_clearhistory);
 		super.onCreateOptionsMenu(menu, inflater);
+		new SearchUiHelper(getActivity()).enhanceSearchInMenu(menu);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			performSearch();
-			break;
-		case MENU_CLEARHISTORY:
-			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
-					SearchHistoryProvider.AUTHORITY, SearchHistoryProvider.MODE);
-			suggestions.clearHistory();
-			break;
-		case MENU_SCANBARCODE:
-			startScanner();
-			break;
-		case MENU_SEARCH:
-			// Open standard search interface
-			getActivity().onSearchRequested();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+	@OptionsItem(R.id.menu_search)
+	protected void onStartSearch() {
+		// Open standard search interface
+		// Note that this method is only called on API < 8 as SearchView is used for API level >= 8 (via ActionBarSherlock)
+		getActivity().onSearchRequested();		
+	}
+	
+	@OptionsItem(R.id.menu_clearhistory)
+	protected void onClearHistory() {
+		SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
+				SearchHistoryProvider.AUTHORITY, SearchHistoryProvider.MODE);
+		suggestions.clearHistory();
 	}
 
-	private void startScanner() {
+	@OptionsItem(R.id.menu_scanbarcode)
+	protected void startScanner() {
 		// Test to see if the ZXing barcode scanner is available that can handle the SCAN intent
 		Intent scan = new Intent(SCAN_INTENT);
 		scan.addCategory(Intent.CATEGORY_DEFAULT);
@@ -224,7 +204,8 @@ public class SearchFragment extends RateBeerFragment {
 		}
 	}
 
-	private void performSearch() {
+	@OptionsItem(R.id.menu_refresh)
+	protected void performSearch() {
 		if (query == null) {
 			if (beersView.getAdapter() != null) {
 				((BeerSearchResultsAdapter) beersView.getAdapter()).clear();
@@ -395,10 +376,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			if (getActivity() != null) {
-				return convertView;
-			}
-
 			// Get the right view, using a ViewHolder
 			BeerViewHolder holder;
 			if (convertView == null) {
@@ -442,10 +419,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			if (getActivity() != null) {
-				return convertView;
-			}
-
 			// Get the right 
 			// Get the right view, using a ViewHolder
 			BrewerViewHolder holder;
@@ -482,10 +455,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			if (getActivity() != null) {
-				return convertView;
-			}
-
 			// Get the right 
 			// Get the right view, using a ViewHolder
 			PlaceViewHolder holder;
@@ -521,10 +490,6 @@ public class SearchFragment extends RateBeerFragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-
-			if (getActivity() != null) {
-				return convertView;
-			}
 
 			// Get the right 
 			// Get the right view, using a ViewHolder

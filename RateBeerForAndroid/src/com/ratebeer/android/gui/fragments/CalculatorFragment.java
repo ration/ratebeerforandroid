@@ -21,7 +21,6 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -31,6 +30,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
@@ -115,9 +115,8 @@ public class CalculatorFragment extends RateBeerFragment {
 	public CalculatorFragment() {
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	@AfterViews
+	public void init() {
 
 		fromSystem.setOnItemSelectedListener(onSystemChanged);
 		toSystem.setOnItemSelectedListener(onSystemChanged);

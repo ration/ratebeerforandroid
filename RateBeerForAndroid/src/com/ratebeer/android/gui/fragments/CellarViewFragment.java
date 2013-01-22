@@ -36,12 +36,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -50,13 +50,13 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.GetUserCellarCommand;
 import com.ratebeer.android.api.command.GetUserCellarCommand.CellarBeer;
 import com.ratebeer.android.api.command.RemoveFromCellarCommand;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_cellarview)
+@OptionsMenu(R.menu.refresh)
 public class CellarViewFragment extends RateBeerFragment {
 	
 	private static final int MENU_REMOVE = 10;
@@ -104,25 +104,6 @@ public class CellarViewFragment extends RateBeerFragment {
 
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH,
-				RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshCellar();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -143,7 +124,8 @@ public class CellarViewFragment extends RateBeerFragment {
 		return super.onContextItemSelected(item);
 	}
 
-	private void refreshCellar() {
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshCellar() {
 		execute(new GetUserCellarCommand(getUser(), userId));
 	}
 

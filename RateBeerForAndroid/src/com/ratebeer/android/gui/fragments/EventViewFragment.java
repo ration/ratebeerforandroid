@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,15 +38,15 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -70,10 +69,9 @@ import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_eventview)
+@OptionsMenu({R.menu.refresh, R.menu.share})
 public class EventViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
-	private static final int MENU_SHARE = 0;
-	
 	@FragmentArg
 	@InstanceState
 	protected String eventName = null;
@@ -95,9 +93,8 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 	public EventViewFragment() {
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	@AfterViews
+	public void init() {
 
 		if (eventView != null) {
 			eventView.setAdapter(new EventViewAdapter());
@@ -117,34 +114,18 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 		
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SHARE, MENU_SHARE, R.string.app_share);
-		item2.setIcon(R.drawable.ic_action_share);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		super.onCreateOptionsMenu(menu, inflater);
+	@OptionsItem(R.id.menu_share)
+	protected void onShare() {
+		// Start a share intent for this event
+		Intent s = new Intent(Intent.ACTION_SEND);
+		s.setType("text/plain");
+		s.putExtra(Intent.EXTRA_TEXT, getString(R.string.events_share, eventName, eventId));
+		startActivity(Intent.createChooser(s, getString(R.string.events_shareevent)));
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshDetails();
-			break;
-		case MENU_SHARE:
-			// Start a share intent for this event
-			Intent s = new Intent(Intent.ACTION_SEND);
-			s.setType("text/plain");
-			s.putExtra(Intent.EXTRA_TEXT, getString(R.string.events_share, eventName, eventId));
-			startActivity(Intent.createChooser(s, getString(R.string.events_shareevent)));
-		}
-		return super.onOptionsItemSelected(item);
-	}
 
-	private void refreshDetails() {
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshDetails() {
 		execute(new GetEventDetailsCommand(getUser(), eventId));
 	}
 

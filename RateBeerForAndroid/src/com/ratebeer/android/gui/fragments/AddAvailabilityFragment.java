@@ -20,6 +20,7 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
@@ -35,13 +36,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -52,12 +52,12 @@ import com.ratebeer.android.api.command.GetFavouritePlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.gui.components.PosterService;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_addavailability)
+@OptionsMenu(R.menu.refresh)
 public class AddAvailabilityFragment extends RateBeerFragment {
 
 	@FragmentArg
@@ -83,9 +83,11 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 	protected EditText placenameText;
 	@ViewById(R.id.findplace)
 	protected Button findplaceButton;
-	
-	protected CheckBox onbottlecanCheck, ontapCheck;
-	protected Button addavailabilityButton, skipButton;
+
+	@ViewById
+	protected CheckBox onbottlecan, ontap;
+	@ViewById
+	protected Button addavailability, skip;
 
 	public AddAvailabilityFragment() {
 	}
@@ -104,12 +106,8 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		findplaceButton.setOnClickListener(onFindPlace);
 
 		// The bottle/tap checks and buttons are on the bottom and never in a pager
-		onbottlecanCheck = (CheckBox) getView().findViewById(R.id.onbottlecan);
-		ontapCheck = (CheckBox) getView().findViewById(R.id.ontap);
-		addavailabilityButton = (Button) getView().findViewById(R.id.addavailability);
-		addavailabilityButton.setOnClickListener(onAddAvailability);
-		skipButton = (Button) getView().findViewById(R.id.skip);
-		skipButton.setOnClickListener(onSkipClicked);
+		addavailability.setOnClickListener(onAddAvailability);
+		skip.setOnClickListener(onSkipClicked);
 
 		if (favourites != null && findResults != null) {
 			publishFavourites(favourites);
@@ -118,24 +116,6 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 			refreshFavourites();
 		}
 		
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshFavourites();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	private TextWatcher onPlaceNameChanged = new TextWatcher() {
@@ -157,6 +137,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		}
 	};
 
+	@OptionsItem(R.id.menu_refresh)
 	protected void refreshFavourites() {
 		execute(new GetFavouritePlacesCommand(getUser(), beerId));
 	}
@@ -177,6 +158,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 	};
 	
 	private OnClickListener onAddAvailability = new OnClickListener() {
+		@TargetApi(8)
 		@SuppressWarnings("deprecation")
 		@Override
 		public void onClick(View v) {
@@ -220,8 +202,8 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 			i.putExtra(PosterService.EXTRA_SELECTEDPLACES, selectedFavourites);
 			i.putExtra(PosterService.EXTRA_EXTRAPLACENAME, extraPlaceName);
 			i.putExtra(PosterService.EXTRA_EXTRAPLACEID, extraPlaceId);
-			i.putExtra(PosterService.EXTRA_ONBOTTLECAN, onbottlecanCheck.isChecked());
-			i.putExtra(PosterService.EXTRA_ONTAP, ontapCheck.isChecked());
+			i.putExtra(PosterService.EXTRA_ONBOTTLECAN, onbottlecan.isChecked());
+			i.putExtra(PosterService.EXTRA_ONTAP, ontap.isChecked());
 			getActivity().startService(i);
 
 			// Close this fragment

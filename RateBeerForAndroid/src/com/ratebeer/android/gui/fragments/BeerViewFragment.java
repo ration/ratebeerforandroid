@@ -49,14 +49,13 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -76,7 +75,6 @@ import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.PosterService;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
@@ -84,11 +82,11 @@ import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_beerview)
+@OptionsMenu({R.menu.refresh, R.menu.share})
 public class BeerViewFragment extends RateBeerFragment {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
 	private static final int UNKNOWN_RATINGS_COUNT = -1;
-	private static final int MENU_SHARE = 0;
 	private static final int ACTIVITY_CAMERA = 0;
 	private static final int ACTIVITY_PICKPHOTO = 1;
 
@@ -117,8 +115,15 @@ public class BeerViewFragment extends RateBeerFragment {
 	@ViewById
 	protected TabPageIndicator titles;
 	private View scoreCard;
-	private TextView nameText, noscoreyetText, scoreText, stylepctlText, ratingsText, descriptionText;
-	private Button brewernameButton, abvstyleButton;
+	@ViewById(R.id.name)
+	protected TextView nameText;
+	private TextView noscoreyetText, scoreText, stylepctlText, ratingsText;
+	@ViewById(R.id.description)
+	protected TextView descriptionText;
+	@ViewById(R.id.abvstyle)
+	protected Button abvstyleButton;
+	@ViewById(R.id.brewername)
+	protected Button brewernameButton;
 	private Button rateThisButton, drinkingThisButton, addAvailabilityButton, havethisButton, wantthisButton, uploadphotoButton;
 	private View ownratingRow, ownratinglabel, ticklabel, otherratingslabel;
 	private TextView ownratingTotal, ownratingAroma, ownratingAppearance, ownratingTaste, ownratingPalate, 
@@ -127,7 +132,8 @@ public class BeerViewFragment extends RateBeerFragment {
 	private ListView availabilityView;
 	private TextView availabilityEmpty;
 	private BeerRatingsAdapter recentRatingsAdapter;
-	private ImageView imageView;
+	@ViewById(R.id.image)
+	protected ImageView imageView;
 	private DateFormat displayDateFormat;
 
 	public BeerViewFragment() {
@@ -158,37 +164,24 @@ public class BeerViewFragment extends RateBeerFragment {
 		
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SHARE, MENU_SHARE, R.string.app_share);
-		item2.setIcon(R.drawable.ic_action_share);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		super.onCreateOptionsMenu(menu, inflater);
+	@OptionsItem(R.id.menu_refresh)
+	protected void onRefresh() {
+		refreshDetails();
+		refreshImage();
+		refreshOwnRating();
+		refreshOwnTick();
+		refreshRatings();
+		refreshAvailability();
 	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshDetails();
-			refreshImage();
-			refreshOwnRating();
-			refreshOwnTick();
-			refreshRatings();
-			refreshAvailability();
-			break;
-		case MENU_SHARE:
-			// Start a share intent for this beer
-			Intent s = new Intent(Intent.ACTION_SEND);
-		    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			s.setType("text/plain");
-			s.putExtra(Intent.EXTRA_TEXT, getString(R.string.details_share, beerName, beerId));
-			startActivity(Intent.createChooser(s, getString(R.string.details_sharebeer)));
-		}
-		return super.onOptionsItemSelected(item);
+	
+	@OptionsItem(R.id.menu_share)
+	protected void onShare() {
+		// Start a share intent for this beer
+		Intent s = new Intent(Intent.ACTION_SEND);
+	    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+		s.setType("text/plain");
+		s.putExtra(Intent.EXTRA_TEXT, getString(R.string.details_share, beerName, beerId));
+		startActivity(Intent.createChooser(s, getString(R.string.details_sharebeer)));
 	}
 
 	private void refreshImage() {
@@ -751,11 +744,6 @@ public class BeerViewFragment extends RateBeerFragment {
 				brewernameButton = (Button) pagerDetailsView.findViewById(R.id.brewername);
 			} else {
 				// Tablet version; these fields are not in the pager but directly in the main layout
-				imageView = (ImageView) getView().findViewById(R.id.image);
-				abvstyleButton = (Button) getView().findViewById(R.id.abvstyle);
-				descriptionText = (TextView) getView().findViewById(R.id.description);
-				nameText = (TextView) getView().findViewById(R.id.name);
-				brewernameButton = (Button) getView().findViewById(R.id.brewername);
 			}
 			scoreCard = pagerDetailsView.findViewById(R.id.scorecard);
 			noscoreyetText = (TextView) pagerDetailsView.findViewById(R.id.noscoreyet);

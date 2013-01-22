@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
@@ -36,11 +35,12 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.ItemClick;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
@@ -60,11 +60,8 @@ import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
 import com.ratebeer.android.gui.fragments.SetDrinkingStatusDialogFragment.OnDialogResult;
 
 @EFragment(R.layout.fragment_dashboard)
+@OptionsMenu(R.menu.dashboard)
 public class DashboardFragment extends RateBeerFragment {
-
-	private static final int MENU_SCANBARCODE = 1;
-	private static final int MENU_SEARCH = 2;
-	private static final int MENU_CALCULATOR = 3;
 
 	@ViewById
 	protected Button drinkingStatus;
@@ -135,39 +132,27 @@ public class DashboardFragment extends RateBeerFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		new SearchUiHelper(getActivity()).addSearchToMenu(menu, MENU_SEARCH);
-		
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SCANBARCODE, Menu.NONE, R.string.search_barcodescanner);
-		item2.setIcon(R.drawable.ic_action_barcode);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-		MenuItem item3 = menu.add(Menu.NONE, MENU_CALCULATOR, Menu.NONE, R.string.home_calculator);
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			item3.setIcon(R.drawable.ic_menu_calculator);
-		} else {
-			item3.setIcon(R.drawable.ic_action_calculator);
-		}
-		item3.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		super.onCreateOptionsMenu(menu, inflater);
+		new SearchUiHelper(getActivity()).enhanceSearchInMenu(menu);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case MENU_SEARCH:
-			// Open standard search interface
-			getActivity().onSearchRequested();
-			break;
-		case MENU_SCANBARCODE:
-	    	// Start the search activity (without specific search string), which offers the actual scanning feature
-			load(SearchFragment_.builder().startBarcodeScanner(true).build());
-			break;
-		case MENU_CALCULATOR:
-			// Start calculator screen
-			load(CalculatorFragment_.builder().build());
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+	@OptionsItem(R.id.menu_search)
+	protected void onStartSearch() {
+		// Open standard search interface
+		// Note that this method is only called on API < 8 as SearchView is used for API level >= 8 (via ActionBarSherlock)
+		getActivity().onSearchRequested();		
+	}
+	
+	@OptionsItem(R.id.menu_scanbarcode)
+	protected void onStartBarcodeScanner() {
+    	// Start the search activity (without specific search string), which offers the actual scanning feature
+		load(SearchFragment_.builder().startBarcodeScanner(true).build());
+	}
+	
+	@OptionsItem(R.id.menu_calculator)
+	protected void onStartCalculator() {
+		// Start calculator screen
+		load(CalculatorFragment_.builder().build());
 	}
 
 	private void updateProfileImage() {

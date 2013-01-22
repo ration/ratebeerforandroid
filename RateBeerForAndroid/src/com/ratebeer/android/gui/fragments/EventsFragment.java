@@ -32,12 +32,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
@@ -47,11 +46,11 @@ import com.ratebeer.android.api.command.Country;
 import com.ratebeer.android.api.command.GetEventsCommand;
 import com.ratebeer.android.api.command.GetEventsCommand.Event;
 import com.ratebeer.android.api.command.State;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 @EFragment(R.layout.fragment_events)
+@OptionsMenu(R.menu.refresh)
 public class EventsFragment extends RateBeerFragment {
 
 	private static final DateFormat localFormat = DateFormat.getDateInstance();
@@ -88,24 +87,6 @@ public class EventsFragment extends RateBeerFragment {
 			refreshEvents();
 		}
 		
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshEvents();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	private void populateCountrySpinner() {
@@ -178,7 +159,9 @@ public class EventsFragment extends RateBeerFragment {
 		public void onNothingSelected(AdapterView<?> arg0) {}
 	};
 
-	private void refreshEvents() {
+
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshEvents() {
 		if (country != null) {
 			execute(new GetEventsCommand(getUser(), country, state));
 		}

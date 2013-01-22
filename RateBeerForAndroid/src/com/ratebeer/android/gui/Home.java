@@ -24,10 +24,10 @@ import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.ratebeer.android.R;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.BeermailService;
@@ -48,10 +48,8 @@ import com.ratebeer.android.gui.fragments.SearchFragment_;
 import com.ratebeer.android.gui.fragments.SendMailFragment;
 
 @EActivity(R.layout.activity_home)
+@OptionsMenu(R.menu.home)
 public class Home extends RateBeerActivity {
-
-	private static final int MENU_PREFERENCES = 10;
-	private static final int MENU_ABOUT = 11;
 
 	@AfterViews
 	public void init() {
@@ -63,16 +61,6 @@ public class Home extends RateBeerActivity {
 		new SearchUiHelper(this).addSearchToActionBar(getSupportActionBar());
 		
 		handleStartIntent();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuItem pref = menu.add(MENU_PREFERENCES, MENU_PREFERENCES, MENU_PREFERENCES, R.string.home_preferences);
-		pref.setIcon(android.R.drawable.ic_menu_preferences);
-		MenuItem about = menu.add(MENU_ABOUT, MENU_ABOUT, MENU_ABOUT, R.string.home_about);
-		about.setIcon(android.R.drawable.ic_menu_info_details);
-		return true;
 	}
 
 	@AfterViews
@@ -116,21 +104,20 @@ public class Home extends RateBeerActivity {
 
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// Home button click in the action bar
-			Home_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET).start();
-			return true;
-		case MENU_PREFERENCES:
-			PreferencesInterface_.intent(this).start();
-			return true;
-		case MENU_ABOUT:
-			load(AboutFragment_.builder().build());
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+	@OptionsItem(R.id.menu_preferences)
+	protected void onOpenPreferences() {
+		PreferencesInterface_.intent(this).start();
+	}
+
+	@OptionsItem(R.id.menu_about)
+	protected void onOpenAbout() {
+		load(AboutFragment_.builder().build());
+	}
+
+	@OptionsItem(android.R.id.home)
+	protected void onUp() {
+		// Home button click in the action bar
+		Home_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
 	/**

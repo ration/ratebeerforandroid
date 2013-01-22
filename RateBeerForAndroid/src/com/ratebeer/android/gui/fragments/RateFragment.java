@@ -39,13 +39,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.j256.ormlite.dao.Dao;
@@ -64,11 +63,11 @@ import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_rate)
+@OptionsMenu(R.menu.rate)
 public class RateFragment extends RateBeerFragment implements Runnable {
 
 	protected static final int MIN_CHARACTERS = 85;
 	private static final long TIMER_DELAY = 750;
-	private static final int MENU_DISCARD = 0;
 	private static final int NO_BEER_ID = -1;
 	private static final int NO_OFFLINE_ID = -1;
 	private static final int NO_ORIGINAL_RATING_ID = -1;
@@ -361,34 +360,21 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 		};
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(Menu.NONE, MENU_DISCARD, MENU_DISCARD, R.string.rate_offline_discard);
-		item.setIcon(R.drawable.ic_action_discard);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case MENU_DISCARD:
-			new ConfirmDialogFragment(new OnDialogResult() {
-				@Override
-				public void onConfirmed() { // Delete the offline version of this rating
-					if (offlineId != NO_OFFLINE_ID) {
-						try {
-							offlineRatingDao.deleteIds(Arrays.asList(offlineId));
-						} catch (SQLException e) {
-							// Ignore this; we probably don't have access to a database at all
-						}
+	@OptionsItem(R.id.menu_discard)
+	protected void onDiscardRating() {
+		new ConfirmDialogFragment(new OnDialogResult() {
+			@Override
+			public void onConfirmed() { // Delete the offline version of this rating
+				if (offlineId != NO_OFFLINE_ID) {
+					try {
+						offlineRatingDao.deleteIds(Arrays.asList(offlineId));
+					} catch (SQLException e) {
+						// Ignore this; we probably don't have access to a database at all
 					}
-					getFragmentManager().popBackStackImmediate();
 				}
-			}, R.string.rate_offline_confirmdiscard).show(getFragmentManager(), "dialog");
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+				getFragmentManager().popBackStackImmediate();
+			}
+		}, R.string.rate_offline_confirmdiscard).show(getFragmentManager(), "dialog");
 	}
 
 	private OnClickListener onAssistanceClick = new OnClickListener() {

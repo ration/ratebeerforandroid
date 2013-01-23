@@ -36,7 +36,7 @@ public class EventCommandsTests extends AndroidTestCase {
 		UserSettings user = TestHelper.getUser(getContext(), true);
 		// This will get all events, i.e. http://www.ratebeer.com/FestsInMyArea.asp?CountryID=66
 		GetEventsCommand eventsCommand = new GetEventsCommand(user, country, null);
-		eventsCommand.execute();
+		eventsCommand.execute(null);
 		assertTrue(eventsCommand.getEvents() != null && eventsCommand.getEvents().size() > 0);
 		// Orval Appreciation Day should be present here as first hit
 		Event orval = eventsCommand.getEvents().get(0);
@@ -45,7 +45,7 @@ public class EventCommandsTests extends AndroidTestCase {
 
 		// GetEventDetailsCommand test
 		GetEventDetailsCommand eventCommand = new GetEventDetailsCommand(user, orval.eventID);
-		eventCommand.execute();
+		eventCommand.execute(null);
 		assertNotNull(eventCommand.getDetails());
 		EventDetails event = eventCommand.getDetails();
 		assertTrue("Event name includes 'Orval Appreciation Day'", event.name.indexOf(eventName) >= 0);

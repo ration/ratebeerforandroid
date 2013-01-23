@@ -33,7 +33,7 @@ public class TopBeersCommandsTests extends AndroidTestCase {
 		// GetStyleDetailsCommand test
 		UserSettings user = TestHelper.getUser(getContext(), false);
 		GetStyleDetailsCommand styleCommand = new GetStyleDetailsCommand(user, quad.getId());
-		styleCommand.execute();
+		styleCommand.execute(null);
 		assertNotNull(styleCommand.getDetails());
 		StyleDetails style = styleCommand.getDetails();
 		assertEquals("Abt/Quadrupel", style.name);

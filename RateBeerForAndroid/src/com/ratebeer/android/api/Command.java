@@ -48,9 +48,10 @@ public abstract class Command {
 
 	/**
 	 * Execute the set up command against the forum
+	 * @param apiConnection The current RateBeer API connection to execute the command against
 	 * @return The command result
 	 */
-	public abstract CommandResult execute();
+	public abstract CommandResult execute(ApiConnection apiConnection);
 
 	@Override
 	public String toString() {

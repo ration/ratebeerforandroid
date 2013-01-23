@@ -31,7 +31,7 @@ public class UpcSearchCommandTests extends AndroidTestCase {
 		// UpcSearchCommand test
 		UserSettings user = TestHelper.getUser(getContext(), false);
 		UpcSearchCommand command = new UpcSearchCommand(user, "636251770128");
-		command.execute();
+		command.execute(null);
 		ArrayList<UpcSearchResult> results = command.getUpcSearchResults();
 		assertNotNull(results);
 		assertEquals(1, results.size());

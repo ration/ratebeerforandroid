@@ -17,18 +17,16 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
@@ -55,8 +53,8 @@ public class AddAvailabilityCommand extends EmptyResponseCommand {
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
 		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>(Arrays.asList(new BasicNameValuePair(
 				"UserID", Integer.toString(getUserSettings().getUserID())),
 				new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("PlaceName",
@@ -73,7 +71,7 @@ public class AddAvailabilityCommand extends EmptyResponseCommand {
 		if (onTap) {
 			params.add(new BasicNameValuePair("ServedTap", "on"));
 		}
-		HttpHelper.makeRBPost("http://www.ratebeer.com/Ratings/Beer/Avail-Save.asp", params);
+		apiConnection.post("http://www.ratebeer.com/Ratings/Beer/Avail-Save.asp", params);
 	}
 
 }

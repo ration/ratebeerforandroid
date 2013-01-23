@@ -33,6 +33,7 @@ public class ApiException extends Exception {
 	 */
 	public enum ExceptionType {
 		Offline,
+		ConnectionError,
 		AuthenticationFailed, 
 		CommandFailed;
 	}

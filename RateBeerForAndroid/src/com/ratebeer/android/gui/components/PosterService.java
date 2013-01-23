@@ -174,7 +174,7 @@ public class PosterService extends DatabaseConsumerService {
 			}
 			createNotification(NOTIFY_SETDRINKINGSTATUS, getString(R.string.app_settingdrinking), getString(
 					R.string.home_nowdrinking, newStatus), true, recoverIntent, null, beerId);
-			CommandResult result = new SetDrinkingStatusCommand(user, newStatus).execute();
+			CommandResult result = new SetDrinkingStatusCommand(user, newStatus).execute(null);
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_SETDRINKINGSTATUS);
 				// If requested, call back the messenger, i.e. the calling activity
@@ -222,7 +222,7 @@ public class PosterService extends DatabaseConsumerService {
 					R.string.app_rated, beerName, PostRatingCommand.calculateTotal(aroma, appearance, taste, palate,
 							overall)), true, recoverIntent, null, beerId);
 			CommandResult result = new PostRatingCommand(user, beerId, ratingId, origDate, beerName, aroma,
-					appearance, taste, palate, overall, comment).execute();
+					appearance, taste, palate, overall, comment).execute(null);
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_POSTINGRATING);
 				// If requested, call back the messenger, i.e. the calling activity
@@ -277,9 +277,9 @@ public class PosterService extends DatabaseConsumerService {
 					getString(R.string.app_forbeer, beerName), true, recoverIntent, null, beerId);
 			CommandResult result;
 			if (del) {
-				result = new DeleteTickCommand(user, beerId, userId, beerName).execute();
+				result = new DeleteTickCommand(user, beerId, userId, beerName).execute(null);
 			} else {
-				result = new PostTickCommand(user, beerId, userId, beerName, liked).execute();
+				result = new PostTickCommand(user, beerId, userId, beerName, liked).execute(null);
 			}
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_POSTINGTICK);
@@ -323,7 +323,7 @@ public class PosterService extends DatabaseConsumerService {
 			createNotification(NOTIFY_ADDAVAILABILITY, getString(R.string.app_addingavailability), getString(
 					R.string.app_addingforbeer, beerName), true, recoverIntent, null, beerId);
 			CommandResult result = new AddAvailabilityCommand(user, beerId, selectedPlaces, extraPlaceName,
-					extraPlaceId, isOnBottleCan, isOnTap).execute();
+					extraPlaceId, isOnBottleCan, isOnTap).execute(null);
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_ADDAVAILABILITY);
 			} else {
@@ -360,7 +360,7 @@ public class PosterService extends DatabaseConsumerService {
 					cellarType == CellarType.Have ? R.string.app_addhave : R.string.app_addwant, beerName), true,
 					recoverIntent, null, beerId);
 			CommandResult result = new AddToCellarCommand(user, cellarType, beerId, memo, vintage, quantity)
-					.execute();
+					.execute(null);
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_ADDTOCELLAR);
 			} else {
@@ -388,7 +388,7 @@ public class PosterService extends DatabaseConsumerService {
 			// TODO: Direct this recovery intent to the send mail screen
 			createNotification(NOTIFY_SENDMAIL, getString(R.string.mail_sendingmail), getString(
 					R.string.mail_sendingto, sendTo), true, recoverIntent, sendTo, NO_BEER_EXTRA);
-			CommandResult result = new SendBeerMailCommand(user, sendTo, subject, body).execute();
+			CommandResult result = new SendBeerMailCommand(user, sendTo, subject, body).execute(null);
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_SENDMAIL);
 			} else {
@@ -439,7 +439,7 @@ public class PosterService extends DatabaseConsumerService {
 			}
 			
 			// Start actual upload of the now-resized file
-			CommandResult result = new UploadBeerPhotoCommand(user, beerId, photo).execute();
+			CommandResult result = new UploadBeerPhotoCommand(user, beerId, photo).execute(null);
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_UPLOADPHOTO);
 				// If requested, call back the messenger, i.e. the calling activity
@@ -476,7 +476,7 @@ public class PosterService extends DatabaseConsumerService {
 			recoverIntent.setAction(ACTION_ADDUPCCODE);
 			createNotification(NOTIFY_ADDUPCCODE, getString(R.string.app_addingupccode), getString(
 					R.string.app_addingcodefor, beerName), true, recoverIntent, null, beerId);
-			CommandResult result = new AddUpcCodeCommand(user, beerId, upcCode).execute();
+			CommandResult result = new AddUpcCodeCommand(user, beerId, upcCode).execute(null);
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_ADDUPCCODE);
 			} else {

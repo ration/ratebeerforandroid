@@ -30,7 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.j256.ormlite.dao.Dao;
-import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.OfflineRating;
 
@@ -50,7 +50,7 @@ public class ImportExport {
 	public static void importRatings(Dao<OfflineRating, Long> offlineRatingDao, File inputFile) throws JSONException, IOException, SQLException {
 		
 		// Read the settings file
-		String raw = HttpHelper.getResponseString(new FileInputStream(inputFile));
+		String raw = ApiConnection.readStream(new FileInputStream(inputFile));
 		JSONObject json = new JSONObject(raw);
 		
 		if (json.has("ratings")) {

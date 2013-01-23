@@ -48,7 +48,7 @@ public class LoginCommandsTests extends AndroidTestCase {
 		
 		// Sign out now
 		SignOutCommand signout = new SignOutCommand(user);
-		CommandResult result = signout.execute();
+		CommandResult result = signout.execute(null);
 		if (result instanceof CommandFailureResult) {
 			fail("Sign out failed: " + ((CommandFailureResult)result).getException().toString());
 		}

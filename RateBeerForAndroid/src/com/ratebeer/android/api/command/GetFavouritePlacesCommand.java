@@ -17,12 +17,11 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
@@ -46,9 +45,9 @@ public class GetFavouritePlacesCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/beer/availability-add/" + beerId + "/");
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/beer/availability-add/" + beerId + "/");
 	}
 
 	@Override

@@ -17,12 +17,12 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
@@ -48,8 +48,8 @@ public class PostTickCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/bt.asp?k=" + HttpHelper.RB_KEY + "&m=2&u=" + userID
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/json/bt.asp?k=" + HttpHelper.RB_KEY + "&m=2&u=" + userID
 				+ "&b=" + beerId + "&l=" + liked);
 	}
 

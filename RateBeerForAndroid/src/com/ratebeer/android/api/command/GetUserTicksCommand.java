@@ -17,13 +17,11 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +29,8 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
@@ -55,8 +55,8 @@ public class GetUserTicksCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/bt.asp?m=1&u=" + userId + "&k=" + HttpHelper.RB_KEY);
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/json/bt.asp?m=1&u=" + userId + "&k=" + HttpHelper.RB_KEY);
 	}
 
 	@Override

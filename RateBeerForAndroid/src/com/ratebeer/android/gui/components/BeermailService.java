@@ -114,7 +114,7 @@ public class BeermailService extends DatabaseConsumerService {
 		// Look for (new) beermail
 		SimpleDateFormat sentDateFormat = new SimpleDateFormat("M/d/yyyy h:m:s a");
 		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(user);
-		CommandResult result = allMails.execute();
+		CommandResult result = allMails.execute(null);
 		if (result instanceof CommandSuccessResult) {
 
 			Log.d(RateBeerForAndroid.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
@@ -136,7 +136,7 @@ public class BeermailService extends DatabaseConsumerService {
 						// Get the body too
 						String body;
 						GetBeerMailCommand gbmCommand = new GetBeerMailCommand(user, mail.messageID);
-						CommandResult gbmResult = gbmCommand.execute();
+						CommandResult gbmResult = gbmCommand.execute(null);
 						if (gbmResult instanceof CommandSuccessResult) {
 							body = gbmCommand.getMail().body;
 						} else {

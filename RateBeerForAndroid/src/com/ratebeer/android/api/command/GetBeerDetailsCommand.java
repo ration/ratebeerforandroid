@@ -17,9 +17,7 @@ along with RateBeer for Android.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
-import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +25,8 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
@@ -49,8 +49,8 @@ public class GetBeerDetailsCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/bff.asp?k=" + HttpHelper.RB_KEY + "&bd=" + beerId);
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/json/bff.asp?k=" + HttpHelper.RB_KEY + "&bd=" + beerId);
 	}
 
 	@Override

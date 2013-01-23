@@ -17,10 +17,8 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +26,8 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
@@ -117,12 +117,12 @@ public class GetTopBeersCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		switch (topList) {
 		case Top50:
-			return HttpHelper.makeRBGet("http://www.ratebeer.com/json/tb.asp?m=top50&k=" + HttpHelper.RB_KEY);
+			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=top50&k=" + HttpHelper.RB_KEY);
 		case TopByCountry:
-			return HttpHelper.makeRBGet("http://www.ratebeer.com/json/tb.asp?m=country&c=" + country.getId() + "&k="
+			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=country&c=" + country.getId() + "&k="
 					+ HttpHelper.RB_KEY);
 		}
 		return null;

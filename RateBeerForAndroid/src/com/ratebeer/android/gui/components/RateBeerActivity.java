@@ -189,7 +189,7 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
     
     @Background
     protected void executeTask(RateBeerTaskCaller caller, Command command) {
-    	onTaskFinished(caller, command.execute());
+    	onTaskFinished(caller, command.execute(null));
     }
 
     @UiThread

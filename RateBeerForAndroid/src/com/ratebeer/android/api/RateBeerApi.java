@@ -17,10 +17,6 @@
  */
 package com.ratebeer.android.api;
 
-import java.io.IOException;
-
-import org.apache.http.client.ClientProtocolException;
-
 import com.ratebeer.android.api.command.SignInCommand;
 
 public class RateBeerApi {
@@ -28,11 +24,11 @@ public class RateBeerApi {
 	private RateBeerApi() {
 	}
 	
-	public static void ensureLogin(UserSettings userSettings) throws ClientProtocolException, IOException, ApiException {
+	public static void ensureLogin(ApiConnection apiConnection, UserSettings userSettings) throws ApiException {
 		// Make sure we are logged in
-		if (!HttpHelper.isSignedIn()) {
-			new SignInCommand(userSettings, userSettings.getUsername(), userSettings.getPassword()).execute();
-			if (!HttpHelper.isSignedIn()) {
+		if (!apiConnection.isSignedIn()) {
+			new SignInCommand(userSettings, userSettings.getUsername(), userSettings.getPassword()).execute(null);
+			if (!apiConnection.isSignedIn()) {
 				throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
 						"Tried to sign in but no (login) cookies were returned by the server");
 			}

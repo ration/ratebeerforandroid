@@ -1,11 +1,9 @@
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +11,8 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
@@ -39,9 +39,9 @@ public class UpcSearchCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		try {
-			return HttpHelper.makeRBGet(BASE_URL + "&upc=" + URLEncoder.encode(upcCode, HttpHelper.UTF8));
+			return apiConnection.get(BASE_URL + "&upc=" + URLEncoder.encode(upcCode, HttpHelper.UTF8));
 		} catch (UnsupportedEncodingException e) {
 		}
 		return null;

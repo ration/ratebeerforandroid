@@ -17,10 +17,8 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +26,7 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
@@ -48,9 +47,9 @@ public class GetAllBeerMailsCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/msg.asp?k=" + HttpHelper.RB_KEY + "&u="
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/json/msg.asp?k=" + HttpHelper.RB_KEY + "&u="
 				+ Integer.toString(getUserSettings().getUserID()) + "&max=" + 10);
 	}
 

@@ -17,10 +17,9 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
@@ -40,9 +39,9 @@ public class AddUpcCodeCommand extends EmptyResponseCommand {
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		HttpHelper.makeRBGet("http://www.ratebeer.com/json/upc.asp?upc=" + upcCode + "&bid=" + Integer.toString(beerId)
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		apiConnection.get("http://www.ratebeer.com/json/upc.asp?upc=" + upcCode + "&bid=" + Integer.toString(beerId)
 				+ "&k=" + HttpHelper.RB_KEY);
 	}
 

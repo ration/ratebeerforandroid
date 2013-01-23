@@ -18,16 +18,15 @@
 package com.ratebeer.android.api.command;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 
 import com.android.internalcopy.http.multipart.FilePart;
 import com.android.internalcopy.http.multipart.MultipartEntity;
 import com.android.internalcopy.http.multipart.Part;
 import com.android.internalcopy.http.multipart.StringPart;
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiException.ExceptionType;
 import com.ratebeer.android.api.ApiMethod;
@@ -56,8 +55,8 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
 		HttpPost post = new HttpPost("http://www.ratebeer.com/ajax/m_savebeerpic.asp");
 		Part[] parts = { new StringPart("BeerID", Integer.toString(beerId)), 
 				new FilePart("attach1", photo, FilePart.DEFAULT_CONTENT_TYPE, null) };

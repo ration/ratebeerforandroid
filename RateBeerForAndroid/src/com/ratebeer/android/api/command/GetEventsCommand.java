@@ -17,18 +17,17 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
@@ -53,9 +52,9 @@ public class GetEventsCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/FestsInMyArea.asp?CountryID=" + country.getId()
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/FestsInMyArea.asp?CountryID=" + country.getId()
 				+ (state == null ? "" : "&StateID=" + state.getId()));
 	}
 

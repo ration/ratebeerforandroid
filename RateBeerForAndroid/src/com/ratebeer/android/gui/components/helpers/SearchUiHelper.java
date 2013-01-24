@@ -42,7 +42,7 @@ public class SearchUiHelper {
 		// Note that tablets always show an search input in the action bar through the HomeTablet activity directly
 		MenuItem item = menu.findItem(R.id.menu_search);
 		if (shouldShowInMenu() && item != null && android.os.Build.VERSION.SDK_INT >= 8) {
-			SearchView searchView = new SearchView(context);
+			final SearchView searchView = new SearchView(context);
 			searchView.setSearchableInfo(searchManager.getSearchableInfo(context.getComponentName()));
 			searchView.setQueryRefinementEnabled(true);
 			item.setActionView(searchView);

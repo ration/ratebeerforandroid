@@ -31,7 +31,7 @@ public class SignOutCommand extends EmptyResponseCommand {
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
-		apiConnection.get("http://www.ratebeer.com/Signout.asp?v=1");
+		apiConnection.signOut();
 		if (!apiConnection.isSignedIn()) {
 			return; // Success
 		}

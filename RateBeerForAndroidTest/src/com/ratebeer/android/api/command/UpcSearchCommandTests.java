@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 import android.test.AndroidTestCase;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiConnection_;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.UpcSearchCommand.UpcSearchResult;
 
@@ -29,9 +31,10 @@ public class UpcSearchCommandTests extends AndroidTestCase {
 	public void testExecute() {
 		
 		// UpcSearchCommand test
+		ApiConnection apiConnection = ApiConnection_.getInstance_(getContext());
 		UserSettings user = TestHelper.getUser(getContext(), false);
 		UpcSearchCommand command = new UpcSearchCommand(user, "636251770128");
-		command.execute(null);
+		command.execute(apiConnection);
 		ArrayList<UpcSearchResult> results = command.getUpcSearchResults();
 		assertNotNull(results);
 		assertEquals(1, results.size());

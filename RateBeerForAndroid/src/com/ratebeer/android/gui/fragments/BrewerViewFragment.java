@@ -308,10 +308,6 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			if (getActivity() != null) {
-				return convertView;
-			}
-
 			// Get the right view, using a ViewHolder
 			BeerViewHolder holder;
 			if (convertView == null) {

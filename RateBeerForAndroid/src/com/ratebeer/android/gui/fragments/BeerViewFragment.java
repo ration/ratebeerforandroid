@@ -201,7 +201,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	private void refreshOwnTick() {
 		if (getUser() != null) {
 			// TODO: Unfortunately we have to retrieve all the user's ticks, since the RB API is limited...
-			execute(new GetUserTicksCommand(getUser(), beerId));
+			execute(new GetUserTicksCommand(getUser()));
 		}
 	}
 

@@ -34,6 +34,7 @@ import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.ratebeer.android.R;
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.Command;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
@@ -68,6 +69,8 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 
 	@Bean
 	protected ApplicationSettings applicationSettings;
+	@Bean
+	protected ApiConnection apiConnection;
 	
 	public RateBeerActivity() {
 	}
@@ -189,7 +192,7 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
     
     @Background
     protected void executeTask(RateBeerTaskCaller caller, Command command) {
-    	onTaskFinished(caller, command.execute(null));
+    	onTaskFinished(caller, command.execute(apiConnection));
     }
 
     @UiThread

@@ -27,7 +27,8 @@ public class RateBeerApi {
 	public static void ensureLogin(ApiConnection apiConnection, UserSettings userSettings) throws ApiException {
 		// Make sure we are logged in
 		if (!apiConnection.isSignedIn()) {
-			new SignInCommand(userSettings, userSettings.getUsername(), userSettings.getPassword()).execute(null);
+			new SignInCommand(userSettings, userSettings.getUsername(), userSettings.getPassword())
+					.execute(apiConnection);
 			if (!apiConnection.isSignedIn()) {
 				throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
 						"Tried to sign in but no (login) cookies were returned by the server");

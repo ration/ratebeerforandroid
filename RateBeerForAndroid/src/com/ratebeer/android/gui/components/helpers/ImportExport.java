@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import com.j256.ormlite.dao.Dao;
 import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.OfflineRating;
 
@@ -43,11 +44,12 @@ public class ImportExport {
 	 * Synchronously writes the offline ratings stored in the database
 	 * @param offlineRatingDao The database to write records to
 	 * @param inputFile The file from which to read ratings
+	 * @throws ApiException Thrown when the file stream could not be read at all
 	 * @throws JSONException Thrown when the file did not contain valid JSON content
 	 * @throws IOException Thrown when the file could not be read 
 	 * @throws SQLException Thrown when the database could not be written to
 	 */
-	public static void importRatings(Dao<OfflineRating, Long> offlineRatingDao, File inputFile) throws JSONException, IOException, SQLException {
+	public static void importRatings(Dao<OfflineRating, Long> offlineRatingDao, File inputFile) throws IOException, ApiException, JSONException, SQLException {
 		
 		// Read the settings file
 		String raw = ApiConnection.readStream(new FileInputStream(inputFile));

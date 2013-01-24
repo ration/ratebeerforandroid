@@ -19,6 +19,8 @@ package com.ratebeer.android.api.command;
 
 import android.test.AndroidTestCase;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiConnection_;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetUserDetailsCommand.UserDetails;
 import com.ratebeer.android.api.command.SearchUsersCommand.UserSearchResult;
@@ -28,9 +30,10 @@ public class UserCommandsTests extends AndroidTestCase {
 	public void testExecute() {
 		
 		// Search for users with android in the name
+		ApiConnection apiConnection = ApiConnection_.getInstance_(getContext());
 		UserSettings signInUser = TestHelper.getUser(getContext(), true);
 		SearchUsersCommand usersCommand = new SearchUsersCommand(signInUser, "android");
-		usersCommand.execute(null);
+		usersCommand.execute(apiConnection);
 		assertNotNull(usersCommand.getSearchResults());
 		assertTrue("More than one user has the string android in the name", usersCommand.getSearchResults().size() > 0);
 		// Should be a user named rbandroid
@@ -45,7 +48,7 @@ public class UserCommandsTests extends AndroidTestCase {
 		
 		// Get user details for rbandroid
 		GetUserDetailsCommand rbandroidCommand = new GetUserDetailsCommand(signInUser, 156822);
-		rbandroidCommand.execute(null);
+		rbandroidCommand.execute(apiConnection);
 		assertNotNull(rbandroidCommand.getDetails());
 		UserDetails rbandroid = rbandroidCommand.getDetails();
 		assertEquals("rbandroid", rbandroid.name);

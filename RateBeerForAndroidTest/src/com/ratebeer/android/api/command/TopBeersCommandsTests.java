@@ -19,6 +19,8 @@ package com.ratebeer.android.api.command;
 
 import android.test.AndroidTestCase;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiConnection_;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetStyleDetailsCommand.StyleDetails;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopBeer;
@@ -31,9 +33,10 @@ public class TopBeersCommandsTests extends AndroidTestCase {
 		final Style quad = Style.ALL_STYLES.get(80);
 		
 		// GetStyleDetailsCommand test
+		ApiConnection apiConnection = ApiConnection_.getInstance_(getContext());
 		UserSettings user = TestHelper.getUser(getContext(), false);
 		GetStyleDetailsCommand styleCommand = new GetStyleDetailsCommand(user, quad.getId());
-		styleCommand.execute(null);
+		styleCommand.execute(apiConnection);
 		assertNotNull(styleCommand.getDetails());
 		StyleDetails style = styleCommand.getDetails();
 		assertEquals("Abt/Quadrupel", style.name);

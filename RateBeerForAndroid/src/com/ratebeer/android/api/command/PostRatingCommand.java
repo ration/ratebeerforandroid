@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -33,8 +34,8 @@ import com.ratebeer.android.api.UserSettings;
 
 public class PostRatingCommand extends Command {
 
-	private static final String POST_SUCCESS = "<h1>availability</h1>";
-	
+	private static final String POST_SUCCESS = "This object may be found <a HREF=\"/availability";
+
 	private final int beerId;
 	private final int ratingID;
 	private final String origDate;
@@ -104,6 +105,7 @@ public class PostRatingCommand extends Command {
 			RateBeerApi.ensureLogin(apiConnection, getUserSettings());
 			// NOTE: Maybe use the API call to http://www.ratebeer.com/m/m_saverating.asp, but it should be checked
 			// whether this allows updating of a rating too
+			// NOTE: We get an HTTP 302 (moved temporarily) response if everything is okay (to redirect us)
 			String result = apiConnection.post(ratingID <= 0 ? "http://www.ratebeer.com/saverating.asp"
 					: "http://www.ratebeer.com/updaterating.asp", Arrays.asList(new BasicNameValuePair("BeerID",
 					Integer.toString(beerId)),
@@ -115,11 +117,11 @@ public class PostRatingCommand extends Command {
 					new BasicNameValuePair("palate", Integer.toString(palate)), new BasicNameValuePair("overall",
 							Integer.toString(overall)),
 					new BasicNameValuePair("totalscore", Float.toString(getTotal())), new BasicNameValuePair(
-							"Comments", comment)));
+							"Comments", comment)), HttpURLConnection.HTTP_MOVED_TEMP);
 			if (result.indexOf(POST_SUCCESS) >= 0) {
 				return new CommandSuccessResult(this);
 			} else {
-				return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed, 
+				return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
 						"The rating was posted, but the returned HTML did not contain the unique success string."));
 			}
 

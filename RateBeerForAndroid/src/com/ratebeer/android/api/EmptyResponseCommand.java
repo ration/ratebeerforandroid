@@ -31,7 +31,7 @@ public abstract class EmptyResponseCommand extends Command {
 	@Override
 	public final CommandResult execute(ApiConnection apiConnection) {
 		try {
-			makeRequest(null);
+			makeRequest(apiConnection);
 			return new CommandSuccessResult(this);
 		} catch (ApiException e) {
 			return new CommandFailureResult(this, e);

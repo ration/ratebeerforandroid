@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -61,12 +62,13 @@ public class AddToCellarCommand extends EmptyResponseCommand {
 		if (isWant()) {
 			apiConnection.post("http://www.ratebeer.com/beerlistwant-process.asp", Arrays.asList(
 					new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("memo", memo),
-					new BasicNameValuePair("submit", "Add")));
+					new BasicNameValuePair("submit", "Add")), HttpURLConnection.HTTP_MOVED_TEMP);
 		} else {
 			apiConnection.post("http://www.ratebeer.com/beerlisthave-process.asp", Arrays.asList(
 					new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("Update", "0"),
 					new BasicNameValuePair("vintage", vintage), new BasicNameValuePair("memo", memo),
-					new BasicNameValuePair("quantity", quantity), new BasicNameValuePair("submit", "Add")));
+					new BasicNameValuePair("quantity", quantity), new BasicNameValuePair("submit", "Add")),
+					HttpURLConnection.HTTP_MOVED_TEMP);
 		}
 	}
 

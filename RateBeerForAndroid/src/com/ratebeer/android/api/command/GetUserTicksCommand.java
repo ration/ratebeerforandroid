@@ -34,29 +34,27 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
+import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class GetUserTicksCommand extends JsonCommand {
 
-	private final int userId;
 	private ArrayList<UserTick> userTicks;
 
-	public GetUserTicksCommand(UserSettings api, int userId) {
+	public GetUserTicksCommand(UserSettings api) {
 		super(api, ApiMethod.GetUserTicks);
-		this.userId = userId;
 	}
 
-	public int getForUserId() {
-		return userId;
-	}
-	
 	public ArrayList<UserTick> getUserTicks() {
 		return userTicks;
 	}
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		return apiConnection.get("http://www.ratebeer.com/json/bt.asp?m=1&u=" + userId + "&k=" + HttpHelper.RB_KEY);
+		// NOTE: Contrary to the documentation it is NOT possible to send any user ID (using &u=<id>) and get that 
+		/// user's ticks. Instead the signed in user is (and should be) used.
+		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/json/bt.asp?m=1&k=" + HttpHelper.RB_KEY);
 	}
 
 	@Override

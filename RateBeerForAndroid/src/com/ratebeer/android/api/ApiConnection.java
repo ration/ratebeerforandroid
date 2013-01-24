@@ -1,6 +1,10 @@
 package com.ratebeer.android.api;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,7 +33,7 @@ import com.ratebeer.android.app.RateBeerForAndroid;
 public class ApiConnection {
 
 	private static final String USER_AGENT = "RateBeer for Android";
-	private static final int TIMEOUT = 5000;
+	private static final int TIMEOUT = 6000;
 	private static final int RETRIES = 3;
 
 	@SystemService
@@ -65,13 +69,71 @@ public class ApiConnection {
 	 * @throws ApiException Thrown when a connection exception occurs, including when the user is offline
 	 */
 	public String post(String url, List<? extends NameValuePair> parameters, int expectedHttpCode) throws ApiException {
-		HttpRequestBuilder post = httpClient.post(url);
+		HttpRequestBuilder post = httpClient.post(url).expect(expectedHttpCode);
 		for (NameValuePair pair : parameters) {
 			post.param(pair.getName(), pair.getValue());
 		}
-		return readStream(executeRequest(post, expectedHttpCode));
+		return readStream(executeRequest(post));
 	}
 	
+	/**
+	 * Execute a POST HTTP request given some parameters and a file to upload
+	 * @param url The url to post to
+	 * @param parameters The names and values to post as parameters
+	 * @param file The file to upload
+	 * @param fileFieldName The name of the file upload field in the html form
+	 * @return The server response data as String
+	 * @throws ApiException Thrown when a connection exception occurs, including when the user is offline
+	 */
+	public String postFile(String url, List<? extends NameValuePair> parameters, File file, String fileFieldName) throws ApiException {
+		
+		// Prepare a POST request to url
+		HttpRequestBuilder prepared = httpClient.post(url);
+		
+		// Build a multipart http POST request where the content type and file contents are written to
+		final String BOUNDARY = "xxxxxxxxxx";
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		DataOutputStream dataOut = new DataOutputStream(bytes);
+		byte[] requestBody = null;
+		try {
+			dataOut.writeBytes("--");
+			dataOut.writeBytes(BOUNDARY);
+			dataOut.writeBytes("\r\n");
+			dataOut.writeBytes("Content-Disposition: form-data; name=\"" + fileFieldName + "\"; filename=\"" + file.getName() + "\"\r\n");
+			//dataOut.writeBytes("Content-Type: text/xml; charset=utf-8\r\n");
+			dataOut.writeBytes("Content-Type: application/octet-stream\r\n");
+			dataOut.writeBytes("\r\n");
+	        FileInputStream inputStream = new FileInputStream(file);
+	        byte[] buffer = new byte[4096]; // 4kB buffer should be enough, as the photo uploads are only small
+	        int bytesRead = -1;
+	        while ((bytesRead = inputStream.read(buffer)) != -1) {
+	        	dataOut.write(buffer, 0, bytesRead);
+	        }
+	        inputStream.close();
+			dataOut.writeBytes("\r\n");
+			dataOut.writeBytes("\r\n--" + BOUNDARY + "--\r\n");
+			dataOut.flush();
+			requestBody = bytes.toByteArray();
+		} catch (IOException ex) {
+			throw new ApiException(ExceptionType.ConnectionError, "Could not read or write the file bytes." + ex.toString());
+		} finally {
+			if (bytes != null) {
+				try {
+					bytes.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		
+		if (requestBody == null)
+			throw new ApiException(ExceptionType.ConnectionError, "Could not build a request body for the multipart file upload.");
+		// Set the content bytes (multipart form data and file data) on the POST request
+		prepared.content(requestBody, "multipart/form-data; boundary=" + BOUNDARY);
+		// Perform the POST request
+		return readStream(executeRequest(prepared));
+		
+	}
+
 	/**
 	 * Execute a GET HTTP request for some url
 	 * @param url The url to get
@@ -83,25 +145,36 @@ public class ApiConnection {
 	}
 
 	/**
+	 * Execute a GET HTTP request for some url and a specific expected HTTP code
+	 * @param url The url to get
+	 * @param expectedHttpCode The HTTP code that the caller expects will be returned (normally HttpURLConnection.HTTP_OK)
+	 * @return The server response data as String
+	 * @throws ApiException Thrown when a connection exception occurs, including when the user is offline
+	 */
+	public String get(String url, int expectedHttpCode) throws ApiException {
+		return readStream(executeRequest(httpClient.get(url).expect(expectedHttpCode)));
+	}
+	
+	/**
 	 * Execute a GET HTTP request for some url and retrieve the data as input stream
 	 * @param url The url to get
 	 * @return The raw server response data stream
 	 * @throws ApiException Thrown when a connection exception occurs, including when the user is offline
 	 */
 	public InputStream getRaw(String url) throws ApiException {
-		return executeRequest(httpClient.get(url), HttpURLConnection.HTTP_OK);
+		return executeRequest(httpClient.get(url).expect(HttpURLConnection.HTTP_OK));
 	}
 	
-	protected InputStream executeRequest(HttpRequestBuilder prepared, int expectedHttpCode) throws ApiException {
+	protected InputStream executeRequest(HttpRequestBuilder prepared) throws ApiException {
 		
+		// Check if we are even connected to a network
 		if (!isConnected())
 			throw new ApiException(ExceptionType.Offline, "User is not connected to a network (as reported by the system)");
 		
+		// Now try to execute the http request; if it fails for some reach we retry at most RETRIES times
 		for (int i = 0; i < RETRIES; i++) {
 			try {
-				HttpResponse reply = prepared.execute();
-				if (reply.getStatusCode() == expectedHttpCode)
-					return reply.getPayload();
+				return prepared.execute().getPayload();
 			} catch (HttpClientException e) {
 				Log.i(RateBeerForAndroid.LOG_NAME, "GET failed: " + e.toString() + " (now retry)");
 				// Retry
@@ -163,27 +236,26 @@ public class ApiConnection {
 		prepared.param("SaveInfo", "on");
 		prepared.param("username", username);
 		prepared.param("pwd", password);
+		prepared.expect(HttpURLConnection.HTTP_MOVED_TEMP);
 		final String uidText = "?uid=";
 		for (int i = 0; i < RETRIES; i++) {
 			try {
 				HttpResponse reply = prepared.execute();
-				if (reply.getStatusCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
-					// We should have a session cookie now, which means we are signed in to RateBeer
-					isSignedIn = reply.getCookies().containsKey("SessionCode");
-					if (isSignedIn()) {
-						// Find the user ID in the redirect response header
-						// This should be encoded as a Location header, like
-						String header = reply.getFirstHeaderValue("Location");
-						if (header != null && header.indexOf(uidText) >= 0) {
-							return Integer.parseInt(header.substring(header.indexOf(uidText) + uidText.length()));
-						}
-						throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
-								"Tried to sign in but the response header did not include the user ID. Header was: "
-										+ header.toString());
+				// We should have a session cookie now, which means we are signed in to RateBeer
+				isSignedIn = reply.getCookies().containsKey("SessionCode");
+				if (isSignedIn()) {
+					// Find the user ID in the redirect response header
+					// This should be encoded as a Location header, like
+					String header = reply.getFirstHeaderValue("Location");
+					if (header != null && header.indexOf(uidText) >= 0) {
+						return Integer.parseInt(header.substring(header.indexOf(uidText) + uidText.length()));
 					}
-					// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy
-					// authentication/cookie mess by just trying again
+					throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
+							"Tried to sign in but the response header did not include the user ID. Header was: "
+									+ header.toString());
 				}
+				// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy
+				// authentication/cookie mess by just trying again
 			} catch (HttpClientException e) {
 				Log.i(RateBeerForAndroid.LOG_NAME, "GET failed: " + e.toString() + " (now retry)");
 				// Retry
@@ -194,4 +266,16 @@ public class ApiConnection {
 		
 	}
 	
+	public void signOut() throws ApiException {
+
+		if (!isConnected())
+			throw new ApiException(ExceptionType.Offline, "User is not connected to a network (as reported by the system)");
+		
+		// Calling Signout.asp should sign us out and remove any cookies
+		get("http://www.ratebeer.com/Signout.asp?v=1");
+		// Command was successful, assume we are now signed out
+		isSignedIn = false;
+		
+	}
+
 }

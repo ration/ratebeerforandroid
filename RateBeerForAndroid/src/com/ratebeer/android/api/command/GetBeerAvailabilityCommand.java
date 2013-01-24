@@ -47,7 +47,7 @@ public class GetBeerAvailabilityCommand extends JsonCommand {
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		return apiConnection.get("http://ratebeer.com/json/where.asp?k=" + HttpHelper.RB_KEY + "&bd=" + beerId);
+		return apiConnection.get("http://www.ratebeer.com/json/where.asp?k=" + HttpHelper.RB_KEY + "&bd=" + beerId);
 	}
 
 	@Override

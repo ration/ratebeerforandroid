@@ -33,7 +33,7 @@ public abstract class JsonCommand extends Command {
 	@Override
 	public final CommandResult execute(ApiConnection apiConnection) {
 		try {
-			String json = makeRequest(null);
+			String json = makeRequest(apiConnection);
 			parse(new JSONArray(json));
 			return new CommandSuccessResult(this);
 		} catch (JSONException e) {

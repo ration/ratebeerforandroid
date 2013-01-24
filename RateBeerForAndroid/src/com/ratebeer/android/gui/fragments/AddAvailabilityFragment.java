@@ -67,9 +67,9 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 	@InstanceState
 	protected int beerId;
 	@InstanceState
-	protected ArrayList<PlaceSearchResult> favourites = new ArrayList<PlaceSearchResult>();
+	protected ArrayList<PlaceSearchResult> favourites = null;
 	@InstanceState
-	protected ArrayList<PlaceSearchResult> findResults = new ArrayList<PlaceSearchResult>();
+	protected ArrayList<PlaceSearchResult> findResults = null;
 
 	@ViewById
 	protected ViewPager pager;

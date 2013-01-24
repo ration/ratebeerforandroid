@@ -17,9 +17,9 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 
-import org.apache.http.HttpStatus;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.ratebeer.android.api.ApiConnection;
@@ -50,8 +50,8 @@ public class SetEventAttendanceCommand extends EmptyResponseCommand {
 		apiConnection.post("http://www.ratebeer.com/eventprocess-attend.asp", Arrays.asList(
 				new BasicNameValuePair("EventID", Integer.toString(eventId)),
 				new BasicNameValuePair("IsGoing", isGoing ? "1" : "0")),
-		// Note that we get an HTTP 500 response even when the request is successfull...
-				HttpStatus.SC_INTERNAL_SERVER_ERROR);
+		// Note that we get an HTTP $)$ response even when the request is successfull...
+				HttpURLConnection.HTTP_NOT_FOUND);
 	}
 
 }

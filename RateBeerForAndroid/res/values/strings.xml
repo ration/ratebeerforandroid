@@ -286,9 +286,10 @@
 		<item>24 hours</item>
 	</string-array>
 			
-	<string name="error_offline">You do not have an internet connection or RateBeer.com is offline</string>
+	<string name="error_offline">You do not have an internet connection</string>
+	<string name="error_connectionfailure">Connection failure - your connection is poor or RateBeer is offline</string>
+	<string name="error_commandfailed">The command failed unexpectedly - RateBeer is misbehaving or the connection is poor</string>
 	<string name="error_authenticationfailed">Your username or password is incorrect</string>
-	<string name="error_commandfailed">The command failed unexpectedly. Connection is poor or RateBeer is offline</string>
 	<string name="error_nouserorpass">Both username and password are required fields to sign in</string>
 	<string name="error_nolocation">Your location could not be determined</string>
 	<string name="error_locationnotsupported">Your device does not support retrieving a location or you have this disabled</string>

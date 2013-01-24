@@ -17,7 +17,6 @@
  */
 package com.ratebeer.android.gui.components;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,12 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -42,15 +38,16 @@ import android.util.Log;
 
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EService;
+import com.googlecode.androidannotations.annotations.SystemService;
 import com.j256.ormlite.dao.Dao;
 import com.jakewharton.notificationcompat2.NotificationCompat2;
 import com.jakewharton.notificationcompat2.NotificationCompat2.Builder;
 import com.jakewharton.notificationcompat2.NotificationCompat2.InboxStyle;
 import com.ratebeer.android.R;
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
-import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
@@ -77,8 +74,13 @@ public class BeermailService extends DatabaseConsumerService {
 
 	@Bean
 	protected ApplicationSettings applicationSettings;
+	@Bean
+	protected ApiConnection apiConnection;
 	
-	private NotificationManager notificationManager = null;
+	@SystemService
+	protected NotificationManager notificationManager;
+	@SystemService
+	protected ConnectivityManager connectivityManager;
 
 	public BeermailService() {
 		super(RateBeerForAndroid.LOG_NAME + " BeermailService");
@@ -91,15 +93,11 @@ public class BeermailService extends DatabaseConsumerService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		ConnectivityManager conn = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (!conn.getBackgroundDataSetting()) {
+		// TODO: Fix this for recent Android versions
+		if (!connectivityManager.getBackgroundDataSetting()) {
 			Log.d(RateBeerForAndroid.LOG_NAME,
 					"Skip the update, since background data is disabled on a system-wide level");
 			return;
-		}
-
-		if (notificationManager == null) {
-			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		}
 
 		// Proper user settings?
@@ -114,7 +112,7 @@ public class BeermailService extends DatabaseConsumerService {
 		// Look for (new) beermail
 		SimpleDateFormat sentDateFormat = new SimpleDateFormat("M/d/yyyy h:m:s a");
 		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(user);
-		CommandResult result = allMails.execute(null);
+		CommandResult result = allMails.execute(apiConnection);
 		if (result instanceof CommandSuccessResult) {
 
 			Log.d(RateBeerForAndroid.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
@@ -136,7 +134,7 @@ public class BeermailService extends DatabaseConsumerService {
 						// Get the body too
 						String body;
 						GetBeerMailCommand gbmCommand = new GetBeerMailCommand(user, mail.messageID);
-						CommandResult gbmResult = gbmCommand.execute(null);
+						CommandResult gbmResult = gbmCommand.execute(apiConnection);
 						if (gbmResult instanceof CommandSuccessResult) {
 							body = gbmCommand.getMail().body;
 						} else {
@@ -238,11 +236,10 @@ public class BeermailService extends DatabaseConsumerService {
 				// Retrieve user of some sender to show with the notification
 				Bitmap avatar = null;
 				try {
-					avatar = BitmapFactory.decodeStream(HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/"
+					avatar = BitmapFactory.decodeStream(apiConnection.getRaw("http://www.ratebeer.com/UserPics/"
 							+ firstUnread.getSenderName() + ".jpg"));
-				} catch (ClientProtocolException e) {
-				} catch (IOException e) {
 				} catch (Exception e) {
+					// Could not load? Just don't show an image 
 				}
 				
 				// Build old style notification

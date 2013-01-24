@@ -19,6 +19,8 @@ package com.ratebeer.android.api.command;
 
 import android.test.AndroidTestCase;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiConnection_;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.Attendee;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.EventDetails;
@@ -33,10 +35,11 @@ public class EventCommandsTests extends AndroidTestCase {
 		final String eventName = "Annual Orval Appreciation Day";
 
 		// GetEventsCommand test
+		ApiConnection apiConnection = ApiConnection_.getInstance_(getContext());
 		UserSettings user = TestHelper.getUser(getContext(), true);
 		// This will get all events, i.e. http://www.ratebeer.com/FestsInMyArea.asp?CountryID=66
 		GetEventsCommand eventsCommand = new GetEventsCommand(user, country, null);
-		eventsCommand.execute(null);
+		eventsCommand.execute(apiConnection);
 		assertTrue(eventsCommand.getEvents() != null && eventsCommand.getEvents().size() > 0);
 		// Orval Appreciation Day should be present here as first hit
 		Event orval = eventsCommand.getEvents().get(0);
@@ -45,7 +48,7 @@ public class EventCommandsTests extends AndroidTestCase {
 
 		// GetEventDetailsCommand test
 		GetEventDetailsCommand eventCommand = new GetEventDetailsCommand(user, orval.eventID);
-		eventCommand.execute(null);
+		eventCommand.execute(apiConnection);
 		assertNotNull(eventCommand.getDetails());
 		EventDetails event = eventCommand.getDetails();
 		assertTrue("Event name includes 'Orval Appreciation Day'", event.name.indexOf(eventName) >= 0);

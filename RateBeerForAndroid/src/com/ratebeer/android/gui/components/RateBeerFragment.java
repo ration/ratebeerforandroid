@@ -133,6 +133,9 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 			case CommandFailed:
 				message = getText(R.string.error_commandfailed).toString();
 				break;
+			case ConnectionError:
+				message = getText(R.string.error_connectionfailure).toString();
+				break;
 			}
 			Crouton.makeText(getActivity(), message, Style.INFO).show();
 		}
@@ -195,6 +198,9 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 			break;
 		case CommandFailed:
 			message = getText(R.string.error_commandfailed).toString();
+			break;
+		case ConnectionError:
+			message = getText(R.string.error_connectionfailure).toString();
 			break;
 		}
 		publishException(textview, message);

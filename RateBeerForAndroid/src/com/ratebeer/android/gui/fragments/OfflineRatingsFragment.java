@@ -44,6 +44,7 @@ import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.j256.ormlite.dao.Dao;
 import com.ratebeer.android.R;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.app.persistance.OfflineRating;
@@ -96,6 +97,8 @@ public class OfflineRatingsFragment extends RateBeerFragment {
 				} catch (JSONException e) {
 					Crouton.makeText(getActivity(), R.string.error_filenotvalid, Style.ALERT).show();
 				} catch (IOException e) {
+					Crouton.makeText(getActivity(), R.string.error_cannotwrite, Style.ALERT).show();
+				} catch (ApiException e) {
 					Crouton.makeText(getActivity(), R.string.error_cannotwrite, Style.ALERT).show();
 				} catch (SQLException e) {
 					Crouton.makeText(getActivity(), R.string.rate_offline_notavailable, Style.ALERT).show();

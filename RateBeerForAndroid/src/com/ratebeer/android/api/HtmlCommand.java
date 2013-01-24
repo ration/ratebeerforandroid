@@ -32,7 +32,7 @@ public abstract class HtmlCommand extends Command {
 	@Override
 	public final CommandResult execute(ApiConnection apiConnection) {
 		try {
-			String html = makeRequest(null);
+			String html = makeRequest(apiConnection);
 			parse(html);
 			return new CommandSuccessResult(this);
 		} catch (JSONException e) {

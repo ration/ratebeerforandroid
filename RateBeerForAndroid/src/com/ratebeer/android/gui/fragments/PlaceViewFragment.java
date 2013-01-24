@@ -338,9 +338,6 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			if (getActivity() != null) {
-				return convertView;
-			}
 			// Get the right view, using a ViewHolder
 			AvailableBeerViewHolder holder;
 			if (convertView == null) {
@@ -364,7 +361,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 				holder.timerecorded.setText(getString(R.string.places_enteredat, dateFormat.format(item.timeEntered)));
 			} else {
 				holder.timerecorded.setText("");
-				}
+			}
 			
 			return convertView;
 		}

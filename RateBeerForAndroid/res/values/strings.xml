@@ -162,7 +162,7 @@
 	<string name="search_alias">alias</string>
 	<string name="search_rated">rated</string>
 	<string name="search_ratings">%1$s ratings</string>
-	<string name="search_aliasedbeer">This is an aliased beer: no details available</string>
+	<string name="search_aliasedbeer_redirect">This is an aliased beer: trying to redirect now</string>
 	
 	<string name="details_bybrewer">by %1$s</string>
 	<string name="details_score">Score</string>

@@ -49,6 +49,7 @@ import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
+import com.ratebeer.android.api.command.GetAliasedBeerCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 import com.ratebeer.android.api.command.SearchBrewersCommand;
@@ -73,11 +74,11 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
 @EFragment(R.layout.fragment_search)
 @OptionsMenu(R.menu.search)
 public class SearchFragment extends RateBeerFragment {
-	
+
 	public final static String SCAN_INTENT = "com.google.zxing.client.android.SCAN";
 	public static final Uri SCANNER_MARKET_URI = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
 	private static final int ACTIVITY_BARCODE = 0;
-	
+
 	@FragmentArg
 	@InstanceState
 	protected String query = null;
@@ -152,10 +153,11 @@ public class SearchFragment extends RateBeerFragment {
 	@OptionsItem(R.id.menu_search)
 	protected void onStartSearch() {
 		// Open standard search interface
-		// Note that this method is only called on API < 8 as SearchView is used for API level >= 8 (via ActionBarSherlock)
-		getActivity().onSearchRequested();		
+		// Note that this method is only called on API < 8 as SearchView is used for API level >= 8 (via
+		// ActionBarSherlock)
+		getActivity().onSearchRequested();
 	}
-	
+
 	@OptionsItem(R.id.menu_clearhistory)
 	protected void onClearHistory() {
 		SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
@@ -233,9 +235,9 @@ public class SearchFragment extends RateBeerFragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			BeerSearchResult item = ((BeerSearchResultsAdapter) beersView.getAdapter()).getItem(position);
 			if (item.isAlias) {
-				// Unfortunately this is the only possible workaround for now to prohibit viewing an aliased beer as
-				// if it were a normal one (see issue 8)
-				Crouton.makeText(getActivity(), R.string.search_aliasedbeer, Style.INFO).show();
+				// No aliased beer id: try to parse it instead
+				Crouton.makeText(getActivity(), R.string.search_aliasedbeer_redirect, Style.INFO).show();
+				execute(new GetAliasedBeerCommand(getUser(), item.beerId));
 				return;
 			}
 			load(BeerViewFragment_.builder().beerName(item.beerName).beerId(item.beerId).ratingsCount(item.rateCount)
@@ -292,6 +294,10 @@ public class SearchFragment extends RateBeerFragment {
 			} else {
 				noBarcodeResult(command.getSearchedUpcCode());
 			}
+		} else if (result.getCommand().getMethod() == ApiMethod.GetAliasedBeer) {
+			// Alias found: redirect to beer details
+			load(BeerViewFragment_.builder().beerId(((GetAliasedBeerCommand) result.getCommand()).getAliasedBeerId())
+					.build());
 		}
 	}
 
@@ -419,7 +425,7 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right 
+			// Get the right
 			// Get the right view, using a ViewHolder
 			BrewerViewHolder holder;
 			if (convertView == null) {
@@ -455,7 +461,7 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right 
+			// Get the right
 			// Get the right view, using a ViewHolder
 			PlaceViewHolder holder;
 			if (convertView == null) {
@@ -491,7 +497,7 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right 
+			// Get the right
 			// Get the right view, using a ViewHolder
 			UserViewHolder holder;
 			if (convertView == null) {

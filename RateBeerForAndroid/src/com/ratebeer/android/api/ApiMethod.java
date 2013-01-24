@@ -48,6 +48,7 @@ public enum ApiMethod {
 	GetBeerDetails,
 	GetBeerRatings,
 	GetBeerTicks,
+	GetAliasedBeer,
 	GetTopBeers,
 	UploadBeerPhoto,
 	

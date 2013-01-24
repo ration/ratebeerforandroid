@@ -56,7 +56,7 @@ public class SearchBrewersCommand extends JsonCommand {
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		try {
-			return apiConnection.get("http://www.ratebeer.com/json/bss.asp?k=" + HttpHelper.RB_KEY + "&bn="
+			return apiConnection.get("http://www.ratebeer.com/json/bss.asp?k=" + ApiConnection.RB_KEY + "&bn="
 					+ URLEncoder.encode(getNormalizedQuery(), HttpHelper.UTF8));
 		} catch (UnsupportedEncodingException e) {
 		}

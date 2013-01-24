@@ -26,7 +26,6 @@ import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class SetEventAttendanceCommand extends EmptyResponseCommand {
@@ -46,7 +45,7 @@ public class SetEventAttendanceCommand extends EmptyResponseCommand {
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
 		apiConnection.post("http://www.ratebeer.com/eventprocess-attend.asp", Arrays.asList(
 				new BasicNameValuePair("EventID", Integer.toString(eventId)),
 				new BasicNameValuePair("IsGoing", isGoing ? "1" : "0")),

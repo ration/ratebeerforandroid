@@ -60,7 +60,7 @@ public class GetPlacesAroundCommand extends JsonCommand {
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		return apiConnection.get("http://www.ratebeer.com/json/beerme.asp?k=" + HttpHelper.RB_KEY + "&mi=" + radius
+		return apiConnection.get("http://www.ratebeer.com/json/beerme.asp?k=" + ApiConnection.RB_KEY + "&mi=" + radius
 				+ "&la=" + latitude + "&lo=" + longitude);
 	}
 

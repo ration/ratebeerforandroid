@@ -26,7 +26,6 @@ import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 
@@ -58,7 +57,7 @@ public class AddToCellarCommand extends EmptyResponseCommand {
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
 		if (isWant()) {
 			apiConnection.post("http://www.ratebeer.com/beerlistwant-process.asp", Arrays.asList(
 					new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("memo", memo),

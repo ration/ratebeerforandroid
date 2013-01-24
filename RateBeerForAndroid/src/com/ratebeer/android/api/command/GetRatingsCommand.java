@@ -65,7 +65,7 @@ public class GetRatingsCommand extends JsonCommand {
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		return apiConnection.get("http://www.ratebeer.com/json/gr.asp?k=" + HttpHelper.RB_KEY + "&bid=" + beerId
+		return apiConnection.get("http://www.ratebeer.com/json/gr.asp?k=" + ApiConnection.RB_KEY + "&bid=" + beerId
 				+ (userId > NO_USER ? "&uid=" + Integer.toString(userId) : ""));
 	}
 

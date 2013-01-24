@@ -20,7 +20,7 @@ import com.ratebeer.android.api.UserSettings;
 
 public class UpcSearchCommand extends JsonCommand {
 
-	private static final String BASE_URL = "http://www.ratebeer.com/json/upc.asp?k=" + HttpHelper.RB_KEY;
+	private static final String BASE_URL = "http://www.ratebeer.com/json/upc.asp?k=" + ApiConnection.RB_KEY;
 
 	private final String upcCode;
 	private final ArrayList<UpcSearchResult> upcSearchResults = new ArrayList<UpcSearchResult>();

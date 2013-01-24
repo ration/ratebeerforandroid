@@ -32,7 +32,6 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class GetEventsCommand extends HtmlCommand {
@@ -53,7 +52,7 @@ public class GetEventsCommand extends HtmlCommand {
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
 		return apiConnection.get("http://www.ratebeer.com/FestsInMyArea.asp?CountryID=" + country.getId()
 				+ (state == null ? "" : "&StateID=" + state.getId()));
 	}

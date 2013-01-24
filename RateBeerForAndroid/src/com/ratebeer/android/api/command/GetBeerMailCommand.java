@@ -27,9 +27,7 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class GetBeerMailCommand extends JsonCommand {
@@ -48,8 +46,8 @@ public class GetBeerMailCommand extends JsonCommand {
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
-		String raw = apiConnection.get("http://www.ratebeer.com/json/message-view.asp?k=" + HttpHelper.RB_KEY + "&u="
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		String raw = apiConnection.get("http://www.ratebeer.com/json/message-view.asp?k=" + ApiConnection.RB_KEY + "&u="
 				+ Integer.toString(getUserSettings().getUserID()) + "&mid=" + Integer.toString(messageId));
 		// HACK: RateBeer returns invalid JSON; its two objects with mail data, something like:
 		// For now try to identify this (where the two objects end and begin at ][) and fix the JSON

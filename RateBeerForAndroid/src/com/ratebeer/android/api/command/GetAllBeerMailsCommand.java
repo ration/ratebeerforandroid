@@ -31,7 +31,6 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class GetAllBeerMailsCommand extends JsonCommand {
@@ -48,8 +47,8 @@ public class GetAllBeerMailsCommand extends JsonCommand {
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
-		return apiConnection.get("http://www.ratebeer.com/json/msg.asp?k=" + HttpHelper.RB_KEY + "&u="
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/json/msg.asp?k=" + ApiConnection.RB_KEY + "&u="
 				+ Integer.toString(getUserSettings().getUserID()) + "&max=" + 10);
 	}
 

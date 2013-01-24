@@ -56,7 +56,7 @@ public class SearchPlacesCommand extends JsonCommand {
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		try {
-			return apiConnection.get("http://www.ratebeer.com/json/psstring.asp?k=" + HttpHelper.RB_KEY + "&s="
+			return apiConnection.get("http://www.ratebeer.com/json/psstring.asp?k=" + ApiConnection.RB_KEY + "&s="
 					+ URLEncoder.encode(getNormalizedQuery(), HttpHelper.UTF8));
 		} catch (UnsupportedEncodingException e) {
 		}

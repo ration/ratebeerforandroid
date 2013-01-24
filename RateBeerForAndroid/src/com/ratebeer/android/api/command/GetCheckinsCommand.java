@@ -57,7 +57,7 @@ public class GetCheckinsCommand extends JsonCommand {
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		return apiConnection.get("http://www.ratebeer.com/json/ci.asp?t=View&p=" + Integer.toString(placeID) + "&k="
-				+ HttpHelper.RB_KEY);
+				+ ApiConnection.RB_KEY);
 	}
 
 	@Override

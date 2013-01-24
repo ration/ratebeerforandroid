@@ -27,6 +27,7 @@ import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.SystemService;
 import com.googlecode.androidannotations.api.Scope;
 import com.ratebeer.android.api.ApiException.ExceptionType;
+import com.ratebeer.android.api.command.SignInCommand;
 import com.ratebeer.android.app.RateBeerForAndroid;
 
 @EBean(scope = Scope.Singleton)
@@ -41,6 +42,7 @@ public class ApiConnection {
 	
 	private HttpClient httpClient;
 	private boolean isSignedIn = false;
+	public static final String RB_KEY = "tTmwRTWT-W7tpBhtL";
 	
 	protected ApiConnection(Context context) {
 		httpClient = new HttpClient(context);
@@ -276,6 +278,19 @@ public class ApiConnection {
 		// Command was successful, assume we are now signed out
 		isSignedIn = false;
 		
+	}
+
+	public static void ensureLogin(ApiConnection apiConnection, UserSettings userSettings) throws ApiException {
+		// Make sure we are logged in
+		if (!apiConnection.isSignedIn()) {
+			new SignInCommand(userSettings, userSettings.getUsername(), userSettings.getPassword())
+					.execute(apiConnection);
+			if (!apiConnection.isSignedIn()) {
+				throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
+						"Tried to sign in but no (login) cookies were returned by the server");
+			}
+		}
+	
 	}
 
 }

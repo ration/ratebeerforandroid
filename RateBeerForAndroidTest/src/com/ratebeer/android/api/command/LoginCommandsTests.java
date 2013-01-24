@@ -27,7 +27,6 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiException.ExceptionType;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class LoginCommandsTests extends AndroidTestCase {
@@ -38,7 +37,7 @@ public class LoginCommandsTests extends AndroidTestCase {
 		ApiConnection apiConnection = ApiConnection_.getInstance_(getContext());
 		UserSettings user = TestHelper.getUser(getContext(), true);
 		try {
-			RateBeerApi.ensureLogin(apiConnection, user);
+			ApiConnection.ensureLogin(apiConnection, user);
 			// If we are here, everything went fine, since the sign in was successful
 			assertTrue(apiConnection.isSignedIn());
 		} catch (ApiException e) {
@@ -57,7 +56,7 @@ public class LoginCommandsTests extends AndroidTestCase {
 		// Log in with an invalid user (note: signout needed to be succesful to properly test this!)
 		UserSettings user2 = new UserSettings(156822, "rbandroid", "wrongpassword", null, false, new Date());
 		try {
-			RateBeerApi.ensureLogin(apiConnection, user2);
+			ApiConnection.ensureLogin(apiConnection, user2);
 			// We should be signed out still
 			assertTrue(!apiConnection.isSignedIn());
 			fail("We should not have been here, since our password was wrong!");

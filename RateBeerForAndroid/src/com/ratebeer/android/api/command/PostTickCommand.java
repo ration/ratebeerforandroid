@@ -24,7 +24,6 @@ import org.json.JSONException;
 import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.UserSettings;
 
@@ -49,7 +48,7 @@ public class PostTickCommand extends JsonCommand {
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		return apiConnection.get("http://www.ratebeer.com/json/bt.asp?k=" + HttpHelper.RB_KEY + "&m=2&u=" + userID
+		return apiConnection.get("http://www.ratebeer.com/json/bt.asp?k=" + ApiConnection.RB_KEY + "&m=2&u=" + userID
 				+ "&b=" + beerId + "&l=" + liked);
 	}
 

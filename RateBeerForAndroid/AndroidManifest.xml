@@ -67,12 +67,12 @@
 		</activity>
  		
 		<activity android:name="com.ratebeer.android.gui.SignIn_" android:theme="@style/Theme.RateBeer.SignIn" android:label="" />
-		<activity android:name="com.ratebeer.android.gui.PreferencesInterface_"></activity>
+		<activity android:name="com.ratebeer.android.gui.PreferencesInterface_" />
 
 		<!-- Default search provider -->
 		<provider android:name="com.ratebeer.android.gui.SearchHistoryProvider" 
 			android:authorities="com.ratebeer.android.gui.SearchHistoryProvider" android:exported="false" />
-		<meta-data android:name="android.app.default_searchable" android:value="com.ratebeer.android.gui.Search" />
+		<meta-data android:name="android.app.default_searchable" android:value="com.ratebeer.android.gui.Home_" />
 		
 		<!-- Posting data to RateBeer -->
 		<service android:name="com.ratebeer.android.gui.components.PosterService_" android:exported="false">

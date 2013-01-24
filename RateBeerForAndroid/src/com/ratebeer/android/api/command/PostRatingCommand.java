@@ -29,7 +29,6 @@ import com.ratebeer.android.api.Command;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class PostRatingCommand extends Command {
@@ -102,7 +101,7 @@ public class PostRatingCommand extends Command {
 	public CommandResult execute(ApiConnection apiConnection) {
 		try {
 
-			RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+			ApiConnection.ensureLogin(apiConnection, getUserSettings());
 			// NOTE: Maybe use the API call to http://www.ratebeer.com/m/m_saverating.asp, but it should be checked
 			// whether this allows updating of a rating too
 			// NOTE: We get an HTTP 302 (moved temporarily) response if everything is okay (to redirect us)

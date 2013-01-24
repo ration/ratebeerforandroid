@@ -27,7 +27,6 @@ import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiException.ExceptionType;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class UploadBeerPhotoCommand extends EmptyResponseCommand {
@@ -51,7 +50,7 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
 		String result = apiConnection.postFile("http://www.ratebeer.com/ajax/m_savebeerpic.asp", 
 				Arrays.asList(new BasicNameValuePair("BeerID", Integer.toString(beerId))), photo, "attach1");
 		if (!result.contains("\"status\":\"success\"")) {

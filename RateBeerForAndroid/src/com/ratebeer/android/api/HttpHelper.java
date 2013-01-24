@@ -23,7 +23,6 @@ import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 public class HttpHelper {
 
-	public static final String RB_KEY = "tTmwRTWT-W7tpBhtL";
 	public static final String UTF8 = "UTF-8";
 
 	public static String cleanHtml(String value) {

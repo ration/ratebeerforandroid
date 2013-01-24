@@ -23,7 +23,6 @@ import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class RemoveFromCellarCommand extends EmptyResponseCommand {
@@ -41,7 +40,7 @@ public class RemoveFromCellarCommand extends EmptyResponseCommand {
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
 		apiConnection.get("http://www.ratebeer.com/WishList-Delete.asp?WishID="
 				+ beerId + "&UserID=" + getUserSettings().getUserID(), HttpURLConnection.HTTP_MOVED_TEMP);
 	}

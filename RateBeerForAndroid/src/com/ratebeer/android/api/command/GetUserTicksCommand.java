@@ -32,9 +32,7 @@ import android.os.Parcelable;
 import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class GetUserTicksCommand extends JsonCommand {
@@ -53,8 +51,8 @@ public class GetUserTicksCommand extends JsonCommand {
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		// NOTE: Contrary to the documentation it is NOT possible to send any user ID (using &u=<id>) and get that 
 		/// user's ticks. Instead the signed in user is (and should be) used.
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
-		return apiConnection.get("http://www.ratebeer.com/json/bt.asp?m=1&k=" + HttpHelper.RB_KEY);
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/json/bt.asp?m=1&k=" + ApiConnection.RB_KEY);
 	}
 
 	@Override

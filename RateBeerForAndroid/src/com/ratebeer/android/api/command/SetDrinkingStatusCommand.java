@@ -26,7 +26,6 @@ import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class SetDrinkingStatusCommand extends EmptyResponseCommand {
@@ -40,7 +39,7 @@ public class SetDrinkingStatusCommand extends EmptyResponseCommand {
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
-		RateBeerApi.ensureLogin(apiConnection, getUserSettings());
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
 		apiConnection.post("http://www.ratebeer.com/userstatus-process.asp",
 				Arrays.asList(new BasicNameValuePair("MyStatus", newStatus)),
 				// Note that we get an HTTP 404 response even when the request is successful...

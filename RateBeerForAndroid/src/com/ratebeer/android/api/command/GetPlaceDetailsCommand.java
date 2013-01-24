@@ -47,7 +47,7 @@ public class GetPlaceDetailsCommand extends JsonCommand {
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		return apiConnection.get("http://www.ratebeer.com/json/pss.asp?pid=" + Integer.toString(placeId) + "&k="
-				+ HttpHelper.RB_KEY);
+				+ ApiConnection.RB_KEY);
 	}
 
 	@Override

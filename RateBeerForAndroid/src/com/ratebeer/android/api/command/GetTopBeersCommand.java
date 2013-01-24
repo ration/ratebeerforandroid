@@ -120,10 +120,10 @@ public class GetTopBeersCommand extends JsonCommand {
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		switch (topList) {
 		case Top50:
-			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=top50&k=" + HttpHelper.RB_KEY);
+			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=top50&k=" + ApiConnection.RB_KEY);
 		case TopByCountry:
 			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=country&c=" + country.getId() + "&k="
-					+ HttpHelper.RB_KEY);
+					+ ApiConnection.RB_KEY);
 		}
 		return null;
 	}

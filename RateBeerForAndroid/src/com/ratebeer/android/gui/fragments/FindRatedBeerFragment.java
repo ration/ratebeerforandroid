@@ -23,19 +23,17 @@ import java.util.List;
 
 import android.content.Context;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ItemClick;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
@@ -71,7 +69,6 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 	protected ListView resultsView;
 	@ViewById
 	protected EditText beername;
-	protected Button findbeer;
 
 	@OrmLiteDao(helper = DatabaseHelper.class, model = OfflineRating.class)
 	Dao<OfflineRating, Integer> offlineRatingDao;
@@ -81,9 +78,6 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 
 	@AfterViews
 	public void init() {
-
-		resultsView.setOnItemClickListener(onItemSelected);
-		findbeer.setOnClickListener(onFindClick);
 
 		if (results != null) {
 			publishResults(results);
@@ -123,37 +117,30 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 		execute(new SearchBeersCommand(getUser(), beername.getText().toString(), getUser().getUserID()));
 	}
 
-	private OnClickListener onFindClick = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			refreshResults();
-		}
-	};
+	@Click
+	protected void findbeerClicked() {
+		refreshResults();
+	}
 
-	private OnItemClickListener onItemSelected = new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			BeerSearchResult item = ((SearchResultsAdapter)resultsView.getAdapter()).getItem(position);
-			
-			try {
-				if (getActivity() == null) {
-					cancelScreen();
-				}
-				// Update the stored offline rating with the found beer ID and close the screen
-				OfflineRating offline = offlineRatingDao.queryForId(offlineId);
-				if (item.isRated) {
-					Crouton.makeText(getActivity(), R.string.rate_offline_alreadyrated, Style.ALERT).show();
-				} else {
-					offline.update(item.beerId, item.beerName);
-					offlineRatingDao.update(offline);
-					getFragmentManager().popBackStack();
-				}
-			} catch (SQLException e) {
+	@ItemClick(R.id.findresults)
+	protected void onResultSelected(BeerSearchResult item) {
+		try {
+			if (getActivity() == null) {
 				cancelScreen();
 			}
-			
+			// Update the stored offline rating with the found beer ID and close the screen
+			OfflineRating offline = offlineRatingDao.queryForId(offlineId);
+			if (item.isRated) {
+				Crouton.makeText(getActivity(), R.string.rate_offline_alreadyrated, Style.ALERT).show();
+			} else {
+				offline.update(item.beerId, item.beerName);
+				offlineRatingDao.update(offline);
+				getFragmentManager().popBackStack();
+			}
+		} catch (SQLException e) {
+			cancelScreen();
 		}
-	};
+	}
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
@@ -164,7 +151,6 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 	
 	private void publishResults(ArrayList<BeerSearchResult> result) {
 		this.results = result;
-		//Collections.sort(result);
 		if (resultsView.getAdapter() == null) {
 			resultsView.setAdapter(new SearchResultsAdapter(getActivity(), result));
 		} else {
@@ -187,10 +173,6 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-
-			if (getActivity() != null) {
-				return convertView;
-			}
 
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;

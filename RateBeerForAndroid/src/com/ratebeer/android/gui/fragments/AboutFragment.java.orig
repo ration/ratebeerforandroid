@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.TextView;
 
-import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.ViewById;
@@ -36,14 +35,10 @@ public class AboutFragment extends RateBeerFragment {
 	protected TextView version;
 	
 	public AboutFragment() {
-	}
-
-	@AfterViews
-	protected void init() {
-		version.setText(ActivityUtil.getVersionNumber(getActivity()) + " (v"
+		version.setText(ActivityUtil.getVersionNumber(getActivity()) + " ("
 				+ ActivityUtil.getVersionCode(getActivity()) + ")");
 	}
-	
+
 	@Click
 	protected void rblinkClicked() {
 		if (getActivity() != null)

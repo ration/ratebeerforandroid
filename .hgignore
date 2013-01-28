@@ -6,3 +6,5 @@ syntax: glob
 bin/
 gen/
 .apt_generated/
+local.properties
+ant.properties

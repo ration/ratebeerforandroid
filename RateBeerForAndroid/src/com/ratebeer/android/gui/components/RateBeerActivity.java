@@ -19,7 +19,6 @@ package com.ratebeer.android.gui.components;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -43,6 +42,7 @@ import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.helpers.ErrorLogSender;
+import com.ratebeer.android.gui.components.helpers.Log;
 import com.ratebeer.android.gui.components.helpers.OnProgressChangedListener;
 import com.ratebeer.android.gui.components.helpers.RateBeerTaskCaller;
 import com.ratebeer.android.gui.fragments.DashboardFragment;
@@ -68,9 +68,13 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 	private MapView mapViewInstance = null;
 
 	@Bean
+	protected Log Log;
+	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean
 	protected ApiConnection apiConnection;
+	@Bean
+	protected ErrorLogSender errorLogSender;
 	
 	public RateBeerActivity() {
 	}
@@ -143,7 +147,7 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_ERRORREPORT:
-			ErrorLogSender.collectAndSendLog(this, getUser() == null? "<none>": getUser().getUsername());
+			errorLogSender.collectAndSendLog(getUser() == null? "<none>": getUser().getUsername());
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

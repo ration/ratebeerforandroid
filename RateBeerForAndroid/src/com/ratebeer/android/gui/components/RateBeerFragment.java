@@ -35,6 +35,7 @@ import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SignOutCommand;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.gui.SignIn_;
+import com.ratebeer.android.gui.components.helpers.Log;
 import com.ratebeer.android.gui.components.helpers.RateBeerTaskCaller;
 import com.ratebeer.android.gui.fragments.UserViewFragment_;
 
@@ -46,6 +47,8 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 
 	protected boolean showSignInMenuItem = true;
 
+	@Bean
+	protected Log Log;
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	

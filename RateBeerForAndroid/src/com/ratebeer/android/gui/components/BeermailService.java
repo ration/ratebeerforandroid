@@ -34,7 +34,6 @@ import android.net.ConnectivityManager;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EService;
@@ -57,6 +56,7 @@ import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.gui.Home;
 import com.ratebeer.android.gui.components.helpers.DatabaseConsumerService;
+import com.ratebeer.android.gui.components.helpers.Log;
 
 @EService
 public class BeermailService extends DatabaseConsumerService {
@@ -72,6 +72,8 @@ public class BeermailService extends DatabaseConsumerService {
 	public static final int RESULT_FAILURE = 1;
 	public static final int RESULT_STARTED = 2;
 
+	@Bean
+	protected Log Log;
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean

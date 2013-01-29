@@ -21,14 +21,15 @@ import org.pixmob.httpclient.HttpResponse;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.SystemService;
 import com.googlecode.androidannotations.api.Scope;
 import com.ratebeer.android.api.ApiException.ExceptionType;
 import com.ratebeer.android.api.command.SignInCommand;
 import com.ratebeer.android.app.RateBeerForAndroid;
+import com.ratebeer.android.gui.components.helpers.Log;
 
 @EBean(scope = Scope.Singleton)
 public class ApiConnection {
@@ -37,6 +38,8 @@ public class ApiConnection {
 	private static final int TIMEOUT = 6000;
 	private static final int RETRIES = 3;
 
+	@Bean
+	protected Log Log;
 	@SystemService
 	protected ConnectivityManager connectivityManager;
 	
@@ -204,7 +207,7 @@ public class ApiConnection {
 				sb.append(line + "\n");
 			}
 		} catch (IOException e) {
-			Log.e(RateBeerForAndroid.LOG_NAME, "HTTP InputStream received but an IO exception occured when reading it.");
+			android.util.Log.e(RateBeerForAndroid.LOG_NAME, "HTTP InputStream received but an IO exception occured when reading it.");
 		} finally {
 			try {
 				is.close();

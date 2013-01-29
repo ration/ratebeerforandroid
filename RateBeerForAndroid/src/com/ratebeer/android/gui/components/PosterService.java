@@ -26,7 +26,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
-import android.util.Log;
 
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EService;
@@ -52,6 +51,7 @@ import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.Home;
 import com.ratebeer.android.gui.components.helpers.DatabaseConsumerService;
+import com.ratebeer.android.gui.components.helpers.Log;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 
 @EService
@@ -113,6 +113,8 @@ public class PosterService extends DatabaseConsumerService {
 
 	private static final int IMAGE_MAX_SIZE = 400; // Max pixels in one dimension
 
+	@Bean
+	protected Log Log;
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean

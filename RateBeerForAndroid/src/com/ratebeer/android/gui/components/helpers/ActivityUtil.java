@@ -29,7 +29,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -51,7 +50,7 @@ public class ActivityUtil {
 			PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 			version = pi.versionName;
 		} catch (PackageManager.NameNotFoundException e) {
-			Log.e(RateBeerForAndroid.LOG_NAME, "Package name not found to retrieve version number", e);
+			android.util.Log.e(RateBeerForAndroid.LOG_NAME, "Package name not found to retrieve version number", e);
 		}
 		return version;
 	}
@@ -66,7 +65,7 @@ public class ActivityUtil {
 			PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 			version = pi.versionCode;
 		} catch (PackageManager.NameNotFoundException e) {
-			Log.e(RateBeerForAndroid.LOG_NAME, "Package name not found to retrieve version number", e);
+			android.util.Log.e(RateBeerForAndroid.LOG_NAME, "Package name not found to retrieve version number", e);
 		}
 		return version;
 	}

@@ -17,80 +17,79 @@
  */
 package com.ratebeer.android.gui.components.helpers;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
+import java.sql.SQLException;
+import java.util.List;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+
+import com.googlecode.androidannotations.annotations.App;
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.annotations.OrmLiteDao;
+import com.j256.ormlite.dao.Dao;
 import com.ratebeer.android.R;
 import com.ratebeer.android.app.RateBeerForAndroid;
+import com.ratebeer.android.app.persistance.DatabaseHelper;
 
-import de.neofonie.mobile.app.android.widget.crouton.Crouton;
-import de.neofonie.mobile.app.android.widget.crouton.Style;
-
+@EBean
 public class ErrorLogSender {
 
-    public static final String LOG_COLLECTOR_PACKAGE_NAME = "com.xtralogic.android.logcollector";//$NON-NLS-1$
-    public static final String ACTION_SEND_LOG = "com.xtralogic.logcollector.intent.action.SEND_LOG";//$NON-NLS-1$
-    public static final String EXTRA_SEND_INTENT_ACTION = "com.xtralogic.logcollector.intent.extra.SEND_INTENT_ACTION";//$NON-NLS-1$
-    public static final String EXTRA_DATA = "com.xtralogic.logcollector.intent.extra.DATA";//$NON-NLS-1$
-    public static final String EXTRA_ADDITIONAL_INFO = "com.xtralogic.logcollector.intent.extra.ADDITIONAL_INFO";//$NON-NLS-1$
-    public static final String EXTRA_SHOW_UI = "com.xtralogic.logcollector.intent.extra.SHOW_UI";//$NON-NLS-1$
-    public static final String EXTRA_FILTER_SPECS = "com.xtralogic.logcollector.intent.extra.FILTER_SPECS";//$NON-NLS-1$
-    public static final String EXTRA_FORMAT = "com.xtralogic.logcollector.intent.extra.FORMAT";//$NON-NLS-1$
-    public static final String EXTRA_BUFFER = "com.xtralogic.logcollector.intent.extra.BUFFER";//$NON-NLS-1$
-
-    public static void collectAndSendLog(final Activity activity, final String user){
-        final Intent intent = new Intent(ACTION_SEND_LOG);
-        final boolean isInstalled = ActivityUtil.isIntentAvailable(activity, intent);
-        
-        if (!isInstalled){
-            new AlertDialog.Builder(activity)
-            .setTitle("RateBeer for Android")
-            .setIcon(android.R.drawable.ic_dialog_info)
-            .setMessage(R.string.error_lc_install)
-            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int whichButton){
-                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=pname:" + LOG_COLLECTOR_PACKAGE_NAME));
-                    marketIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    if (ActivityUtil.isIntentAvailable(activity, marketIntent)) {
-                    	activity.startActivity(marketIntent);
-                    } else {
-    					Crouton.makeText(activity, R.string.app_nomarket, Style.ALERT).show();
-                    }
-                }
-            })
-            .setNegativeButton(android.R.string.cancel, null)
-            .show();
-        }
-        else
-        {
-            new AlertDialog.Builder(activity)
-            .setTitle("RateBeer for Android")
-            .setIcon(android.R.drawable.ic_dialog_info)
-            .setMessage(R.string.error_lc_run)
-            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int whichButton){
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(EXTRA_SEND_INTENT_ACTION, Intent.ACTION_SENDTO);
-                    intent.putExtra(EXTRA_DATA, Uri.parse("mailto:rb@2312.nl"));
-                    intent.putExtra(EXTRA_ADDITIONAL_INFO, "My problem:\n\n\nRateBeer for Android version " + ActivityUtil.getVersionNumber(activity) + "\nUser: " + user + "\n");
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "RateBeer for Android error report");
-                    intent.putExtra(EXTRA_FORMAT, "time");
-                    
-                    String[] filterSpecs = new String[] { 
-                    		"AndroidRuntime:E", 
-                    		RateBeerForAndroid.LOG_NAME + ":*", 
-                    		"*:S" }; // "ActivityManager:*"
-                    intent.putExtra(EXTRA_FILTER_SPECS, filterSpecs);
-                    
-                    activity.startActivity(intent);
-                }
-            })
-            .setNegativeButton(android.R.string.cancel, null)
-            .show();
-        }
+	@App
+	protected RateBeerForAndroid context;
+	@Bean
+	protected Log Log;
+	@OrmLiteDao(helper = DatabaseHelper.class, model = ErrorLogEntry.class)
+	protected Dao<ErrorLogEntry, Integer> errorLogDao;
+	
+    public void collectAndSendLog(final String user) {
+    	
+    	try {
+			
+    		// Prepare an email with error logging information
+			StringBuilder body = new StringBuilder();
+			body.append("Please describe your problem:\n\n\n");
+			body.append("\nRateBeer username: ");
+			body.append(user);
+			body.append("\nRateBeer for Android version: ");
+			body.append(ActivityUtil.getVersionNumber(context));
+			body.append(" (r");
+			body.append(ActivityUtil.getVersionCode(context));
+			body.append(")");
+			body.append("\n");
+			body.append("");
+			body.append("\n\nConnection and error log:");
+			
+			// Print the individual error log messages as stored in the database
+			List<ErrorLogEntry> all = errorLogDao.queryBuilder().orderBy(ErrorLogEntry.ID, true).query();
+			for (ErrorLogEntry errorLogEntry : all) {
+				body.append("\n");
+				body.append(errorLogEntry.getLogId());
+				body.append(" -- ");
+				body.append(errorLogEntry.getDateAndTime());
+				body.append(" -- ");
+				body.append(errorLogEntry.getPriority());
+				body.append(" -- ");
+				body.append(errorLogEntry.getMessage());
+			}
+			
+			Intent target = new Intent(Intent.ACTION_SEND);
+			target.setType("message/rfc822");
+			target.putExtra(Intent.EXTRA_EMAIL, new String[] { "rb@2312.nl" });
+			target.putExtra(Intent.EXTRA_SUBJECT, "RateBeer for Android error report");
+			target.putExtra(Intent.EXTRA_TEXT, body.toString());
+			try {
+				context.startActivity(Intent.createChooser(target, context.getString(R.string.error_sendreport))
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+			} catch (ActivityNotFoundException e) {
+				Log.i(RateBeerForAndroid.LOG_NAME, "Tried to send error log, but there is no email app installed.");
+			}
+			
+		} catch (SQLException e) {
+			Log.e(RateBeerForAndroid.LOG_NAME,
+					"Cannot read the error log to build an error report to send: " + e.toString());
+		}
+    	
     }
 
 }

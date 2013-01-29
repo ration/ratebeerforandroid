@@ -34,7 +34,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
@@ -49,7 +48,6 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 import com.ratebeer.android.gui.components.PosterService;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
@@ -93,16 +91,6 @@ public class AddUpcCodeFragment extends RateBeerFragment {
 			upccode.setText(upcCode);
 		}
 		
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshResults();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	private TextWatcher onBeerNameChanged = new TextWatcher() {

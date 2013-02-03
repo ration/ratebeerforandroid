@@ -1,11 +1,9 @@
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,19 +11,21 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class UpcSearchCommand extends JsonCommand {
 
-	private static final String BASE_URL = "http://www.ratebeer.com/json/upc.asp?k=" + HttpHelper.RB_KEY;
+	private static final String BASE_URL = "http://www.ratebeer.com/json/upc.asp?k=" + ApiConnection.RB_KEY;
 
 	private final String upcCode;
 	private final ArrayList<UpcSearchResult> upcSearchResults = new ArrayList<UpcSearchResult>();
 
-	public UpcSearchCommand(RateBeerApi api, String upcCode) {
+	public UpcSearchCommand(UserSettings api, String upcCode) {
 		super(api, ApiMethod.UpcSearch);
 		this.upcCode = upcCode;
 	}
@@ -39,9 +39,9 @@ public class UpcSearchCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		try {
-			return HttpHelper.makeRBGet(BASE_URL + "&upc=" + URLEncoder.encode(upcCode, HttpHelper.UTF8));
+			return apiConnection.get(BASE_URL + "&upc=" + URLEncoder.encode(upcCode, HttpHelper.UTF8));
 		} catch (UnsupportedEncodingException e) {
 		}
 		return null;

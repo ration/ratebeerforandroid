@@ -21,11 +21,8 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
@@ -33,12 +30,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_calculator)
 public class CalculatorFragment extends RateBeerFragment {
 
 	protected enum MeasurementSystem {
@@ -100,49 +101,34 @@ public class CalculatorFragment extends RateBeerFragment {
 	}
 
 	DecimalFormat df = new DecimalFormat("#");
-	private Spinner fromSystemSpinner, toSystemSpinner;
-	private Button from1, from2, from3, from4, to1, to2, to3, to4, fromTo, toFrom, clear;
-	private EditText fromQuantity, fromEuro, fromCent, toQuantity, toEuro, toCent;
-	private TextView fromFor, toFor;
+	@ViewById
+	protected Spinner fromSystem, toSystem;
+	@ViewById
+	protected Button fromTo, toFrom, clear;
+	// These are not injected but loaded in the addButton method
+	protected Button from1, from2, from3, from4, to1, to2, to3, to4;
+	@ViewById
+	protected EditText fromQuantity, fromEuro, fromCent, toQuantity, toEuro, toCent;
+	@ViewById
+	protected TextView fromFor, toFor;
 	
 	public CalculatorFragment() {
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_calculator, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		fromQuantity = (EditText) getView().findViewById(R.id.from_quantity);
-		fromEuro = (EditText) getView().findViewById(R.id.from_euro);
-		fromCent = (EditText) getView().findViewById(R.id.from_cent);
-		toQuantity = (EditText) getView().findViewById(R.id.to_quantity);
-		toEuro = (EditText) getView().findViewById(R.id.to_euro);
-		toCent = (EditText) getView().findViewById(R.id.to_cent);
-		fromTo = (Button) getView().findViewById(R.id.from_to);
-		toFrom = (Button) getView().findViewById(R.id.to_from);
-		fromFor = (TextView) getView().findViewById(R.id.from_for);
-		toFor = (TextView) getView().findViewById(R.id.to_for);
-		clear = (Button) getView().findViewById(R.id.clear);
-		fromSystemSpinner = (Spinner) getView().findViewById(R.id.from_system);
-		fromSystemSpinner.setOnItemSelectedListener(onSystemChanged);
-		toSystemSpinner = (Spinner) getView().findViewById(R.id.to_system);
-		toSystemSpinner.setOnItemSelectedListener(onSystemChanged);
-		from1 = addButton(R.id.from1, fromQuantity, fromSystemSpinner, 0);
-		from2 = addButton(R.id.from2, fromQuantity, fromSystemSpinner, 1);
-		from3 = addButton(R.id.from3, fromQuantity, fromSystemSpinner, 2);
-		from4 = addButton(R.id.from4, fromQuantity, fromSystemSpinner, 3);
-		to1 = addButton(R.id.to1, toQuantity, toSystemSpinner, 0);
-		to2 = addButton(R.id.to2, toQuantity, toSystemSpinner, 1);
-		to3 = addButton(R.id.to3, toQuantity, toSystemSpinner, 2);
-		to4 = addButton(R.id.to4, toQuantity, toSystemSpinner, 3);
+		fromSystem.setOnItemSelectedListener(onSystemChanged);
+		toSystem.setOnItemSelectedListener(onSystemChanged);
+		from1 = addButton(R.id.from1, fromQuantity, fromSystem, 0);
+		from2 = addButton(R.id.from2, fromQuantity, fromSystem, 1);
+		from3 = addButton(R.id.from3, fromQuantity, fromSystem, 2);
+		from4 = addButton(R.id.from4, fromQuantity, fromSystem, 3);
+		to1 = addButton(R.id.to1, toQuantity, toSystem, 0);
+		to2 = addButton(R.id.to2, toQuantity, toSystem, 1);
+		to3 = addButton(R.id.to3, toQuantity, toSystem, 2);
+		to4 = addButton(R.id.to4, toQuantity, toSystem, 3);
 		populateSystemSpinners();
-		//systemSpinner.setSelection(0);
 		fromTo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -194,8 +180,8 @@ public class CalculatorFragment extends RateBeerFragment {
 				getActivity(), android.R.layout.simple_spinner_item, allSystems);
 		fromAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		toAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		fromSystemSpinner.setAdapter(fromAdapter);
-		toSystemSpinner.setAdapter(toAdapter);
+		fromSystem.setAdapter(fromAdapter);
+		toSystem.setAdapter(toAdapter);
 	}
 
 	private OnItemSelectedListener onSystemChanged = new OnItemSelectedListener() {
@@ -234,11 +220,11 @@ public class CalculatorFragment extends RateBeerFragment {
 	};
 
 	protected MeasurementSystem getFromSelectedSystem() {
-		return (MeasurementSystem) fromSystemSpinner.getSelectedItem();
+		return (MeasurementSystem) fromSystem.getSelectedItem();
 	}
 
 	protected MeasurementSystem getToSelectedSystem() {
-		return (MeasurementSystem) toSystemSpinner.getSelectedItem();
+		return (MeasurementSystem) toSystem.getSelectedItem();
 	}
 
 }

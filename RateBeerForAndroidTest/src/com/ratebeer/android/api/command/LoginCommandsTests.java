@@ -17,17 +17,16 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.Date;
 
 import android.test.AndroidTestCase;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiConnection_;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiException.ExceptionType;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
 import com.ratebeer.android.api.UserSettings;
 
 public class LoginCommandsTests extends AndroidTestCase {
@@ -35,35 +34,32 @@ public class LoginCommandsTests extends AndroidTestCase {
 	public void testExecute() {
 
 		// Log in with a valid user
-		RateBeerApi api = TestHelper.getApi(getContext(), true);
+		ApiConnection apiConnection = ApiConnection_.getInstance_(getContext());
+		UserSettings user = TestHelper.getUser(getContext(), true);
 		try {
-			RateBeerApi.ensureLogin(api.getUserSettings());
+			ApiConnection.ensureLogin(apiConnection, user);
 			// If we are here, everything went fine, since the sign in was successful
-			assertTrue(HttpHelper.isSignedIn());
-		} catch (IOException e) {
-			fail("Sign in failed: " + e.toString());
+			assertTrue(apiConnection.isSignedIn());
 		} catch (ApiException e) {
 			fail("Sign in failed: " + e.getType().toString() + " exception: " + e.toString());
 		}
 		
 		// Sign out now
-		SignOutCommand signout = new SignOutCommand(api);
-		CommandResult result = signout.execute();
+		SignOutCommand signout = new SignOutCommand(user);
+		CommandResult result = signout.execute(apiConnection);
 		if (result instanceof CommandFailureResult) {
 			fail("Sign out failed: " + ((CommandFailureResult)result).getException().toString());
 		}
 		// We should be signed out now
-		assertTrue(!HttpHelper.isSignedIn());
+		assertTrue(!apiConnection.isSignedIn());
 
 		// Log in with an invalid user (note: signout needed to be succesful to properly test this!)
-		RateBeerApi api2 = new RateBeerApi(new UserSettings(156822, "rbandroid", "wrongpassword", null, false, new Date()));
+		UserSettings user2 = new UserSettings(156822, "rbandroid", "wrongpassword", null, false, new Date());
 		try {
-			RateBeerApi.ensureLogin(api2.getUserSettings());
+			ApiConnection.ensureLogin(apiConnection, user2);
 			// We should be signed out still
-			assertTrue(!HttpHelper.isSignedIn());
+			assertTrue(!apiConnection.isSignedIn());
 			fail("We should not have been here, since our password was wrong!");
-		} catch (IOException e) {
-			fail("Login failed: " + e.toString());
 		} catch (ApiException e) {
 			// Expect an exception here that the authentication failed
 			if (e.getType() != ExceptionType.AuthenticationFailed) {

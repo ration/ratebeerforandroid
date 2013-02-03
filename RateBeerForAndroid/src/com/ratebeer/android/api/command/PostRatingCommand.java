@@ -17,25 +17,24 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.net.UnknownHostException;
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 
-import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.Command;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class PostRatingCommand extends Command {
 
-	private static final String POST_SUCCESS = "<h1>availability</h1>";
-	
+	private static final String POST_SUCCESS = "This object may be found <a HREF=\"/availability";
+
 	private final int beerId;
 	private final int ratingID;
 	private final String origDate;
@@ -47,7 +46,7 @@ public class PostRatingCommand extends Command {
 	private final int overall;
 	private final String comment;
 
-	public PostRatingCommand(RateBeerApi api, int beerId, int ratingID, String origDate, String beerName, int aroma,
+	public PostRatingCommand(UserSettings api, int beerId, int ratingID, String origDate, String beerName, int aroma,
 			int appearance, int taste, int palate, int overall, String comment) {
 		super(api, ApiMethod.PostRating);
 		this.beerId = beerId;
@@ -62,7 +61,7 @@ public class PostRatingCommand extends Command {
 		this.comment = comment;
 	}
 
-	public PostRatingCommand(RateBeerApi api, int beerId, String beerName, int aroma, int appearance, int taste,
+	public PostRatingCommand(UserSettings api, int beerId, String beerName, int aroma, int appearance, int taste,
 			int palate, int overall, String comment) {
 		super(api, ApiMethod.PostRating);
 		this.beerId = beerId;
@@ -99,13 +98,14 @@ public class PostRatingCommand extends Command {
 	}
 
 	@Override
-	public CommandResult execute() {
+	public CommandResult execute(ApiConnection apiConnection) {
 		try {
 
-			RateBeerApi.ensureLogin(getUserSettings());
+			ApiConnection.ensureLogin(apiConnection, getUserSettings());
 			// NOTE: Maybe use the API call to http://www.ratebeer.com/m/m_saverating.asp, but it should be checked
 			// whether this allows updating of a rating too
-			String result = HttpHelper.makeRBPost(ratingID <= 0 ? "http://www.ratebeer.com/saverating.asp"
+			// NOTE: We get an HTTP 302 (moved temporarily) response if everything is okay (to redirect us)
+			String result = apiConnection.post(ratingID <= 0 ? "http://www.ratebeer.com/saverating.asp"
 					: "http://www.ratebeer.com/updaterating.asp", Arrays.asList(new BasicNameValuePair("BeerID",
 					Integer.toString(beerId)),
 					new BasicNameValuePair("RatingID", ratingID <= 0 ? "" : Integer.toString(ratingID)),
@@ -116,21 +116,16 @@ public class PostRatingCommand extends Command {
 					new BasicNameValuePair("palate", Integer.toString(palate)), new BasicNameValuePair("overall",
 							Integer.toString(overall)),
 					new BasicNameValuePair("totalscore", Float.toString(getTotal())), new BasicNameValuePair(
-							"Comments", comment)));
+							"Comments", comment)), HttpURLConnection.HTTP_MOVED_TEMP);
 			if (result.indexOf(POST_SUCCESS) >= 0) {
 				return new CommandSuccessResult(this);
 			} else {
-				return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed, 
+				return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
 						"The rating was posted, but the returned HTML did not contain the unique success string."));
 			}
 
-		} catch (UnknownHostException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
-		} catch (HttpHostConnectException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
-		} catch (Exception e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
-					e.toString()));
+		} catch (ApiException e) {
+			return new CommandFailureResult(this, e);
 		}
 	}
 

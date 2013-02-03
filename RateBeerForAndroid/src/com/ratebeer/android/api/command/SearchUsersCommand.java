@@ -17,29 +17,28 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SearchUsersCommand extends HtmlCommand {
 
 	private final String query;
 	private ArrayList<UserSearchResult> results;
 
-	public SearchUsersCommand(RateBeerApi api, String query) {
+	public SearchUsersCommand(UserSettings api, String query) {
 		super(api, ApiMethod.SearchUsers);
 		this.query = query;
 	}
@@ -57,8 +56,8 @@ public class SearchUsersCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBPost("http://www.ratebeer.com/usersearch.php",
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.post("http://www.ratebeer.com/usersearch.php",
 				Arrays.asList(new BasicNameValuePair("UserName", getNormalizedQuery())));
 	}
 

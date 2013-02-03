@@ -39,70 +39,111 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.OrmLiteDao;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.j256.ormlite.dao.Dao;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.command.PostRatingCommand;
+import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 import com.ratebeer.android.gui.wheel.IntegerWheelAdapter;
+import com.ratebeer.android.gui.wheel.IntegerWheelView;
 import com.ratebeer.android.gui.wheel.OnSelectionChangedListener;
-import com.ratebeer.android.gui.wheel.WheelView;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_rate)
+@OptionsMenu(R.menu.rate)
 public class RateFragment extends RateBeerFragment implements Runnable {
 
 	protected static final int MIN_CHARACTERS = 85;
 	private static final long TIMER_DELAY = 750;
-	private static final int MENU_DISCARD = 0;
-	private static final String STATE_BEERNAME = "beerName";
-	private static final String STATE_BEERID = "beerId";
-	private static final String STATE_ORIGRATINGID = "originalRatingID";
-	private static final String STATE_ORIGRATINGDATE = "originalRatingDate";
-	private static final String STATE_OFFLINEID = "offlineId";
-	private static final String STATE_APPEARANCE = "appearance";
-	private static final String STATE_AROMA = "aroma";
-	private static final String STATE_TASTE = "taste";
-	private static final String STATE_PALATE = "palate";
-	private static final String STATE_OVERALL = "overall";
 	private static final int NO_BEER_ID = -1;
 	private static final int NO_OFFLINE_ID = -1;
 	private static final int NO_ORIGINAL_RATING_ID = -1;
 
-	private WheelView<Integer> appearanceWheel, aromaWheel, tasteWheel, palateWheel, overallWheel;
-	private TextView nameText, customnamelabel, totalText, charsText, assistanceWordsView;
-	private EditText customnameEdit, commentsEdit;
-	private Button addrating, offlineButton, assistanceButton;
-	private CheckBox shareBox;
+	@FragmentArg
+	@InstanceState
+	protected int beerId = NO_BEER_ID;
+	@FragmentArg
+	@InstanceState
+	protected int originalRatingId = NO_ORIGINAL_RATING_ID;
+	@FragmentArg
+	@InstanceState
+	protected String originalRatingDate = null;
+	@FragmentArg
+	@InstanceState
+	protected String beerName = null;
+	@FragmentArg
+	@InstanceState
+	protected int offlineId = NO_OFFLINE_ID;
+	@FragmentArg
+	@InstanceState
+	protected int aroma;
+	@FragmentArg
+	@InstanceState
+	protected int appearance;
+	@FragmentArg
+	@InstanceState
+	protected int taste;
+	@FragmentArg
+	@InstanceState
+	protected int palate;
+	@FragmentArg
+	@InstanceState
+	protected int overall;
+	@FragmentArg
+	@InstanceState
+	protected String comments = null;
+
+	@ViewById(R.id.appearance)
+	protected IntegerWheelView appearanceWheel;
+	@ViewById(R.id.aroma)
+	protected IntegerWheelView aromaWheel;
+	@ViewById(R.id.taste)
+	protected IntegerWheelView tasteWheel;
+	@ViewById(R.id.palate)
+	protected IntegerWheelView palateWheel;
+	@ViewById(R.id.overall)
+	protected IntegerWheelView overallWheel;
+	@ViewById(R.id.name)
+	protected TextView nameView;
+	@ViewById(R.id.total)
+	protected TextView totalText;
+	@ViewById
+	protected TextView customnamelabel, characterCounter, assistanceWords;
+	@ViewById
+	protected EditText customname;
+	@ViewById(R.id.comments)
+	protected EditText commentsEdit;
+	@ViewById
+	protected Button addrating, offlineStatus, assistance;
+	@ViewById
+	protected CheckBox share;
 	private Thread timer;
 
-	private int beerId;
-	private int originalRatingId;
-	private String originalRatingDate;
-	private String beerName;
-	private int offlineId;
-	private int aromaField;
-	private int appearanceField;
-	private int tasteField;
-	private int palateField;
-	private int overallField;
-	private String commentsField = null;
-
+	@OrmLiteDao(helper = DatabaseHelper.class, model = OfflineRating.class)
+	Dao<OfflineRating, Integer> offlineRatingDao;
+	
 	public RateFragment() {
-		this(null, NO_BEER_ID, NO_ORIGINAL_RATING_ID, null, NO_OFFLINE_ID);
 	}
 
 	/**
-	 * resume editing of an offline rating
-	 * @param offlineId
+	 * Resume editing of an offline rating
+	 * @param offlineId The database row ID of the offline rating
 	 */
-	public RateFragment(int offlineId) {
-		this(null, NO_BEER_ID, NO_ORIGINAL_RATING_ID, null, offlineId);
+	public static RateFragment buildFromOfflineID(int offlineId) {
+		return RateFragment_.builder().offlineId(offlineId).build();
 	}
 
 	/**
@@ -110,16 +151,8 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 	 * @param beerName The name of the beer to be rated
 	 * @param beerId The ID of the beer to be rated
 	 */
-	public RateFragment(String beerName, int beerId) {
-		this(beerName, beerId, NO_ORIGINAL_RATING_ID, null, NO_OFFLINE_ID);
-	}
-
-	private RateFragment(String beerName, int beerId, int originalRatingId, String originalRatingDate, int offlineId) {
-		this.beerName = beerName;
-		this.beerId = beerId;
-		this.originalRatingId = originalRatingId;
-		this.originalRatingDate = originalRatingDate;
-		this.offlineId = offlineId;
+	public static RateFragment buildFromBeer(String beerName, int beerId) {
+		return RateFragment_.builder().beerName(beerName).beerId(beerId).build();
 	}
 
 	/**
@@ -133,28 +166,26 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 	 * @param overall The overall rating
 	 * @param comments The rating comments
 	 */
-	public RateFragment(String beerName, int beerId, int originalRatingId, String originalRatingDate, int appearance,
-			int aroma, int taste, int palate, int overall, String comments) {
-		this(beerName, beerId, originalRatingId, originalRatingDate, NO_OFFLINE_ID);
-		this.aromaField = aroma;
-		this.appearanceField = appearance;
-		this.tasteField = taste;
-		this.palateField = palate;
-		this.overallField = overall;
-		this.commentsField = comments;
+	public static RateFragment buildFromConcrete(String beerName, int beerId, int originalRatingId,
+			String originalRatingDate, int appearance, int aroma, int taste, int palate, int overall, String comments) {
+		return RateFragment_.builder().beerName(beerName).beerId(beerId).originalRatingId(originalRatingId)
+				.originalRatingDate(originalRatingDate).appearance(appearance).aroma(aroma).taste(taste).palate(palate)
+				.overall(overall).comments(comments).build();
 	}
 
 	/**
 	 * Start a beer rating with the fields already populated
 	 * @param extras The rating data to populate the fields with, which at least includes the
-	 *            PosterService.EXTRA_BEERNAME and PosterService.EXTRA_BEERID
+	 * PosterService.EXTRA_BEERNAME and PosterService.EXTRA_BEERID
 	 */
-	public RateFragment(Bundle extras) {
-		this(extras.getString(PosterService.EXTRA_BEERNAME), extras.getInt(PosterService.EXTRA_BEERID, NO_BEER_ID),
-				extras.getInt(PosterService.EXTRA_ORIGRATINGID, NO_ORIGINAL_RATING_ID), 
-				extras.getString(PosterService.EXTRA_ORIGRATINGDATE), extras.getInt(PosterService.EXTRA_AROMA, -1), 
+	public static RateFragment buildFromExtras(Bundle extras) {
+		// Assume there is an extra containing the BeerMail object
+		return RateFragment_.buildFromConcrete(extras.getString(PosterService.EXTRA_BEERNAME),
+				extras.getInt(PosterService.EXTRA_BEERID, NO_BEER_ID),
+				extras.getInt(PosterService.EXTRA_ORIGRATINGID, NO_ORIGINAL_RATING_ID),
+				extras.getString(PosterService.EXTRA_ORIGRATINGDATE), extras.getInt(PosterService.EXTRA_AROMA, -1),
 				extras.getInt(PosterService.EXTRA_APPEARANCE, -1), extras.getInt(PosterService.EXTRA_TASTE, -1),
-				extras.getInt(PosterService.EXTRA_PALATE, -1), extras.getInt(PosterService.EXTRA_OVERALL, -1), 
+				extras.getInt(PosterService.EXTRA_PALATE, -1), extras.getInt(PosterService.EXTRA_OVERALL, -1),
 				extras.getString(PosterService.EXTRA_COMMENT));
 	}
 
@@ -164,43 +195,25 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 		return inflater.inflate(R.layout.fragment_rate, container, false);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	@AfterViews
+	public void init() {
 
 		// Initialize wheels
-		appearanceWheel = (WheelView<Integer>) getView().findViewById(R.id.appearance);
 		appearanceWheel.setAdapter(new IntegerWheelAdapter(onRatingChanged, 1, 5, "0"));
-		aromaWheel = (WheelView<Integer>) getView().findViewById(R.id.aroma);
 		aromaWheel.setAdapter(new IntegerWheelAdapter(onRatingChanged, 1, 10, "0"));
-		tasteWheel = (WheelView<Integer>) getView().findViewById(R.id.taste);
 		tasteWheel.setAdapter(new IntegerWheelAdapter(onRatingChanged, 1, 10, "0"));
-		palateWheel = (WheelView<Integer>) getView().findViewById(R.id.palate);
 		palateWheel.setAdapter(new IntegerWheelAdapter(onRatingChanged, 1, 5, "0"));
-		overallWheel = (WheelView<Integer>) getView().findViewById(R.id.overall);
 		overallWheel.setAdapter(new IntegerWheelAdapter(onRatingChanged, 1, 20, "0"));
 
 		// Initialize fields
-		nameText = (TextView) getView().findViewById(R.id.name);
-		customnameEdit = (EditText) getView().findViewById(R.id.customname);
-		customnamelabel = (TextView) getView().findViewById(R.id.customnamelabel);
-		totalText = (TextView) getView().findViewById(R.id.total);
-		charsText = (TextView) getView().findViewById(R.id.character_counter);
-		commentsEdit = (EditText) getView().findViewById(R.id.comments);
-		addrating = (Button) getView().findViewById(R.id.addrating);
-		shareBox = (CheckBox) getView().findViewById(R.id.share);
-		assistanceButton = (Button) getView().findViewById(R.id.assistance);
-		assistanceWordsView = (TextView) getView().findViewById(R.id.assistance_words);
-		offlineButton = (Button) getView().findViewById(R.id.offline_status);
-		assistanceButton.setOnClickListener(onAssistanceClick);
-		offlineButton.setOnClickListener(onOfflineInfoClicked);
-		customnameEdit.addTextChangedListener(onCommentChanged);
+		assistance.setOnClickListener(onAssistanceClick);
+		offlineStatus.setOnClickListener(onOfflineInfoClicked);
+		customname.addTextChangedListener(onCommentChanged);
 		commentsEdit.addTextChangedListener(onCommentChanged);
 		addrating.setOnClickListener(onUploadRating);
 
 		// Allow clicking of words for rating assistance
-		assistanceWordsView.setMovementMethod(LinkMovementMethod.getInstance());
+		assistanceWords.setMovementMethod(LinkMovementMethod.getInstance());
 		String t = getString(R.string.rate_assistance_words);
 		SpannableString s = new SpannableString(t);
 		int start = 0;
@@ -214,49 +227,35 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 				break;
 			}
 		}
-		assistanceWordsView.setText(s);
+		assistanceWords.setText(s);
 		
-		// Load state (i.e. on orientation changes)
-		if (savedInstanceState != null) {
-			beerId = savedInstanceState.getInt(STATE_BEERID);
-			beerName = savedInstanceState.getString(STATE_BEERNAME);
-			originalRatingId = savedInstanceState.getInt(STATE_ORIGRATINGID);
-			originalRatingDate = savedInstanceState.getString(STATE_ORIGRATINGDATE);
-			offlineId = savedInstanceState.getInt(STATE_OFFLINEID);
-			appearanceField = savedInstanceState.getInt(STATE_APPEARANCE);
-			aromaField = savedInstanceState.getInt(STATE_AROMA);
-			tasteField = savedInstanceState.getInt(STATE_TASTE);
-			palateField = savedInstanceState.getInt(STATE_PALATE);
-			overallField = savedInstanceState.getInt(STATE_OVERALL);
-		}
-
 		// Set up offline storage of rating
 		try {
-			offlineButton.setText(R.string.rate_offline_availble);
-			OfflineRating offline;			
+			offlineStatus.setText(R.string.rate_offline_availble);
+			OfflineRating offline;
 			if (offlineId == NO_OFFLINE_ID && beerId == NO_BEER_ID) {
 				// Nothing pre-known; create a new offline rating
 				offline = new OfflineRating();
-				getRateBeerActivity().getHelper().getOfflineRatingDao().create(offline);
+				offlineRatingDao.create(offline);
 			} else if (offlineId != NO_OFFLINE_ID && beerId == NO_BEER_ID) {
 				// Continue editing an offline-only rating
-				offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
+				offline = offlineRatingDao.queryForId(offlineId);
 			} else if (offlineId == NO_OFFLINE_ID) {
 				// Beer ID already known but no offline rating yet; try to create an offline rating
 				Map<String, Object> p = new HashMap<String, Object>();
 				p.put("beerId", beerId);
-				List<OfflineRating> test = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForFieldValues(p);
+				List<OfflineRating> test = offlineRatingDao.queryForFieldValues(p);
 				if (test != null && test.size() > 0) {
 					// Just pick the first; there shouldn't be multiple offline ratings for the same beer
 					offline = test.get(0);
 				} else {
 					// No offline rating yet: create it
 					offline = new OfflineRating(beerId, beerName);
-					getRateBeerActivity().getHelper().getOfflineRatingDao().create(offline);
+					offlineRatingDao.create(offline);
 				}
 			} else {
 				// Beer ID known and already an offline rating
-				offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
+				offline = offlineRatingDao.queryForId(offlineId);
 			}
 			if (offline == null) {
 				// This offline ID is no longer available; rating probably already uploaded
@@ -267,72 +266,70 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 
 			// Fill fields from the stored offline rating
 			offlineId = offline.getOfflineId();
-			if (savedInstanceState == null) {
-				if (offline.getBeerId() != null)
-					beerId = offline.getBeerId();
-				if (offline.getBeerName() != null)
-					beerName = offline.getBeerName();
-				if (offline.getOriginalRatingId() != null)
-					originalRatingId = offline.getOriginalRatingId();
-				if (offline.getOriginalRatingDate() != null)
-					originalRatingDate = offline.getOriginalRatingDate();
-				if (offline.getAppearance() != null)
-					appearanceField = offline.getAppearance();
-				if (offline.getAroma() != null)
-					aromaField = offline.getAroma();
-				if (offline.getTaste() != null)
-					tasteField = offline.getTaste();
-				if (offline.getPalate() != null)
-					palateField = offline.getPalate();
-				if (offline.getOverall() != null)
-					overallField = offline.getOverall();
-				if (offline.getComments() != null)
-					commentsField = offline.getComments();
-			}
+			if (offline.getBeerId() != null)
+				beerId = offline.getBeerId();
+			if (offline.getBeerName() != null)
+				beerName = offline.getBeerName();
+			if (offline.getOriginalRatingId() != null)
+				originalRatingId = offline.getOriginalRatingId();
+			if (offline.getOriginalRatingDate() != null)
+				originalRatingDate = offline.getOriginalRatingDate();
+			if (offline.getAppearance() != null)
+				appearance = offline.getAppearance();
+			if (offline.getAroma() != null)
+				aroma = offline.getAroma();
+			if (offline.getTaste() != null)
+				taste = offline.getTaste();
+			if (offline.getPalate() != null)
+				palate = offline.getPalate();
+			if (offline.getOverall() != null)
+				overall = offline.getOverall();
+			if (offline.getComments() != null)
+				comments = offline.getComments();
 			
 			if (beerId == NO_BEER_ID) {
 				// Show the offline-only rating screen
 				addrating.setText(R.string.rate_offline_findbeer);
-				nameText.setVisibility(View.GONE);
-				customnameEdit.setText(offline.getBeerName());
+				nameView.setVisibility(View.GONE);
+				customname.setText(offline.getBeerName());
 			} else {
 				// Show the normal rating screen
-				customnameEdit.setText(beerName);
+				customname.setText(beerName);
 				addrating.setText(R.string.rate_addrating);
-				customnameEdit.setVisibility(View.GONE);
+				customname.setVisibility(View.GONE);
 				customnamelabel.setVisibility(View.GONE);
 			}
 			
 		} catch (SQLException e) {
-			offlineButton.setText(R.string.rate_offline_notavailable);
+			offlineStatus.setText(R.string.rate_offline_notavailable);
 		}
 
 		// Check for user; if there is none we cannot upload the rating yet still use the offline feature
-		if (getRateBeerActivity().getUser() == null) {
+		if (getUser() == null) {
 			addrating.setVisibility(View.GONE);
 		}
 
 		// Populate field values if these are now known
-		if (aromaField > 0) {
-			aromaWheel.getAdapter().setSelectedValue(aromaField);
+		if (aroma > 0) {
+			aromaWheel.getAdapter().setSelectedValue(aroma);
 		}
-		if (appearanceField > 0) {
-			appearanceWheel.getAdapter().setSelectedValue(appearanceField);
+		if (appearance > 0) {
+			appearanceWheel.getAdapter().setSelectedValue(appearance);
 		}
-		if (tasteField > 0) {
-			tasteWheel.getAdapter().setSelectedValue(tasteField);
+		if (taste > 0) {
+			tasteWheel.getAdapter().setSelectedValue(taste);
 		}
-		if (palateField > 0) {
-			palateWheel.getAdapter().setSelectedValue(palateField);
+		if (palate > 0) {
+			palateWheel.getAdapter().setSelectedValue(palate);
 		}
-		if (overallField > 0) {
-			overallWheel.getAdapter().setSelectedValue(overallField);
+		if (overall > 0) {
+			overallWheel.getAdapter().setSelectedValue(overall);
 		}
-		if (commentsField != null) {
-			commentsEdit.setText(commentsField);
+		if (comments != null) {
+			commentsEdit.setText(comments);
 		}
 		if (beerName != null) {
-			nameText.setText(beerName);
+			nameView.setText(beerName);
 		}
 		
 	}
@@ -363,76 +360,37 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 		};
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(Menu.NONE, MENU_DISCARD, MENU_DISCARD, R.string.rate_offline_discard);
-		item.setIcon(R.drawable.ic_action_discard);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case MENU_DISCARD:
-			new ConfirmDialogFragment(new OnDialogResult() {
-				@Override
-				public void onConfirmed() { // Delete the offline version of this rating
-					if (offlineId != NO_OFFLINE_ID) {
-						try {
-							getRateBeerActivity().getHelper().getOfflineRatingDao().deleteIds(Arrays.asList(offlineId));
-						} catch (SQLException e) {
-							// Ignore this; we probably don't have access to a database at all
-						}
+	@OptionsItem(R.id.menu_discard)
+	protected void onDiscardRating() {
+		new ConfirmDialogFragment(new OnDialogResult() {
+			@Override
+			public void onConfirmed() { // Delete the offline version of this rating
+				if (offlineId != NO_OFFLINE_ID) {
+					try {
+						offlineRatingDao.deleteIds(Arrays.asList(offlineId));
+					} catch (SQLException e) {
+						// Ignore this; we probably don't have access to a database at all
 					}
-					getFragmentManager().popBackStackImmediate();
 				}
-			}, R.string.rate_offline_confirmdiscard).show(getFragmentManager(), "dialog");
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(STATE_BEERID, beerId);
-		outState.putString(STATE_BEERNAME, beerName);
-		outState.putInt(STATE_ORIGRATINGID, originalRatingId);
-		outState.putString(STATE_ORIGRATINGDATE, originalRatingDate);
-		outState.putInt(STATE_OFFLINEID, offlineId);
-		if (appearanceWheel != null && appearanceWheel.getAdapter() != null) {
-			outState.putInt(STATE_APPEARANCE, appearanceWheel.getAdapter().getSelectedValue());
-		}
-		if (aromaWheel != null && aromaWheel.getAdapter() != null) {
-			outState.putInt(STATE_AROMA, aromaWheel.getAdapter().getSelectedValue());
-		}
-		if (tasteWheel != null && tasteWheel.getAdapter() != null) {
-			outState.putInt(STATE_TASTE, tasteWheel.getAdapter().getSelectedValue());
-		}
-		if (palateWheel != null && palateWheel.getAdapter() != null) {
-			outState.putInt(STATE_PALATE, palateWheel.getAdapter().getSelectedValue());
-		}
-		if (overallWheel != null && overallWheel.getAdapter() != null) {
-			outState.putInt(STATE_OVERALL, overallWheel.getAdapter().getSelectedValue());
-		}
+				getFragmentManager().popBackStackImmediate();
+			}
+		}, R.string.rate_offline_confirmdiscard).show(getFragmentManager(), "dialog");
 	}
 
 	private OnClickListener onAssistanceClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			assistanceButton.setText(assistanceWordsView.getVisibility() == View.VISIBLE? 
-					R.string.rate_showassistance: R.string.rate_hideassistance);
-			assistanceWordsView.setVisibility(
-					assistanceWordsView.getVisibility() == View.VISIBLE? View.GONE: View.VISIBLE);
+			assistance.setText(assistanceWords.getVisibility() == View.VISIBLE ? R.string.rate_showassistance
+					: R.string.rate_hideassistance);
+			assistanceWords.setVisibility(assistanceWords.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
 		}
 	};
 	
 	private OnClickListener onOfflineInfoClicked = new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			getRateBeerActivity().load(
-				new TextInfoFragment(getString(R.string.rate_offline_title), getString(R.string.rate_offline_info)));
+			load(TextInfoFragment_.builder().title(getString(R.string.rate_offline_title))
+					.info(getString(R.string.rate_offline_info)).build());
 		}
 	};
 
@@ -476,11 +434,11 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 				return;
 			int left = MIN_CHARACTERS - commentsEdit.getText().length();
 			if (commentsEdit.getText().length() == 0) {
-				charsText.setText(R.string.rate_commenttooshort);
+				characterCounter.setText(R.string.rate_commenttooshort);
 			} else if (left >= 0) {
-				charsText.setText(getString(R.string.rate_charstogo, Integer.toString(left)));
+				characterCounter.setText(getString(R.string.rate_charstogo, Integer.toString(left)));
 			} else {
-				charsText.setText(R.string.rate_commentok);
+				characterCounter.setText(R.string.rate_commentok);
 			}
 		}
 	};
@@ -508,7 +466,7 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 	
 	private void saveOfflineRating() {
 		// Gather the rating data
-		String customName = customnameEdit.getText().toString();
+		String customName = customname.getText().toString();
 		int appearance = appearanceWheel.getAdapter().getSelectedValue();
 		int aroma = aromaWheel.getAdapter().getSelectedValue();
 		int taste = tasteWheel.getAdapter().getSelectedValue();
@@ -516,22 +474,22 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 		int overall = overallWheel.getAdapter().getSelectedValue();
 		String comments = commentsEdit.getText().toString();
 		try {
-			if (getRateBeerActivity() == null) {
-				offlineButton.setText(R.string.rate_offline_notavailable);
+			if (getActivity() == null) {
+				offlineStatus.setText(R.string.rate_offline_notavailable);
 				return;
 			}
 			// Get the offline rating from the database
-			OfflineRating offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
+			OfflineRating offline = offlineRatingDao.queryForId(offlineId);
 			if (offline == null) {
-				offlineButton.setText(R.string.rate_offline_notavailable);
+				offlineStatus.setText(R.string.rate_offline_notavailable);
 				return;
 			}
 			// Update the databse object
 			offline.update(beerId, customName, originalRatingId, originalRatingDate, appearance, aroma, taste, palate, overall, comments);
-			getRateBeerActivity().getHelper().getOfflineRatingDao().update(offline);
-			offlineButton.setText(R.string.rate_offline_availble);
+			offlineRatingDao.update(offline);
+			offlineStatus.setText(R.string.rate_offline_availble);
 		} catch (SQLException e) {
-			offlineButton.setText(R.string.rate_offline_notavailable);
+			offlineStatus.setText(R.string.rate_offline_notavailable);
 		}
 	}
 
@@ -547,7 +505,7 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 	};
 
 	protected void findRatedBeer() {
-		getRateBeerActivity().load(new FindRatedBeerFragment(offlineId));
+		load(FindRatedBeerFragment_.builder().offlineId(offlineId).build());
 	}
 
 	protected void postRating() {
@@ -578,20 +536,20 @@ public class RateFragment extends RateBeerFragment implements Runnable {
 				getActivity().startService(i);
 
 				// Share this rating?
-				if (shareBox.isChecked()) {
+				if (share.isChecked()) {
 					Intent s = new Intent(Intent.ACTION_SEND);
-				    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+					s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 					s.setType("text/plain");
-					s.putExtra(Intent.EXTRA_TEXT, String.format(getRateBeerActivity().getSettings()
-							.getRatingShareText(), Integer.toString(beerId), beerName, PostRatingCommand
-							.calculateTotal(aroma, appearance, taste, palate, overall), Integer
-							.toString(getRateBeerActivity().getUser().getUserID())));
+					s.putExtra(Intent.EXTRA_TEXT, String.format(getSettings().getRatingShareText(),
+							Integer.toString(beerId), beerName,
+							PostRatingCommand.calculateTotal(aroma, appearance, taste, palate, overall),
+							Integer.toString(getUser().getUserID())));
 					startActivity(Intent.createChooser(s, getString(R.string.app_sharerating)));
 				}
 
 				// Close this fragment and open add availability screen
 				getFragmentManager().popBackStack();
-				getRateBeerActivity().load(new AddAvailabilityFragment(beerName, beerId));
+				load(AddAvailabilityFragment_.builder().beerId(beerId).beerName(beerName).build());
 
 			} catch (NumberFormatException e) {
 				publishException(null, getText(R.string.rate_ratingnotcompleted).toString());

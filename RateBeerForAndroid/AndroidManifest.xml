@@ -18,8 +18,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ratebeer.android"
-	android:versionCode="31"
-	android:versionName="1.3.4"
+	android:versionCode="35"
+	android:versionName="1.4.0"
 	android:installLocation="auto">
 	
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16" />
@@ -29,6 +29,7 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 	<uses-feature android:name="android.hardware.location" android:required="false" />
 	<supports-screens 
@@ -47,7 +48,7 @@
 		android:theme="@style/Theme.RateBeer">
 		
 		<!-- Activities -->
-		<activity android:name="com.ratebeer.android.gui.Home">
+		<activity android:name="com.ratebeer.android.gui.Home_">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -65,16 +66,16 @@
 			<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
 		</activity>
  		
-		<activity android:name="com.ratebeer.android.gui.SignIn" android:theme="@style/Theme.RateBeer.SignIn" android:label="" />
-		<activity android:name="com.ratebeer.android.gui.PreferencesInterface"></activity>
+		<activity android:name="com.ratebeer.android.gui.SignIn_" android:theme="@style/Theme.RateBeer.SignIn" android:label="" />
+		<activity android:name="com.ratebeer.android.gui.PreferencesInterface_" />
 
 		<!-- Default search provider -->
 		<provider android:name="com.ratebeer.android.gui.SearchHistoryProvider" 
 			android:authorities="com.ratebeer.android.gui.SearchHistoryProvider" android:exported="false" />
-		<meta-data android:name="android.app.default_searchable" android:value="com.ratebeer.android.gui.Search" />
+		<meta-data android:name="android.app.default_searchable" android:value="com.ratebeer.android.gui.Home_" />
 		
 		<!-- Posting data to RateBeer -->
-		<service android:name="com.ratebeer.android.gui.components.PosterService" android:exported="false">
+		<service android:name="com.ratebeer.android.gui.components.PosterService_" android:exported="false">
 			<intent-filter>
 				<action android:name="com.ratebeer.android.SET_DRINKING_STATUS" />
 				<action android:name="com.ratebeer.android.POST_RATING" />
@@ -88,9 +89,9 @@
 		</service>
 
 		<!-- Retrieval of beermail and unread mail notifications -->
-		<service android:name="com.ratebeer.android.gui.components.BeermailService" />
-		<receiver android:name="com.ratebeer.android.gui.components.AlarmReceiver" />
-		<receiver android:name="com.ratebeer.android.gui.components.BootReceiver" >
+		<service android:name="com.ratebeer.android.gui.components.BeermailService_" />
+		<receiver android:name="com.ratebeer.android.gui.components.AlarmReceiver_" />
+		<receiver android:name="com.ratebeer.android.gui.components.BootReceiver_" >
 			<intent-filter >
 				<action android:name="android.intent.action.BOOT_COMPLETED" android:value="android.intent.action.BOOT_COMPLETED" />
 			</intent-filter>

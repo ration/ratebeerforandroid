@@ -17,12 +17,10 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,17 +28,19 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SearchBrewersCommand extends JsonCommand {
 
 	private final String query;
 	private ArrayList<BrewerSearchResult> results;
 
-	public SearchBrewersCommand(RateBeerApi api, String query) {
+	public SearchBrewersCommand(UserSettings api, String query) {
 		super(api, ApiMethod.SearchBrewers);
 		this.query = query;
 	}
@@ -54,9 +54,9 @@ public class SearchBrewersCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		try {
-			return HttpHelper.makeRBGet("http://www.ratebeer.com/json/bss.asp?k=" + HttpHelper.RB_KEY + "&bn="
+			return apiConnection.get("http://www.ratebeer.com/json/bss.asp?k=" + ApiConnection.RB_KEY + "&bn="
 					+ URLEncoder.encode(getNormalizedQuery(), HttpHelper.UTF8));
 		} catch (UnsupportedEncodingException e) {
 		}

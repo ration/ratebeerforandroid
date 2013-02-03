@@ -24,23 +24,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EReceiver;
 import com.ratebeer.android.app.ApplicationSettings;
-import com.ratebeer.android.app.RateBeerForAndroid;
+import com.ratebeer.android.gui.components.helpers.Log;
 
 /**
  * Receives a broadcast message when the device has started and is used to manually start/stop the alarm service.
  * @author erickok
  */
+@EReceiver
 public class BootReceiver extends BroadcastReceiver {
 
+	@Bean
+	protected Log Log;
+	
 	private static AlarmManager mgr;
 	private static PendingIntent pi = null;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(RateBeerForAndroid.LOG_NAME, "Boot signal received, starting beermail service");
+		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Boot signal received, starting beermail service");
 		startAlarm(context);
 	}
 

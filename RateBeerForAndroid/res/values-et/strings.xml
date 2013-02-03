@@ -88,7 +88,7 @@
 <string name="cellar_quantity">Kogus</string>
 <string name="cellar_addtocellar">Lisa õllekeldrisse</string>
 <string name="cellar_remove">Kustuta õllekeldrist</string>
-<string name="cellar_confirmremoval">Kas sa tahad %1$ oma õllekeldrist eemaldada?</string>
+<string name="cellar_confirmremoval">Kas sa tahad %1$s oma õllekeldrist eemaldada?</string>
 
 <string name="topbeers_country">Riik</string>
 <string name="topbeers_state">Maakond</string>

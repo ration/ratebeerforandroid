@@ -19,50 +19,45 @@ package com.ratebeer.android.gui.fragments;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 
+@EFragment(R.layout.fragment_about)
 public class AboutFragment extends RateBeerFragment {
+	
+	@ViewById
+	protected TextView version;
 	
 	public AboutFragment() {
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_about, container, false);
+	@AfterViews
+	protected void init() {
+		version.setText(ActivityUtil.getVersionNumber(getActivity()) + " (v"
+				+ ActivityUtil.getVersionCode(getActivity()) + ")");
+	}
+	
+	@Click
+	protected void rblinkClicked() {
+		if (getActivity() != null)
+			load(UserViewFragment_.builder().userId(101051).userName("erickok").build());
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	@Click
+	protected void weblinkClicked() {
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://2312.nl")));
+	}
 
-		((Button) getView().findViewById(R.id.rblink)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (getActivity() != null)
-					getRateBeerActivity().load(new UserViewFragment("erickok", 101051));
-			}
-		});
-		((Button) getView().findViewById(R.id.weblink)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://2312.nl")));
-			}
-		});
-		((Button) getView().findViewById(R.id.maillink)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:rb@2312.nl")));
-			}
-		});
+	@Click
+	protected void maillinkClicked() {
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:rb@2312.nl")));
 	}
 
 }

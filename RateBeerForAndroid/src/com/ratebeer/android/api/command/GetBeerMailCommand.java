@@ -17,27 +17,25 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetBeerMailCommand extends JsonCommand {
 
 	private final int messageId;
 	private MailDetails mail;
 
-	public GetBeerMailCommand(RateBeerApi api, int messageID) {
+	public GetBeerMailCommand(UserSettings api, int messageID) {
 		super(api, ApiMethod.GetBeerMail);
 		this.messageId = messageID;
 	}
@@ -47,9 +45,9 @@ public class GetBeerMailCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		String raw = HttpHelper.makeRBGet("http://www.ratebeer.com/json/message-view.asp?k=" + HttpHelper.RB_KEY + "&u="
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		String raw = apiConnection.get("http://www.ratebeer.com/json/message-view.asp?k=" + ApiConnection.RB_KEY + "&u="
 				+ Integer.toString(getUserSettings().getUserID()) + "&mid=" + Integer.toString(messageId));
 		// HACK: RateBeer returns invalid JSON; its two objects with mail data, something like:
 		// For now try to identify this (where the two objects end and begin at ][) and fix the JSON

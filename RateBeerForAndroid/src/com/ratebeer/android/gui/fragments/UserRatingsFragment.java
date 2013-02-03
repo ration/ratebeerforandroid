@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -27,115 +24,71 @@ import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.GetUserRatingsCommand;
 import com.ratebeer.android.api.command.GetUserRatingsCommand.UserRating;
-import com.ratebeer.android.gui.components.ArrayAdapter;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
+@EFragment(R.layout.fragment_userratings)
+@OptionsMenu({R.menu.refresh, R.menu.userratings})
 public class UserRatingsFragment extends RateBeerFragment {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("M/d/yyyy");
-	private static final String STATE_USERID = "userId";
-	private static final String STATE_PAGENR = "pageNr";
-	private static final String STATE_SORTORDER = "sortOrder";
-	private static final String STATE_RATINGS = "ratings";
 
-	private static final int MENU_SORTBY = 1;
+	@FragmentArg
+	@InstanceState
+	protected int userId;
+	@InstanceState
+	protected ArrayList<UserRating> ratings = null;
 
-	private LayoutInflater inflater;
-	private TextView emptyText;
-	private ListView ratingsView;
+	@ViewById(R.id.empty)
+	protected TextView emptyText;
+	@ViewById(R.id.ratings)
+	protected ListView ratingsView;
 	private FrameLayout ratingsViewFooter;
 
-	private int userId;
 	private boolean loading = false;
 	private int pageNr = 1;
 	private boolean preventLoadingOfMore = false;
 	private int sortOrder = GetUserRatingsCommand.SORTBY_DATE;
-	private ArrayList<UserRating> ratings = null;
 
 	public UserRatingsFragment() {
-		this(-1);
 	}
 
-	public UserRatingsFragment(int userId) {
-		this.userId = userId;
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_userratings, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		emptyText = (TextView) getView().findViewById(R.id.empty);
-		ratingsView = (ListView) getView().findViewById(R.id.ratings);
 		ratingsView.setOnScrollListener(onScrollListener);
 		ratingsView.setOnItemClickListener(onItemSelected);
-		ratingsViewFooter = (FrameLayout) inflater.inflate(R.layout.endlesslist_footer, null);
+		// Manual inflating of the 'loading spinner' layout that is displayed as the list's footer view
+		ratingsViewFooter = (FrameLayout) getActivity().getLayoutInflater().inflate(R.layout.endlesslist_footer, null);
 		showLoading(false);
 		ratingsView.addFooterView(ratingsViewFooter);
 
-		if (savedInstanceState != null) {
-			pageNr = savedInstanceState.getInt(STATE_PAGENR);
-			sortOrder = savedInstanceState.getInt(STATE_SORTORDER);
-			if (savedInstanceState.containsKey(STATE_RATINGS)) {
-				ArrayList<UserRating> savedRatings = savedInstanceState.getParcelableArrayList(STATE_RATINGS);
-				publishResults(savedRatings);
-			}
+		if (ratings != null) {
+			publishResults(ratings);
 		} else {
 			refreshRatings();
 		}
 
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(Menu.NONE, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH,
-				R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SORTBY, MENU_SORTBY, R.string.myratings_sortby);
-		item2.setIcon(R.drawable.ic_action_sortby);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshRatings();
-			break;
-		case MENU_SORTBY:
-			new UserRatingsSortDialog(this).show(getActivity().getSupportFragmentManager(), null);
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(STATE_USERID, userId);
-		outState.putInt(STATE_PAGENR, pageNr);
-		outState.putInt(STATE_SORTORDER, sortOrder);
-		if (ratings != null) {
-			outState.putParcelableArrayList(STATE_RATINGS, ratings);
-		}
+	@OptionsItem(R.id.menu_sortby)
+	protected void onSortRatings() {
+		new UserRatingsSortDialog(this).show(getActivity().getSupportFragmentManager(), null);
 	}
 
 	private OnScrollListener onScrollListener = new OnScrollListener() {
@@ -158,7 +111,8 @@ public class UserRatingsFragment extends RateBeerFragment {
 		refreshRatings();
 	}
 
-	private void refreshRatings() {
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshRatings() {
 		if (ratingsView.getAdapter() != null) {
 			ratingsView.setAdapter(null);
 			ratingsView.setVisibility(View.GONE);
@@ -170,9 +124,8 @@ public class UserRatingsFragment extends RateBeerFragment {
 	}
 
 	private void loadRatings() {
-		// Log.d(RateBeerForAndroid.LOG_NAME, "Loading ratings for user " + userId + " page " + pageNr);
 		showLoading(true);
-		execute(new GetUserRatingsCommand(getRateBeerActivity().getApi(), userId, pageNr, sortOrder));
+		execute(new GetUserRatingsCommand(getUser(), userId, pageNr, sortOrder));
 	}
 
 	private OnItemClickListener onItemSelected = new OnItemClickListener() {
@@ -180,7 +133,7 @@ public class UserRatingsFragment extends RateBeerFragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			UserRating item = ((UserRatingsAdapter) ((android.widget.HeaderViewListAdapter) ratingsView.getAdapter())
 					.getWrappedAdapter()).getItem(position);
-			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId));
+			load(BeerViewFragment_.builder().beerId(item.beerId).beerName(item.beerName).build());
 		}
 	};
 
@@ -236,10 +189,14 @@ public class UserRatingsFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			if (getActivity() == null) {
+				return convertView;
+			}
+			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null || convertView.getTag() == null) {
-				convertView = inflater.inflate(R.layout.list_item_userrating, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_userrating, null);
 				holder = new ViewHolder();
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
 				holder.brewer = (TextView) convertView.findViewById(R.id.brewer);
@@ -252,20 +209,14 @@ public class UserRatingsFragment extends RateBeerFragment {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			if (getRateBeerActivity() == null) {
-				return convertView;
-			}
-			
 			// Bind the data
 			UserRating item = getItem(position);
-			if (getActivity() != null) {
-				holder.beer.setText(item.beerName);
-				holder.brewer.setText(item.brewerName);
-				holder.style.setText(item.styleName);
-				holder.score.setText(getString(R.string.myratings_avg, String.format(DECIMAL_FORMATTER, item.score)));
-				holder.myrating.setText(String.format(DECIMAL_FORMATTER, item.myRating));
-				holder.date.setText(DATE_FORMATTER.format(item.date));
-			}
+			holder.beer.setText(item.beerName);
+			holder.brewer.setText(item.brewerName);
+			holder.style.setText(item.styleName);
+			holder.score.setText(getString(R.string.myratings_avg, String.format(DECIMAL_FORMATTER, item.score)));
+			holder.myrating.setText(String.format(DECIMAL_FORMATTER, item.myRating));
+			holder.date.setText(DATE_FORMATTER.format(item.date));
 
 			return convertView;
 		}

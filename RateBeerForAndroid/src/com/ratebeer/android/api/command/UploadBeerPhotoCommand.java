@@ -18,29 +18,23 @@
 package com.ratebeer.android.api.command;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Arrays;
 
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
 
-import com.android.internalcopy.http.multipart.FilePart;
-import com.android.internalcopy.http.multipart.MultipartEntity;
-import com.android.internalcopy.http.multipart.Part;
-import com.android.internalcopy.http.multipart.StringPart;
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
+import com.ratebeer.android.api.ApiException.ExceptionType;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
-import com.ratebeer.android.api.ApiException.ExceptionType;
+import com.ratebeer.android.api.UserSettings;
 
 public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 
 	private final int beerId;
 	private final File photo;
 
-	public UploadBeerPhotoCommand(RateBeerApi api, int beerId, File photo) {
+	public UploadBeerPhotoCommand(UserSettings api, int beerId, File photo) {
 		super(api, ApiMethod.UploadBeerPhoto);
 		this.beerId = beerId;
 		this.photo = photo;
@@ -55,13 +49,10 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		HttpPost post = new HttpPost("http://www.ratebeer.com/ajax/m_savebeerpic.asp");
-		Part[] parts = { new StringPart("BeerID", Integer.toString(beerId)), 
-				new FilePart("attach1", photo, FilePart.DEFAULT_CONTENT_TYPE, null) };
-		post.setEntity(new MultipartEntity(parts, post.getParams()));
-		String result = HttpHelper.makeRawRBPost(post, HttpStatus.SC_OK);
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		String result = apiConnection.postFile("http://www.ratebeer.com/ajax/m_savebeerpic.asp", 
+				Arrays.asList(new BasicNameValuePair("BeerID", Integer.toString(beerId))), photo, "attach1");
 		if (!result.contains("\"status\":\"success\"")) {
 			throw new ApiException(ExceptionType.CommandFailed, "Uploading of photo doesn't seem to be succesfull: "
 					+ result);

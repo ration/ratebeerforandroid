@@ -27,8 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -41,11 +39,15 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -57,98 +59,67 @@ import com.ratebeer.android.api.command.GetCheckinsCommand;
 import com.ratebeer.android.api.command.GetCheckinsCommand.CheckedInUser;
 import com.ratebeer.android.api.command.GetPlaceDetailsCommand;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
+import com.ratebeer.android.app.location.LocationUtils;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
-import com.ratebeer.android.gui.components.ActivityUtil;
-import com.ratebeer.android.gui.components.ArrayAdapter;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_placeview)
+@OptionsMenu({R.menu.refresh, R.menu.share})
 public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClickListener {
-
-	private static final String STATE_PLACEID = "placeId";
-	private static final String STATE_PLACE = "place";
-	private static final String STATE_CHECKINS= "checkins";
-	private static final String STATE_AVAILABLEBEERS = "availableBeers";
-
-	private static final int MENU_SHARE = 0;
-
-	private LayoutInflater inflater;
-	private ViewPager pager;
-	private TextView nameText, typeText, ratingText;
+	
+	@FragmentArg
+	@InstanceState
+	protected int placeId;
+	@FragmentArg
+	@InstanceState
+	protected Place place = null;
+	@FragmentArg
+	@InstanceState
+	protected Location currentLocation = null;
+	@InstanceState
+	protected ArrayList<CheckedInUser> checkins = null;
+	@InstanceState
+	protected ArrayList<AvailableBeer> availableBeers = null;
+	
+	@ViewById
+	protected ViewPager pager;
+	@ViewById
+	protected TabPageIndicator titles;
+	@ViewById(R.id.name)
+	protected TextView nameText;
+	@ViewById(R.id.rating)
+	protected TextView ratingText;
+	private TextView typeText;
 	private Button addressText, phoneText, checkinhereButton;
 	private FrameLayout mapFrame;
 	private ListView checkinsView;
 	private ListView availableBeersView;
 	private TextView availableBeersEmpty;
 
-	private int placeId;
-	private Place place;
-	private Location currentLocation;
-	private ArrayList<CheckedInUser> checkins = new ArrayList<CheckedInUser>();
-	private ArrayList<AvailableBeer> availableBeers = new ArrayList<AvailableBeer>();
-
 	public PlaceViewFragment() {
-		this(null, null);
-	}
-
-	/**
-	 * Show the details of some place
-	 * @param place The place object to show the details of
-	 * @param currentLocation The current location of the user; to calculate the distance to the place
-	 */
-	public PlaceViewFragment(Place place, Location currentLocation) {
-		this.place = place;
-		this.currentLocation = currentLocation;
-		if (place != null) {
-			this.placeId = place.placeID;
-		}
-	}
-
-	/**
-	 * Show the details of some place, of which we only know the place ID
-	 * @param place The place ID to retrieve and show the details of
-	 */
-	public PlaceViewFragment(int placeId) {
-		this.placeId = placeId;
 	}
 	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_placeview, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		pager = (ViewPager) getView().findViewById(R.id.pager);
-		PlacePagerAdapter placePagerAdapter = new PlacePagerAdapter();
-		pager.setAdapter(placePagerAdapter);
-		TabPageIndicator titles = (TabPageIndicator) getView().findViewById(R.id.titles);
+		pager.setAdapter(new PlacePagerAdapter());
 		titles.setViewPager(pager);
-		nameText = (TextView) getView().findViewById(R.id.name);
-		ratingText = (TextView) getView().findViewById(R.id.rating);
 		
-		if (savedInstanceState != null) {
-			placeId = savedInstanceState.getInt(STATE_PLACEID);
-			if (savedInstanceState.containsKey(STATE_PLACE)) {
-				place = savedInstanceState.getParcelable(STATE_PLACE);
-			}
-			if (savedInstanceState.containsKey(STATE_CHECKINS)) {
-				checkins = savedInstanceState.getParcelableArrayList(STATE_CHECKINS);
-			}
-			if (savedInstanceState.containsKey(STATE_AVAILABLEBEERS)) {
-				availableBeers = savedInstanceState.getParcelableArrayList(STATE_AVAILABLEBEERS);
-			}
+		if (checkins != null && availableBeers != null && place != null) {
+			publishDetails(place);
+			publishCheckins(checkins);
+			publishAvailableBeers(availableBeers);
 		} else if (place != null) {
 			// Use the already known details
+			publishDetails(place);
 			refreshCheckins();
 			refreshAvailableBeers();
 		} else {
@@ -157,71 +128,38 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 			refreshCheckins();
 			refreshAvailableBeers();
 		}
-		// Publish the current details, even when it is not loaded yet (and thus still empty)
-		publishDetails(place);
-		publishCheckins(checkins);
-		publishAvailableBeers(availableBeers);
 		
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SHARE, MENU_SHARE, R.string.app_share);
-		item2.setIcon(R.drawable.ic_action_share);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		super.onCreateOptionsMenu(menu, inflater);
+	@OptionsItem(R.id.menu_refresh)
+	protected void onRefresh() {
+		refreshDetails();
+		refreshCheckins();
+		refreshAvailableBeers();
 	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshDetails();
-			refreshCheckins();
-			refreshAvailableBeers();
-			break;
-		case MENU_SHARE:
-			if (place != null) {
-				// Start a share intent for this event
-				Intent s = new Intent(Intent.ACTION_SEND);
-			    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-				s.setType("text/plain");
-				s.putExtra(Intent.EXTRA_TEXT, getString(R.string.places_share, place.placeName, place.placeID));
-				startActivity(Intent.createChooser(s, getString(R.string.places_shareplace)));
-			}
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(STATE_PLACEID, placeId);
+	
+	@OptionsItem(R.id.menu_share)
+	protected void onShare() {
 		if (place != null) {
-			outState.putParcelable(STATE_PLACE, place);
-		}
-		if (checkins != null) {
-			outState.putParcelableArrayList(STATE_CHECKINS, checkins);
-		}
-		if (availableBeers != null) {
-			outState.putParcelableArrayList(STATE_AVAILABLEBEERS, availableBeers);
+			// Start a share intent for this event
+			Intent s = new Intent(Intent.ACTION_SEND);
+		    s.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			s.setType("text/plain");
+			s.putExtra(Intent.EXTRA_TEXT, getString(R.string.places_share, place.placeName, place.placeID));
+			startActivity(Intent.createChooser(s, getString(R.string.places_shareplace)));
 		}
 	}
 
 	private void refreshDetails() {
-		execute(new GetPlaceDetailsCommand(getRateBeerActivity().getApi(), placeId));
+		execute(new GetPlaceDetailsCommand(getUser(), placeId));
 	}
 
 	private void refreshCheckins() {
-		execute(new GetCheckinsCommand(getRateBeerActivity().getApi(), placeId));
+		execute(new GetCheckinsCommand(getUser(), placeId));
 	}
 
 	private void refreshAvailableBeers() {
-		execute(new GetAvailableBeersCommand(getRateBeerActivity().getApi(), placeId));
+		execute(new GetAvailableBeersCommand(getUser(), placeId));
 		availableBeersEmpty.setText(R.string.details_noavailability);
 	}
 
@@ -234,6 +172,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 				intent.setData(Uri.parse("geo:" + place.latitude + "," + place.longitude + 
 						"?q=" + URLEncoder.encode(place.placeName, HttpHelper.UTF8)));
 			} catch (UnsupportedEncodingException e) {
+				// UTF-8 always exists
 			}
 			startActivity(intent);
 		}
@@ -249,12 +188,12 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		}
 	};
 
-	private void onCheckinClick(int userId, String username) {
-		getRateBeerActivity().load(new UserViewFragment(username, userId));
+	private void onCheckinClick(int userId, String userName) {
+		load(UserViewFragment_.builder().userId(userId).userName(userName).build());
 	}
 
 	private void onAvailableBeerClick(int beerId, String beerName) {
-		getRateBeerActivity().load(new BeerViewFragment(beerName, beerId));
+		load(BeerViewFragment_.builder().beerId(beerId).beerName(beerName).build());
 	}
 	
 	@Override
@@ -275,7 +214,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		@Override
 		public void onClick(View v) {
 			// Check in to this place
-			execute(new CheckInCommand(getRateBeerActivity().getApi(), placeId));
+			execute(new CheckInCommand(getUser(), placeId));
 		}
 	};
 
@@ -310,17 +249,17 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		nameText.setText(place.placeName);
 		typeText.setText(PlacesFragment.getPlaceTypeName(getActivity(), place.placeType));
 		ratingText.setText(place.avgRating == -1? "?": Integer.toString(place.avgRating));
-		String distanceText = place.distance == -1D? "": "\n" + PlacesFragment.getPlaceDistance(getRateBeerActivity(), 
-				place, currentLocation);
+		String distanceText = place.distance == -1D ? "" : "\n"
+				+ LocationUtils.getPlaceDistance(getSettings(), getResources(), place, currentLocation);
 		addressText.setText(place.address + "\n" + place.city + distanceText);
 		phoneText.setText(place.phoneNumber);
 
 		// Get the activity-wide MapView to show on this fragment and center on this place's location
-		MapView mapView = getRateBeerActivity().requestMapViewInstance();
-		mapView.getController().setCenter(getRateBeerActivity().getPoint(place.latitude, place.longitude));
+		MapView mapView = ((RateBeerActivity)getActivity()).requestMapViewInstance();
+		mapView.getController().setCenter(LocationUtils.getPoint(place.latitude, place.longitude));
 		mapFrame.addView(mapView);
 		final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, place.placeType, this);
-		to.addOverlay(new OverlayItem(getRateBeerActivity().getPoint(place.latitude, place.longitude), place.placeName,
+		to.addOverlay(new OverlayItem(LocationUtils.getPoint(place.latitude, place.longitude), place.placeName,
 				place.avgRating > 0 ? getString(R.string.places_rateandcount, Integer.toString(place.avgRating))
 						: getString(R.string.places_notyetrated)));
 		mapView.getOverlays().add(to);
@@ -357,7 +296,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 			// Get the right view, using a ViewHolder
 			CheckinViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_checkedinuser, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_checkedinuser, null);
 				ActivityUtil.makeListItemClickable(convertView, onRowClick);
 				holder = new CheckinViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.user);
@@ -402,7 +341,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 			// Get the right view, using a ViewHolder
 			AvailableBeerViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_availablebeer, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_availablebeer, null);
 				ActivityUtil.makeListItemClickable(convertView, onRowClick);
 				holder = new AvailableBeerViewHolder();
 				holder.score = (TextView) convertView.findViewById(R.id.score);
@@ -415,15 +354,13 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 
 			// Bind the data
 			AvailableBeer item = getItem(position);
-			if (getActivity() != null) {
-				holder.beer.setTag(item.beerId);
-				holder.beer.setText(item.beerName);
-				holder.score.setText(item.averageRating == -1? "?": Integer.toString(item.averageRating));
-				if (item.timeEntered != null) {
-					holder.timerecorded.setText(getString(R.string.places_enteredat, dateFormat.format(item.timeEntered)));
-				} else {
-					holder.timerecorded.setText("");
-				}
+			holder.beer.setTag(item.beerId);
+			holder.beer.setText(item.beerName);
+			holder.score.setText(item.averageRating == -1? "?": Integer.toString(item.averageRating));
+			if (item.timeEntered != null) {
+				holder.timerecorded.setText(getString(R.string.places_enteredat, dateFormat.format(item.timeEntered)));
+			} else {
+				holder.timerecorded.setText("");
 			}
 			
 			return convertView;
@@ -506,23 +443,6 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		@Override
 		public boolean isViewFromObject(View view, Object object) {
 			return view == (View) object;
-		}
-
-		@Override
-		public void finishUpdate(View container) {
-		}
-
-		@Override
-		public Parcelable saveState() {
-			return null;
-		}
-
-		@Override
-		public void startUpdate(View container) {
-		}
-
-		@Override
-		public void restoreState(Parcelable state, ClassLoader loader) {
 		}
 
 	}

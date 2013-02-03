@@ -300,6 +300,5 @@
 	<string name="error_filenotvalid">File does not contain offline ratings (in the correct format)</string>
 	<string name="error_nocamera">Cannot take a photo; either you have no camera or cannot write to the external SD storage</string>
 	<string name="error_invalidurl">The website URL does not seem to be valid</string>
-	<string name="error_sendreport">Send error report</string>
 	
 </resources>

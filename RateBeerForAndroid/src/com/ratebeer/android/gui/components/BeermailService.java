@@ -52,7 +52,6 @@ import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
 import com.ratebeer.android.api.command.GetBeerMailCommand;
 import com.ratebeer.android.app.ApplicationSettings;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.gui.Home;
 import com.ratebeer.android.gui.components.helpers.DatabaseConsumerService;
@@ -85,7 +84,7 @@ public class BeermailService extends DatabaseConsumerService {
 	protected ConnectivityManager connectivityManager;
 
 	public BeermailService() {
-		super(RateBeerForAndroid.LOG_NAME + " BeermailService");
+		super(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME + " BeermailService");
 	}
 
 	public BeermailService(String name) {
@@ -97,7 +96,7 @@ public class BeermailService extends DatabaseConsumerService {
 
 		// TODO: Fix this for recent Android versions
 		if (!connectivityManager.getBackgroundDataSetting()) {
-			Log.d(RateBeerForAndroid.LOG_NAME,
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
 					"Skip the update, since background data is disabled on a system-wide level");
 			return;
 		}
@@ -105,7 +104,7 @@ public class BeermailService extends DatabaseConsumerService {
 		// Proper user settings?
 		UserSettings user = applicationSettings.getUserSettings();
 		if (user == null) {
-			Log.d(RateBeerForAndroid.LOG_NAME, "Canceling BeerMail check intent because there are no user settings known.");
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Canceling BeerMail check intent because there are no user settings known.");
 			return;
 		}
 
@@ -117,7 +116,7 @@ public class BeermailService extends DatabaseConsumerService {
 		CommandResult result = allMails.execute(apiConnection);
 		if (result instanceof CommandSuccessResult) {
 
-			Log.d(RateBeerForAndroid.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
 
 			final int MAX_CONTENTLENGTH = 50;
 			int unreadMails = 0;
@@ -209,14 +208,14 @@ public class BeermailService extends DatabaseConsumerService {
 				}
 
 			} catch (SQLException e) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "Error saving beermail to database: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Error saving beermail to database: " + e);
 				// If requested, call back the messenger, i.e. the calling activity
 				callbackMessenger(intent, RESULT_FAILURE);
 				return;
 			}
 
 			// Create a notification about the new mails
-			Log.d(RateBeerForAndroid.LOG_NAME, "User has " + unreadMails + " unread mails.");
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "User has " + unreadMails + " unread mails.");
 			if (!intent.hasExtra(EXTRA_MESSENGER) && unreadMails > 0) {
 
 				// Prepare senders text
@@ -294,7 +293,7 @@ public class BeermailService extends DatabaseConsumerService {
 		} else {
 			String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 					.toString() : "Unknown error";
-			Log.d(RateBeerForAndroid.LOG_NAME, "Error retrieving new beer mails: " + e);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Error retrieving new beer mails: " + e);
 			// If requested, call back the messenger, i.e. the calling activity
 			callbackMessenger(intent, RESULT_FAILURE);
 		}
@@ -311,7 +310,7 @@ public class BeermailService extends DatabaseConsumerService {
 				// Send it back to the messenger, i.e. the activity
 				callback.send(msg);
 			} catch (RemoteException e) {
-				Log.e(RateBeerForAndroid.LOG_NAME, "Cannot call back to activity to deliver message '" + msg.toString()
+				Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Cannot call back to activity to deliver message '" + msg.toString()
 						+ "'");
 			}
 		}

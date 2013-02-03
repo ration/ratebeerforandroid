@@ -40,7 +40,6 @@ import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.app.ApplicationSettings;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.helpers.ErrorLogSender;
 import com.ratebeer.android.gui.components.helpers.Log;
 import com.ratebeer.android.gui.components.helpers.OnProgressChangedListener;
@@ -207,7 +206,7 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 			onProgressChangedListener.setProgress(tasksRunning > 0);
 		}
 		// Distribute result
-		Log.d(RateBeerForAndroid.LOG_NAME, result.toString());
+		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, result.toString());
 		if (caller.isBound()) {
 			if (result instanceof CommandSuccessResult) {
 				caller.onTaskSuccessResult((CommandSuccessResult) result);

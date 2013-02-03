@@ -27,7 +27,6 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.helpers.ErrorLogEntry;
 
 /**
@@ -53,7 +52,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, BeerMail.class);
 			TableUtils.createTable(connectionSource, ErrorLogEntry.class);
 		} catch (SQLException e) {
-			Log.e(RateBeerForAndroid.LOG_NAME, "Could not create new table for OfflineRating", e);
+			Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Could not create new table for OfflineRating", e);
 		}
 	}
 
@@ -80,7 +79,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			}
 			
 		} catch (SQLException e) {
-			Log.e(RateBeerForAndroid.LOG_NAME, "Could not upgrade the table for OfflineRating", e);
+			Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Could not upgrade the table for OfflineRating", e);
 		}
 	}
 

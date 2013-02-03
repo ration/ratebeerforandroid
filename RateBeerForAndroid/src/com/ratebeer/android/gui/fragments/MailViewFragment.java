@@ -42,7 +42,6 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.DeleteBeerMailCommand;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.gui.components.BeermailService;
@@ -109,7 +108,7 @@ public class MailViewFragment extends RateBeerFragment {
 			try {
 				beerMailDao.update(mail);
 			} catch (SQLException e) {
-				Log.d(RateBeerForAndroid.LOG_NAME,
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
 						"Cannot write to database; wanted to save the read status of beer mail " + mail.getMessageId());
 			}
 		}

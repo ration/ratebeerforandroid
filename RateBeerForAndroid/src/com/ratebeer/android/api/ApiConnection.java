@@ -28,7 +28,6 @@ import com.googlecode.androidannotations.annotations.SystemService;
 import com.googlecode.androidannotations.api.Scope;
 import com.ratebeer.android.api.ApiException.ExceptionType;
 import com.ratebeer.android.api.command.SignInCommand;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.helpers.Log;
 
 @EBean(scope = Scope.Singleton)
@@ -181,7 +180,7 @@ public class ApiConnection {
 			try {
 				return prepared.execute().getPayload();
 			} catch (HttpClientException e) {
-				Log.i(RateBeerForAndroid.LOG_NAME, "GET failed: " + e.toString() + " (now retry)");
+				Log.i(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "GET failed: " + e.toString() + " (now retry)");
 				// Retry
 			}
 		}
@@ -207,7 +206,7 @@ public class ApiConnection {
 				sb.append(line + "\n");
 			}
 		} catch (IOException e) {
-			android.util.Log.e(RateBeerForAndroid.LOG_NAME, "HTTP InputStream received but an IO exception occured when reading it.");
+			android.util.Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "HTTP InputStream received but an IO exception occured when reading it.");
 		} finally {
 			try {
 				is.close();
@@ -262,7 +261,7 @@ public class ApiConnection {
 				// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy
 				// authentication/cookie mess by just trying again
 			} catch (HttpClientException e) {
-				Log.i(RateBeerForAndroid.LOG_NAME, "GET failed: " + e.toString() + " (now retry)");
+				Log.i(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "GET failed: " + e.toString() + " (now retry)");
 				// Retry
 			}
 		}

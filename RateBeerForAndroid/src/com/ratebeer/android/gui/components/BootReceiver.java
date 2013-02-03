@@ -28,7 +28,6 @@ import android.preference.PreferenceManager;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EReceiver;
 import com.ratebeer.android.app.ApplicationSettings;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.helpers.Log;
 
 /**
@@ -46,7 +45,7 @@ public class BootReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(RateBeerForAndroid.LOG_NAME, "Boot signal received, starting beermail service");
+		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Boot signal received, starting beermail service");
 		startAlarm(context);
 	}
 

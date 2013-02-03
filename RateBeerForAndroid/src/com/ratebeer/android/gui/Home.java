@@ -29,7 +29,6 @@ import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.ratebeer.android.R;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.BeermailService;
 import com.ratebeer.android.gui.components.BootReceiver;
 import com.ratebeer.android.gui.components.PosterService;
@@ -86,7 +85,7 @@ public class Home extends RateBeerActivity {
 					load(BeerViewFragment_.builder().beerId(beerId).build());
 					return;
 				} catch (NumberFormatException e) {
-					Log.d(RateBeerForAndroid.LOG_NAME, "Invalid ACTION_VIEW Intent data; " + segments.get(1)
+					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Invalid ACTION_VIEW Intent data; " + segments.get(1)
 							+ " is not a number.");
 				}
 			}

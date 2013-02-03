@@ -33,8 +33,6 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class RateBeerForAndroid extends Application {
 
-	public static final String LOG_NAME = "RateBeerForAndroid";
-
 	public static final String DEFAULT_FILES_DIR = Environment.getExternalStorageDirectory().toString()
 			+ "/RateBeerForAndroid";
 

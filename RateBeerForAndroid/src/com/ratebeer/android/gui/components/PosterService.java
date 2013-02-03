@@ -47,7 +47,6 @@ import com.ratebeer.android.api.command.SendBeerMailCommand;
 import com.ratebeer.android.api.command.SetDrinkingStatusCommand;
 import com.ratebeer.android.api.command.UploadBeerPhotoCommand;
 import com.ratebeer.android.app.ApplicationSettings;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.OfflineRating;
 import com.ratebeer.android.gui.Home;
 import com.ratebeer.android.gui.components.helpers.DatabaseConsumerService;
@@ -124,7 +123,7 @@ public class PosterService extends DatabaseConsumerService {
 	protected NotificationManager notificationManager;
 
 	public PosterService() {
-		super(RateBeerForAndroid.LOG_NAME + " PosterService");
+		super(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME + " PosterService");
 	}
 
 	public PosterService(String name) {
@@ -136,14 +135,14 @@ public class PosterService extends DatabaseConsumerService {
 
 		// Proper intent received?
 		if (intent == null || intent.getAction() == null) {
-			Log.d(RateBeerForAndroid.LOG_NAME, "No intent action to perform");
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "No intent action to perform");
 			return;
 		}
 
 		// Proper user settings?
 		UserSettings user = applicationSettings.getUserSettings();
 		if (user == null) {
-			Log.d(RateBeerForAndroid.LOG_NAME, "Canceling " + intent.getAction()
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Canceling " + intent.getAction()
 					+ " intent because there are no user settings known.");
 			return;
 		}
@@ -155,13 +154,13 @@ public class PosterService extends DatabaseConsumerService {
 			String newStatus = intent.getStringExtra(EXTRA_NEWSTATUS);
 			int beerId = intent.getIntExtra(EXTRA_BEERID, NO_BEER_EXTRA);
 			if (newStatus == null) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "No new drinking status is intent; cancelling");
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "No new drinking status is intent; cancelling");
 				return;
 			}
 
 			// Synchronously set the new drinking status
 			// During the operation a notification will be shown
-			Log.d(RateBeerForAndroid.LOG_NAME, "Now setting drinking status to " + newStatus);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now setting drinking status to " + newStatus);
 			Intent recoverIntent;
 			if (beerId == NO_BEER_EXTRA) {
 				// If no specific beer was tight to this drinking status, assume it was from the home screen's free text
@@ -181,7 +180,7 @@ public class PosterService extends DatabaseConsumerService {
 			} else {
 				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 						.toString() : "Unknown error";
-				Log.d(RateBeerForAndroid.LOG_NAME, "Setting drinking status to " + newStatus + " failed: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Setting drinking status to " + newStatus + " failed: " + e);
 				createNotification(NOTIFY_SETDRINKINGSTATUS, getString(R.string.app_settingdrinking),
 						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 				// If requested, call back the messenger, i.e. the calling activity
@@ -207,13 +206,13 @@ public class PosterService extends DatabaseConsumerService {
 			String comment = intent.getStringExtra(EXTRA_COMMENT);
 			if (beerId == NO_BEER_EXTRA || aroma <= 0 || appearance <= 0 || taste <= 0 || palate <= 0 || overall <= 0
 					|| beerName == null || comment == null) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "Missing extras in the POSTRATING intent; cancelling.");
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Missing extras in the POSTRATING intent; cancelling.");
 				return;
 			}
 
 			// Synchronously post the new rating
 			// During the operation a notification will be shown
-			Log.d(RateBeerForAndroid.LOG_NAME, "Now posting rating for " + beerName);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now posting rating for " + beerName);
 			Intent recoverIntent = new Intent(getApplicationContext(), Home.class);
 			recoverIntent.replaceExtras(intent.getExtras());
 			recoverIntent.setAction(ACTION_EDITRATING);
@@ -232,17 +231,17 @@ public class PosterService extends DatabaseConsumerService {
 					if (offlineId != NO_OFFLINE_EXTRA) {
 						OfflineRating offlineRating = getHelper().getOfflineRatingDao().queryForId(offlineId);
 						if (offlineRating != null) {
-							Log.d(RateBeerForAndroid.LOG_NAME, "Deleted the offline rating for this beer as well.");
+							Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Deleted the offline rating for this beer as well.");
 							getHelper().getOfflineRatingDao().delete(offlineRating);
 						}
 					}
 				} catch (SQLException e) {
-					Log.d(RateBeerForAndroid.LOG_NAME, "Offline rating not available: " + e.toString());
+					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Offline rating not available: " + e.toString());
 				}
 			} else {
 				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 						.toString() : "Unknown error";
-				Log.d(RateBeerForAndroid.LOG_NAME, "Posting of rating for " + beerName + " failed: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Posting of rating for " + beerName + " failed: " + e);
 				createNotification(NOTIFY_POSTINGRATING, getString(R.string.app_postingrating),
 						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 				// If requested, call back the messenger, i.e. the calling activity
@@ -260,13 +259,13 @@ public class PosterService extends DatabaseConsumerService {
 			int userId = intent.getIntExtra(EXTRA_USERID, -1);
 			int liked = intent.getIntExtra(EXTRA_LIKED, EXTRA_TICK_DELETE);
 			if (beerId == NO_BEER_EXTRA || beerName == null || userId <= 0 || liked == 0 || liked > 5 || liked < -1) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "Missing extras in the POSTRATING intent; cancelling.");
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Missing extras in the POSTRATING intent; cancelling.");
 				return;
 			}
 
 			// Synchronously post the tick update
 			// During the operation a notification will be shown
-			Log.d(RateBeerForAndroid.LOG_NAME, "Now ticking " + beerName);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now ticking " + beerName);
 			Intent recoverIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(URI_BEER, Integer
 					.toString(beerId))));
 			// If liked (the actual tick) is set to -1 we delete this tick instead
@@ -287,7 +286,7 @@ public class PosterService extends DatabaseConsumerService {
 			} else {
 				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 						.toString() : "Unknown error";
-				Log.d(RateBeerForAndroid.LOG_NAME, (del ? "Removing of tick for " : "Ticking of ") + beerName
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, (del ? "Removing of tick for " : "Ticking of ") + beerName
 						+ " failed: " + e);
 				createNotification(NOTIFY_POSTINGRATING, getString(del ? R.string.app_removingtick
 						: R.string.app_postingtick), getString(R.string.error_commandfailed), true, recoverIntent,
@@ -310,13 +309,13 @@ public class PosterService extends DatabaseConsumerService {
 			boolean isOnBottleCan = intent.getBooleanExtra(EXTRA_ONBOTTLECAN, false);
 			boolean isOnTap = intent.getBooleanExtra(EXTRA_ONTAP, false);
 			if (beerId <= 0 || beerName == null) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "Missing extras in the ADDAVAILABILITY intent; cancelling.");
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Missing extras in the ADDAVAILABILITY intent; cancelling.");
 				return;
 			}
 
 			// Synchronously post the availability info
 			// During the operation a notification will be shown
-			Log.d(RateBeerForAndroid.LOG_NAME, "Now adding availability for " + beerName);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now adding availability for " + beerName);
 			Intent recoverIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(URI_BEER, Integer
 					.toString(beerId))));
 			createNotification(NOTIFY_ADDAVAILABILITY, getString(R.string.app_addingavailability), getString(
@@ -328,7 +327,7 @@ public class PosterService extends DatabaseConsumerService {
 			} else {
 				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 						.toString() : "Unknown error";
-				Log.d(RateBeerForAndroid.LOG_NAME, "Adding of availability info for " + beerName + " failed: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Adding of availability info for " + beerName + " failed: " + e);
 				createNotification(NOTIFY_ADDAVAILABILITY, getString(R.string.app_addingavailability),
 						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 			}
@@ -346,13 +345,13 @@ public class PosterService extends DatabaseConsumerService {
 			String vintage = intent.getStringExtra(EXTRA_VINTAGE);
 			String quantity = intent.getStringExtra(EXTRA_QUANTITY);
 			if (beerId <= 0 || beerName == null) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "Missing extras in the ADDAVAILABILITY intent; cancelling.");
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Missing extras in the ADDAVAILABILITY intent; cancelling.");
 				return;
 			}
 
 			// Synchronously post the new cellar beer
 			// During the operation a notification will be shown
-			Log.d(RateBeerForAndroid.LOG_NAME, "Now adding " + beerName + " to the cellar");
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now adding " + beerName + " to the cellar");
 			Intent recoverIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(URI_BEER, Integer
 					.toString(beerId))));
 			createNotification(NOTIFY_ADDTOCELLAR, getString(R.string.app_addingtocellar), getString(
@@ -365,7 +364,7 @@ public class PosterService extends DatabaseConsumerService {
 			} else {
 				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 						.toString() : "Unknown error";
-				Log.d(RateBeerForAndroid.LOG_NAME, "Adding of " + beerName + " to cellar failed: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Adding of " + beerName + " to cellar failed: " + e);
 				createNotification(NOTIFY_ADDTOCELLAR, getString(R.string.app_addingtocellar),
 						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 			}
@@ -382,7 +381,7 @@ public class PosterService extends DatabaseConsumerService {
 
 			// Synchronously send the mail
 			// During the operation a notification will be shown
-			Log.d(RateBeerForAndroid.LOG_NAME, "Now sending mail to " + sendTo);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now sending mail to " + sendTo);
 			Intent recoverIntent = new Intent(Intent.ACTION_VIEW);
 			// TODO: Direct this recovery intent to the send mail screen
 			createNotification(NOTIFY_SENDMAIL, getString(R.string.mail_sendingmail), getString(
@@ -393,7 +392,7 @@ public class PosterService extends DatabaseConsumerService {
 			} else {
 				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 						.toString() : "Unknown error";
-				Log.d(RateBeerForAndroid.LOG_NAME, "Sending of mail to " + sendTo + " failed: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Sending of mail to " + sendTo + " failed: " + e);
 				createNotification(NOTIFY_SENDMAIL, getString(R.string.mail_sendingmail),
 						getString(R.string.error_commandfailed), true, recoverIntent, sendTo, NO_BEER_EXTRA);
 			}
@@ -411,14 +410,14 @@ public class PosterService extends DatabaseConsumerService {
 				beerName = "beer with ID " + Integer.toString(beerId);
 			}
 			if (photo == null || photo.getPath() == null || !(new File(photo.getPath()).exists())) {
-				Log.d(RateBeerForAndroid.LOG_NAME,
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
 						"No photo URI provided or the photo URI does not point to an existing file; cancelling");
 				return;
 			}
 
 			// Synchronously upload the photo for the specified beer
 			// During the operation a notification will be shown
-			Log.d(RateBeerForAndroid.LOG_NAME, "Uploading photo for " + beerName);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Uploading photo for " + beerName);
 			Intent recoverIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(URI_BEER, Integer
 					.toString(beerId))));
 			createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto), getString(
@@ -428,7 +427,7 @@ public class PosterService extends DatabaseConsumerService {
 			try {
 				decodeFile(photo);
 			} catch (IOException e1) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "Resizing of photo + " + photo.toString() + " for " + beerName + 
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Resizing of photo + " + photo.toString() + " for " + beerName + 
 						" failed: " + e1);
 				createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto),
 						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
@@ -446,7 +445,7 @@ public class PosterService extends DatabaseConsumerService {
 			} else {
 				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 						.toString() : "Unknown error";
-				Log.d(RateBeerForAndroid.LOG_NAME, "Uploading photo for " + beerName + " failed: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Uploading photo for " + beerName + " failed: " + e);
 				createNotification(NOTIFY_UPLOADPHOTO, getString(R.string.app_uploadingphoto),
 						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 				// If requested, call back the messenger, i.e. the calling activity
@@ -463,13 +462,13 @@ public class PosterService extends DatabaseConsumerService {
 			String beerName = intent.getStringExtra(EXTRA_BEERNAME);
 			String upcCode = intent.getStringExtra(EXTRA_UPCCODE);
 			if (beerId <= 0 || beerName == null || upcCode == null || upcCode.equals("")) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "Missing extras in the ADD_UPCCODE intent; cancelling.");
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Missing extras in the ADD_UPCCODE intent; cancelling.");
 				return;
 			}
 
 			// Synchronously call the add UPC code method
 			// During the operation a notification will be shown
-			Log.d(RateBeerForAndroid.LOG_NAME, "Adding barcode " + upcCode + " to " + beerName);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Adding barcode " + upcCode + " to " + beerName);
 			Intent recoverIntent = new Intent(getApplicationContext(), Home.class);
 			recoverIntent.replaceExtras(intent.getExtras());
 			recoverIntent.setAction(ACTION_ADDUPCCODE);
@@ -481,7 +480,7 @@ public class PosterService extends DatabaseConsumerService {
 			} else {
 				String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 						.toString() : "Unknown error";
-				Log.d(RateBeerForAndroid.LOG_NAME, "Adding of barcode " + upcCode + " to " + beerName + " failed: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Adding of barcode " + upcCode + " to " + beerName + " failed: " + e);
 				createNotification(NOTIFY_ADDUPCCODE, getString(R.string.app_addingupccode),
 						getString(R.string.error_commandfailed), true, recoverIntent, null, beerId);
 			}
@@ -532,7 +531,7 @@ public class PosterService extends DatabaseConsumerService {
 				// Send it back to the messenger, i.e. the activity
 				callback.send(msg);
 			} catch (RemoteException e) {
-				Log.e(RateBeerForAndroid.LOG_NAME, "Cannot call back to activity to deliver message '" + msg.toString()
+				Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Cannot call back to activity to deliver message '" + msg.toString()
 						+ "'");
 			}
 		}

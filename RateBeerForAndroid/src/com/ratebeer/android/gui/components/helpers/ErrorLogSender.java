@@ -82,11 +82,11 @@ public class ErrorLogSender {
 				context.startActivity(Intent.createChooser(target, context.getString(R.string.error_sendreport))
 						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 			} catch (ActivityNotFoundException e) {
-				Log.i(RateBeerForAndroid.LOG_NAME, "Tried to send error log, but there is no email app installed.");
+				Log.i(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Tried to send error log, but there is no email app installed.");
 			}
 			
 		} catch (SQLException e) {
-			Log.e(RateBeerForAndroid.LOG_NAME,
+			Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
 					"Cannot read the error log to build an error report to send: " + e.toString());
 		}
     	

@@ -288,7 +288,7 @@ public class BeerViewFragment extends RateBeerFragment {
 			}
 		}
 		if (style == null) {
-			Log.d(RateBeerForAndroid.LOG_NAME, "Wanted to get the beer style of " + beerName + 
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Wanted to get the beer style of " + beerName + 
 					" (#" + beerId + "), which is " + details.beerStyle + " but can't find it in our own list.");
 			publishException(null, getString(R.string.error_stylenotfound));
 			return;

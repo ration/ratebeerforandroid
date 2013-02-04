@@ -28,7 +28,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		context.startService(new Intent(context, BeermailService.class));
+		context.startService(new Intent(context, BeermailService_.class));
 	}
 
 }

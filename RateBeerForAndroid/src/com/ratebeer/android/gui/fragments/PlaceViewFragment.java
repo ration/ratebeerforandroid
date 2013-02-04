@@ -119,6 +119,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 			publishAvailableBeers(availableBeers);
 		} else if (place != null) {
 			// Use the already known details
+			placeId = place.placeID;
 			publishDetails(place);
 			refreshCheckins();
 			refreshAvailableBeers();

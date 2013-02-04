@@ -64,7 +64,7 @@ import android.os.Build;
  */
 public final class HttpRequestBuilder {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-    private static final String CONTENT_CHARSET = "UTF-8";
+    private static final String CONTENT_CHARSET = "iso-8859-1";
     private static final Map<String, List<String>> NO_HEADERS = new HashMap<String, List<String>>(0);
     private static TrustManager[] trustManagers;
     private final byte[] buffer = new byte[1024];

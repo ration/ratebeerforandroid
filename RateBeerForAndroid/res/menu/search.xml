@@ -8,16 +8,16 @@
 		android:showAsAction="ifRoom" />
 	
 	<item 
-		android:id="@+id/menu_scanbarcode" 
-		android:title="@string/search_barcodescanner"
-		android:icon="@drawable/ic_action_barcode"
-		android:showAsAction="ifRoom" />
-	
-	<item 
 		android:id="@+id/menu_refresh" 
 		android:title="@string/app_refresh"
 		android:icon="@drawable/ic_action_refresh"
 		android:showAsAction="ifRoom|withText" />
+	
+	<item 
+		android:id="@+id/menu_scanbarcode" 
+		android:title="@string/search_barcodescanner"
+		android:icon="@drawable/ic_action_barcode"
+		android:showAsAction="ifRoom" />
 	
 	<item 
 		android:id="@+id/menu_clearhistory" 

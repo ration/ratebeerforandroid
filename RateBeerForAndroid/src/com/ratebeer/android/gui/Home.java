@@ -41,7 +41,7 @@ import com.ratebeer.android.gui.fragments.BeerViewFragment_;
 import com.ratebeer.android.gui.fragments.DashboardFragment;
 import com.ratebeer.android.gui.fragments.DashboardFragment_;
 import com.ratebeer.android.gui.fragments.MailViewFragment_;
-import com.ratebeer.android.gui.fragments.MailsFragment;
+import com.ratebeer.android.gui.fragments.MailsFragment_;
 import com.ratebeer.android.gui.fragments.RateFragment_;
 import com.ratebeer.android.gui.fragments.SearchFragment_;
 import com.ratebeer.android.gui.fragments.SendMailFragment;
@@ -106,7 +106,7 @@ public class Home extends RateBeerActivity {
 		
 		// Open the beermails screen
 		if (action.equals(BeermailService.ACTION_VIEWBEERMAILS)) {
-			load(new MailsFragment());
+			load(MailsFragment_.builder().build());
 			return;
 		}
 		
@@ -115,10 +115,22 @@ public class Home extends RateBeerActivity {
 			load(MailViewFragment_.buildFromExtras(getIntent().getExtras()));
 			return;
 		}
-		
+
+		// Open the beermail send mail screen to reply to a specific mail
+		if (action.equals(BeermailService.ACTION_REPLYBEERMAIL)) {
+			load(SendMailFragment.buildReplyFromExtras(getIntent().getExtras()));
+			return;
+		}
+
+		// Open the beermail send mail screen to recover a failed send
+		if (action.equals(PosterService.ACTION_SENDMAIL)) {
+			load(SendMailFragment.buildFromFailedSend(getIntent().getExtras()));
+			return;
+		}
+
 		// Open the beermail reply screen to a specific mail
 		if (action.equals(BeermailService.ACTION_REPLYBEERMAIL)) {
-			load(SendMailFragment.buildFromExtras(getIntent().getExtras()));
+			load(SendMailFragment.buildReplyFromExtras(getIntent().getExtras()));
 			return;
 		}
 		

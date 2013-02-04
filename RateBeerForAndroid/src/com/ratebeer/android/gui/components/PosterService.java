@@ -48,7 +48,7 @@ import com.ratebeer.android.api.command.SetDrinkingStatusCommand;
 import com.ratebeer.android.api.command.UploadBeerPhotoCommand;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.persistance.OfflineRating;
-import com.ratebeer.android.gui.Home;
+import com.ratebeer.android.gui.Home_;
 import com.ratebeer.android.gui.components.helpers.DatabaseConsumerService;
 import com.ratebeer.android.gui.components.helpers.Log;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
@@ -165,7 +165,7 @@ public class PosterService extends DatabaseConsumerService {
 			if (beerId == NO_BEER_EXTRA) {
 				// If no specific beer was tight to this drinking status, assume it was from the home screen's free text
 				// input
-				recoverIntent = new Intent(this, Home.class);
+				recoverIntent = new Intent(this, Home_.class);
 			} else {
 				recoverIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(URI_BEER, Integer
 						.toString(beerId))));
@@ -213,7 +213,7 @@ public class PosterService extends DatabaseConsumerService {
 			// Synchronously post the new rating
 			// During the operation a notification will be shown
 			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now posting rating for " + beerName);
-			Intent recoverIntent = new Intent(getApplicationContext(), Home.class);
+			Intent recoverIntent = new Intent(getApplicationContext(), Home_.class);
 			recoverIntent.replaceExtras(intent.getExtras());
 			recoverIntent.setAction(ACTION_EDITRATING);
 			createNotification(NOTIFY_POSTINGRATING, getString(R.string.app_postingrating), getString(
@@ -382,8 +382,9 @@ public class PosterService extends DatabaseConsumerService {
 			// Synchronously send the mail
 			// During the operation a notification will be shown
 			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now sending mail to " + sendTo);
-			Intent recoverIntent = new Intent(Intent.ACTION_VIEW);
-			// TODO: Direct this recovery intent to the send mail screen
+			Intent recoverIntent = new Intent(getApplicationContext(), Home_.class);
+			recoverIntent.replaceExtras(intent.getExtras());
+			recoverIntent.setAction(ACTION_SENDMAIL);
 			createNotification(NOTIFY_SENDMAIL, getString(R.string.mail_sendingmail), getString(
 					R.string.mail_sendingto, sendTo), true, recoverIntent, sendTo, NO_BEER_EXTRA);
 			CommandResult result = new SendBeerMailCommand(user, sendTo, subject, body).execute(apiConnection);
@@ -469,7 +470,7 @@ public class PosterService extends DatabaseConsumerService {
 			// Synchronously call the add UPC code method
 			// During the operation a notification will be shown
 			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Adding barcode " + upcCode + " to " + beerName);
-			Intent recoverIntent = new Intent(getApplicationContext(), Home.class);
+			Intent recoverIntent = new Intent(getApplicationContext(), Home_.class);
 			recoverIntent.replaceExtras(intent.getExtras());
 			recoverIntent.setAction(ACTION_ADDUPCCODE);
 			createNotification(NOTIFY_ADDUPCCODE, getString(R.string.app_addingupccode), getString(

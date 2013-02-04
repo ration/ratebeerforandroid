@@ -33,7 +33,7 @@ import com.ratebeer.android.api.UserSettings;
 
 public class PostRatingCommand extends Command {
 
-	private static final String POST_SUCCESS = "This object may be found <a HREF=\"/availability";
+	private static final String POST_SUCCESS = "This object may be found <a HREF=\"/";
 
 	private final int beerId;
 	private final int ratingID;

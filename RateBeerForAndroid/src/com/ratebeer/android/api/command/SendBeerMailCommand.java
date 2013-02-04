@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -49,7 +50,7 @@ public class SendBeerMailCommand extends EmptyResponseCommand {
 						new BasicNameValuePair("UserName", "0"),
 						new BasicNameValuePair("RecipientName", sendTo),
 						new BasicNameValuePair("Subject", subject),
-						new BasicNameValuePair("Body", body)));
+						new BasicNameValuePair("Body", body)), HttpURLConnection.HTTP_MOVED_TEMP);
 	}
 
 }

@@ -37,8 +37,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.OptionsItem;
@@ -54,6 +52,7 @@ import com.ratebeer.android.api.command.DeleteBeerMailCommand;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.gui.components.BeermailService;
+import com.ratebeer.android.gui.components.BeermailService_;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
@@ -63,7 +62,6 @@ import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 @OptionsMenu({R.menu.refresh, R.menu.mails})
 public class MailsFragment extends RateBeerFragment {
 
-	private static final int MENU_SEND = 0;
 	private static final int MENU_DELETE = 10;
 	private static final int MENU_REPLY = 11;
 
@@ -96,7 +94,7 @@ public class MailsFragment extends RateBeerFragment {
 	@OptionsItem(R.id.menu_refresh)
 	protected void refreshMails() {
 		// Start the background service to get new mail
-		Intent i = new Intent(getActivity(), BeermailService.class);
+		Intent i = new Intent(getActivity(), BeermailService_.class);
 		i.putExtra(BeermailService.EXTRA_MESSENGER, new Messenger(new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
@@ -175,7 +173,7 @@ public class MailsFragment extends RateBeerFragment {
 			break;
 		case MENU_REPLY:
 			// Start the mail reply screen
-			load(SendMailFragment.buildFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
+			load(SendMailFragment.buildReplyFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
 			break;
 		}
 		return super.onContextItemSelected(item);

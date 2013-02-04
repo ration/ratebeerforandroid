@@ -50,7 +50,7 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 	@Bean
 	protected Log Log;
 	@Bean
-	protected ApplicationSettings applicationSettings;
+	protected ApplicationSettings applicationSettings = null;
 	
 	public RateBeerFragment() {
 		setHasOptionsMenu(true);
@@ -59,19 +59,35 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
+		// Provide sign in/my profile action option
+		// Note: text and action is not set until onPrepareOptionsMenu
+		MenuItem signin = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNIN, RateBeerActivity.MENU_SIGNIN, "");
+		signin.setIcon(R.drawable.ic_action_signin);
+		signin.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		// Provide sign out option (always shown in (overflow) menu)
+		// Note: action is not shown until onPrepareOptionsMenu
+		MenuItem signout = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNOUT, RateBeerActivity.MENU_SIGNOUT, R.string.signin_signout);
+		signout.setIcon(R.drawable.ic_menu_signout);
+		signout.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+
 		// Add user sign in/out item
+		MenuItem signIn = menu.findItem(RateBeerActivity.MENU_SIGNIN);
+		MenuItem signOut = menu.findItem(RateBeerActivity.MENU_SIGNOUT);
 		if (showSignInMenuItem && getActivity() != null) {
 			String userText = getUser() == null? getString(R.string.signin_signin): getUser().getUsername();
-			// Provide sign in/my profile action option
-			MenuItem signin = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNIN, RateBeerActivity.MENU_SIGNIN, userText);
-			signin.setIcon(R.drawable.ic_action_signin);
-			signin.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-			if (getUser() != null) {
-				// Provide sign out option (always shown in (overflow) menu)
-				MenuItem signout = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNOUT, RateBeerActivity.MENU_SIGNOUT, R.string.signin_signout);
-				signout.setIcon(R.drawable.ic_menu_signout);
-				signout.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-			}
+			signIn.setVisible(true);
+			signIn.setTitle(userText);
+			signOut.setVisible(getUser() != null);
+		} else {
+			signIn.setVisible(false);
+			signOut.setVisible(false);
 		}
 		
 		// If there is an action bar item representing MENU_REFRESH and we have tasks in progress, show custom view with an undetermined progress indicator
@@ -84,7 +100,6 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 			}
 		}
 
-		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
@@ -233,6 +248,8 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 	}
 	
 	protected UserSettings getUser() {
+		if (applicationSettings == null)
+			return null;
 		return applicationSettings.getUserSettings();
 	}
 

@@ -23,12 +23,11 @@ import java.text.DateFormat;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
 import com.googlecode.androidannotations.annotations.InstanceState;
@@ -60,6 +59,7 @@ public class MailViewFragment extends RateBeerFragment {
 
 	@ViewById
 	protected TextView subject, body;
+	@ViewById
 	protected Button sender;
 
 	@OrmLiteDao(helper = DatabaseHelper.class, model = BeerMail.class)
@@ -75,8 +75,6 @@ public class MailViewFragment extends RateBeerFragment {
 
 	@AfterViews
 	public void init() {
-
-		sender.setOnClickListener(onSenderClick);
 
 		if (dateFormat == null) {
 			dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
@@ -117,7 +115,7 @@ public class MailViewFragment extends RateBeerFragment {
 
 	@OptionsItem(R.id.menu_reply)
 	protected void onReply() {
-		load(SendMailFragment_.buildFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
+		load(SendMailFragment_.buildReplyFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
 	}
 
 	@OptionsItem(R.id.menu_delete)
@@ -132,13 +130,11 @@ public class MailViewFragment extends RateBeerFragment {
 			}
 		}, R.string.mail_confirmdelete, mail.getSenderName()).show(getFragmentManager(), "dialog");
 	}
-	
-	private OnClickListener onSenderClick = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			load(UserViewFragment_.builder().userId(mail.getSenderId()).userName(mail.getSenderName()).build());
-		}
-	};
+
+	@Click(R.id.sender)
+	protected void onSenderClick() {
+		load(UserViewFragment_.builder().userId(mail.getSenderId()).userName(mail.getSenderName()).build());
+	}
 
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {

@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
@@ -53,7 +54,7 @@ import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
 import com.ratebeer.android.api.command.GetBeerMailCommand;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.persistance.BeerMail;
-import com.ratebeer.android.gui.Home;
+import com.ratebeer.android.gui.Home_;
 import com.ratebeer.android.gui.components.helpers.DatabaseConsumerService;
 import com.ratebeer.android.gui.components.helpers.Log;
 
@@ -94,8 +95,7 @@ public class BeermailService extends DatabaseConsumerService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		// TODO: Fix this for recent Android versions
-		if (!connectivityManager.getBackgroundDataSetting()) {
+		if (isBackgroundDataDisabled()) {
 			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
 					"Skip the update, since background data is disabled on a system-wide level");
 			return;
@@ -231,7 +231,7 @@ public class BeermailService extends DatabaseConsumerService {
 				}
 				
 				// Set notification action target
-				Intent contentIntent = new Intent(this, Home.class);
+				Intent contentIntent = new Intent(this, Home_.class);
 				contentIntent.setAction(ACTION_VIEWBEERMAILS);
 
 				// Retrieve user of some sender to show with the notification
@@ -261,12 +261,12 @@ public class BeermailService extends DatabaseConsumerService {
 					inbox.setSummaryText(getString(R.string.app_moremail, Integer.toString(unreadMails - 3)));
 				}
 				if (unreadMails == 1) {
-					Intent replyIntent = new Intent(this, Home.class);
+					Intent replyIntent = new Intent(this, Home_.class);
 					replyIntent.setAction(ACTION_REPLYBEERMAIL);
 					replyIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
 					builder.addAction(R.drawable.ic_stat_reply, getString(R.string.mail_reply),
 							PendingIntent.getActivity(this, 0, replyIntent, 0));
-					Intent viewIntent = new Intent(this, Home.class);
+					Intent viewIntent = new Intent(this, Home_.class);
 					viewIntent.setAction(ACTION_VIEWBEERMAIL);
 					viewIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
 					builder.addAction(R.drawable.ic_stat_viewmail, getString(R.string.mail_view),
@@ -298,6 +298,17 @@ public class BeermailService extends DatabaseConsumerService {
 			callbackMessenger(intent, RESULT_FAILURE);
 		}
 
+	}
+
+	@SuppressWarnings("deprecation")
+	private boolean isBackgroundDataDisabled() {
+		if (android.os.Build.VERSION.SDK_INT >= 14) {
+			// Note: getBackgroundDataSetting will always return true on API level 14 and up
+			NetworkInfo ni = connectivityManager.getActiveNetworkInfo();
+			return ni == null || !ni.isAvailable() || !ni.isConnected();
+		} else {
+			return !connectivityManager.getBackgroundDataSetting();
+		}
 	}
 
 	private void callbackMessenger(Intent intent, int result) {

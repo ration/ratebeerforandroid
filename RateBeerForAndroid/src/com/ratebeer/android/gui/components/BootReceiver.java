@@ -59,7 +59,7 @@ public class BootReceiver extends BroadcastReceiver {
 		if (isBeermailEnabled(context)) {
 			// Set up PendingIntent for the alarm service
 			mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-			Intent i = new Intent(context, AlarmReceiver.class);
+			Intent i = new Intent(context, AlarmReceiver_.class);
 			pi = PendingIntent.getBroadcast(context, 0, i, 0);
 			// First intent after a small (2 second) delay and repeat at the user-set intervals
 			mgr.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 2000,

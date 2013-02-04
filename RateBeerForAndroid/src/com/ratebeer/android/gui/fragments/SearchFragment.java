@@ -289,7 +289,7 @@ public class SearchFragment extends RateBeerFragment {
 			List<UpcSearchResult> results = command.getUpcSearchResults();
 			if (results.size() > 0) {
 				// Beer found: redirect to beer details
-				load(BeerViewFragment_.builder().beerName(results.get(0).beerName).beerId(results.get(0).brewerId)
+				load(BeerViewFragment_.builder().beerName(results.get(0).beerName).beerId(results.get(0).beerId)
 						.build());
 			} else {
 				noBarcodeResult(command.getSearchedUpcCode());

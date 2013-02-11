@@ -162,7 +162,7 @@
 	<string name="search_alias">alias</string>
 	<string name="search_rated">rated</string>
 	<string name="search_ratings">%1$s ratings</string>
-	<string name="search_aliasedbeer">This is an aliased beer: no details available</string>
+	<string name="search_aliasedbeer_redirect">This is an aliased beer: trying to redirect now</string>
 	
 	<string name="details_bybrewer">by %1$s</string>
 	<string name="details_score">Score</string>
@@ -286,9 +286,10 @@
 		<item>24 hours</item>
 	</string-array>
 			
-	<string name="error_offline">You do not have an internet connection or RateBeer.com is offline</string>
+	<string name="error_offline">You do not have an internet connection</string>
+	<string name="error_connectionfailure">Connection failure - your connection is poor or RateBeer is offline</string>
+	<string name="error_commandfailed">The command failed unexpectedly - RateBeer is misbehaving or the connection is poor</string>
 	<string name="error_authenticationfailed">Your username or password is incorrect</string>
-	<string name="error_commandfailed">The command failed unexpectedly. Connection is poor or RateBeer is offline</string>
 	<string name="error_nouserorpass">Both username and password are required fields to sign in</string>
 	<string name="error_nolocation">Your location could not be determined</string>
 	<string name="error_locationnotsupported">Your device does not support retrieving a location or you have this disabled</string>
@@ -298,8 +299,6 @@
 	<string name="error_cannotread">No file or cannot read from it</string>
 	<string name="error_filenotvalid">File does not contain offline ratings (in the correct format)</string>
 	<string name="error_nocamera">Cannot take a photo; either you have no camera or cannot write to the external SD storage</string>
-	<string name="error_lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Play Store?</string>
-	<string name="error_lc_run">The Log Collector application will now collect the device log and send it to rb@2312.nl.\nYou will have an opportunity to review and modify the data being sent.</string>
 	<string name="error_invalidurl">The website URL does not seem to be valid</string>
 	
 </resources>

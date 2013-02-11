@@ -17,15 +17,13 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SignInCommand extends EmptyResponseCommand {
 
@@ -33,7 +31,7 @@ public class SignInCommand extends EmptyResponseCommand {
 	private final String username;
 	private final String password;
 
-	public SignInCommand(RateBeerApi api, String username, String password) {
+	public SignInCommand(UserSettings api, String username, String password) {
 		super(api, ApiMethod.SignIn);
 		this.username = username;
 		this.password = password;
@@ -44,8 +42,8 @@ public class SignInCommand extends EmptyResponseCommand {
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		userId = HttpHelper.signIn(username, password);
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		userId = apiConnection.signIn(username, password);
 	}
 
 }

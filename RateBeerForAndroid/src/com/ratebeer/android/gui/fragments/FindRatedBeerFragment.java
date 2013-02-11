@@ -22,85 +22,70 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ItemClick;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.OrmLiteDao;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.j256.ormlite.dao.Dao;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
+import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.app.persistance.OfflineRating;
-import com.ratebeer.android.gui.components.ArrayAdapter;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
 import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
+@EFragment(R.layout.fragment_findratedbeer)
+@OptionsMenu(R.menu.refresh)
 public class FindRatedBeerFragment extends RateBeerFragment {
 
-	private static final String STATE_OFFLINEID = "offlineId";
-	private static final String STATE_RESULTS = "results";
+	@FragmentArg
+	@InstanceState
+	protected int offlineId = -1;
+	@InstanceState
+	protected ArrayList<BeerSearchResult> results = null;
 	
-	private LayoutInflater inflater;
-	private TextView emptyText;
-	private ListView resultsView;
-	private EditText beername;
-	private Button findbeer;
+	@ViewById(R.id.empty)
+	protected TextView emptyText;
+	@ViewById(R.id.findresults)
+	protected ListView resultsView;
+	@ViewById
+	protected EditText beername;
 
-	private final int offlineId;
-	private ArrayList<BeerSearchResult> results = null;
-
+	@OrmLiteDao(helper = DatabaseHelper.class, model = OfflineRating.class)
+	Dao<OfflineRating, Integer> offlineRatingDao;
+	
 	public FindRatedBeerFragment() {
-		this(-1);
-	}
-	
-	public FindRatedBeerFragment(int offlineId) {
-		this.offlineId = offlineId;
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_findratedbeer, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		emptyText = (TextView) getView().findViewById(R.id.empty);
-		resultsView = (ListView) getView().findViewById(R.id.findresults);
-		resultsView.setOnItemClickListener(onItemSelected);
-		beername = (EditText) getView().findViewById(R.id.beername);
-		findbeer = (Button) getView().findViewById(R.id.findbeer);
-		findbeer.setOnClickListener(onFindClick);
-
-		if (savedInstanceState != null) {
-			if (savedInstanceState.containsKey(STATE_RESULTS)) {
-				ArrayList<BeerSearchResult> savedResults = savedInstanceState.getParcelableArrayList(STATE_RESULTS);
-				publishResults(savedResults);
-			}
+		if (results != null) {
+			publishResults(results);
 		} else {
 			try {
 
 				// Get the offline rating's custom name and set it as default name search
-				OfflineRating offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
+				OfflineRating offline = offlineRatingDao.queryForId(offlineId);
 				if (offline == null) {
 					// No offline rating found for this offline ID: cancel this screen
 					cancelScreen();
@@ -122,74 +107,40 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 		getFragmentManager().popBackStack();
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshResults();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(STATE_OFFLINEID, offlineId);
-		if (results != null) {
-			outState.putParcelableArrayList(STATE_RESULTS, results);
-		}
-	}
-
-	private void refreshResults() {
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshResults() {
 		// Search for beers with the custom specified name
 		if (beername.getText().length() <= 0) {
 			Crouton.makeText(getActivity(), R.string.rate_offline_nonamegiven, Style.INFO).show();
 			return;
 		}
-		execute(new SearchBeersCommand(getRateBeerActivity().getApi(), beername.getText().toString(), 
-				getRateBeerActivity().getUser().getUserID()));
+		execute(new SearchBeersCommand(getUser(), beername.getText().toString(), getUser().getUserID()));
 	}
 
-	private OnClickListener onFindClick = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			refreshResults();
-		}
-	};
+	@Click
+	protected void findbeerClicked() {
+		refreshResults();
+	}
 
-	private OnItemClickListener onItemSelected = new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			BeerSearchResult item = ((SearchResultsAdapter)resultsView.getAdapter()).getItem(position);
-			
-			try {
-				if (getRateBeerActivity() == null) {
-					cancelScreen();
-				}
-				// Update the stored offline rating with the found beer ID and close the screen
-				OfflineRating offline = getRateBeerActivity().getHelper().getOfflineRatingDao().queryForId(offlineId);
-				if (item.isRated) {
-					Crouton.makeText(getActivity(), R.string.rate_offline_alreadyrated, Style.ALERT).show();
-				} else {
-					offline.update(item.beerId, item.beerName);
-					getRateBeerActivity().getHelper().getOfflineRatingDao().update(offline);
-					getFragmentManager().popBackStack();
-				}
-			} catch (SQLException e) {
+	@ItemClick(R.id.findresults)
+	protected void onResultSelected(BeerSearchResult item) {
+		try {
+			if (getActivity() == null) {
 				cancelScreen();
 			}
-			
+			// Update the stored offline rating with the found beer ID and close the screen
+			OfflineRating offline = offlineRatingDao.queryForId(offlineId);
+			if (item.isRated) {
+				Crouton.makeText(getActivity(), R.string.rate_offline_alreadyrated, Style.ALERT).show();
+			} else {
+				offline.update(item.beerId, item.beerName);
+				offlineRatingDao.update(offline);
+				getFragmentManager().popBackStack();
+			}
+		} catch (SQLException e) {
+			cancelScreen();
 		}
-	};
+	}
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
@@ -200,7 +151,6 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 	
 	private void publishResults(ArrayList<BeerSearchResult> result) {
 		this.results = result;
-		//Collections.sort(result);
 		if (resultsView.getAdapter() == null) {
 			resultsView.setAdapter(new SearchResultsAdapter(getActivity(), result));
 		} else {
@@ -227,7 +177,7 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_beersearchresult, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_beersearchresult, null);
 				holder = new ViewHolder();
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
 				holder.overall = (TextView) convertView.findViewById(R.id.overall);
@@ -242,14 +192,12 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 			
 			// Bind the data
 			BeerSearchResult item = getItem(position);
-			if (getActivity() != null) {
-				holder.beer.setText(item.beerName);
-				holder.overall.setText((item.overallPerc >= 0? Integer.toString(item.overallPerc): "?"));
-				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
-				holder.rated.setVisibility(item.isRated? View.VISIBLE: View.GONE);
-				holder.retired.setVisibility(item.isRetired? View.VISIBLE: View.GONE);
-				holder.alias.setVisibility(item.isAlias? View.VISIBLE: View.GONE);
-			}
+			holder.beer.setText(item.beerName);
+			holder.overall.setText((item.overallPerc >= 0? Integer.toString(item.overallPerc): "?"));
+			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
+			holder.rated.setVisibility(item.isRated? View.VISIBLE: View.GONE);
+			holder.retired.setVisibility(item.isRetired? View.VISIBLE: View.GONE);
+			holder.alias.setVisibility(item.isAlias? View.VISIBLE: View.GONE);
 			
 			return convertView;
 		}

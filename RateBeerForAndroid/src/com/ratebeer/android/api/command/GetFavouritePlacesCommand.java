@@ -17,17 +17,16 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 
 public class GetFavouritePlacesCommand extends HtmlCommand {
@@ -35,7 +34,7 @@ public class GetFavouritePlacesCommand extends HtmlCommand {
 	private final int beerId;
 	private ArrayList<PlaceSearchResult> places;
 	
-	public GetFavouritePlacesCommand(RateBeerApi api, int beerId) {
+	public GetFavouritePlacesCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.GetFavouritePlaces);
 		this.beerId = beerId;
 	}
@@ -45,9 +44,9 @@ public class GetFavouritePlacesCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/beer/availability-add/" + beerId + "/");
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/beer/availability-add/" + beerId + "/");
 	}
 
 	@Override

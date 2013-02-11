@@ -17,24 +17,23 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetUserRatingsCommand extends HtmlCommand {
 
@@ -52,7 +51,7 @@ public class GetUserRatingsCommand extends HtmlCommand {
 	public static final int SORTBY_DATE = 5;
 	public static final int SORTBY_SCORE = 6;
 
-	public GetUserRatingsCommand(RateBeerApi api, int forUserId, int pageNr, int sortOrder) {
+	public GetUserRatingsCommand(UserSettings api, int forUserId, int pageNr, int sortOrder) {
 		super(api, ApiMethod.GetUserRatings);
 		this.forUserId = forUserId;
 		this.pageNr = pageNr;
@@ -64,8 +63,8 @@ public class GetUserRatingsCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/user/" + forUserId + "/ratings/" + pageNr + "/"
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/user/" + forUserId + "/ratings/" + pageNr + "/"
 				+ sortOrder + "/");
 	}
 

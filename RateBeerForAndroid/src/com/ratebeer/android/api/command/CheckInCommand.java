@@ -17,30 +17,28 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class CheckInCommand extends EmptyResponseCommand {
 
 	private final int placeID;
 
-	public CheckInCommand(RateBeerApi api, int placeID) {
+	public CheckInCommand(UserSettings api, int placeID) {
 		super(api, ApiMethod.CheckIn);
 		this.placeID = placeID;
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		HttpHelper.makeRBGet("http://www.ratebeer.com/json/ci.asp?t=Log&p="
-				+ Integer.toString(placeID) + "&k=" + HttpHelper.RB_KEY);
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		apiConnection.get("http://www.ratebeer.com/json/ci.asp?t=Log&p="
+				+ Integer.toString(placeID) + "&k=" + ApiConnection.RB_KEY);
 	}
 
 }

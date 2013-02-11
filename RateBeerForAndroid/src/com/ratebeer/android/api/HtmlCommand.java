@@ -17,11 +17,6 @@
  */
 package com.ratebeer.android.api;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.conn.HttpHostConnectException;
 import org.json.JSONException;
 
 /**
@@ -30,30 +25,25 @@ import org.json.JSONException;
  */
 public abstract class HtmlCommand extends Command {
 
-	protected HtmlCommand(RateBeerApi api, ApiMethod method) {
+	protected HtmlCommand(UserSettings api, ApiMethod method) {
 		super(api, method);
 	}
 
 	@Override
-	public final CommandResult execute() {
+	public final CommandResult execute(ApiConnection apiConnection) {
 		try {
-			String html = makeRequest();
+			String html = makeRequest(apiConnection);
 			parse(html);
 			return new CommandSuccessResult(this);
 		} catch (JSONException e) {
 			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
 					"JSON parsing error: " + e.toString()));
-		} catch (UnknownHostException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
-		} catch (HttpHostConnectException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
-		} catch (Exception e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
-					e.toString()));
+		} catch (ApiException e) {
+			return new CommandFailureResult(this, e);
 		}
 	}
 
-	protected abstract String makeRequest() throws ClientProtocolException, IOException, ApiException;
+	protected abstract String makeRequest(ApiConnection apiConnection) throws ApiException;
 
 	protected abstract void parse(String html) throws JSONException, ApiException;
 

@@ -17,18 +17,18 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
 
 public class GetBrewerBeersCommand extends JsonCommand {
@@ -39,11 +39,11 @@ public class GetBrewerBeersCommand extends JsonCommand {
 
 	public static final int NO_USER = -1;
 
-	public GetBrewerBeersCommand(RateBeerApi api, int brewerId) {
+	public GetBrewerBeersCommand(UserSettings api, int brewerId) {
 		this(api, brewerId, NO_USER);
 	}
 
-	public GetBrewerBeersCommand(RateBeerApi api, int brewerId, int userId) {
+	public GetBrewerBeersCommand(UserSettings api, int brewerId, int userId) {
 		super(api, ApiMethod.GetBrewerBeers);
 		this.brewerId = brewerId;
 		this.userId = userId;
@@ -54,8 +54,8 @@ public class GetBrewerBeersCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://ratebeer.com/json/bw.asp?k=" + HttpHelper.RB_KEY + "&b=" + brewerId
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/json/bw.asp?k=" + ApiConnection.RB_KEY + "&b=" + brewerId
 				+ (userId != SearchBeersCommand.NO_USER ? "&u=" + userId : ""));
 	}
 

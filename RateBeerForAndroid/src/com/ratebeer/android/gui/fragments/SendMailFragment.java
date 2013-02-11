@@ -19,33 +19,49 @@ package com.ratebeer.android.gui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.gui.components.BeermailService;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
+@EFragment(R.layout.fragment_sendmail)
 public class SendMailFragment extends RateBeerFragment {
 
-	private static final String STATE_BODY = "body";
 	private static final String REPLY_SUBJECT_PREFIX = "Re: ";
 	private static final String REPLY_BODY_PREFIX = "\n\nOriginal Message\n......................................................\n";
 
-	private EditText sendtoEdit, subjectEdit, bodyEdit;
-	private Button sendButton;
-	private CheckBox includeoriginalBox;
+	@FragmentArg
+	@InstanceState
+	protected String sendToField = null;
+	@FragmentArg
+	@InstanceState
+	protected String subjectField = null;
+	@FragmentArg
+	@InstanceState
+	protected String bodyField = null;
+	@FragmentArg
+	@InstanceState
+	protected String replyField = null;
 
-	private String sendToField = null;
-	private String subjectField = null;
-	private String bodyField = null;
+	@ViewById(R.id.sendto)
+	protected EditText sendtoEdit;
+	@ViewById(R.id.subject)
+	protected EditText subjectEdit;
+	@ViewById(R.id.body)
+	protected EditText bodyEdit;
+	@ViewById
+	protected CheckBox includeoriginal;
 
 	public SendMailFragment() {
 	}
@@ -54,13 +70,22 @@ public class SendMailFragment extends RateBeerFragment {
 	 * Reply to an existing message
 	 * @param extras A bundle that assumes a BeermailService.EXTRA_MAIL containing a BeerMail object to reply to
 	 */
-	public SendMailFragment(Bundle extras) {
+	public static SendMailFragment buildReplyFromExtras(Bundle extras) {
 		// Assume there is an extra containing the BeerMail object
 		BeerMail replyTo = extras.getParcelable(BeermailService.EXTRA_MAIL);
 		String subject = replyTo.getSubject();
-		this.sendToField = replyTo.getSenderName();
-		this.subjectField = subject .startsWith(REPLY_SUBJECT_PREFIX)? subject: REPLY_SUBJECT_PREFIX + subject;
-		this.bodyField = REPLY_BODY_PREFIX + replyTo.getBody();
+		return buildConcrete(replyTo.getSenderName(), subject.startsWith(REPLY_SUBJECT_PREFIX) ? subject
+				: REPLY_SUBJECT_PREFIX + subject, null, REPLY_BODY_PREFIX + replyTo.getBody());
+	}
+
+	/**
+	 * Recover from the failure of sending a beermail
+	 * @param extras A bundle that assumes extras with PosterService.EXTRA_SENDTO, PosterService.EXTRA_SUBJECT and PosterService.EXTRA_BODY
+	 */
+	public static SendMailFragment buildFromFailedSend(Bundle extras) {
+		// Assume the extras contain all required fields
+		return buildConcrete(extras.getString(PosterService.EXTRA_SENDTO),
+				extras.getString(PosterService.EXTRA_SUBJECT), extras.getString(PosterService.EXTRA_BODY), null);
 	}
 
 	/**
@@ -68,61 +93,39 @@ public class SendMailFragment extends RateBeerFragment {
 	 * @param sendTo The name of the beer to be rated
 	 * @param subject The ID of the beer to be rated
 	 */
-	public SendMailFragment(String from, String subject, String originalMessage) {
-		this.sendToField = from;
-		this.subjectField = subject.startsWith(REPLY_SUBJECT_PREFIX)? subject: REPLY_SUBJECT_PREFIX + subject;
-		this.bodyField = REPLY_BODY_PREFIX + originalMessage;
+	public static SendMailFragment buildReplyFromExisting(String from, String subject, String originalMessage) {
+		return buildConcrete(from, subject.startsWith(REPLY_SUBJECT_PREFIX) ? subject : REPLY_SUBJECT_PREFIX + subject, 
+				null, REPLY_BODY_PREFIX + originalMessage);
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_sendmail, container, false);
+	private static SendMailFragment buildConcrete(String sendTo, String subject, String body, String reply) {
+		return SendMailFragment_.builder().sendToField(sendTo).subjectField(subject).bodyField(body).replyField(reply)
+				.build();
 	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		// Initialize fields
-		sendtoEdit = (EditText) getView().findViewById(R.id.sendto);
-		subjectEdit = (EditText) getView().findViewById(R.id.subject);
-		bodyEdit = (EditText) getView().findViewById(R.id.body);
-		sendButton = (Button) getView().findViewById(R.id.send);
-		includeoriginalBox = (CheckBox) getView().findViewById(R.id.includeoriginal);
-		sendButton.setOnClickListener(onSendMail);
-
-		// Load state (i.e. on orientation changes)
-		if (savedInstanceState != null) {
-			bodyField = savedInstanceState.getString(STATE_BODY);
-		}
+	
+	@AfterViews
+	public void init() {
 
 		// Fill fields from the message we are replying to
-		if (savedInstanceState == null && sendToField != null) {
+		if (sendToField != null) {
 			sendtoEdit.setText(sendToField);
-			subjectEdit.setText(subjectField);
 			sendToField = null;
+		}
+		if (subjectField != null) {
+			subjectEdit.setText(subjectField);
 			subjectField = null;
+		}
+		if (bodyField != null) {
+			bodyEdit.setText(bodyField);
+			bodyField = null;
 		}
 		
 		// Is a reply? Then disable the 'include' checkbox
-		includeoriginalBox.setVisibility(bodyField != null? View.VISIBLE: View.GONE);
-			
+		includeoriginal.setVisibility(replyField != null? View.VISIBLE: View.GONE);
+		
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(STATE_BODY, bodyField);
-	}
-
-	private OnClickListener onSendMail = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			postRating();
-		}
-	};
-
+	@Click(R.id.send)
 	protected void postRating() {
 		// Try to submit mail to the poster service
 		String sendTo = sendtoEdit.getText().toString();
@@ -131,8 +134,8 @@ public class SendMailFragment extends RateBeerFragment {
 		if (!sendTo.equals("") && !subject.equals("") && !body.equals("")) {
 
 			// Include original text of message we are replying to?
-			if (includeoriginalBox.isChecked() && bodyField != null) {
-				body += bodyField;
+			if (includeoriginal.isChecked() && replyField != null) {
+				body += replyField;
 			}
 			
 			// Use the poster service to send this new mail

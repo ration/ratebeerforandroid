@@ -17,28 +17,27 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetEventDetailsCommand extends HtmlCommand {
 
 	private final int eventId;
 	private EventDetails details;
 
-	public GetEventDetailsCommand(RateBeerApi api, int eventId) {
+	public GetEventDetailsCommand(UserSettings api, int eventId) {
 		super(api, ApiMethod.GetEventDetails);
 		this.eventId = eventId;
 	}
@@ -48,9 +47,9 @@ public class GetEventDetailsCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/Events-Detail.asp?EventID=" + eventId);
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/Events-Detail.asp?EventID=" + eventId);
 	}
 
 	@Override

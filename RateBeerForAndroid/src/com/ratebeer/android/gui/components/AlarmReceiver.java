@@ -17,15 +17,18 @@
  */
 package com.ratebeer.android.gui.components;
 
+import com.googlecode.androidannotations.annotations.EReceiver;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+@EReceiver
 public class AlarmReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		context.startService(new Intent(context, BeermailService.class));
+		context.startService(new Intent(context, BeermailService_.class));
 	}
 
 }

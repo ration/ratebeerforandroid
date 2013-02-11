@@ -17,18 +17,18 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 
 public class GetBeerAvailabilityCommand extends JsonCommand {
@@ -36,7 +36,7 @@ public class GetBeerAvailabilityCommand extends JsonCommand {
 	private final int beerId;
 	private ArrayList<PlaceSearchResult> results;
 
-	public GetBeerAvailabilityCommand(RateBeerApi api, int beerId) {
+	public GetBeerAvailabilityCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.GetBeerAvailability);
 		this.beerId = beerId;
 	}
@@ -46,8 +46,8 @@ public class GetBeerAvailabilityCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://ratebeer.com/json/where.asp?k=" + HttpHelper.RB_KEY + "&bd=" + beerId);
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/json/where.asp?k=" + ApiConnection.RB_KEY + "&bd=" + beerId);
 	}
 
 	@Override

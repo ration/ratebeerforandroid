@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.InstanceState;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.ratebeer.android.R;
@@ -50,6 +51,9 @@ import com.ratebeer.android.gui.fragments.SendMailFragment;
 @OptionsMenu(R.menu.home)
 public class Home extends RateBeerActivity {
 
+	@InstanceState
+	boolean firstStart = true;
+	
 	@AfterViews
 	public void init() {
 		// Start the background service, if necessary
@@ -59,10 +63,10 @@ public class Home extends RateBeerActivity {
 		// For phones the DashboardFragment and SearchFragment will show an icon
 		new SearchUiHelper(this).addSearchToActionBar(getSupportActionBar());
 		
-		handleStartIntent();
+		if (firstStart)
+			handleStartIntent();
 	}
 
-	@AfterViews
 	protected void handleStartIntent() {
 
 		// Start a search?
@@ -137,6 +141,8 @@ public class Home extends RateBeerActivity {
 		// Normal startup; show dashboard
 		load(DashboardFragment_.builder().build());
 
+		firstStart = false;
+		
 	}
 
 	@OptionsItem(R.id.menu_preferences)

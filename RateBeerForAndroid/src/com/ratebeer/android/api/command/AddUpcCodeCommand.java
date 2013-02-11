@@ -17,32 +17,30 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class AddUpcCodeCommand extends EmptyResponseCommand {
 
 	private final int beerId;
 	private final String upcCode;
 
-	public AddUpcCodeCommand(RateBeerApi api, int beerId, String upcCode) {
+	public AddUpcCodeCommand(UserSettings api, int beerId, String upcCode) {
 		super(api, ApiMethod.AddUpcCode);
 		this.beerId = beerId;
 		this.upcCode = upcCode;
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		HttpHelper.makeRBGet("http://www.ratebeer.com/json/upc.asp?upc=" + upcCode + "&bid=" + Integer.toString(beerId)
-				+ "&k=" + HttpHelper.RB_KEY);
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		apiConnection.get("http://www.ratebeer.com/json/upc.asp?upc=" + upcCode + "&bid=" + Integer.toString(beerId)
+				+ "&k=" + ApiConnection.RB_KEY);
 	}
 
 }

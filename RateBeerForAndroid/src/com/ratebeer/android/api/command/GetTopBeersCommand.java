@@ -17,10 +17,8 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,10 +26,12 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetTopBeersCommand extends JsonCommand {
 
@@ -39,15 +39,15 @@ public class GetTopBeersCommand extends JsonCommand {
 	private final Country country;
 	private ArrayList<TopBeer> beers;
 
-	public GetTopBeersCommand(RateBeerApi api) {
+	public GetTopBeersCommand(UserSettings api) {
 		this(api, TopListType.Top50, null);
 	}
 
-	public GetTopBeersCommand(RateBeerApi api, Country country) {
+	public GetTopBeersCommand(UserSettings api, Country country) {
 		this(api, TopListType.TopByCountry, country);
 	}
 
-	private GetTopBeersCommand(RateBeerApi api, TopListType topList, Country country) {
+	private GetTopBeersCommand(UserSettings api, TopListType topList, Country country) {
 		super(api, ApiMethod.GetTopBeers);
 		this.topList = topList;
 		this.country = country;
@@ -117,13 +117,13 @@ public class GetTopBeersCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		switch (topList) {
 		case Top50:
-			return HttpHelper.makeRBGet("http://www.ratebeer.com/json/tb.asp?m=top50&k=" + HttpHelper.RB_KEY);
+			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=top50&k=" + ApiConnection.RB_KEY);
 		case TopByCountry:
-			return HttpHelper.makeRBGet("http://www.ratebeer.com/json/tb.asp?m=country&c=" + country.getId() + "&k="
-					+ HttpHelper.RB_KEY);
+			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=country&c=" + country.getId() + "&k="
+					+ ApiConnection.RB_KEY);
 		}
 		return null;
 	}

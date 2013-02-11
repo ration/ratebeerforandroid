@@ -17,7 +17,6 @@
  */
 package com.ratebeer.android.gui.components;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,39 +24,42 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.util.Log;
 
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EService;
+import com.googlecode.androidannotations.annotations.SystemService;
 import com.j256.ormlite.dao.Dao;
 import com.jakewharton.notificationcompat2.NotificationCompat2;
 import com.jakewharton.notificationcompat2.NotificationCompat2.Builder;
 import com.jakewharton.notificationcompat2.NotificationCompat2.InboxStyle;
 import com.ratebeer.android.R;
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandResult;
 import com.ratebeer.android.api.CommandSuccessResult;
-import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
 import com.ratebeer.android.api.command.GetBeerMailCommand;
 import com.ratebeer.android.app.ApplicationSettings;
-import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.app.persistance.BeerMail;
-import com.ratebeer.android.gui.Home;
+import com.ratebeer.android.gui.Home_;
+import com.ratebeer.android.gui.components.helpers.DatabaseConsumerService;
+import com.ratebeer.android.gui.components.helpers.Log;
 
-public class BeermailService extends RateBeerService {
+@EService
+public class BeermailService extends DatabaseConsumerService {
 
 	public static final String ACTION_VIEWBEERMAILS = "VIEW_BEERMAILS";
 	public static final String ACTION_VIEWBEERMAIL = "VIEW_BEERMAIL";
@@ -70,10 +72,20 @@ public class BeermailService extends RateBeerService {
 	public static final int RESULT_FAILURE = 1;
 	public static final int RESULT_STARTED = 2;
 
-	private NotificationManager notificationManager = null;
+	@Bean
+	protected Log Log;
+	@Bean
+	protected ApplicationSettings applicationSettings;
+	@Bean
+	protected ApiConnection apiConnection;
+	
+	@SystemService
+	protected NotificationManager notificationManager;
+	@SystemService
+	protected ConnectivityManager connectivityManager;
 
 	public BeermailService() {
-		super(RateBeerForAndroid.LOG_NAME + " BeermailService");
+		super(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME + " BeermailService");
 	}
 
 	public BeermailService(String name) {
@@ -83,22 +95,16 @@ public class BeermailService extends RateBeerService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		ConnectivityManager conn = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (!conn.getBackgroundDataSetting()) {
-			Log.d(RateBeerForAndroid.LOG_NAME,
+		if (isBackgroundDataDisabled()) {
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
 					"Skip the update, since background data is disabled on a system-wide level");
 			return;
 		}
 
-		if (notificationManager == null) {
-			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		}
-
 		// Proper user settings?
-		RateBeerForAndroid app = (RateBeerForAndroid) getApplication();
-		ApplicationSettings settings = app.getSettings();
-		if (settings.getUserSettings() == null) {
-			Log.d(RateBeerForAndroid.LOG_NAME, "Canceling BeerMail check intent because there are no user settings known.");
+		UserSettings user = applicationSettings.getUserSettings();
+		if (user == null) {
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Canceling BeerMail check intent because there are no user settings known.");
 			return;
 		}
 
@@ -106,11 +112,11 @@ public class BeermailService extends RateBeerService {
 
 		// Look for (new) beermail
 		SimpleDateFormat sentDateFormat = new SimpleDateFormat("M/d/yyyy h:m:s a");
-		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(app.getApi());
-		CommandResult result = allMails.execute();
+		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(user);
+		CommandResult result = allMails.execute(apiConnection);
 		if (result instanceof CommandSuccessResult) {
 
-			Log.d(RateBeerForAndroid.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
 
 			final int MAX_CONTENTLENGTH = 50;
 			int unreadMails = 0;
@@ -128,8 +134,8 @@ public class BeermailService extends RateBeerService {
 
 						// Get the body too
 						String body;
-						GetBeerMailCommand gbmCommand = new GetBeerMailCommand(app.getApi(), mail.messageID);
-						CommandResult gbmResult = gbmCommand.execute();
+						GetBeerMailCommand gbmCommand = new GetBeerMailCommand(user, mail.messageID);
+						CommandResult gbmResult = gbmCommand.execute(apiConnection);
 						if (gbmResult instanceof CommandSuccessResult) {
 							body = gbmCommand.getMail().body;
 						} else {
@@ -202,14 +208,14 @@ public class BeermailService extends RateBeerService {
 				}
 
 			} catch (SQLException e) {
-				Log.d(RateBeerForAndroid.LOG_NAME, "Error saving beermail to database: " + e);
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Error saving beermail to database: " + e);
 				// If requested, call back the messenger, i.e. the calling activity
 				callbackMessenger(intent, RESULT_FAILURE);
 				return;
 			}
 
 			// Create a notification about the new mails
-			Log.d(RateBeerForAndroid.LOG_NAME, "User has " + unreadMails + " unread mails.");
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "User has " + unreadMails + " unread mails.");
 			if (!intent.hasExtra(EXTRA_MESSENGER) && unreadMails > 0) {
 
 				// Prepare senders text
@@ -225,17 +231,16 @@ public class BeermailService extends RateBeerService {
 				}
 				
 				// Set notification action target
-				Intent contentIntent = new Intent(this, Home.class);
+				Intent contentIntent = new Intent(this, Home_.class);
 				contentIntent.setAction(ACTION_VIEWBEERMAILS);
 
 				// Retrieve user of some sender to show with the notification
 				Bitmap avatar = null;
 				try {
-					avatar = BitmapFactory.decodeStream(HttpHelper.makeRawRBGet("http://www.ratebeer.com/UserPics/"
+					avatar = BitmapFactory.decodeStream(apiConnection.getRaw("http://www.ratebeer.com/UserPics/"
 							+ firstUnread.getSenderName() + ".jpg"));
-				} catch (ClientProtocolException e) {
-				} catch (IOException e) {
 				} catch (Exception e) {
+					// Could not load? Just don't show an image 
 				}
 				
 				// Build old style notification
@@ -256,12 +261,12 @@ public class BeermailService extends RateBeerService {
 					inbox.setSummaryText(getString(R.string.app_moremail, Integer.toString(unreadMails - 3)));
 				}
 				if (unreadMails == 1) {
-					Intent replyIntent = new Intent(this, Home.class);
+					Intent replyIntent = new Intent(this, Home_.class);
 					replyIntent.setAction(ACTION_REPLYBEERMAIL);
 					replyIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
 					builder.addAction(R.drawable.ic_stat_reply, getString(R.string.mail_reply),
 							PendingIntent.getActivity(this, 0, replyIntent, 0));
-					Intent viewIntent = new Intent(this, Home.class);
+					Intent viewIntent = new Intent(this, Home_.class);
 					viewIntent.setAction(ACTION_VIEWBEERMAIL);
 					viewIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
 					builder.addAction(R.drawable.ic_stat_viewmail, getString(R.string.mail_view),
@@ -271,7 +276,7 @@ public class BeermailService extends RateBeerService {
 				// Create notification, apply settings and release
 				Notification notification = inbox.build();
 				notification.flags |= Notification.FLAG_AUTO_CANCEL;
-				if (settings.getVibrateOnNotification()) {
+				if (applicationSettings.getVibrateOnNotification()) {
 					notification.defaults = Notification.DEFAULT_VIBRATE;
 				}
 				notification.ledARGB = 0xff003366;
@@ -288,11 +293,22 @@ public class BeermailService extends RateBeerService {
 		} else {
 			String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 					.toString() : "Unknown error";
-			Log.d(RateBeerForAndroid.LOG_NAME, "Error retrieving new beer mails: " + e);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Error retrieving new beer mails: " + e);
 			// If requested, call back the messenger, i.e. the calling activity
 			callbackMessenger(intent, RESULT_FAILURE);
 		}
 
+	}
+
+	@SuppressWarnings("deprecation")
+	private boolean isBackgroundDataDisabled() {
+		if (android.os.Build.VERSION.SDK_INT >= 14) {
+			// Note: getBackgroundDataSetting will always return true on API level 14 and up
+			NetworkInfo ni = connectivityManager.getActiveNetworkInfo();
+			return ni == null || !ni.isAvailable() || !ni.isConnected();
+		} else {
+			return !connectivityManager.getBackgroundDataSetting();
+		}
 	}
 
 	private void callbackMessenger(Intent intent, int result) {
@@ -305,7 +321,7 @@ public class BeermailService extends RateBeerService {
 				// Send it back to the messenger, i.e. the activity
 				callback.send(msg);
 			} catch (RemoteException e) {
-				Log.e(RateBeerForAndroid.LOG_NAME, "Cannot call back to activity to deliver message '" + msg.toString()
+				Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Cannot call back to activity to deliver message '" + msg.toString()
 						+ "'");
 			}
 		}

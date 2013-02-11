@@ -17,20 +17,19 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetUserCellarCommand extends HtmlCommand {
 
@@ -38,7 +37,7 @@ public class GetUserCellarCommand extends HtmlCommand {
 	private ArrayList<CellarBeer> wants;
 	private ArrayList<CellarBeer> haves;
 
-	public GetUserCellarCommand(RateBeerApi api, int forUserId) {
+	public GetUserCellarCommand(UserSettings api, int forUserId) {
 		super(api, ApiMethod.GetUserCellar);
 		this.forUserId = forUserId;
 	}
@@ -52,9 +51,9 @@ public class GetUserCellarCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/user/" + forUserId + "/cellar/");
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		return apiConnection.get("http://www.ratebeer.com/user/" + forUserId + "/cellar/");
 	}
 
 	@Override

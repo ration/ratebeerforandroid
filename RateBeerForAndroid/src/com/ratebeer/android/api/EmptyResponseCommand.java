@@ -17,11 +17,6 @@
  */
 package com.ratebeer.android.api;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.conn.HttpHostConnectException;
 
 /**
  * Specific command type that does not have response data to parse, but can return success (or failure) directly.
@@ -29,25 +24,20 @@ import org.apache.http.conn.HttpHostConnectException;
  */
 public abstract class EmptyResponseCommand extends Command {
 
-	protected EmptyResponseCommand(RateBeerApi api, ApiMethod method) {
+	protected EmptyResponseCommand(UserSettings api, ApiMethod method) {
 		super(api, method);
 	}
 
 	@Override
-	public final CommandResult execute() {
+	public final CommandResult execute(ApiConnection apiConnection) {
 		try {
-			makeRequest();
+			makeRequest(apiConnection);
 			return new CommandSuccessResult(this);
-		} catch (UnknownHostException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
-		} catch (HttpHostConnectException e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.Offline, e.toString()));
-		} catch (Exception e) {
-			return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
-					e.toString()));
+		} catch (ApiException e) {
+			return new CommandFailureResult(this, e);
 		}
 	}
 
-	protected abstract void makeRequest() throws ClientProtocolException, IOException, ApiException;
+	protected abstract void makeRequest(ApiConnection apiConnection) throws ApiException;
 
 }

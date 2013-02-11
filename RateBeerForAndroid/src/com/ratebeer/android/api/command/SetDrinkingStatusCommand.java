@@ -17,32 +17,30 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SetDrinkingStatusCommand extends EmptyResponseCommand {
 
 	private final String newStatus;
 
-	public SetDrinkingStatusCommand(RateBeerApi api, String newStatus) {
+	public SetDrinkingStatusCommand(UserSettings api, String newStatus) {
 		super(api, ApiMethod.SetDrinkingStatus);
 		this.newStatus = newStatus;
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		HttpHelper.makeRBPost("http://www.ratebeer.com/userstatus-process.asp",
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		apiConnection.post("http://www.ratebeer.com/userstatus-process.asp",
 				Arrays.asList(new BasicNameValuePair("MyStatus", newStatus)),
 				// Note that we get an HTTP 404 response even when the request is successful...
 				HttpStatus.SC_NOT_FOUND);

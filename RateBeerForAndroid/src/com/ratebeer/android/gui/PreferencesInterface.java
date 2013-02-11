@@ -26,13 +26,18 @@ import android.preference.PreferenceManager;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EActivity;
 import com.ratebeer.android.R;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.RateBeerForAndroid;
 import com.ratebeer.android.gui.components.BootReceiver;
 
+@EActivity
 public class PreferencesInterface extends SherlockPreferenceActivity {
 
+	@Bean
+	protected ApplicationSettings applicationSettings;
 	private SharedPreferences prefs;
 
 	public PreferencesInterface() {
@@ -48,7 +53,7 @@ public class PreferencesInterface extends SherlockPreferenceActivity {
 
 		addPreferencesFromResource(R.xml.pref_interface);
 
-		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		prefs.registerOnSharedPreferenceChangeListener(onPreferenceChanged);
 	}
 
@@ -57,9 +62,7 @@ public class PreferencesInterface extends SherlockPreferenceActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// Home button click in the action bar
-			Intent startActivity = new Intent(this, Home.class);
-			startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			startActivity(startActivity);
+			Home_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET).start();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -83,7 +86,7 @@ public class PreferencesInterface extends SherlockPreferenceActivity {
 			if (key.equals(ApplicationSettings.ENABLE_BEERMAIL)
 					|| key.equals(ApplicationSettings.BEERMAIL_UPDATEFREQUENCY)) {
 				// If a beermail setting was changed, start/stop the service accordingly
-				if (getRateBeerApplication().getSettings().isBeermailEnabled()) {
+				if (applicationSettings.isBeermailEnabled()) {
 					BootReceiver.startAlarm(getApplicationContext());
 				} else {
 					BootReceiver.cancelAlarm();

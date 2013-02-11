@@ -17,17 +17,16 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 
 public class AddToCellarCommand extends EmptyResponseCommand {
@@ -38,7 +37,7 @@ public class AddToCellarCommand extends EmptyResponseCommand {
 	private final String vintage;
 	private final String quantity;
 
-	public AddToCellarCommand(RateBeerApi api, CellarType cellarType, int beerId, String memo, String vintage,
+	public AddToCellarCommand(UserSettings api, CellarType cellarType, int beerId, String memo, String vintage,
 			String quantity) {
 		super(api, ApiMethod.AddToCellar);
 		this.beerId = beerId;
@@ -57,17 +56,18 @@ public class AddToCellarCommand extends EmptyResponseCommand {
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
 		if (isWant()) {
-			HttpHelper.makeRBPost("http://www.ratebeer.com/beerlistwant-process.asp", Arrays.asList(
+			apiConnection.post("http://www.ratebeer.com/beerlistwant-process.asp", Arrays.asList(
 					new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("memo", memo),
-					new BasicNameValuePair("submit", "Add")));
+					new BasicNameValuePair("submit", "Add")), HttpURLConnection.HTTP_MOVED_TEMP);
 		} else {
-			HttpHelper.makeRBPost("http://www.ratebeer.com/beerlisthave-process.asp", Arrays.asList(
+			apiConnection.post("http://www.ratebeer.com/beerlisthave-process.asp", Arrays.asList(
 					new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("Update", "0"),
 					new BasicNameValuePair("vintage", vintage), new BasicNameValuePair("memo", memo),
-					new BasicNameValuePair("quantity", quantity), new BasicNameValuePair("submit", "Add")));
+					new BasicNameValuePair("quantity", quantity), new BasicNameValuePair("submit", "Add")),
+					HttpURLConnection.HTTP_MOVED_TEMP);
 		}
 	}
 

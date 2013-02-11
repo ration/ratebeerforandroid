@@ -17,10 +17,8 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,10 +26,12 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetCheckinsCommand extends JsonCommand {
 
@@ -45,7 +45,7 @@ public class GetCheckinsCommand extends JsonCommand {
 	public static final int SORTBY_DATE = 5;
 	public static final int SORTBY_SCORE = 6;
 
-	public GetCheckinsCommand(RateBeerApi api, int placeID) {
+	public GetCheckinsCommand(UserSettings api, int placeID) {
 		super(api, ApiMethod.GetCheckins);
 		this.placeID = placeID;
 	}
@@ -55,9 +55,9 @@ public class GetCheckinsCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/ci.asp?t=View&p=" + Integer.toString(placeID) + "&k="
-				+ HttpHelper.RB_KEY);
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/json/ci.asp?t=View&p=" + Integer.toString(placeID) + "&k="
+				+ ApiConnection.RB_KEY);
 	}
 
 	@Override

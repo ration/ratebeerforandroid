@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RateBeer for Android</string>
-    <string name="app_developer">by Eric Kok\n2312 development</string>
-    <string name="app_rblink">RateBeer: @erickok</string>
-    <string name="app_weblink">Web: http://2312.nl</string>
-    <string name="app_maillink">Mail: rb@2312.nl</string>
+    <string name="app_name" translatable="false">RateBeer for Android</string>
+    <string name="app_developer" translatable="false">by Eric Kok\n2312 development</string>
+    <string name="app_rblink" translatable="false">RateBeer: @erickok</string>
+    <string name="app_weblink" translatable="false">Web: http://2312.nl</string>
+    <string name="app_maillink" translatable="false">Mail: rb@2312.nl</string>
     
     <!-- Debug key -->
 	<!-- <string name="app_googlemapskey">0tkfMrcfmFeOYepTmK7jTpCSyChzQ-a34wn0k7A</string> -->
     <!-- Release key -->
-    <string name="app_googlemapskey">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
+    <string name="app_googlemapskey" translatable="false">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
 
-	<string-array name="settings_frequency_values">
+	<string-array name="settings_frequency_values" translatable="false">
 		<item>60</item>
 		<item>600</item>
 		<item>1800</item>

@@ -17,26 +17,22 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
-
-import org.apache.http.client.ClientProtocolException;
-
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class SignOutCommand extends EmptyResponseCommand {
 	
-	public SignOutCommand(RateBeerApi api) {
+	public SignOutCommand(UserSettings api) {
 		super(api, ApiMethod.SignOut);
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		HttpHelper.makeRBGet("http://www.ratebeer.com/Signout.asp?v=1");
-		if (!HttpHelper.isSignedIn()) {
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		apiConnection.signOut();
+		if (!apiConnection.isSignedIn()) {
 			return; // Success
 		}
 		throw new ApiException(ApiException.ExceptionType.CommandFailed,

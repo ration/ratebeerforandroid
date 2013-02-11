@@ -20,20 +20,22 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ratebeer.android.R;
 import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import com.actionbarsherlock.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
@@ -41,106 +43,63 @@ import com.ratebeer.android.api.command.GetStyleDetailsCommand;
 import com.ratebeer.android.api.command.GetStyleDetailsCommand.StyleDetails;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopBeer;
 import com.ratebeer.android.api.command.Style;
-import com.ratebeer.android.gui.components.ActivityUtil;
-import com.ratebeer.android.gui.components.ArrayAdapter;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
+@EFragment(R.layout.fragment_styleview)
+@OptionsMenu(R.menu.refresh)
 public class StyleViewFragment extends RateBeerFragment {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
-	private static final String STATE_STYLE = "style";
-	private static final String STATE_DETAILS = "details";
 
-	private LayoutInflater inflater;
-	private ListView styleView;
-
-	private TextView nameText, descriptionText;
+	@FragmentArg
+	@InstanceState
+	protected Style style;
+	@InstanceState
+	protected StyleDetails details = null;
+	
+	@ViewById(R.id.styleview)
+	protected ListView styleView;
+	@ViewById(R.id.name)
+	protected TextView nameText;
+	@ViewById(R.id.description)
+	protected TextView descriptionText;
+	@ViewById(R.id.beers)
+	protected ListView beersView;
+	
 	private StyleBeerAdapter beersAdapter;
 	
-	protected Style style;
-	private StyleDetails details = null;
-	
 	public StyleViewFragment() {
-		this(null);
 	}
 
-	/**
-	 * Show a specific style's details and list of top beers in the style
-	 * @param style The beer style to show
-	 */
-	public StyleViewFragment(Style style) {
-		this.style = style;
-	}
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_styleview, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		styleView = (ListView) getView().findViewById(R.id.styleview);
 		if (styleView != null) {
 			styleView.setAdapter(new StyleViewAdapter());
 			styleView.setItemsCanFocus(true);
 		} else {
 			// Tablet
-			ListView beersView = (ListView) getView().findViewById(R.id.beers);
 			beersAdapter = new StyleBeerAdapter(getActivity(), new ArrayList<TopBeer>());
 			beersView.setAdapter(beersAdapter);
-			initFields(getView());
 		}
 		
-		if (savedInstanceState != null) {
-			style = savedInstanceState.getParcelable(STATE_STYLE);
-			if (savedInstanceState.containsKey(STATE_DETAILS)) {
-				details = savedInstanceState.getParcelable(STATE_DETAILS);
-			}
+		if (details != null) {
+			publishDetails(details);
 		} else {
 			refreshDetails();
 		}
-		publishDetails(details);
 		
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshDetails();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putParcelable(STATE_STYLE, style);
-		if (details != null) {
-			outState.putParcelable(STATE_DETAILS, details);
-		}
-	}
-
-	private void refreshDetails() {
-		execute(new GetStyleDetailsCommand(getRateBeerActivity().getApi(), style.getId()));
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshDetails() {
+		execute(new GetStyleDetailsCommand(getUser(), style.getId()));
 	}
 
 	private void onStyleBeerClick(String beerName, int beerId, int ratings) {
-		getRateBeerActivity().load(new BeerViewFragment(beerName, beerId, ratings));
+		load(BeerViewFragment_.builder().beerName(beerName).beerId(beerId).ratingsCount(ratings).build());
 	}
 	
 	@Override
@@ -182,7 +141,8 @@ public class StyleViewFragment extends RateBeerFragment {
 			// Set the style detail fields
 			View fields = getActivity().getLayoutInflater().inflate(R.layout.fragment_styledetails, null);
 			addView(fields);
-			initFields(fields);
+			nameText = (TextView) fields.findViewById(R.id.name);
+			descriptionText = (TextView) fields.findViewById(R.id.description);
 			
 			// Set the list of top beers
 			beersAdapter = new StyleBeerAdapter(getActivity(), new ArrayList<TopBeer>());
@@ -207,11 +167,15 @@ public class StyleViewFragment extends RateBeerFragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+
+			if (getActivity() == null) {
+				return convertView;
+			}
 			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_stylebeer, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_stylebeer, null);
 				ActivityUtil.makeListItemClickable(convertView, onRowClick);
 				holder = new ViewHolder();
 				holder.order = (TextView) convertView.findViewById(R.id.order);
@@ -223,19 +187,13 @@ public class StyleViewFragment extends RateBeerFragment {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			if (getRateBeerActivity() == null) {
-				return convertView;
-			}
-			
 			// Bind the data
 			TopBeer item = getItem(position);
-			if (getActivity() != null) {
-				holder.beer.setTag(item);
-				holder.order.setText(Integer.toString(item.orderNr));
-				holder.beer.setText(item.beerName);
-				holder.score.setText(String.format(DECIMAL_FORMATTER, item.score));
-				holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
-			}
+			holder.beer.setTag(item);
+			holder.order.setText(Integer.toString(item.orderNr));
+			holder.beer.setText(item.beerName);
+			holder.score.setText(String.format(DECIMAL_FORMATTER, item.score));
+			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
 			
 			return convertView;
 		}
@@ -244,11 +202,6 @@ public class StyleViewFragment extends RateBeerFragment {
 
 	protected static class ViewHolder {
 		TextView order, beer, score, count;
-	}
-
-	public void initFields(View fields) {
-		nameText = (TextView) fields.findViewById(R.id.name);
-		descriptionText = (TextView) fields.findViewById(R.id.description);
 	}
 
 }

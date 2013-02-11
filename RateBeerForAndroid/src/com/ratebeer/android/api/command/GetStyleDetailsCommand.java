@@ -17,21 +17,20 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HtmlCommand;
 import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopBeer;
 
 public class GetStyleDetailsCommand extends HtmlCommand {
@@ -39,7 +38,7 @@ public class GetStyleDetailsCommand extends HtmlCommand {
 	private final int styleId;
 	private StyleDetails details;
 
-	public GetStyleDetailsCommand(RateBeerApi api, int styleId) {
+	public GetStyleDetailsCommand(UserSettings api, int styleId) {
 		super(api, ApiMethod.GetStyleDetails);
 		this.styleId = styleId;
 	}
@@ -49,8 +48,8 @@ public class GetStyleDetailsCommand extends HtmlCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/beerstyles/s/" + styleId + "/");
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/beerstyles/s/" + styleId + "/");
 	}
 
 	@Override

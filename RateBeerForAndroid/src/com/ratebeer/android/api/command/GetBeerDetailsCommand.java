@@ -17,9 +17,7 @@ along with RateBeer for Android.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
-import java.io.IOException;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,10 +25,12 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class GetBeerDetailsCommand extends JsonCommand {
 	
@@ -39,7 +39,7 @@ public class GetBeerDetailsCommand extends JsonCommand {
 	private final int beerId;
 	private BeerDetails details;
 	
-	public GetBeerDetailsCommand(RateBeerApi api, int beerId) {
+	public GetBeerDetailsCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.GetBeerDetails);
 		this.beerId = beerId;
 	}
@@ -49,8 +49,8 @@ public class GetBeerDetailsCommand extends JsonCommand {
 	}
 
 	@Override
-	protected String makeRequest() throws ClientProtocolException, IOException {
-		return HttpHelper.makeRBGet("http://www.ratebeer.com/json/bff.asp?k=" + HttpHelper.RB_KEY + "&bd=" + beerId);
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/json/bff.asp?k=" + ApiConnection.RB_KEY + "&bd=" + beerId);
 	}
 
 	@Override

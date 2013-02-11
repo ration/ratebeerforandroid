@@ -17,21 +17,19 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.io.IOException;
+import java.net.HttpURLConnection;
 
-import org.apache.http.client.ClientProtocolException;
-
+import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.EmptyResponseCommand;
-import com.ratebeer.android.api.HttpHelper;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.UserSettings;
 
 public class RemoveFromCellarCommand extends EmptyResponseCommand {
 	
 	private final int beerId;
 
-	public RemoveFromCellarCommand(RateBeerApi api, int beerId) {
+	public RemoveFromCellarCommand(UserSettings api, int beerId) {
 		super(api, ApiMethod.RemoveFromCellar);
 		this.beerId = beerId;
 	}
@@ -41,10 +39,10 @@ public class RemoveFromCellarCommand extends EmptyResponseCommand {
 	}
 
 	@Override
-	protected void makeRequest() throws ClientProtocolException, IOException, ApiException {
-		RateBeerApi.ensureLogin(getUserSettings());
-		HttpHelper.makeRBGet("http://www.ratebeer.com/WishList-Delete.asp?WishID="
-				+ beerId + "&UserID=" + getUserSettings().getUserID());
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		apiConnection.get("http://www.ratebeer.com/WishList-Delete.asp?WishID="
+				+ beerId + "&UserID=" + getUserSettings().getUserID(), HttpURLConnection.HTTP_MOVED_TEMP);
 	}
 
 }

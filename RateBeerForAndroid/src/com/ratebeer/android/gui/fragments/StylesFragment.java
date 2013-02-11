@@ -20,7 +20,7 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,11 +64,11 @@ public class StylesFragment extends RateBeerFragment {
 
 	public static class StyleAdapter extends ArrayAdapter<Style> {
 
-		private LayoutInflater inflater;
-		
-		public StyleAdapter(Context context, List<Style> objects, LayoutInflater inflater) {
+		private final Activity activity;
+
+		public StyleAdapter(Activity context, List<Style> objects, LayoutInflater inflater) {
 			super(context, objects);
-			this.inflater = inflater;
+			this.activity = context;
 		}
 
 		@Override
@@ -77,7 +77,7 @@ public class StylesFragment extends RateBeerFragment {
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_style, null);
+				convertView = activity.getLayoutInflater().inflate(R.layout.list_item_style, null);
 				holder = new ViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.name);
 				convertView.setTag(holder);

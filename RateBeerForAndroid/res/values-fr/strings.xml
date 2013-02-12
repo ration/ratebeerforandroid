@@ -37,10 +37,11 @@
 <string name="app_addingcodefor">Associer le code à %1$s</string>
 <string name="app_requiressignin">Veuillez vous connecter à votre compte RateBeer pour utiliser cette fonctionnalité</string>
 <string name="app_noaccount">Pas de compte?\nhttp://www.ratebeer.com/NewUser.asp</string>
-<string name="app_newmails">Vous avez %1$s nouveau(x) CourriAle(s)</string>
 <string name="app_newmail">Vous avez un nouveau CourriAle</string>
+<string name="app_newmails">Vous avez %1$s nouveau(x) CourriAle(s)</string>
 <string name="app_by">Par %1$s</string>
 <string name="app_andothers">et autres</string>
+<string name="app_moremail">+%1$s de plus</string>
 <string name="app_uploadingphoto">Ajouter une nouvelle photo</string>
 <string name="app_photofor">Ajouter une photo pour %1$s</string>
 
@@ -65,6 +66,7 @@
 <string name="home_nowdrinking">En train de boire %1$s</string>
 <string name="home_preferences">Préférences</string>
 <string name="home_calculator">Calculatrice</string>
+<string name="home_about">À propos</string>
 
 <string name="calc_clear">X</string>
 <string name="calc_for">%1$s pour</string>
@@ -152,7 +154,10 @@
 <string name="search_barcodescanner">Lecteur de code-barre</string>
 <string name="search_nobeerswithbarcode">Aucune bière trouvée à partir du code-barre %1$s. Ajouter là à la base de données en utilisant l\'engin de recherche.</string>
 <string name="search_clearhistory">Supprimer l\'historique</string>
-<string name="search_noitems">Aucun résultat. Peut-être essayer avec seulement une partie du nom?</string>
+<string name="search_nobeers">Aucune bières répertoriées.\n\nCherchez avec une partie du nom de la bière.</string>
+<string name="search_nobrewers">Aucun brasseurs répertoriés.\n\nCherchez avec une partie du nom du brasseurs.</string>
+<string name="search_nopalces">Aucun endroits répertoriés.\n\nCherchez avec une partie du nom de l'endroit.</string>
+<string name="search_nousers">Aucun usagés répertoriés.\n\nCherchez avec une partie du nom de l'usagé.</string>
 <string name="search_retired">retiré</string>
 <string name="search_alias">alias</string>
 <string name="search_rated">évalué</string>
@@ -175,6 +180,7 @@
 <string name="details_ticklabel">Ou cocher seulement:</string>
 <string name="details_otherratings">Évaluations récentes:</string>
 <string name="details_availability">Disponibilité</string>
+<string name="details_noavailability">Aucune disponibilité connue</string>
 <string name="details_share">Vérifier %1$s à @ratebeer http://ratebeer.com/b/%2$s/</string>
 <string name="details_sharebeer">Partager la bière&#8230;</string>
 
@@ -187,6 +193,7 @@
 <string name="user_beersrated">%1$s bières évaluées\n%2$s Endroits évalués\nScore moyen donné: %3$s\nScore moyen par bière évaluée: %4$s \n</string>
 <string name="user_favsyle">Style préféré: %1$s</string>
 <string name="user_nofavstyle">aucun</string>
+<string name="user_picture">Photo de l'usagé</string>
 
 <string name="rate_aroma">Arôme</string>
 <string name="rate_appearance">Apparence</string>
@@ -249,6 +256,7 @@
 <string name="mail_relpied">répondu</string>
 <string name="mail_new">nouveau</string>
 <string name="mail_read">lire</string>
+<string name="mail_view">Voir</string>
 <string name="mail_reply">répondre</string>
 <string name="mail_sendto">Envoyer à</string>
 <string name="mail_subject">Sujet</string>

@@ -37,10 +37,11 @@
 <string name="app_addingcodefor">Προσθέσθε κώδικο για %1$s</string>
 <string name="app_requiressignin">Παρακαλώ συνδεθείτε στο λογαριασμό σας του RateBeer για αυτό το χαρακτηριστικό.</string>
 <string name="app_noaccount">Δεν έχετε λογαριασμό;\nhttp://www.ratebeer.com/NewUser.asp</string>
-<string name="app_newmails">Έχετε  %1$s νέα μπυρομηνύματα</string>
 <string name="app_newmail">Έχετε  νέο μπυρομηνύμα</string>
+<string name="app_newmails">Έχετε  %1$s νέα μπυρομηνύματα</string>
 <string name="app_by">Από  %1$s</string>
 <string name="app_andothers">και άλλους</string>
+<string name="app_moremail">+%1$s περισσότερα</string>
 <string name="app_uploadingphoto">Ανεβαίνει νέα φωτογραφία</string>
 <string name="app_photofor">Ανεβαίνει νέα φωτογραφία για %1$s</string>
 
@@ -65,6 +66,7 @@
 <string name="home_nowdrinking">Πίνωντας τώρα μία %1$s</string>
 <string name="home_preferences">Προτιμήσεις</string>
 <string name="home_calculator">Υπολογιστής</string>
+<string name="home_about">Περί</string>
 
 <string name="calc_clear">X</string>
 <string name="calc_for">%1$s για</string>
@@ -152,12 +154,15 @@
 <string name="search_barcodescanner">Σαρωτής Barcode</string>
 <string name="search_nobeerswithbarcode">Δε βρέθηκαν μπύρες για το barcode %1$s.  Παρακαλώ προσθέστε το στη βάση χρησιμοποιώντας τον απλό τρόπο εισαγωγής.</string>
 <string name="search_clearhistory">Καθαρισμός ιστορικότητας</string>
-<string name="search_noitems">Δε βρέθηκαν αποτελέσματα για αυτό που ψάχνατε. Παρακαλώ δοκιμάστε ψάχνωντας κομμάτι της λέξης (μπύρας, τοποθεσίας ή χρήστη) που θέλεται.</string>
+<string name="search_nobeers">Δε βρέθηκε κάποια μπύρα.\nΠροσπάθησε ξανά, αναζητώντας μόνο ένα μέρος του ονόματος.</string>
+<string name="search_nobrewers">Δε βρέθηκε κάποια ζυθοποιεία.\nΠροσπάθησε ξανά, αναζητώντας μόνο ένα μέρος του ονόματος.</string>
+<string name="search_nopalces">Δε βρέθηκε κάποια τοποθεσία.\nΠροσπάθησε ξανά, αναζητώντας μόνο ένα μέρος του ονόματος.</string>
+<string name="search_nousers">Δε βρέθηκε κάποιος χρήστης.\nΠροσπάθησε ξανά, αναζητώντας μόνο ένα μέρος του ονόματος.</string>
 <string name="search_retired">έχει αποσυρθεί</string>
 <string name="search_alias">ενναλλακτική ονομασία</string>
 <string name="search_rated">βαθμολογημένη</string>
 <string name="search_ratings">Βαθμολογίες του %1$s</string>
-<string name="search_aliasedbeer">Πρόκειται για μπύρα με εναλλακτική ονομασία: δεν υπάρχουν περαιτέρω λεπτομέρειες</string>
+<string name="search_aliasedbeer">Πρόκειται για μπύρα με εναλλακτική ονομασία: δεν υπάρχουν διαθέσιμες λεπτομέρειες</string>
 
 <string name="details_bybrewer">από τον %1$s</string>
 <string name="details_score">Βαθμός</string>
@@ -172,14 +177,15 @@
 <string name="details_drinkingthis">Πίνω αυτό</string>
 <string name="details_recentratings">Βαθμολογίες</string>
 <string name="details_myrating">Βαθμολογία μου:</string>
-<string name="details_ticklabel">Η απλά αξιολόγησε γρήγορα</string>
+<string name="details_ticklabel">Ή απλά αξιολόγησε γρήγορα</string>
 <string name="details_otherratings">Πρόσφατες βαθμολογίες:</string>
 <string name="details_availability">Διαθεσιμότητα</string>
+<string name="details_noavailability">Δεν υπάρχει ακόμα γνωστή διαθεσιμότητα</string>
 <string name="details_share">Check out %1$s στο @ratebeer http://ratebeer.com/b/%2$s/</string>
 <string name="details_sharebeer">Μοιράσου τη μπύρα&#8230;</string>
 
 <string name="upload_uploadphoto">Ανέβασε φωτογραφία</string>
-<string name="upload_choose">Διάλεξε την τοποθεσία της φωτογραφίας</string>
+<string name="upload_choose">Διάλεξε την πηγή της φωτογραφίας</string>
 <string name="upload_newphoto">Βγάλε νέα φωτογραφία</string>
 <string name="upload_pick">Διάλεξε από αρχείο</string>
 
@@ -187,6 +193,7 @@
 <string name="user_beersrated">%1$s μπύρες έχουν βαθμολογηθεί\n%2$s τοποθεσίες έχουν βαθμολογηθεί\nΜ.Ο. δωθέντος βαθμού: %3$s\nΜ.Ο. μπυρών που εχουν βαθμολογηθεί: %4$s</string>
 <string name="user_favsyle">Αγαπημένο είδος: %1$s</string>
 <string name="user_nofavstyle">κανένα</string>
+<string name="user_picture">Φωτογραφία χρήστη</string>
 
 <string name="rate_aroma">Άρωμα</string>
 <string name="rate_appearance">Εμφάνιση</string>
@@ -195,24 +202,24 @@
 <string name="rate_overall">Συνολικά</string>
 <string name="rate_totalscore">Ολική βαθμολογία</string>
 <string name="rate_comments">Σχόλια</string>
-<string name="rate_addrating">Ανέβασε τη βαθμολογία σου</string>
+<string name="rate_addrating">Ανέβασε τη βαθμολογία μου</string>
 <string name="rate_commenttooshort">Το σχόλιο πρέπει να έχει τουλάχιστον 85 χαρακτήρες</string>
 <string name="rate_ratingnotcompleted">Η βαθμολόγησή σας δεν έχει ολοκληρωθεί</string>
 <string name="rate_charstogo">%1$s χαρακτήρες απομένουν&#8230;</string>
 <string name="rate_commentok">Το μη΄κος του σχολίου είναι εντάξει!</string>
-<string name="rate_showassistance">Δείξε βοήθημα</string>
-<string name="rate_hideassistance">Κρύψε βοήθημα</string>
+<string name="rate_showassistance">Δείξε βοήθεια</string>
+<string name="rate_hideassistance">Κρύψε βοήθεια</string>
 <string name="rate_assistance_words">καραμέλα, ψωμί, στάχι,  δημητριακά, σοκολάτα, καφές, ξηροί καρποί, ψημένο, καβουρδισμένα, ρετσίνι, λουλουδάτο, γρασίδι, ερυθρελάτης, εσπεριδοειδή, βότανα, ζύμη, φάρμα, τυρί, αρώματα υπογείου, δέρμα, γήινα, φύλλα, αλκοόλ, μπανάνα, τσιχλόφουσκα, καραμέλα βουτύρου, γαρίφαλο, μαγειρεμένα λαχανικά, σιρόπι βήχα, πιπερόριζα, γλυκόριζα, σταφίδα, χαλασμένα αυγά, σάλτσα σόγιας, καναβη, καπνός, βανίλια, ξυλώδη</string>
 
-<string name="rate_offline_title">Βαθμολογία Offline</string>
+<string name="rate_offline_title">Βαθμολογία Εκτός Σύνδεσης</string>
 <string name="rate_offline_info">Όταν δοκιμάζετε μια μπύρα και περνάτε τη βαθμολογία και τα σχόλια, αυτά σωζωνται τοπικά. Αν δεν ειστε συνδεδεμένοι ή η σύνδεση ειναι κακή μπορείτε να ανεβάσετε την αξιολόγηση στο RateBeer.com αργότερα. Αξιολογήσεις που έχουν σωθεί offline θα σβηστούν αυτόματα μολις περαστούν με επιτυχία στο RateBeer.</string>
-<string name="rate_offline_availble">Διαθέσιμη αξιολόγηση offline.</string>
-<string name="rate_offline_notavailable">Μη διαθέσιμη αξιολόγηση offline.</string>
-<string name="rate_offline_savedat">Σώθηκε %1$s</string>
-<string name="rate_offline_noitems">Δεν υπάρχουν σωσμένες offline αξιολογήσεις</string>
-<string name="rate_offline_delete">Σβήσε αξιολόγηση</string>
-<string name="rate_offline_confirmdelete">Σβήσε offline αξιολόγηση για%1$s?</string>
-<string name="rate_offline_addrating">Πρόσθεσε offline αξιολόγηση</string>
+<string name="rate_offline_availble">Διαθέσιμη αξιολόγηση εκτός σύνδεσης</string>
+<string name="rate_offline_notavailable">Μη διαθέσιμη αξιολόγηση εκτός σύνδεσης</string>
+<string name="rate_offline_savedat">Αποθηκεύθηκε %1$s</string>
+<string name="rate_offline_noitems">Δεν υπάρχουν αποθηκευμένες offline αξιολογήσεις</string>
+<string name="rate_offline_delete">Διέγραψε αξιολόγηση</string>
+<string name="rate_offline_confirmdelete">Διέγραψε την  εκτός σύνδεσης αξιολόγηση για%1$s?</string>
+<string name="rate_offline_addrating">Πρόσθεσε εκτός σύνδεσης αξιολόγηση</string>
 <string name="rate_offline_discard">Ακύρωσε</string>
 <string name="rate_offline_customname">Μπύρα που βαθμολογείς:</string>
 <string name="rate_offline_confirmdiscard">Θα χάσεις τη βαθμολογία και τα σχόλιά σου. Είσαι σίγουρος ;</string>
@@ -234,7 +241,7 @@
 <string name="addav_ontap">βαρέλι</string>
 <string name="addav_onbottlecan">μπουκάλι/κουτάκι</string>
 <string name="addav_skip">Παρέκαμψε</string>
-<string name="addav_noplacesselected">Δεν έχετε διαλέξει, ακόμα, κάποια τοποθεσία</string>
+<string name="addav_noplacesselected">Δεν έχετε διαλέξει ακόμα κάποια τοποθεσία</string>
 
 <string name="addupc_upccode">Κωδικός UPC:</string>
 <string name="addupc_beer">Όνομα μπύρας:</string>
@@ -244,16 +251,17 @@
 <string name="mail_sendmail">Στείλε μήνυμα</string>
 <string name="mail_couldnotretrieve">Δε μπορούμε να καλέσουμε τα μηνύματά σας τώρα</string>
 <string name="mail_notavailable">Η τοπική αποθήκευση μηνυμάτων δεν είναι προσωρινά διαθέσιμη</string>
-<string name="mail_delete">Σβήσε το μήνυμα</string>
-<string name="mail_confirmdelete">Θα σβήσετε το μήνυμα από τον %1$s?</string>
+<string name="mail_delete">Διαγραφή μηνύματος</string>
+<string name="mail_confirmdelete">Διαγραφή μηνύματος από τον %1$s?</string>
 <string name="mail_relpied">έχει απαντηθεί</string>
 <string name="mail_new">νέο</string>
-<string name="mail_read">διάβασε</string>
+<string name="mail_read">διαβασμένο</string>
+<string name="mail_view">Διάβασε</string>
 <string name="mail_reply">Απάντηση</string>
-<string name="mail_sendto">Στείλε σε</string>
-<string name="mail_subject">Θέμα</string>
+<string name="mail_sendto">Στείλε σε:</string>
+<string name="mail_subject">Θέμα:</string>
 <string name="mail_message">Μήνυμα:</string>
-<string name="mail_includeoriginal">Με το αρχικό μήνυμα</string>
+<string name="mail_includeoriginal">Να συμπεριληφθει το αρχικό μήνυμα</string>
 <string name="mail_send">Στείλε</string>
 <string name="mail_emptyfields">Παρακαλώ συμπληρώστε όλα τα πεδία πριν στείλετε</string>
 <string name="mail_sendingmail">Αποστολή μπυρομηνύματος</string>
@@ -280,8 +288,8 @@
 
 <string name="error_offline">Δεν υπάρχει σύνδεση internet ή το RateBeer.com είναι προσωρινά εκτος λειτουργίας</string>
 <string name="error_authenticationfailed">Το όνομα χρήστη ή ο κωδικός σας είναι λάθος</string>
-<string name="error_commandfailed">Η ενέργεια απέτυχε απρόβλεπτα. Η η σύνδεση δεν είναι καλή η το Ratebeer είναι προσωρινά εκτος λειτουργίας</string>
-<string name="error_nouserorpass">Και το όνομα χρηστη και ο κωδικός είναι απαραίτητα πεδία για να συνδεθείτε</string>
+<string name="error_commandfailed">Η εντολή απέτυχε. Η σύνδεση δεν είναι καλή ή το Ratebeer είναι προσωρινά εκτος λειτουργίας</string>
+<string name="error_nouserorpass">Το όνομα χρηστη και ο κωδικός είναι απαραίτητα πεδία για να συνδεθείτε</string>
 <string name="error_nolocation">Η τοποθεσία σας δε μπορεί να εξακριβωθεί</string>
 <string name="error_locationnotsupported">Η συσκευή σας δεν υποστηρίζει τι ενημέρωση τοποθεσίας η δεν έχετε ενεργοποιήσει αυτή τη λετουργία</string>
 <string name="error_sendreport">Στείλε την αναφορά λάθους</string>

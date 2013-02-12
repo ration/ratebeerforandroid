@@ -13,7 +13,7 @@
 
 <string name="app_install">Installera nu</string>
 <string name="app_nomarket">Play Store är inte installerat på din enhet.</string>
-<string name="app_scannernotfound">En Streckkodsläsare kunde inte hittas.\nSkulle du vilja installera en från Play Store?</string>
+<string name="app_scannernotfound">En Streckkodsläsare kunde inte hittas.\nVill du installera en från Play Store?</string>
 <string name="app_onlyifsignedin">Denna funktion är endast tillgänglig efter inloggning på RateBeer.</string>
 
 <string name="app_newstatus">Lägg till ny status</string>
@@ -37,10 +37,11 @@
 <string name="app_addingcodefor">Lägger till streckkod för %1$s</string>
 <string name="app_requiressignin">Var god logga in på ditt RateBeer-konto för att använda denna funktion.</string>
 <string name="app_noaccount">Har du inget konto?\nhttp://www.ratebeer.com/NewUser.asp</string>
-<string name="app_newmails">Du har %1$s nya meddelanden</string>
 <string name="app_newmail">Du har fått ett nytt meddelande</string>
+<string name="app_newmails">Du har %1$s nya meddelanden</string>
 <string name="app_by">Av %1$s</string>
 <string name="app_andothers">med flera</string>
+<string name="app_moremail">+%1$s fler</string>
 <string name="app_uploadingphoto">Laddar upp ny bild</string>
 <string name="app_photofor">Laddar upp bild för %1$s</string>
 
@@ -65,6 +66,7 @@
 <string name="home_nowdrinking">Dricker %1$s just nu</string>
 <string name="home_preferences">Inställningar</string>
 <string name="home_calculator">Miniräknare</string>
+<string name="home_about">Om</string>
 
 <string name="calc_clear">X</string>
 <string name="calc_for">%1$s för</string>
@@ -152,7 +154,10 @@
 <string name="search_barcodescanner">Streckkodsläsare</string>
 <string name="search_nobeerswithbarcode">Ingen öl kunde hittas för streckkoden %1$s. Överväg att lägga till det i databasen genom en enkel sökning.</string>
 <string name="search_clearhistory">Rensa historik</string>
-<string name="search_noitems">Inga resultat hittades för ditt sökord. Kanske ska du försöka igen med en mindre del av ölets namn, stället eller användarnamnet?</string>
+<string name="search_nobeers">Hittade inga öl.\nFörsök att söka på endast en del av ölets namn.</string>
+<string name="search_nobrewers">Hittade inga bryggerier.\nFörsök att söka på endast en del av bryggeriets namn.</string>
+<string name="search_nopalces">Hittade inga ställen.\nFörsök att söka på endast en del av ställets namn.</string>
+<string name="search_nousers">Inga användare hittades.\n\nProva att söka med endast en del av användarens namn.</string>
 <string name="search_alias">alias</string>
 <string name="search_rated">recenserad</string>
 <string name="search_ratings">%1$s recensioner</string>
@@ -174,6 +179,7 @@
 <string name="details_ticklabel">Eller ge endast ett betyg:</string>
 <string name="details_otherratings">Senaste recensioner:</string>
 <string name="details_availability">Tillgänglighet</string>
+<string name="details_noavailability">Ingen tillgänglighet känd än</string>
 <string name="details_share">Kolla in %1$s på @ratebeer http://ratebeer.com/b/%2$s/</string>
 <string name="details_sharebeer">Dela öl&#8230;</string>
 
@@ -186,6 +192,7 @@
 <string name="user_beersrated">%1$s recenserade öl\n%2$s recenserade ställen\nGenomsnittligt given poäng: %3$s\nGenomsnittligt betygsatt öl: %4$s</string>
 <string name="user_favsyle">Favoritöltyp: %1$s</string>
 <string name="user_nofavstyle">ingen</string>
+<string name="user_picture">Användarbild</string>
 
 <string name="rate_aroma">Arom</string>
 <string name="rate_appearance">Utseende</string>
@@ -248,6 +255,7 @@
 <string name="mail_relpied">svarat</string>
 <string name="mail_new">nytt</string>
 <string name="mail_read">läst</string>
+<string name="mail_view">Visa</string>
 <string name="mail_reply">Svara</string>
 <string name="mail_sendto">Skicka till:</string>
 <string name="mail_subject">Ämne:</string>

@@ -264,7 +264,7 @@ public final class HttpRequestBuilder {
             conn.setRequestProperty("Connection", "close");
             conn.setRequestProperty("Location", uri);
             conn.setRequestProperty("Referrer", uri);
-            conn.setRequestProperty("Accept-Encoding", "gzip,deflate");
+            conn.setRequestProperty("Accept-Encoding", "identity");
             conn.setRequestProperty("Accept-Charset", CONTENT_CHARSET);
 
             if (conn instanceof HttpsURLConnection) {

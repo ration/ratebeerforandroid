@@ -156,8 +156,8 @@
 <string name="search_clearhistory">Supprimer l\'historique</string>
 <string name="search_nobeers">Aucune bières répertoriées.\n\nCherchez avec une partie du nom de la bière.</string>
 <string name="search_nobrewers">Aucun brasseurs répertoriés.\n\nCherchez avec une partie du nom du brasseurs.</string>
-<string name="search_nopalces">Aucun endroits répertoriés.\n\nCherchez avec une partie du nom de l'endroit.</string>
-<string name="search_nousers">Aucun usagés répertoriés.\n\nCherchez avec une partie du nom de l'usagé.</string>
+<string name="search_nopalces">Aucun endroits répertoriés.\n\nCherchez avec une partie du nom de l\'endroit.</string>
+<string name="search_nousers">Aucun usagés répertoriés.\n\nCherchez avec une partie du nom de l\'usagé.</string>
 <string name="search_retired">retiré</string>
 <string name="search_alias">alias</string>
 <string name="search_rated">évalué</string>
@@ -193,7 +193,7 @@
 <string name="user_beersrated">%1$s bières évaluées\n%2$s Endroits évalués\nScore moyen donné: %3$s\nScore moyen par bière évaluée: %4$s \n</string>
 <string name="user_favsyle">Style préféré: %1$s</string>
 <string name="user_nofavstyle">aucun</string>
-<string name="user_picture">Photo de l'usagé</string>
+<string name="user_picture">Photo de l\'usagé</string>
 
 <string name="rate_aroma">Arôme</string>
 <string name="rate_appearance">Apparence</string>

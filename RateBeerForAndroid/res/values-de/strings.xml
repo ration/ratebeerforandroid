@@ -37,10 +37,11 @@
 <string name="app_addingcodefor">Barcode für  %1$s hinzufügen</string>
 <string name="app_requiressignin">Bitte melde dich bei RateBeer an um diese Funktion zu nutzen</string>
 <string name="app_noaccount">Noch keinen Account?\nhttp://www.ratebeer.com/NewUser.asp</string>
-<string name="app_newmails">Du hast %1$s neue Bier Mails</string>
 <string name="app_newmail">Du hast eine neue Bier Mail</string>
+<string name="app_newmails">Du hast %1$s neue Bier Mails</string>
 <string name="app_by">von %1$s</string>
 <string name="app_andothers">und anderen</string>
+<string name="app_moremail">+%1$ mehr</string>
 <string name="app_uploadingphoto">Neues Foto hochladen</string>
 <string name="app_photofor">Foto für %1$s hochladen</string>
 
@@ -65,6 +66,7 @@
 <string name="home_nowdrinking">trink jetzt %1$s</string>
 <string name="home_preferences">Einstellungen</string>
 <string name="home_calculator">Rechner</string>
+<string name="home_about">Über</string>
 
 <string name="calc_clear">X</string>
 <string name="calc_for">%1$s für</string>
@@ -111,7 +113,7 @@
 <string name="places_notyetrated">Noch ncht bewertet</string>
 <string name="places_findhint">Bitte tippe den Namen der gesuchten Lokation</string>
 <string name="places_usecurrent">Die aktuelle Position benutzen</string>
-<string name="places_noitems">Keine Bierlokale in diese Gegend gefunden!</string>
+<string name="places_noitems">Keine Bierlokale in dieser Gegend gefunden!</string>
 <string name="places_brewpub">Brauhaus</string>
 <string name="places_bar">Bar</string>
 <string name="places_beerstore">Bierladen</string>
@@ -152,12 +154,15 @@
 <string name="search_barcodescanner">Barcodescanner</string>
 <string name="search_nobeerswithbarcode">Der Barcode %1$s wurde nicht gefunden. Bitte füge ihn der Datenbank hinzu um es dem nächsten Benutzer einfacher zu machen.</string>
 <string name="search_clearhistory">Meine Spuren löschen</string>
-<string name="search_noitems">Keine Ergebnisse gefunden. Probiere es bitte mit einem kleineren Teil des Bier-, Lokal- oder Benutzernamens!</string>
+<string name="search_nobeers">Keine Biere gefunden!\n\nVersuche, nur einen Teil des Namens zu suchen.</string>
+<string name="search_nobrewers">Keine Brauer gefunden!\n\nVersuche, nur einen Teil des Namens zu suchen.</string>
+<string name="search_nopalces">Keine Lokalitäten gefunden!\n\nVersuche, nur einen Teil des Namens zu suchen.</string>
+<string name="search_nousers">Kein Nutzer gefunden!\n\nVersuche, nur einen Teil des Namens zu suchen.</string>
 <string name="search_retired">eingestellt</string>
 <string name="search_alias">alias</string>
 <string name="search_rated">bewertet</string>
 <string name="search_ratings">%1$s Tests</string>
-<string name="search_aliasedbeer">Dies ist ein Bier, das unter mehreren Namen verkauft wird: Zu diesem gibt es keine Details</string>
+<string name="search_aliasedbeer_redirect">Dieser Name ist nur ein Alias, du wirst zum Stammbier weitergeleitet</string>
 
 <string name="details_bybrewer">von %1$s</string>
 <string name="details_score">Bewertung</string>
@@ -175,6 +180,7 @@
 <string name="details_ticklabel">Oder gib eine Kurzbewertng ab:</string>
 <string name="details_otherratings">Ältere Bewertungen:</string>
 <string name="details_availability">Verfügbarkeit</string>
+<string name="details_noavailability">Bisher sind keine Verfügbarkeiten gelistet</string>
 <string name="details_share">Schaut euch %1$s bei @ratebeer http://ratebeer.com/b/%2$s/ an</string>
 <string name="details_sharebeer">Bier teilen</string>
 
@@ -187,6 +193,7 @@
 <string name="user_beersrated">%1$s Biere bewertet\n%2$s Lokalitäten bewertet</string>
 <string name="user_favsyle">Lieblingssorte: %1$s</string>
 <string name="user_nofavstyle">keine</string>
+<string name="user_picture">Benutzerbild</string>
 
 <string name="rate_aroma">Aroma</string>
 <string name="rate_appearance">Erscheinung</string>
@@ -261,7 +268,7 @@
 
 <string name="settings_display">Eigenschaften anzeigen</string>
 <string name="settings_distanceinkm">Distanz in km anzeigen</string>
-<string name="settings_distanceinkm_info">Die Distand wird sonst in Meilen angezeigt</string>
+<string name="settings_distanceinkm_info">Die Distanz wird sonst in Meilen angezeigt</string>
 <string name="settings_sharetext">Der Text, der beim Mitteilen des Tests angezeigt wird</string>
 <string name="settings_sharetext_msg">Platzhalter: %1$s für Bier, %2$s für den Biernamen, %3$s für das Gesamtergebnis und %4$s für die Benutzer ID</string>
 <string name="settings_beermail">Mail</string>
@@ -278,9 +285,10 @@
 <item>24 Stunden</item>
 </string-array>
 
-<string name="error_offline">Du hast keine Internetverbindung oder RateBeer ist offline (Fehler)</string>
-<string name="error_authenticationfailed">Benutzername oder Passwort falsch</string>
+<string name="error_offline">Keine Internetverbindung vorhanden</string>
+<string name="error_connectionfailure">Verbindungsfehler</string>
 <string name="error_commandfailed">Die Aktion wurde unerwartet abgebrochen. Schlechte Internetverbindung oder RateBeer ist offline</string>
+<string name="error_authenticationfailed">Benutzername oder Passwort falsch</string>
 <string name="error_nouserorpass">Sowohl Benutzername als auch Passwort werden zum Anmelden benötigt</string>
 <string name="error_nolocation">Dein Aufenthaltsort konnte nicht ermittelt werden</string>
 <string name="error_locationnotsupported">Dein Gerät unterstützt die Lokalisierung nicht oder sieist ausgeschaltet</string>

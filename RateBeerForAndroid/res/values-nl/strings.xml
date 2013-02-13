@@ -154,15 +154,15 @@
 <string name="search_barcodescanner">Barcodescanner</string>
 <string name="search_nobeerswithbarcode">Geen bieren gevonden voor %1$s. Overweeg om de barcode toe te voegen aan de database.</string>
 <string name="search_clearhistory">Zoekgeschiedenis wissen</string>
-<string name="search_nobeers">Geen bieren gevonden.\n\nProbeer slechts een deel van de biernaam te gebruiken.</string>
-<string name="search_nobrewers">Geen brouwers gevonden.\n\nProbeer slechts een deel van de brouwerijnaam te gebruiken.</string>
-<string name="search_nopalces">Geen plaatsen gevonden.\n\nProbeer slechts een deel van de plaatsnaam te gebruiken.</string>
-<string name="search_nousers">Geen gebruikers gevonden.\n\nProbeer slechts een deel van de gebruikersnaam te gebruiken.</string>
+<string name="search_nobeers">Geen bieren gevonden.\n\nProbeer slechts een deel van de biernaam te gebruiken.</string>
+<string name="search_nobrewers">Geen brouwers gevonden.\n\nProbeer slechts een deel van de brouwerijnaam te gebruiken.</string>
+<string name="search_nopalces">Geen plaatsen gevonden.\n\nProbeer slechts een deel van de plaatsnaam te gebruiken.</string>
+<string name="search_nousers">Geen gebruikers gevonden.\n\nProbeer slechts een deel van de gebruikersnaam te gebruiken.</string>
 <string name="search_retired">stopgezet</string>
 <string name="search_alias">alias</string>
 <string name="search_rated">beoordeeld</string>
 <string name="search_ratings">%1$s beoordelingen</string>
-<string name="search_aliasedbeer">Dit bier is een alias: geen gegevens beschikbaar</string>
+<string name="search_aliasedbeer_redirect">Dit is een bieralias; de juiste doorverwijzing wordt nu opgezocht</string>
 
 <string name="details_bybrewer">door %1$s</string>
 <string name="details_score">Score</string>
@@ -287,8 +287,9 @@
 </string-array>
 
 <string name="error_offline">Je hebt geen verbinding met het internet of RateBeer.com is offline</string>
+<string name="error_connectionfailure">Connectiefout - je verbinding is slecht of RateBeer is offline</string>
+<string name="error_commandfailed">Actie kon onverwacht niet worden uitgevoerd - RateBeer gedraagd zich onvoorspelbaar of je verbinding is slecht</string>
 <string name="error_authenticationfailed">Je gebruikersnaam of wachtwoord is onjuist</string>
-<string name="error_commandfailed">Actie kon helaas niet worden uitgevoerd. Je verbinding is slecht of RateBeer.com is offline</string>
 <string name="error_nouserorpass">Je moet zowel gebruikersnaam als wachtwoord invullen om je aan te melden</string>
 <string name="error_nolocation">Je lokatie kon niet worden vastgesteld</string>
 <string name="error_locationnotsupported">Je apparaat heeft geen ondersteuning voor het vaststellen van je lokatie of dit staat uitgeschakeld</string>
@@ -298,8 +299,6 @@
 <string name="error_cannotread">Bestand niet gevonden of beschadigd</string>
 <string name="error_filenotvalid">Het bestand bevat geen offline beoordelingen (in het juiste formaat)</string>
 <string name="error_nocamera">Foto kon niet worden genomen; je hebt geen camera of de SD kaart is niet beschikbaar</string>
-<string name="error_lc_install">Om een foutrapport te verzenden heb je de gratis Log Collector applicatie nodig. Wil je deze installeren uit de Play Store?</string>
-<string name="error_lc_run">De Log Collector applicatie zal nu een foutlog samenstellen en deze versturen naar rb@2312.nl.\nJe hebt de mogelijkheid om deze mail na te kijken en aan te passen voor het versturen.</string>
 <string name="error_invalidurl">Deze URL lijkt geen geldig websiteadres</string>
 
 </resources>

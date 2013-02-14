@@ -17,29 +17,41 @@
  */
 package com.ratebeer.android.gui.components;
 
-import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EBean;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.Command;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.SignOutCommand;
-import com.ratebeer.android.app.RateBeerForAndroid;
-import com.ratebeer.android.gui.SignIn;
-import com.ratebeer.android.gui.fragments.UserViewFragment;
+import com.ratebeer.android.app.ApplicationSettings;
+import com.ratebeer.android.gui.SignIn_;
+import com.ratebeer.android.gui.components.helpers.Log;
+import com.ratebeer.android.gui.components.helpers.RateBeerTaskCaller;
+import com.ratebeer.android.gui.fragments.UserViewFragment_;
 
-public class RateBeerFragment extends Fragment implements RateBeerTaskCaller {
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
+
+@EBean
+public abstract class RateBeerFragment extends SherlockFragment implements RateBeerTaskCaller {
 
 	protected boolean showSignInMenuItem = true;
 
+	@Bean
+	protected Log Log;
+	@Bean
+	protected ApplicationSettings applicationSettings = null;
+	
 	public RateBeerFragment() {
 		setHasOptionsMenu(true);
 	}
@@ -47,63 +59,86 @@ public class RateBeerFragment extends Fragment implements RateBeerTaskCaller {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
+		// Provide sign in/my profile action option
+		// Note: text and action is not set until onPrepareOptionsMenu
+		MenuItem signin = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNIN, RateBeerActivity.MENU_SIGNIN, "");
+		signin.setIcon(R.drawable.ic_action_signin);
+		signin.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		// Provide sign out option (always shown in (overflow) menu)
+		// Note: action is not shown until onPrepareOptionsMenu
+		MenuItem signout = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNOUT, RateBeerActivity.MENU_SIGNOUT, R.string.signin_signout);
+		signout.setIcon(R.drawable.ic_menu_signout);
+		signout.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+
 		// Add user sign in/out item
-		if (showSignInMenuItem && getRateBeerActivity() != null) {
-			String userText = getRateBeerActivity().getUser() == null? getString(R.string.signin_signin): 
-				getRateBeerActivity().getUser().getUsername();
-			// Provide sign in/my profile action option
-			MenuItem signin = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNIN, RateBeerActivity.MENU_SIGNIN, userText);
-			signin.setIcon(R.drawable.ic_action_signin);
-			signin.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-			if (getRateBeerActivity().getUser() != null) {
-				// Provide sign out option (always shown in (overflow) menu)
-				MenuItem signout = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNOUT, RateBeerActivity.MENU_SIGNOUT, R.string.signin_signout);
-				signout.setIcon(R.drawable.ic_menu_signout);
-				signout.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-			}
+		MenuItem signIn = menu.findItem(RateBeerActivity.MENU_SIGNIN);
+		MenuItem signOut = menu.findItem(RateBeerActivity.MENU_SIGNOUT);
+		if (showSignInMenuItem && getActivity() != null) {
+			String userText = getUser() == null? getString(R.string.signin_signin): getUser().getUsername();
+			signIn.setVisible(true);
+			signIn.setTitle(userText);
+			signOut.setVisible(getUser() != null);
+		} else {
+			signIn.setVisible(false);
+			signOut.setVisible(false);
 		}
 		
 		// If there is an action bar item representing MENU_REFRESH and we have tasks in progress, show custom view with an undetermined progress indicator
-		if (getRateBeerActivity() != null && getRateBeerActivity().isInProgress()) {
+		if (getActivity() != null && getRateBeerActivity().isInProgress()) {
 			for (int i = 0; i < menu.size(); i++) {
-				if (menu.getItem(i).getItemId() == RateBeerActivity.MENU_REFRESH) {
+				if (menu.getItem(i).getItemId() == RateBeerActivity.MENU_REFRESH || menu.getItem(i).getItemId() == R.id.menu_refresh) {
 					View view = getRateBeerActivity().getLayoutInflater().inflate(R.layout.actionbar_progressitem, null);
 					menu.getItem(i).setActionView(view);
 				}
 			}
 		}
 
-		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case RateBeerActivity.MENU_SIGNIN:
-			if (getRateBeerActivity().getUser() == null) {
-				startActivity(new Intent(getRateBeerActivity(), SignIn.class));
+			if (getUser() == null) {
+				SignIn_.intent(getActivity()).start();
 			} else {
-				getRateBeerActivity().load(new UserViewFragment(getRateBeerActivity().getUser().getUsername(), 
-						getRateBeerActivity().getUser().getUserID()));
+				load(UserViewFragment_.builder().userId(getUser().getUserID()).userName(getUser().getUsername()).build());
 			}
 			return true;
 		case RateBeerActivity.MENU_SIGNOUT:
-			getRateBeerActivity().execute(signOutHandler, new SignOutCommand(getRateBeerActivity().getApi()));
+			getRateBeerActivity().execute(signOutHandler, new SignOutCommand(getUser()));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	private RateBeerTaskCaller signOutHandler = new RateBeerTaskCaller() {
+		
 		@Override
 		public void onTaskSuccessResult(CommandSuccessResult result) {
+			if (getActivity() == null) {
+				// No longer visible
+				return;
+			}
 			// Successfully signed out
-			Toast.makeText(getRateBeerActivity(), R.string.signin_signoutsuccess, Toast.LENGTH_LONG).show();
-			getRateBeerActivity().getSettings().saveUserSettings(null);
-			getRateBeerActivity().invalidateOptionsMenu();
+			Crouton.makeText(getActivity(), R.string.signin_signoutsuccess, Style.CONFIRM).show();
+			applicationSettings.saveUserSettings(null);
+			getActivity().invalidateOptionsMenu();
 		}
+		
 		@Override
 		public void onTaskFailureResult(CommandFailureResult result) {
+			if (getActivity() == null) {
+				// No longer visible
+				return;
+			}
 			// Sign out failure
 			String message = "";
 			switch (result.getException().getType()) {
@@ -116,14 +151,35 @@ public class RateBeerFragment extends Fragment implements RateBeerTaskCaller {
 			case CommandFailed:
 				message = getText(R.string.error_commandfailed).toString();
 				break;
+			case ConnectionError:
+				message = getText(R.string.error_connectionfailure).toString();
+				break;
 			}
-			Toast.makeText(getRateBeerActivity(), message, Toast.LENGTH_LONG).show();
+			Crouton.makeText(getActivity(), message, Style.INFO).show();
 		}
 		@Override
 		public boolean isBound() {
 			return true;
 		}
+		
 	};
+
+	/**
+	 * Convenience method that calls load(fragment, true) on the attached RateBeerActivity
+	 * @param fragment The fragment to show
+	 */
+	public void load(RateBeerFragment fragment) {
+		getRateBeerActivity().load(fragment, true);
+	}
+
+	/**
+	 * Convenience method that calls load(fragment, true) on the attached RateBeerActivity
+	 * @param fragment The fragment to show
+	 * @param addToBackStack Whether to also add this fragment to the backstack
+	 */
+	public void load(RateBeerFragment fragment, boolean addToBackStack) {
+		getRateBeerActivity().load(fragment, addToBackStack);
+	}
 
 	/**
 	 * Convenience method that start the command execution in this fragment's activity
@@ -161,6 +217,9 @@ public class RateBeerFragment extends Fragment implements RateBeerTaskCaller {
 		case CommandFailed:
 			message = getText(R.string.error_commandfailed).toString();
 			break;
+		case ConnectionError:
+			message = getText(R.string.error_connectionfailure).toString();
+			break;
 		}
 		publishException(textview, message);
 		
@@ -175,7 +234,7 @@ public class RateBeerFragment extends Fragment implements RateBeerTaskCaller {
 	protected void publishException(TextView textview, String message) {
 			
 		// Show a toast message with the error
-		Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+		Crouton.makeText(getActivity(), message, Style.INFO).show();
 		
 		// Show the error on the given TextView as well
 		if (textview != null) {
@@ -184,12 +243,18 @@ public class RateBeerFragment extends Fragment implements RateBeerTaskCaller {
 		
 	}
 
-    public RateBeerActivity getRateBeerActivity() {
-    	return (RateBeerActivity) getActivity();
-    }
+	protected ApplicationSettings getSettings() {
+		return applicationSettings;
+	}
+	
+	protected UserSettings getUser() {
+		if (applicationSettings == null)
+			return null;
+		return applicationSettings.getUserSettings();
+	}
 
-    public RateBeerForAndroid getRateBeerApplication() {
-    	return (RateBeerForAndroid) getActivity().getApplication();
-    }
-
+	private RateBeerActivity getRateBeerActivity() {
+		return (RateBeerActivity) getActivity();
+	}
+	
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	
+	<item 
+		android:id="@+id/menu_search" 
+		android:title="@string/home_search"
+		android:icon="@drawable/ic_action_search"
+		android:showAsAction="ifRoom" />
+	
+	<item 
+		android:id="@+id/menu_refresh" 
+		android:title="@string/app_refresh"
+		android:icon="@drawable/ic_action_refresh"
+		android:showAsAction="ifRoom|withText" />
+	
+	<item 
+		android:id="@+id/menu_scanbarcode" 
+		android:title="@string/search_barcodescanner"
+		android:icon="@drawable/ic_action_barcode"
+		android:showAsAction="ifRoom" />
+	
+	<item 
+		android:id="@+id/menu_clearhistory" 
+		android:title="@string/search_clearhistory" />
+	
+</menu>

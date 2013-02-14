@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+	
+	<TextView
+		android:id="@+id/subject"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		style="@style/ListHeaderText" />
+	
+	<TextView
+		android:id="@+id/sender"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/subject" />
+	
+	<TextView 
+		android:id="@+id/status"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/subject"
+		style="@style/BeerLabel"
+		android:layout_alignParentRight="true" />
+	
+	<TextView
+		android:id="@+id/date"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/subject"
+		android:layout_toLeftOf="@id/status" />
+	
+</RelativeLayout>

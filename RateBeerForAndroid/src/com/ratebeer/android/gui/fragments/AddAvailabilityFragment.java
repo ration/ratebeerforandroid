@@ -20,104 +20,85 @@ package com.ratebeer.android.gui.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.jakewharton.android.viewpagerindicator.TitlePageIndicator;
-import com.jakewharton.android.viewpagerindicator.TitleProvider;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.AddAvailabilityCommand;
-import com.ratebeer.android.api.command.FindPlacesCommand;
 import com.ratebeer.android.api.command.GetFavouritePlacesCommand;
-import com.ratebeer.android.api.command.GetFavouritePlacesCommand.PlaceForAvailability;
-import com.ratebeer.android.gui.components.ArrayAdapter;
+import com.ratebeer.android.api.command.SearchPlacesCommand;
+import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
 import com.ratebeer.android.gui.components.PosterService;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
+import com.viewpagerindicator.TabPageIndicator;
 
+@EFragment(R.layout.fragment_addavailability)
+@OptionsMenu(R.menu.refresh)
 public class AddAvailabilityFragment extends RateBeerFragment {
 
-	private static final String STATE_BEERID = "beerId";
-	private static final String STATE_BEERNAME = "beerName";
-	private static final String STATE_FAVOURITES = "favourites";
-	private static final String STATE_FINDRESULTS = "findresults";
-
-	private LayoutInflater inflater;
-	private ListView favouritesView, findresultsView;
-	private EditText placenameText;
-	private CheckBox onbottlecanCheck, ontapCheck;
-	private Button addavailabilityButton, skipButton, findplaceButton;
-	private ViewPager pager;
-
+	@FragmentArg
+	@InstanceState
 	protected String beerName;
+	@FragmentArg
+	@InstanceState
 	protected int beerId;
-	private ArrayList<PlaceForAvailability> favourites = new ArrayList<PlaceForAvailability>();
-	private ArrayList<PlaceForAvailability> findResults = new ArrayList<PlaceForAvailability>();
+	@InstanceState
+	protected ArrayList<PlaceSearchResult> favourites = null;
+	@InstanceState
+	protected ArrayList<PlaceSearchResult> findResults = null;
+
+	@ViewById
+	protected ViewPager pager;
+	@ViewById
+	protected TabPageIndicator titles;
+	@ViewById(R.id.favourites)
+	protected ListView favouritesView;
+	@ViewById(R.id.findresults)
+	protected ListView findresultsView;
+	@ViewById(R.id.placename)
+	protected EditText placenameText;
+	@ViewById(R.id.findplace)
+	protected Button findplaceButton;
+
+	@ViewById
+	protected CheckBox onbottlecan, ontap;
+	@ViewById
+	protected Button addavailability, skip;
 
 	public AddAvailabilityFragment() {
-		this(null, -1);
 	}
 
-	/**
-	 * Allow adding of beer availability info
-	 * @param beerName The beer name, or null if not known
-	 * @param beerId The beer ID
-	 */
-	public AddAvailabilityFragment(String beerName, int beerId) {
-		this.beerName = beerName;
-		this.beerId = beerId;
-	}
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_addavailability, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	@AfterViews
+	public void init() {
 		
-		pager = (ViewPager) getView().findViewById(R.id.pager);
 		if (pager != null) {
 			// Phone layout (using a pager to show the two lists)
-			PlacesPagerAdapter cellarPagerAdapter = new PlacesPagerAdapter();
-			pager.setAdapter(cellarPagerAdapter);
-			favouritesView = cellarPagerAdapter.getFavouritesList();
-			findresultsView = cellarPagerAdapter.getFindResultsList();
-			placenameText = cellarPagerAdapter.getFindText();
-			findplaceButton = cellarPagerAdapter.getFindButton();
-			TitlePageIndicator titles = (TitlePageIndicator) getView().findViewById(R.id.titles);
+			pager.setAdapter(new PlacesPagerAdapter());
 			titles.setViewPager(pager);
-		} else {
-			// Tablet layout (showing both lists at the same time)
-			favouritesView = (ListView) getView().findViewById(R.id.favourites);
-			findresultsView = (ListView) getView().findViewById(R.id.findresults);
-			placenameText = (EditText) getView().findViewById(R.id.placename);
 		}
 		favouritesView.setItemsCanFocus(false);
 		findresultsView.setItemsCanFocus(false);
@@ -125,61 +106,16 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		findplaceButton.setOnClickListener(onFindPlace);
 
 		// The bottle/tap checks and buttons are on the bottom and never in a pager
-		onbottlecanCheck = (CheckBox) getView().findViewById(R.id.onbottlecan);
-		ontapCheck = (CheckBox) getView().findViewById(R.id.ontap);
-		addavailabilityButton = (Button) getView().findViewById(R.id.addavailability);
-		addavailabilityButton.setOnClickListener(onAddAvailability);
-		skipButton = (Button) getView().findViewById(R.id.skip);
-		skipButton.setOnClickListener(onSkipClicked);
+		addavailability.setOnClickListener(onAddAvailability);
+		skip.setOnClickListener(onSkipClicked);
 
-		if (savedInstanceState != null) {
-			beerName = savedInstanceState.getString(STATE_BEERNAME);
-			beerId = savedInstanceState.getInt(STATE_BEERID);
-			if (savedInstanceState.containsKey(STATE_FAVOURITES)) {
-				favourites = savedInstanceState.getParcelableArrayList(STATE_FAVOURITES);
-			}
-			if (savedInstanceState.containsKey(STATE_FAVOURITES)) {
-				findResults = savedInstanceState.getParcelableArrayList(STATE_FINDRESULTS);
-			}
+		if (favourites != null && findResults != null) {
+			publishFavourites(favourites);
+			publishFindResults(findResults);
 		} else {
 			refreshFavourites();
 		}
-		// Publish the current favs and find results, even when they are not loaded yet (and thus still empty)
-		publishFavourites(favourites);
-		publishFindResults(findResults);
-
 		
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshFavourites();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(STATE_BEERNAME, beerName);
-		outState.putInt(STATE_BEERID, beerId);
-		if (favourites != null) {
-			outState.putParcelableArrayList(STATE_FAVOURITES, favourites);
-		}
-		if (findResults != null) {
-			outState.putParcelableArrayList(STATE_FINDRESULTS, findResults);
-		}
 	}
 
 	private TextWatcher onPlaceNameChanged = new TextWatcher() {
@@ -197,12 +133,13 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 	private OnClickListener onFindPlace = new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			execute(new FindPlacesCommand(getRateBeerActivity().getApi(), placenameText.getText().toString()));
+			execute(new SearchPlacesCommand(getUser(), placenameText.getText().toString()));
 		}
 	};
 
+	@OptionsItem(R.id.menu_refresh)
 	protected void refreshFavourites() {
-		execute(new GetFavouritePlacesCommand(getRateBeerActivity().getApi(), beerId));
+		execute(new GetFavouritePlacesCommand(getUser(), beerId));
 	}
 
 	private void clearSelection(ListView listView) {
@@ -221,42 +158,41 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 	};
 	
 	private OnClickListener onAddAvailability = new OnClickListener() {
+		@TargetApi(8)
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onClick(View v) {
 			
-			long[] ids;
-			try {
+			long[] ids1, ids2;
+			if (android.os.Build.VERSION.SDK_INT >= 8) {
 				// Use a try {}, because the method name was changed in Android...
 				// For Android 2.2+
-				ids = favouritesView.getCheckedItemIds();
-			} catch (NoSuchMethodError e) {
+				ids1 = favouritesView.getCheckedItemIds();
+				ids2 = findresultsView.getCheckedItemIds();
+				
+			} else {
 				// For Android 2.1-
-				ids = favouritesView.getCheckItemIds();
+				ids1 = favouritesView.getCheckItemIds();
+				ids2 = findresultsView.getCheckItemIds();
 			}
-			if (ids.length + ids.length <= 0) {
+			if (ids1.length + ids2.length <= 0) {
 				publishException(null, getString(R.string.addav_noplacesselected));
 				return;
 			}
 			
-			SparseBooleanArray favPos = favouritesView.getCheckedItemPositions();
-			int resPos = findresultsView.getCheckedItemPosition();
-			
 			// See which favourite places are selected
-			int[] selectedFavourites = new int[ids.length];
-			int s = 0;
-			for (int f = 0; f < favPos.size(); f++) {
-				if (favPos.valueAt(f)) {
-					selectedFavourites[s] = getFavouritesAdapter().getItem(f).placeId;
-					s++;
-				}
+			int[] selectedFavourites = new int[ids1.length];
+			for (int f = 0; f < ids1.length; f++) {
+				selectedFavourites[f] = getFavouritesAdapter().getItem((int) ids1[f]).placeId;
 			}
 			
 			// See if a place was searched for and selected
 			String extraPlaceName = null;
 			int extraPlaceId = AddAvailabilityCommand.NO_EXTRA_PLACE;
-			if (resPos != AdapterView.INVALID_POSITION) {
-				extraPlaceName = getFindresutlsAdapter().getItem(resPos).placeName;
-				extraPlaceId = getFindresutlsAdapter().getItem(resPos).placeId;
+			//if (resPos != AdapterView.INVALID_POSITION) {
+			if (ids2.length > 0) {
+				extraPlaceName = getFindresutlsAdapter().getItem((int) ids2[0]).placeName;
+				extraPlaceId = getFindresutlsAdapter().getItem((int) ids2[0]).placeId;
 			}
 
 			// Use the poster service to add the new availability info
@@ -266,13 +202,12 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 			i.putExtra(PosterService.EXTRA_SELECTEDPLACES, selectedFavourites);
 			i.putExtra(PosterService.EXTRA_EXTRAPLACENAME, extraPlaceName);
 			i.putExtra(PosterService.EXTRA_EXTRAPLACEID, extraPlaceId);
-			i.putExtra(PosterService.EXTRA_ONBOTTLECAN, onbottlecanCheck.isChecked());
-			i.putExtra(PosterService.EXTRA_ONTAP, ontapCheck.isChecked());
+			i.putExtra(PosterService.EXTRA_ONBOTTLECAN, onbottlecan.isChecked());
+			i.putExtra(PosterService.EXTRA_ONTAP, ontap.isChecked());
 			getActivity().startService(i);
 
 			// Close this fragment
 			getActivity().getSupportFragmentManager().popBackStackImmediate();
-			
 			
 		}
 	};
@@ -281,37 +216,37 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 	public void onTaskSuccessResult(CommandSuccessResult result) {
 		if (result.getCommand().getMethod() == ApiMethod.GetFavouritePlaces) {
 			publishFavourites(((GetFavouritePlacesCommand) result.getCommand()).getPlaces());
-		} else if (result.getCommand().getMethod() == ApiMethod.FindPlaces) {
-			publishFindResults(((FindPlacesCommand) result.getCommand()).getPlaces());
+		} else if (result.getCommand().getMethod() == ApiMethod.SearchPlaces) {
+			publishFindResults(((SearchPlacesCommand) result.getCommand()).getSearchResults());
 		}
 	}
 
-	private void publishFavourites(ArrayList<PlaceForAvailability> result) {
+	private void publishFavourites(ArrayList<PlaceSearchResult> result) {
 		this.favourites = result;
 		if (favouritesView.getAdapter() == null && result != null) {
-			favouritesView.setAdapter(new PlacesAdapter(getActivity(), result));
+			favouritesView.setAdapter(new CheckablePlacesAdapter(getActivity(), result));
 		} else {
 			clearSelection(favouritesView);
-			((PlacesAdapter) favouritesView.getAdapter()).replace(result);
+			((CheckablePlacesAdapter) favouritesView.getAdapter()).replace(result);
 		}
 	}
 
-	private void publishFindResults(ArrayList<PlaceForAvailability> result) {
+	private void publishFindResults(ArrayList<PlaceSearchResult> result) {
 		this.findResults = result;
 		if (findresultsView.getAdapter() == null && result != null) {
-			findresultsView.setAdapter(new PlacesAdapter(getActivity(), result));
+			findresultsView.setAdapter(new CheckablePlacesAdapter(getActivity(), result));
 		} else {
 			clearSelection(findresultsView);
-			((PlacesAdapter) findresultsView.getAdapter()).replace(result);
+			((CheckablePlacesAdapter) findresultsView.getAdapter()).replace(result);
 		}
 	}
 
-	private PlacesAdapter getFavouritesAdapter() {
-		return (PlacesAdapter) favouritesView.getAdapter();
+	private CheckablePlacesAdapter getFavouritesAdapter() {
+		return (CheckablePlacesAdapter) favouritesView.getAdapter();
 	}
 
-	private PlacesAdapter getFindresutlsAdapter() {
-		return (PlacesAdapter) findresultsView.getAdapter();
+	private CheckablePlacesAdapter getFindresutlsAdapter() {
+		return (CheckablePlacesAdapter) findresultsView.getAdapter();
 	}
 
 	@Override
@@ -319,9 +254,9 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		publishException(null, result.getException());
 	}
 	
-	private class PlacesAdapter extends ArrayAdapter<PlaceForAvailability> {
+	private class CheckablePlacesAdapter extends ArrayAdapter<PlaceSearchResult> {
 
-		public PlacesAdapter(Context context, List<PlaceForAvailability> objects) {
+		public CheckablePlacesAdapter(Context context, List<PlaceSearchResult> objects) {
 			super(context, objects);
 		}
 
@@ -331,7 +266,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_placeforavailability, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_placeforavailability, null);
 				holder = new ViewHolder();
 				holder.placeName = (TextView) convertView.findViewById(R.id.placeName);
 				holder.city = (TextView) convertView.findViewById(R.id.city);
@@ -341,7 +276,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 			}
 
 			// Bind the data
-			PlaceForAvailability item = getItem(position);
+			PlaceSearchResult item = getItem(position);
 			holder.placeName.setText(item.placeName);
 			holder.city.setText(item.city);
 			
@@ -358,40 +293,20 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		TextView placeName, city;
 	}
 
-	private class PlacesPagerAdapter extends PagerAdapter implements TitleProvider {
+	private class PlacesPagerAdapter extends PagerAdapter {
 
 		private View pagerFavouritesView;
 		private View pagerFindResultsView;
-		private ListView pagerFavouritesList;
-		private ListView pagerFindResultsList;
-		private EditText pagerFindText;
-		private Button pagerFindButton;
 
 		public PlacesPagerAdapter() {
-			LayoutInflater inflater = getActivity().getLayoutInflater();
-			pagerFavouritesView = (View) inflater.inflate(R.layout.fragment_availability_favs, null);
-			pagerFindResultsView = (View) inflater.inflate(R.layout.fragment_availability_other, null);
-			pagerFavouritesList = (ListView) pagerFavouritesView.findViewById(R.id.favourites);
-			pagerFindResultsList = (ListView) pagerFindResultsView.findViewById(R.id.findresults);
-			pagerFindText = (EditText) pagerFindResultsView.findViewById(R.id.placename);
-			pagerFindButton = (Button) pagerFindResultsView.findViewById(R.id.findplace);
+			pagerFavouritesView = (View) getActivity().getLayoutInflater().inflate(R.layout.fragment_availability_favs, null);
+			pagerFindResultsView = (View) getActivity().getLayoutInflater().inflate(R.layout.fragment_availability_other, null);
+			favouritesView = (ListView) pagerFavouritesView.findViewById(R.id.favourites);
+			findresultsView = (ListView) pagerFindResultsView.findViewById(R.id.findresults);
+			placenameText = (EditText) pagerFindResultsView.findViewById(R.id.placename);
+			findplaceButton = (Button) pagerFindResultsView.findViewById(R.id.findplace);
 		}
 
-		public Button getFindButton() {
-			return pagerFindButton;
-		}
-
-		public EditText getFindText() {
-			return pagerFindText;
-		}
-
-		public ListView getFavouritesList() {
-			return pagerFavouritesList;
-		}
-
-		public ListView getFindResultsList() {
-			return pagerFindResultsList;
-		}
 
 		@Override
 		public int getCount() {
@@ -399,12 +314,12 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.addav_favourites);
+				return getActivity().getString(R.string.addav_favourites).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.addav_findaplace);
+				return getActivity().getString(R.string.addav_findaplace).toUpperCase();
 			}
 			return null;
 		}
@@ -431,19 +346,6 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		public boolean isViewFromObject(View view, Object object) {
 			return view == (View) object;
 		}
-
-		@Override
-		public void finishUpdate(View container) {}
-
-		@Override
-		public Parcelable saveState() { return null; }
-
-		@Override
-		public void startUpdate(View container) {
-		}
-
-		@Override
-		public void restoreState(Parcelable state, ClassLoader loader) {}
 
 	}
 

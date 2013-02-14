@@ -29,157 +29,108 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
+import android.text.Html;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.command.GetEventDetailsCommand;
-import com.ratebeer.android.api.command.SetEventAttendanceCommand;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.Attendee;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.EventDetails;
-import com.ratebeer.android.gui.components.ActivityUtil;
-import com.ratebeer.android.gui.components.ArrayAdapter;
-import com.ratebeer.android.gui.components.MapContainer;
+import com.ratebeer.android.api.command.SetEventAttendanceCommand;
+import com.ratebeer.android.app.location.LocationUtils;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay;
+import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ActivityUtil;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
-public class EventViewFragment extends RateBeerFragment implements MapContainer {
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 
-	private static final String STATE_EVENTNAME = "eventName";
-	private static final String STATE_EVENTID = "eventId";
-	private static final String STATE_DETAILS = "details";
-	private static final int MENU_SHARE = 0;
+@EFragment(R.layout.fragment_eventview)
+@OptionsMenu({R.menu.refresh, R.menu.share})
+public class EventViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
-	private LayoutInflater inflater;
-	private ListView eventView;
+	@FragmentArg
+	@InstanceState
+	protected String eventName = null;
+	@FragmentArg
+	@InstanceState
+	protected int eventId;
+	@InstanceState
+	protected EventDetails details = null;
 
+	@ViewById(R.id.eventview)
+	protected ListView eventView;
+	@ViewById(R.id.attendees)
+	protected ListView attendeesView;
 	private TextView nameText, detailsText, contactText, attendeeslabel;
 	private Button locationText, timeText, setattendanceButton;
 	private FrameLayout mapFrame;
 	private AttendeeAdapter attendeeAdapter;
 	
-	protected String eventName;
-	protected int eventId;
-	private EventDetails details = null;
-	
 	public EventViewFragment() {
-		this(null, -1);
 	}
 
-	/**
-	 * Show a specific event's details, with the event name known in advance
-	 * @param eventName The event name, or null if not known
-	 * @param eventId The beer ID
-	 */
-	public EventViewFragment(String eventName, int eventId) {
-		this.eventName = eventName;
-		this.eventId = eventId;
-	}
-	
-	/**
-	 * Show a specific event's details, without the event name known in advance
-	 * @param eventId The event ID
-	 */
-	public EventViewFragment(int eventId) {
-		this(null, eventId);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_eventview, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		eventView = (ListView) getView().findViewById(R.id.eventview);
 		if (eventView != null) {
 			eventView.setAdapter(new EventViewAdapter());
 			eventView.setItemsCanFocus(true);
 		} else {
 			// Tablet
-			ListView attendeesView = (ListView) getView().findViewById(R.id.attendees);
 			attendeeAdapter = new AttendeeAdapter(getActivity(), new ArrayList<Attendee>());
 			attendeesView.setAdapter(attendeeAdapter);
 			initFields(getView());
 		}
 		
-		if (savedInstanceState != null) {
-			eventName = savedInstanceState.getString(STATE_EVENTNAME);
-			eventId = savedInstanceState.getInt(STATE_EVENTID);
-			if (savedInstanceState.containsKey(STATE_DETAILS)) {
-				EventDetails savedDetails = savedInstanceState.getParcelable(STATE_DETAILS);
-				publishDetails(savedDetails);
-			}
+		if (details != null) {
+			publishDetails(details);
 		} else {
 			refreshDetails();
 		}
 		
 	}
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuItem item2 = menu.add(Menu.NONE, MENU_SHARE, MENU_SHARE, R.string.app_share);
-		item2.setIcon(R.drawable.ic_action_share);
-		item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		super.onCreateOptionsMenu(menu, inflater);
+	@OptionsItem(R.id.menu_share)
+	protected void onShare() {
+		// Start a share intent for this event
+		Intent s = new Intent(Intent.ACTION_SEND);
+		s.setType("text/plain");
+		s.putExtra(Intent.EXTRA_TEXT, getString(R.string.events_share, eventName, eventId));
+		startActivity(Intent.createChooser(s, getString(R.string.events_shareevent)));
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshDetails();
-			break;
-		case MENU_SHARE:
-			// Start a share intent for this event
-			Intent s = new Intent(Intent.ACTION_SEND);
-			s.setType("text/plain");
-			s.putExtra(Intent.EXTRA_TEXT, getString(R.string.events_share, eventName, eventId));
-			startActivity(Intent.createChooser(s, getString(R.string.events_shareevent)));
-		}
-		return super.onOptionsItemSelected(item);
-	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(STATE_EVENTNAME, eventName);
-		outState.putInt(STATE_EVENTID, eventId);
-		if (details != null) {
-			outState.putParcelable(STATE_DETAILS, details);
-		}
-	}
-
-	private void refreshDetails() {
-		execute(new GetEventDetailsCommand(getRateBeerActivity().getApi(), eventId));
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshDetails() {
+		execute(new GetEventDetailsCommand(getUser(), eventId));
 	}
 
 	private void onAttendeeClick(int userId, String username) {
-		getRateBeerActivity().load(new UserViewFragment(username, userId));
+		load(UserViewFragment_.builder().userId(userId).userName(username).build());
 	}
 	
 	@Override
@@ -188,8 +139,8 @@ public class EventViewFragment extends RateBeerFragment implements MapContainer 
 			publishDetails(((GetEventDetailsCommand) result.getCommand()).getDetails());
 		} else if (result.getCommand().getMethod() == ApiMethod.SetEventAttendance) {
 			boolean isGoing = ((SetEventAttendanceCommand)result.getCommand()).isGoing();
-			Toast.makeText(getActivity(), isGoing? R.string.events_nowattending: R.string.events_nownotattending, 
-					Toast.LENGTH_SHORT).show();
+			Crouton.makeText(getActivity(), isGoing? R.string.events_nowattending: R.string.events_nownotattending, 
+					Style.CONFIRM).show();
 			refreshDetails();
 		}
 	}
@@ -208,48 +159,56 @@ public class EventViewFragment extends RateBeerFragment implements MapContainer 
 	 */
 	public void setDetails(EventDetails details) {
 		nameText.setText(details.name);
-		timeText.setText(details.days + "\n" + details.times);
+		timeText.setText(details.days + (details.times == null || details.times.equals("")? "": "\n" + details.times));
 		timeText.setVisibility(View.VISIBLE);
 		locationText.setText(details.location + "\n" + (details.city != null? details.city + "\n": "") + details.address);
 		locationText.setVisibility(View.VISIBLE);
-		detailsText.setText(details.details);
+		detailsText.setText(Html.fromHtml(details.details.replace("\n", "<br />")));
 		contactText.setText(details.contact);
 		attendeeAdapter.replace(details.attendees);
 		attendeeslabel.setVisibility(View.VISIBLE);
-		
-		if (details.isAttending(getRateBeerActivity().getUser().getUserID())) {
+		setattendanceButton.setVisibility(View.VISIBLE);
+		if (details.isAttending(getUser().getUserID())) {
 			setattendanceButton.setText(R.string.events_removeattendance);
 		} else {
 			setattendanceButton.setText(R.string.events_addattendance);
 		}
 		
 		// Get the activity-wide MapView to show on this fragment and center on this event's location
-		MapView mapView = getRateBeerActivity().requestMapViewInstance(this);
+		final MapView mapView = ((RateBeerActivity)getActivity()).requestMapViewInstance();
+		mapFrame.addView(mapView);
 		try {
-			if (Geocoder.isPresent()) {
-				// Use Geocoder to look up the coordinates
-				try {
-					List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address + (details.city != null? " " + details.city: ""), 1);
-					if (point.size() <= 0) {
-						// Cannot find address: hide the map
-						mapFrame.setVisibility(View.GONE);
-					} else {
-						// Found a location! Center the map here
-						mapView.getController().setCenter(getRateBeerActivity().getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
-						mapView.getController().setZoom(15);
-						mapFrame.setVisibility(View.VISIBLE);
-					}
-				} catch (IOException e) {
-					// Canot connect to geocoder server: hide the map
+			// Use Geocoder to look up the coordinates
+			try {
+				List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address
+						+ (details.city != null ? " " + details.city : ""), 1);
+				if (point.size() <= 0) {
+					// Cannot find address: hide the map
 					mapFrame.setVisibility(View.GONE);
+				} else {
+					// Found a location! Center the map here
+					mapFrame.setVisibility(View.VISIBLE);
+					mapView.getController().setCenter(
+							LocationUtils.getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
+					final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, 2, this);
+					to.addOverlay(new OverlayItem(LocationUtils.getPoint(point.get(0).getLatitude(), point.get(0)
+							.getLongitude()), details.name, details.times));
+					mapView.getOverlays().add(to);
 				}
+			} catch (IOException e) {
+				// Canot connect to geocoder server: hide the map
+				mapFrame.setVisibility(View.GONE);
 			}
 		} catch (NoSuchMethodError e) {
 			// Geocoder is not available at all: hide the map
 			mapFrame.setVisibility(View.GONE);
 		}
-		mapFrame.addView(mapView);
 		
+	}
+
+	@Override
+	public void onBalloonClicked(OverlayItem item) {
+		// No action, for now
 	}
 
 	private OnClickListener onLocationClicked = new OnClickListener() {
@@ -267,6 +226,7 @@ public class EventViewFragment extends RateBeerFragment implements MapContainer 
 	};
 	
 	private OnClickListener onTimeClicked = new OnClickListener() {
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onClick(View v) {
 			// Try to establish the time of the event
@@ -314,8 +274,7 @@ public class EventViewFragment extends RateBeerFragment implements MapContainer 
 		@Override
 		public void onClick(View v) {
 			// Set (flip) the attendance to this event
-			execute(new SetEventAttendanceCommand(getRateBeerActivity().getApi(), eventId, 
-					!details.isAttending(getRateBeerActivity().getUser().getUserID())));
+			execute(new SetEventAttendanceCommand(getUser(), eventId, !details.isAttending(getUser().getUserID())));
 		}
 	};
 	
@@ -359,7 +318,7 @@ public class EventViewFragment extends RateBeerFragment implements MapContainer 
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_attendee, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_attendee, null);
 				ActivityUtil.makeListItemClickable(convertView, onRowClick);
 				holder = new ViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.user);
@@ -394,13 +353,6 @@ public class EventViewFragment extends RateBeerFragment implements MapContainer 
 		locationText.setOnClickListener(onLocationClicked );
 		timeText.setOnClickListener(onTimeClicked);
 		setattendanceButton.setOnClickListener(onSetAttendanceClick);
-	}
-
-	@Override
-	public void removeMapViewinstance() {
-		// Removes the map view from it's container so other fragments can use it
-		if (mapFrame.getChildAt(0) != null)
-			mapFrame.removeViewAt(0);
 	}
 
 }

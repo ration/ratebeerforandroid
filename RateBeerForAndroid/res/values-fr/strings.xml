@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Annuler</string>
+<string name="app_home">Accueil</string>
+<string name="app_refresh">Rafraîchir</string>
+<string name="app_details">Détails</string>
+<string name="app_share">Partager</string>
+<string name="app_loading">Chargement</string>
+<string name="app_legal">En utilisant cette application vous acceptez les conditions du RateBeer User Agreement disponible au http://www.ratebeer.com/UserAgreement.asp\n\nMême sans compte RateBeer vous pouvez utiliser cette application pour visualiser les détails techniques des bières, les listes des meilleures bières, les évènements à venir, les endroits locaux reliés à la bière et bien plus. Pour un ensemble complet de fonctionnalités comme évaluer des bières et ajouter des disponibilités de bières, vous devez vous créer un compte au http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">Bienvenue!</string>
+
+<string name="app_install">Installer maintenant</string>
+<string name="app_nomarket">Le Play Store n\'est pas installé sur votre appareil.</string>
+<string name="app_scannernotfound">Le lecteur de code-barre est introuvable. Voudriez-vous l\'installer à partir du Play Store?</string>
+<string name="app_onlyifsignedin">Cette fonctionnalité est uniquement disponible lorsque vous êtes inscrit sur RateBeer.</string>
+
+<string name="app_newstatus">Entrez un nouveau statut</string>
+<string name="app_nowdrinking">Boit présentement</string>
+<string name="app_settingdrinking_expl">Vous pouvez également choisir &#171;En train de boire&#187; à partir d\'une page de détail d\'une bière</string>
+<string name="app_settingdrinking">Définir le statut de dégustation</string>
+<string name="app_sharerating">Partager l\'évaluation sur Twitter/Facebook/&#8230;</string>
+<string name="app_postingrating">Publier l\'évaluation de la bière</string>
+<string name="app_postingtick">Publier votre évaluation rapide</string>
+<string name="app_removingtick">Enlever votre évaluation rapide</string>
+<string name="app_addingavailability">Publier la disponibilité</string>
+<string name="app_addingforbeer">Ajouter la disponibilité de %1$s</string>
+<string name="app_addingavailability">Publier la disponibilité</string>
+<string name="app_rated">J\'ai évalué %1$s avec un %1$s</string>
+<string name="app_forbeer">Pour %1$s</string>
+<string name="app_addingtocellar">Ajouter au cellier</string>
+<string name="app_addwant">Je veux %1$s</string>
+<string name="app_addhave">J\'ai %1$s</string>
+<string name="app_ratedwithurl">J\'ai évalué %2$s avec un %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerPourAndroid</string>
+<string name="app_addingupccode">Associer le code-barre lu à la bière</string>
+<string name="app_addingcodefor">Associer le code à %1$s</string>
+<string name="app_requiressignin">Veuillez vous connecter à votre compte RateBeer pour utiliser cette fonctionnalité</string>
+<string name="app_noaccount">Pas de compte?\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmails">Vous avez %1$s nouveau(x) CourriAle(s)</string>
+<string name="app_newmail">Vous avez un nouveau CourriAle</string>
+<string name="app_by">Par %1$s</string>
+<string name="app_andothers">et autres</string>
+<string name="app_uploadingphoto">Ajouter une nouvelle photo</string>
+<string name="app_photofor">Ajouter une photo pour %1$s</string>
+
+<string name="signin_username">Nom d\'utilisateur</string>
+<string name="signin_password">Mot de passe</string>
+<string name="signin_signin">Se connecter</string>
+<string name="signin_signout">Se déconnecter</string>
+<string name="signin_connecting">Connexion&#8230;</string>
+<string name="signin_signoutsuccess">Déconnecté avec succès</string>
+<string name="signin_signinsuccess">Connecté avec succès</string>
+
+<string name="home_beers">Bières</string>
+<string name="home_places">Endroits</string>
+<string name="home_events">Évènements</string>
+<string name="home_search">Recherche</string>
+<string name="home_myprofile">Mon profil</string>
+<string name="home_top50">50 meilleures</string>
+<string name="home_bycountry">Meilleures par pays</string>
+<string name="home_offlineratings">Notes hors-ligne</string>
+<string name="home_beerstyles">Styles de bières</string>
+<string name="home_beermail">CourriAle</string>
+<string name="home_nowdrinking">En train de boire %1$s</string>
+<string name="home_preferences">Préférences</string>
+<string name="home_calculator">Calculatrice</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_for">%1$s pour</string>
+<string name="calc_euro">¤</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+<string name="calc_fillinall">Veuillez remplir les champs de quantité et un des champs de prix de la bière</string>
+
+<string name="myratings_avg">%1$s moy.</string>
+<string name="myratings_noitems">Aucune évaluation pour le moment! Débouchez une bière et faites aller vos papilles!</string>
+<string name="myratings_sortby">Trier par</string>
+<string-array name="myratings_sortby_names">
+<item>Nom</item>
+<item>Brasseur</item>
+<item>Style</item>
+<item>Mon évaluation</item>
+<item>Date</item>
+<item>Pointage</item>
+</string-array>
+
+<string name="cellar_viewcellar">Voir le cellier</string>
+<string name="cellar_wants">Vouloirs</string>
+<string name="cellar_haves">Avoirs</string>
+<string name="cellar_wantthis">Je veux</string>
+<string name="cellar_havethis">J\'ai</string>
+<string name="cellar_addingahave">Ajouter un vouloir</string>
+<string name="cellar_addingawant">Ajouter un avoir</string>
+<string name="cellar_memo">Mémo</string>
+<string name="cellar_vintage">Millésime (année)</string>
+<string name="cellar_quantity">Quantité</string>
+<string name="cellar_addtocellar">Ajouter au cellier</string>
+<string name="cellar_remove">Enlever du cellier</string>
+<string name="cellar_confirmremoval">Enlever %1$s de votre cellier?</string>
+
+<string name="topbeers_country">Pays:</string>
+<string name="topbeers_state">Province:</string>
+<string name="topbeers_noitems">Choisir un pays pour voir ses meilleures bières &#8230;</string>
+
+<string name="places_nearby">Endroits aux alentours</string>
+<string name="places_map">Carte</string>
+<string name="places_location">Emplacement</string>
+<string name="places_rateandcount">Évaluation: %1$s</string>
+<string name="places_notyetrated">Pas encore évalué</string>
+<string name="places_findhint">Entrer le nom de l\'emplacement cherché</string>
+<string name="places_usecurrent">Utiliser votre emplacement actuel</string>
+<string name="places_noitems">Aucun endroit relié à la bière trouvé dans votre secteur!</string>
+<string name="places_brewpub">Brouepub</string>
+<string name="places_bar">Bar</string>
+<string name="places_beerstore">Magasin de bière</string>
+<string name="places_restaurant">Restaurant</string>
+<string name="places_brewer">Brasseur</string>
+<string name="places_unknown">Inconnu</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_checkins">Visites</string>
+<string name="places_checkinhere">Je suis en visite ici</string>
+<string name="places_checkedinnow">Vous avez ajouté une visite (mise à jour)</string>
+<string name="places_availablebeers">Disponible</string>
+<string name="places_enteredat">Entrée à %1$s</string>
+<string name="places_share">Allez voir %1$s à @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
+<string name="places_shareplace">Partager l\'emplacement&#8230;</string>
+
+<string name="brewers_share">Allez voir %1$s à @ratebeer http://www.ratebeer.com/brewers/b/%2$s/</string>
+<string name="brewers_sharebrewer">Partager le brasseur&#8230;</string>
+<string name="brewers_beers">Bières</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Participants:</string>
+<string name="events_noitems">Aucun évènement planifié dans cette région!</string>
+<string name="events_addattendance">Oui, ajouter mon nom</string>
+<string name="events_removeattendance">Non, retirer mon nom</string>
+<string name="events_nowattending">J\'ai ajouté mon nom à la liste de participants</string>
+<string name="events_nownotattending">J\'ai retiré mon nom de la liste de participants</string>
+<string name="events_share">Allez voir %1$s à @ratebeer http://ratebeer.com/event/%2$s/</string>
+<string name="events_shareevent">Partager l\'évènement&#8230;</string>
+
+<string name="search_resultsfor">Résultats pour \'%1$s\'</string>
+<string name="search_beersearch">Recherche RateBeer</string>
+<string name="search_hint">Rechercher des bières, des endroits et des utilisateurs</string>
+<string name="search_beers">Bières</string>
+<string name="search_brewers">Brasseurs</string>
+<string name="search_places">Endroits</string>
+<string name="search_users">Utilisateurs</string>
+<string name="search_barcodescanner">Lecteur de code-barre</string>
+<string name="search_nobeerswithbarcode">Aucune bière trouvée à partir du code-barre %1$s. Ajouter là à la base de données en utilisant l\'engin de recherche.</string>
+<string name="search_clearhistory">Supprimer l\'historique</string>
+<string name="search_noitems">Aucun résultat. Peut-être essayer avec seulement une partie du nom?</string>
+<string name="search_retired">retiré</string>
+<string name="search_alias">alias</string>
+<string name="search_rated">évalué</string>
+<string name="search_ratings">%1$s évaluations</string>
+<string name="search_aliasedbeer">Ce nom est un alias: aucun détail disponible</string>
+
+<string name="details_bybrewer">par %1$s.</string>
+<string name="details_score">Pointage</string>
+<string name="details_noscoreyet">Requiert plus d\'évaluations</string>
+<string name="details_percentile">centile</string>
+<string name="details_ratings">évaluations</string>
+<string name="details_style"> style</string>
+<string name="details_nodescription">Aucune description commerciale</string>
+<string name="details_abvstyle">Style: %1$s\nAlc/vol: %1$s.\n</string>
+<string name="details_ratethis">Évaluer ce produit</string>
+<string name="details_viewrerate">Réévaluer ce produit</string>
+<string name="details_drinkingthis">En train de boire cette bière</string>
+<string name="details_recentratings">Évaluations</string>
+<string name="details_myrating">Mon évaluation:</string>
+<string name="details_ticklabel">Ou cocher seulement:</string>
+<string name="details_otherratings">Évaluations récentes:</string>
+<string name="details_availability">Disponibilité</string>
+<string name="details_share">Vérifier %1$s à @ratebeer http://ratebeer.com/b/%2$s/</string>
+<string name="details_sharebeer">Partager la bière&#8230;</string>
+
+<string name="upload_uploadphoto">Charger une photo</string>
+<string name="upload_choose">Choisir la source de la photo</string>
+<string name="upload_newphoto">Prendre une nouvelle photo</string>
+<string name="upload_pick">Choisir dans la galerie</string>
+
+<string name="user_dates">Inscrit depuis: %1$s\nVu la dernière fois: %2$s\n</string>
+<string name="user_beersrated">%1$s bières évaluées\n%2$s Endroits évalués\nScore moyen donné: %3$s\nScore moyen par bière évaluée: %4$s \n</string>
+<string name="user_favsyle">Style préféré: %1$s</string>
+<string name="user_nofavstyle">aucun</string>
+
+<string name="rate_aroma">Arôme</string>
+<string name="rate_appearance">Apparence</string>
+<string name="rate_taste">Goût</string>
+<string name="rate_palate">Palais</string>
+<string name="rate_overall">Global</string>
+<string name="rate_totalscore">Pointage total</string>
+<string name="rate_comments">Commentaires</string>
+<string name="rate_addrating">Charger mon évaluation</string>
+<string name="rate_commenttooshort">Le commentaire doit contenir un minimum de 85 caractères.</string>
+<string name="rate_ratingnotcompleted">Votre évaluation n\'est pas complétée</string>
+<string name="rate_charstogo">%1$s caractères restants&#8230;</string>
+<string name="rate_commentok">La longueur du commentaire est correcte!</string>
+<string name="rate_showassistance">Montrer l\'aide</string>
+<string name="rate_hideassistance">Cacher l\'aide</string>
+<string name="rate_assistance_words">caramel, pain, foin, céréale, chocolat, café, noix, pain grillé, roti, résine, floral, herbe, pin, agrume, fines herbes, pâte, écurie, fromage, odeurs de renfermé, cuir, terreux, feuilles, alcool, banane, gomme à bulle, caramel écossais, clou de girofle, légumes cuits, sirop pour la toux, gingembre, réglisse, raisin, oeufs pourris, sauce soya, moufette, fumée, vanille, boisé</string>
+
+<string name="rate_offline_title">Évaluation hors-ligne</string>
+<string name="rate_offline_info">Lorsque vous dégustez votre bière et vous écrivez l\'évaluation, les pointages et les commentaires sont enregistrés localement. Si vous êtes hors-ligne ou vous avez des problèmes de connexion vous pourrez soumettre votre évaluation sur RateBeer.com ultérieurement. Les évaluation hors-ligne sont automatiquement enlevé de la mémoire locale lorsqu\'elles sont ajoutées sur le site.</string>
+<string name="rate_offline_availble">Évaluation hors-ligne disponible</string>
+<string name="rate_offline_notavailable">Évaluation hors-ligne indisponible</string>
+<string name="rate_offline_savedat">Enregistrer %1$s</string>
+<string name="rate_offline_noitems">Aucune évaluation hors-ligne en mémoire</string>
+<string name="rate_offline_delete">Supprimer l\'évaluation</string>
+<string name="rate_offline_confirmdelete">Supprimer l\'évaluation en ligne pour %1$s?</string>
+<string name="rate_offline_addrating">Ajouter une évaluation hors-ligne</string>
+<string name="rate_offline_discard">Supprimer</string>
+<string name="rate_offline_customname">Bière évaluée présentement:</string>
+<string name="rate_offline_confirmdiscard">Vous perdrez votre évaluation et vos commentaires. Voulez-vous continuer?</string>
+<string name="rate_offline_findbeer">Trouver cette bière&#8230;</string>
+<string name="rate_offline_name">Nom:</string>
+<string name="rate_offline_nonamegiven">Veuillez entrer le nom de la bière que vous avez évaluée</string>
+<string name="rate_offline_alreadyrated">Désolé, vous avez déjà soumis une évaluation pour cette bière et vous ne pouvez pas réévaluer une bière en mode hors-ligne pour le moment.</string>
+<string name="rate_offline_export">Exporter</string>
+<string name="rate_offline_export_info">Votre évaluation hors-ligne est exportée dans un fichier texte encodé JSON dans %1$s</string>
+<string name="rate_offline_import">Importer</string>
+<string name="rate_offline_import_info">Une évaluation hors-ligne déjà enregistrée est importée de %1$s</string>
+
+<string name="addav_addavailability">Ajouter une disponibilité</string>
+<string name="addav_favourites">Préférés/prometteurs</string>
+<string name="addav_findaplace">Trouver un endroit</string>
+<string name="addav_otherplace">Autre endroit:</string>
+<string name="addav_find">Trouver</string>
+<string name="addav_on">Sur:</string>
+<string name="addav_ontap">fût</string>
+<string name="addav_onbottlecan">bouteille/cannette</string>
+<string name="addav_skip">Passer</string>
+<string name="addav_noplacesselected">Vous n\'avez sélectionné aucun endroit</string>
+
+<string name="addupc_upccode">Code CUP:</string>
+<string name="addupc_beer">Nom de la bière:</string>
+<string name="addupc_find">Trouver</string>
+
+<string name="mail_noitems">Il n\'y a aucun courriAle dans votre boîte de réception</string>
+<string name="mail_sendmail">Envoyer le message</string>
+<string name="mail_couldnotretrieve">Impossible de récupérer votre message pour le moment</string>
+<string name="mail_notavailable">L\'enregistrement local de message est indisponible pour le moment</string>
+<string name="mail_delete">Supprimer le message</string>
+<string name="mail_confirmdelete">Supprimer ce courriel de %1$s?</string>
+<string name="mail_relpied">répondu</string>
+<string name="mail_new">nouveau</string>
+<string name="mail_read">lire</string>
+<string name="mail_reply">répondre</string>
+<string name="mail_sendto">Envoyer à</string>
+<string name="mail_subject">Sujet</string>
+<string name="mail_message">Message:</string>
+<string name="mail_includeoriginal">Inclure le message d\'origine</string>
+<string name="mail_send">Envoyer</string>
+<string name="mail_emptyfields">Veuillez remplir tous les champs avant d\'envoyer</string>
+<string name="mail_sendingmail">Envoi du courriAle</string>
+<string name="mail_sendingto">Envoi en cours à %1$s</string>
+
+<string name="settings_display">Afficher les préférences</string>
+<string name="settings_distanceinkm">Afficher les distances en km</string>
+<string name="settings_distanceinkm_info">Distances affichées en miles sinon</string>
+<string name="settings_sharetext">Texte lors du partage d\'une évaluation</string>
+<string name="settings_sharetext_msg">Espaces réservés: %1$s ID bières, %2$s Nom de la bière, %3$s pour le pointage total, %4$s  pour votre ID utilisateurs</string>
+<string name="settings_beermail">CourriAle</string>
+<string name="settings_background">Activer les alertes</string>
+<string name="settings_background_info">Vérifier périodiquement pour les nouveaux courriAles</string>
+<string name="settings_updatefrequency">Fréquence de vérification</string>
+<string name="settings_vibrate">Vibrer lors d\'une alerte</string>
+<string-array name="settings_frequency_names">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 heure</item>
+<item>4 heures</item>
+<item>24 heures</item>
+</string-array>
+
+<string name="error_offline">Vous n\'êtes pas connecté à Internet ou RateBeer.com est indisponible</string>
+<string name="error_authenticationfailed">Le nom d\'utilisateur ou le mot de passe est incorrect.</string>
+<string name="error_commandfailed">La commande a échouée. La connexion est trop faible ou RateBeer.com est indisponible</string>
+<string name="error_nouserorpass">Le nom d\'utilisateur et le mot de passe sont des champs obligatoires</string>
+<string name="error_nolocation">Votre emplacement n\'a pu être déterminé</string>
+<string name="error_locationnotsupported">Votre appareil ne supporte pas la géolocalisation ou elle est désactivée</string>
+<string name="error_sendreport">Envoyer le message d\'erreur</string>
+<string name="error_stylenotfound">Impossible de trouver le style de bière; veuillez s\'il vous plait signaler cette erreur</string>
+<string name="error_cannotwrite">Impossible d\'écrire dans le fichier</string>
+<string name="error_cannotread">Aucun fichier ou impossible de le lire</string>
+<string name="error_filenotvalid">Le fichier ne contient aucune évaluation hors-ligne (dans le format désiré)</string>
+<string name="error_nocamera">Impossible de prendre une photo; soit vous n\'avez pas de caméra soit il est impossible d\'écrire sur le stockage SD externe</string>
+<string name="error_lc_install">Pour envoyer un rapport d\'erreur, vous devez avoir l\'application gratuite et libre de droits Log Collector. Voulez-vous l\'installer à partir du Play Store?</string>
+<string name="error_lc_run">L\'application Log Collection va maintenant prendre le journal d\'erreurs de l\'appareil et l\'envoyer à rb@2312.nl.\nVous aurez l\'opportunité de réviser et de modifier les données qui seront envoyées.</string>
+<string name="error_invalidurl">L\'adresse URL semble être invalide</string>
+
+</resources>

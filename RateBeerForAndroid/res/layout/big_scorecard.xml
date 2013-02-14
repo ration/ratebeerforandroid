@@ -21,7 +21,7 @@
 		android:layout_below="@id/scorelabel" 
 		android:gravity="center_horizontal"
 		android:background="#036" 
-		android:textSize="60dip"
+		android:textSize="58dip"
 		android:textColor="#fff" />
 	<TextView 
 		android:id="@+id/overallpctllabel"

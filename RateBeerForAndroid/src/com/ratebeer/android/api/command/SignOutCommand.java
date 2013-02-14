@@ -17,14 +17,26 @@
  */
 package com.ratebeer.android.api.command;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.UserSettings;
 
-public class SignOutCommand extends Command {
+public class SignOutCommand extends EmptyResponseCommand {
 	
-	public SignOutCommand(RateBeerApi api) {
+	public SignOutCommand(UserSettings api) {
 		super(api, ApiMethod.SignOut);
 	}
-	
+
+	@Override
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		apiConnection.signOut();
+		if (!apiConnection.isSignedIn()) {
+			return; // Success
+		}
+		throw new ApiException(ApiException.ExceptionType.CommandFailed,
+				"Tried to log out but we still have session cookies");
+	}
+
 }

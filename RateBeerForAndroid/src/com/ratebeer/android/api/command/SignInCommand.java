@@ -17,27 +17,33 @@
  */
 package com.ratebeer.android.api.command;
 
+
+
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.UserSettings;
 
-public class SignInCommand extends Command {
+public class SignInCommand extends EmptyResponseCommand {
 
+	private int userId;
 	private final String username;
 	private final String password;
-	
-	public SignInCommand(RateBeerApi api, String username, String password) {
+
+	public SignInCommand(UserSettings api, String username, String password) {
 		super(api, ApiMethod.SignIn);
 		this.username = username;
 		this.password = password;
 	}
-	
-	public String getUsername() {
-		return username;
+
+	public int getUserId() {
+		return userId;
 	}
-	
-	public String getPassword() {
-		return password;
+
+	@Override
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		userId = apiConnection.signIn(username, password);
 	}
-	
+
 }

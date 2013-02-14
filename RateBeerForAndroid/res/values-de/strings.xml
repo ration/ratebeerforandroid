@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Abbrechen</string>
+<string name="app_home">Home</string>
+<string name="app_refresh">Neu laden</string>
+<string name="app_details">Details</string>
+<string name="app_share">Teilen</string>
+<string name="app_loading">Lädt</string>
+<string name="app_legal">Mit Nutzung dieses Programms akzeptierst Du alle Bedingungen, die auf http://www.ratebeer.com/UserAgreement.asp aufgelistet sind.\n\nAuch ohne einen RateBeer Account kannst Du dieses Programm benutzen um Informationen über Biere, Top Listen, Events, lokale Bierlokale und vieles mehr abzurufen. Um alle Funktionen zu nutzen, wie Biere zu bewerten oder die Verfügbarkeit eines Bieres hinzuzufügen, kannst du einen Benutzerkonto auf http://www.ratebeer.com/NewUser.asp erstellen.</string>
+<string name="app_legal_title">Willkommen</string>
+
+<string name="app_install">Installieren</string>
+<string name="app_nomarket">Play Store konnte nicht auf dem Gerät gefunden werden</string>
+<string name="app_scannernotfound">Es konnte kein Barcode Scanner gefunden werden. Soll er jetzt aus dem Play Store nachinstalliert werden?</string>
+<string name="app_onlyifsignedin">Diese Funktion ist nur nach dem Anmelden bei RateBeer möglich.</string>
+
+<string name="app_newstatus">Neuen Status eingeben</string>
+<string name="app_nowdrinking">Trinkt jetzt</string>
+<string name="app_settingdrinking_expl">Du kannst auch \'Ich trinke dies gerade\'  bei den Informationen über das Bier auswählen</string>
+<string name="app_settingdrinking">Setze Trinkstatus</string>
+<string name="app_sharerating">Diesen Test auf Facebook/Twitter veröffentlichen</string>
+<string name="app_postingrating">Biertest abschicken</string>
+<string name="app_postingtick">Kurzbewertung hinzufügen:</string>
+<string name="app_removingtick">Kurzbewertung entfernen:</string>
+<string name="app_addingavailability">Verfügbarkeit hinzufügen</string>
+<string name="app_addingforbeer">Verfügbarkei für %1$s hinzufügen</string>
+<string name="app_addingavailability">Verfügbarkeit hinzufügen</string>
+<string name="app_rated">Hat %1$s mit %2$s bewertet</string>
+<string name="app_forbeer">Für %1$s</string>
+<string name="app_addingtocellar">Zum Keller hinzufügen</string>
+<string name="app_addwant">Ich möchte %1$s haben</string>
+<string name="app_addhave">Ich habe %1$s</string>
+<string name="app_ratedwithurl">Hat %2$s mit %3$s bewertet, http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+<string name="app_addingupccode">Barcode zum Bier hinzufügen</string>
+<string name="app_addingcodefor">Barcode für  %1$s hinzufügen</string>
+<string name="app_requiressignin">Bitte melde dich bei RateBeer an um diese Funktion zu nutzen</string>
+<string name="app_noaccount">Noch keinen Account?\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmails">Du hast %1$s neue Bier Mails</string>
+<string name="app_newmail">Du hast eine neue Bier Mail</string>
+<string name="app_by">von %1$s</string>
+<string name="app_andothers">und anderen</string>
+<string name="app_uploadingphoto">Neues Foto hochladen</string>
+<string name="app_photofor">Foto für %1$s hochladen</string>
+
+<string name="signin_username">Benutzername:</string>
+<string name="signin_password">Passwort:</string>
+<string name="signin_signin">Anmelden</string>
+<string name="signin_signout">Abmelden</string>
+<string name="signin_connecting">Verbinde&#8230;</string>
+<string name="signin_signoutsuccess">Abmeldung erfolgreich</string>
+<string name="signin_signinsuccess">Anmeldung erfolgreich</string>
+
+<string name="home_beers">Biere</string>
+<string name="home_places">Orte</string>
+<string name="home_events">Events</string>
+<string name="home_search">Suchen</string>
+<string name="home_myprofile">Mein Profil</string>
+<string name="home_top50">Top 50</string>
+<string name="home_bycountry">Landeslisten</string>
+<string name="home_offlineratings">Offline Notizen</string>
+<string name="home_beerstyles">Biersorten</string>
+<string name="home_beermail">Bier Mail</string>
+<string name="home_nowdrinking">trink jetzt %1$s</string>
+<string name="home_preferences">Einstellungen</string>
+<string name="home_calculator">Rechner</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_for">%1$s für</string>
+<string name="calc_euro">€</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+<string name="calc_fillinall">Bitte füll zuerst die Felder mit den Menganangaben und ein Preisfeld aus</string>
+
+<string name="myratings_avg">%1$s Durchschnitt</string>
+<string name="myratings_noitems">Noch kein Test vorhanden; Mach\' dir ein Bier auf und teste es!</string>
+<string name="myratings_sortby">Sortiert nach</string>
+<string-array name="myratings_sortby_names">
+<item>Name</item>
+<item>Brauer</item>
+<item>Sorte</item>
+<item>Meine Wertung</item>
+<item>Datum</item>
+<item>Score</item>
+</string-array>
+
+<string name="cellar_viewcellar">Keller ansehen</string>
+<string name="cellar_wants">Will</string>
+<string name="cellar_haves">Hat</string>
+<string name="cellar_wantthis">Will das</string>
+<string name="cellar_havethis">Hat das</string>
+<string name="cellar_addingahave">Ein Bier hinzufügen, dass ich habe</string>
+<string name="cellar_addingawant">Ein Bier hinzufügen, dass ich möchte</string>
+<string name="cellar_memo">Memo</string>
+<string name="cellar_vintage">Vintage (Jahr)</string>
+<string name="cellar_quantity">Anzahl</string>
+<string name="cellar_addtocellar">Zum Keller hinzufügen</string>
+<string name="cellar_remove">Aus dem Keller entfernen</string>
+<string name="cellar_confirmremoval">%1$s entfernen?</string>
+
+<string name="topbeers_country">Land:</string>
+<string name="topbeers_state">Staat/Bundesland:</string>
+<string name="topbeers_noitems">Wähle ein Land aus um die besten Biere zu sehen&#8230;</string>
+
+<string name="places_nearby">Die nächsten Bierlokale</string>
+<string name="places_map">Karte</string>
+<string name="places_location">Lokation</string>
+<string name="places_rateandcount">Bewertung: %1$s</string>
+<string name="places_notyetrated">Noch ncht bewertet</string>
+<string name="places_findhint">Bitte tippe den Namen der gesuchten Lokation</string>
+<string name="places_usecurrent">Die aktuelle Position benutzen</string>
+<string name="places_noitems">Keine Bierlokale in diese Gegend gefunden!</string>
+<string name="places_brewpub">Brauhaus</string>
+<string name="places_bar">Bar</string>
+<string name="places_beerstore">Bierladen</string>
+<string name="places_restaurant">Restaurant</string>
+<string name="places_brewer">Brauer</string>
+<string name="places_unknown">Unbekannt</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_checkins">Leute, die hier eingecheckt sind</string>
+<string name="places_checkinhere">Hier einchecken</string>
+<string name="places_checkedinnow">Du hast eingecheckt (Aktualisiere gerade)</string>
+<string name="places_availablebeers">Verfügbar</string>
+<string name="places_enteredat">Am %1$s hinzugefügt</string>
+<string name="places_share">Schaut euch %1$s bei @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm an</string>
+<string name="places_shareplace">Diesen Platz teilen</string>
+
+<string name="brewers_share">Schaut euch %1$s bei @ratebeer http://www.ratebeer.com/brewers/b/%2$s/ an</string>
+<string name="brewers_sharebrewer">Diesen Brauer teilen</string>
+<string name="brewers_beers">Biere</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Diese Leute kommen:</string>
+<string name="events_noitems">Keine Events in dieser Gegend geplant!</string>
+<string name="events_addattendance">Meinen Namen hinzufügen</string>
+<string name="events_removeattendance">Meinen Namen entfernen</string>
+<string name="events_nowattending">Dein Name wurde hinzugefügt</string>
+<string name="events_nownotattending">Dein Name wurde entfernt</string>
+<string name="events_share">Schaut euch %1$s bei @ratebeer http://ratebeer.com/event/%2$s/ an</string>
+<string name="events_shareevent">Event teilen</string>
+
+<string name="search_resultsfor">Ergebnisse für \'%1$s\'</string>
+<string name="search_beersearch">RateBeer Suche</string>
+<string name="search_hint">Suche Beer, Lokal &amp; Benutzer</string>
+<string name="search_beers">Biere</string>
+<string name="search_brewers">Brauer</string>
+<string name="search_places">Lokalitäten</string>
+<string name="search_users">Benutzer</string>
+<string name="search_barcodescanner">Barcodescanner</string>
+<string name="search_nobeerswithbarcode">Der Barcode %1$s wurde nicht gefunden. Bitte füge ihn der Datenbank hinzu um es dem nächsten Benutzer einfacher zu machen.</string>
+<string name="search_clearhistory">Meine Spuren löschen</string>
+<string name="search_noitems">Keine Ergebnisse gefunden. Probiere es bitte mit einem kleineren Teil des Bier-, Lokal- oder Benutzernamens!</string>
+<string name="search_retired">eingestellt</string>
+<string name="search_alias">alias</string>
+<string name="search_rated">bewertet</string>
+<string name="search_ratings">%1$s Tests</string>
+<string name="search_aliasedbeer">Dies ist ein Bier, das unter mehreren Namen verkauft wird: Zu diesem gibt es keine Details</string>
+
+<string name="details_bybrewer">von %1$s</string>
+<string name="details_score">Bewertung</string>
+<string name="details_noscoreyet">Benötigt mehr Bewertungen</string>
+<string name="details_percentile">Durchschnit</string>
+<string name="details_ratings">Bewertung</string>
+<string name="details_style">Sorte</string>
+<string name="details_nodescription">Keine kommerzielle Beschreibung verfügbar</string>
+<string name="details_abvstyle">Biersorte: %1$s\nAlkoholgehalt: %2$s</string>
+<string name="details_ratethis">Bewerte es</string>
+<string name="details_viewrerate">Bewerte es neu</string>
+<string name="details_drinkingthis">Ich trinke dies gerade</string>
+<string name="details_recentratings">Bewertungen</string>
+<string name="details_myrating">Meine Bewertung:</string>
+<string name="details_ticklabel">Oder gib eine Kurzbewertng ab:</string>
+<string name="details_otherratings">Ältere Bewertungen:</string>
+<string name="details_availability">Verfügbarkeit</string>
+<string name="details_share">Schaut euch %1$s bei @ratebeer http://ratebeer.com/b/%2$s/ an</string>
+<string name="details_sharebeer">Bier teilen</string>
+
+<string name="upload_uploadphoto">Foto hochladen</string>
+<string name="upload_choose">Fotoquelle wählen</string>
+<string name="upload_newphoto">Ein neues Foto machen</string>
+<string name="upload_pick">Aus der Gallerie wählen</string>
+
+<string name="user_dates">Anmeldung: %1$s\nLetzter Login: %2$s</string>
+<string name="user_beersrated">%1$s Biere bewertet\n%2$s Lokalitäten bewertet</string>
+<string name="user_favsyle">Lieblingssorte: %1$s</string>
+<string name="user_nofavstyle">keine</string>
+
+<string name="rate_aroma">Aroma</string>
+<string name="rate_appearance">Erscheinung</string>
+<string name="rate_taste">Geschmack</string>
+<string name="rate_palate">Nachgeschmack</string>
+<string name="rate_overall">Gesamteindruck</string>
+<string name="rate_totalscore">Gesamtnote</string>
+<string name="rate_comments">Kommentare</string>
+<string name="rate_addrating">Meine Bewertung hochladen</string>
+<string name="rate_commenttooshort">Der Kommentar sollte mindestens 85 Zeichen haben.</string>
+<string name="rate_ratingnotcompleted">Dein Test ist noch nicht fertig</string>
+<string name="rate_charstogo">Noch %1$s zeichen notwendig</string>
+<string name="rate_commentok">Die Kommtarlänge ist OK!</string>
+<string name="rate_showassistance">Hilfe anzeigen</string>
+<string name="rate_hideassistance">Hilfe ausblenden</string>
+<string name="rate_assistance_words">karamellig, brotig, heuartig, getreidig, schokoladig, Kaffee, Nüsse, röstig, harzig, blumig, grasig, Fichte, zitronis, Gewürze, Teig, Scheune, Käse, ledrig, erdig, Blätter, alkoholig, Banane, Kaugummi, Butterscotch, Nelke, gekochtes Gemüse, Hustenbonbon, Ingwer, likörartig, faulig, Sojasauce, ranzig, rauchig, Vanilla, holzig</string>
+
+<string name="rate_offline_title">Offline Test</string>
+<string name="rate_offline_info">Nach dem Schreiben des Tests wird dieser lokal gespeichert. Wenn du offline bist oder Verbindungsprobleme hast kannst Du den test später auf RateBeer veröffentlichen. Offline Tests werden automatisch gelöscht, nachdem sie hochgeladen wurden.</string>
+<string name="rate_offline_availble">Offlinetest vorhanden</string>
+<string name="rate_offline_notavailable">Offlinetest nicht vorhanden</string>
+<string name="rate_offline_savedat">Gespeichert</string>
+<string name="rate_offline_noitems">Keine offline Tests vorhanden.</string>
+<string name="rate_offline_delete">Test löschen</string>
+<string name="rate_offline_confirmdelete">Test für %1$s löschen?</string>
+<string name="rate_offline_addrating">Offline Test hinzufügen</string>
+<string name="rate_offline_discard">Löschen</string>
+<string name="rate_offline_customname">Das Bier, das du gerade bewertest:</string>
+<string name="rate_offline_confirmdiscard">Test und Kommentar werden gelöscht. Bist Du sicher?</string>
+<string name="rate_offline_findbeer">Finde dieses Bier</string>
+<string name="rate_offline_name">Name:</string>
+<string name="rate_offline_nonamegiven">Bitte gib den Namen des Bieres ein, das du bewertet hast</string>
+<string name="rate_offline_alreadyrated">Du hast dieses Bier bereits bewertet und kannst es zur Zeit leider nicht aus Deinen Offline Tests neu bewerten</string>
+<string name="rate_offline_export">Export</string>
+<string name="rate_offline_export_info">Deine Offline Tests werden nun in die folgende JSON kodierte Text Datei exportiert: %1$s</string>
+<string name="rate_offline_import">Import</string>
+<string name="rate_offline_import_info">Ein zuvor angefertigter Test wird nun von %1$s importiert</string>
+
+<string name="addav_addavailability">Verfügbarkeit hinzufügen</string>
+<string name="addav_favourites">Favorisiert</string>
+<string name="addav_findaplace">Lokalität finden</string>
+<string name="addav_otherplace">Andere Lokalität:</string>
+<string name="addav_find">Finden</string>
+<string name="addav_on">Verfügabr:</string>
+<string name="addav_ontap">Fass</string>
+<string name="addav_onbottlecan">Flasche/Dose</string>
+<string name="addav_skip">Überspringen</string>
+<string name="addav_noplacesselected">Du hast keine Lokalität gewählt</string>
+
+<string name="addupc_upccode">Barcode: </string>
+<string name="addupc_beer">Biername:</string>
+<string name="addupc_find">Finde</string>
+
+<string name="mail_noitems">Biername</string>
+<string name="mail_sendmail">Du hast keine Nachrichten</string>
+<string name="mail_couldnotretrieve">Es konnten keine Nachrichten empfangen werden (Fehler)</string>
+<string name="mail_notavailable">Der lokale Nachrichtenspeicher steht zur Zeit nicht zur Verfügung</string>
+<string name="mail_delete">Nachricht löschen</string>
+<string name="mail_confirmdelete">Die Nachricht von %1$s löschen?</string>
+<string name="mail_relpied">beantwortet</string>
+<string name="mail_new">Neu</string>
+<string name="mail_read">gelesen</string>
+<string name="mail_reply">Antworten</string>
+<string name="mail_sendto">Empfänger</string>
+<string name="mail_subject">Überschrift</string>
+<string name="mail_message">Nachricht:</string>
+<string name="mail_includeoriginal">Originalnachricht anhängen</string>
+<string name="mail_send">Senden</string>
+<string name="mail_emptyfields">Bitte fülle vor dem Senden alle Felder aus</string>
+<string name="mail_sendingmail">Nachricht wird gesendet</string>
+<string name="mail_sendingto">Senden an %1$s</string>
+
+<string name="settings_display">Eigenschaften anzeigen</string>
+<string name="settings_distanceinkm">Distanz in km anzeigen</string>
+<string name="settings_distanceinkm_info">Die Distand wird sonst in Meilen angezeigt</string>
+<string name="settings_sharetext">Der Text, der beim Mitteilen des Tests angezeigt wird</string>
+<string name="settings_sharetext_msg">Platzhalter: %1$s für Bier, %2$s für den Biernamen, %3$s für das Gesamtergebnis und %4$s für die Benutzer ID</string>
+<string name="settings_beermail">Mail</string>
+<string name="settings_background">Benachrichtigungen anzeigen</string>
+<string name="settings_background_info">Mails regelmäßig abrufen</string>
+<string name="settings_updatefrequency">Updatefrequenz</string>
+<string name="settings_vibrate">Vibriere bei einer Benachrichtigung</string>
+<string-array name="settings_frequency_names">
+<item>1 Minute</item>
+<item>10 Minuten</item>
+<item>30 Minuten</item>
+<item>1 Stunde</item>
+<item>4 Stunden</item>
+<item>24 Stunden</item>
+</string-array>
+
+<string name="error_offline">Du hast keine Internetverbindung oder RateBeer ist offline (Fehler)</string>
+<string name="error_authenticationfailed">Benutzername oder Passwort falsch</string>
+<string name="error_commandfailed">Die Aktion wurde unerwartet abgebrochen. Schlechte Internetverbindung oder RateBeer ist offline</string>
+<string name="error_nouserorpass">Sowohl Benutzername als auch Passwort werden zum Anmelden benötigt</string>
+<string name="error_nolocation">Dein Aufenthaltsort konnte nicht ermittelt werden</string>
+<string name="error_locationnotsupported">Dein Gerät unterstützt die Lokalisierung nicht oder sieist ausgeschaltet</string>
+<string name="error_sendreport">Einen Fehler senden</string>
+<string name="error_stylenotfound">Die Biersorte konnte nicht gefunden werden, bitte den Fehler melden!</string>
+<string name="error_cannotwrite">Speichern fehlgeschlagen</string>
+<string name="error_cannotread">Keine Datei gefunden oder Datei nicht vorhanden</string>
+<string name="error_filenotvalid">Die Datei enthält keine Offline Tests (im richtigen Format)</string>
+<string name="error_nocamera">Ein Foto kann nicht geschossen werden; entweder es ist keine Kamera vorhanden oder der externe SD Speicher kann nicht beschrieben werden</string>
+<string name="error_lc_install">Um ausführliche Informationen zu einem Fehler senden zu können wird das kostenlose Programm Log Collector benötigt. Soll es aus dem Play Store installiert werden?</string>
+<string name="error_lc_run">Der Log Collector sammelt nun die benötigten Informationen und sendet sie an rb@2312.nl. Du hast vor dem Senden die Möglichkeit, die gesammelten Informationen anzuschauen und zu verändern.</string>
+<string name="error_invalidurl">Diese URL scheint ungültig zu sein</string>
+
+</resources>

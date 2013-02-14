@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+	
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/addav_favourites"
+		android:layout_margin="10dip" />
+		
+	<ListView
+		android:id="@+id/favourites"
+		android:layout_width="match_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:choiceMode="multipleChoice"
+		android:cacheColorHint="@color/BackgroundLight" />
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="10dip">
+		<TextView 
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:layout_marginRight="5dip"
+			android:text="@string/addav_otherplace" />
+		<EditText 
+			android:id="@+id/placename"
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:layout_height="wrap_content"
+			android:inputType="textFilter"
+			android:layout_marginTop="2dip" />
+		<Button 
+			android:id="@+id/findplace"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/addav_find"
+			android:enabled="false" />
+	</LinearLayout>
+	
+	<ListView
+		android:id="@+id/findresults"
+		android:layout_width="match_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:choiceMode="singleChoice"
+		android:cacheColorHint="@color/BackgroundLight" />
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="10dip"
+		android:orientation="horizontal">
+		<TextView
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/addav_on" />
+		<CheckBox
+			android:id="@+id/onbottlecan"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="2.5"
+			android:text="@string/addav_onbottlecan" />
+		<CheckBox
+			android:id="@+id/ontap"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="2"
+			android:text="@string/addav_ontap" />
+	</LinearLayout>
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dip"
+		android:layout_marginLeft="10dip"
+		android:layout_marginRight="10dip"
+		android:orientation="horizontal">
+		<Button
+			android:id="@+id/addavailability"
+			android:layout_height="wrap_content"
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:text="@string/addav_addavailability" />
+		<Button
+			android:id="@+id/skip"
+			android:layout_height="wrap_content"
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:text="@string/addav_skip"
+			android:layout_marginLeft="10dip" />
+	</LinearLayout>
+	
+</LinearLayout>

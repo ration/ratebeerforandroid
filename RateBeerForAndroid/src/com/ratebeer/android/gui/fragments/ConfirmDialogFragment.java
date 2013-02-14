@@ -30,7 +30,13 @@ public class ConfirmDialogFragment extends DialogFragment {
 	private final int dialogTitle;
 	private final Object[] dialogTitleArgs;
 
+	public ConfirmDialogFragment() {
+		this(null, -1);
+		setRetainInstance(true);
+	}
+	
 	public ConfirmDialogFragment(OnDialogResult resultListener, int dialogTitle, Object... dialogTitleArgs) {
+		setRetainInstance(true);
 		this.resultListener = resultListener;
 		this.dialogTitle = dialogTitle;
 		this.dialogTitleArgs = dialogTitleArgs;
@@ -40,7 +46,7 @@ public class ConfirmDialogFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		return new AlertDialog.Builder(getActivity())
 			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setTitle(getString(dialogTitle, dialogTitleArgs))
+			.setMessage(getString(dialogTitle, dialogTitleArgs))
 			.setPositiveButton(android.R.string.yes, new OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {

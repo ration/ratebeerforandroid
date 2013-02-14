@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Annuleren</string>
+<string name="app_home">Thuis</string>
+<string name="app_refresh">Verversen</string>
+<string name="app_details">Details</string>
+<string name="app_share">Delen</string>
+<string name="app_loading">Laden&#8230;</string>
+<string name="app_legal">Bij in gebruik name van deze applicatie ga je akkoord met de RateBeer User Agreement (beschikbaar in het Engels) zoals beschikbaar op http://www.ratebeer.com/UserAgreement.asp\n\nOok zonder RateBeer account kun je deze applicatie gebruiken om bieren te zoeken en bekijken, top lijsten te raadplegen, bier-gerelateerde bijeenkomsten en plaatsen te ontdekken en nog veel meer. Voor sommige functies is een account vereist, zoals het beoordelen van bier en toevoegen van beschikbaarheid. Maak een account aan op http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">Welkom!</string>
+
+<string name="app_install">Installeer nu</string>
+<string name="app_nomarket">De Play Store is niet beschikbaar op je apparaat.</string>
+<string name="app_scannernotfound">De barcodescanner kan niet worden gevonden.\nWil je deze installeren uit de Play Store?</string>
+<string name="app_onlyifsignedin">Voor deze functie dien je je aan te melden met je RateBeer account.</string>
+
+<string name="app_newstatus">Geef je nieuwe status op</string>
+<string name="app_nowdrinking">Nu aan het drinken</string>
+<string name="app_settingdrinking_expl">Je kunt ook \'Nu aan het drinken\' kiezen in het detailscherm van een bier</string>
+<string name="app_settingdrinking">Nieuwe status doorgeven</string>
+<string name="app_sharerating">Deel deze rating op Twitter/Facebook/&#8230;</string>
+<string name="app_postingrating">Plaatsen van beoordeling</string>
+<string name="app_postingtick">Registreren van je tick</string>
+<string name="app_removingtick">Verwijderen van je tick</string>
+<string name="app_addingavailability">Toevoegen van beschikbaarheid</string>
+<string name="app_addingforbeer">%1$s beschikbaarheid wordt geüpdatet</string>
+<string name="app_addingavailability">Toevoegen van beschikbaarheid</string>
+<string name="app_rated">%1$s beoordeeld met een %2$s</string>
+<string name="app_forbeer">Voor %1$s</string>
+<string name="app_addingtocellar">Kelder wordt geüpdatet</string>
+<string name="app_addwant">Ik wil %1$s</string>
+<string name="app_addhave">Ik heb %1$s</string>
+<string name="app_ratedwithurl">%2$s beoordeeld met een %3$s http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+<string name="app_addingupccode">Gescande code wordt toegevoegd</string>
+<string name="app_addingcodefor">Code toevoegen aan %1$s</string>
+<string name="app_requiressignin">Je dient je aan te melden om deze functie te gebruiken.</string>
+<string name="app_noaccount">Geen account?\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmail">Je hebt een nieuwe biermail</string>
+<string name="app_newmails">Je hebt %1$s nieuwe biermails</string>
+<string name="app_by">Van %1$s</string>
+<string name="app_andothers">en anderen</string>
+<string name="app_moremail">en nog %1$s</string>
+<string name="app_uploadingphoto">Foto wordt geüpload</string>
+<string name="app_photofor">Uploaden van foto van %1$s</string>
+
+<string name="signin_username">Gebruikersnaam:</string>
+<string name="signin_password">Wachtwoord:</string>
+<string name="signin_signin">Aanmelden</string>
+<string name="signin_signout">Afmelden</string>
+<string name="signin_connecting">Verbinden&#8230;</string>
+<string name="signin_signoutsuccess">Afmelden is gelukt</string>
+<string name="signin_signinsuccess">Aanmelden is gelukt</string>
+
+<string name="home_beers">Bieren</string>
+<string name="home_places">Plaatsen</string>
+<string name="home_events">Evenementen</string>
+<string name="home_search">Zoeken</string>
+<string name="home_myprofile">Mijn profiel</string>
+<string name="home_top50">Top 50</string>
+<string name="home_bycountry">Beste per land</string>
+<string name="home_offlineratings">Offline notities</string>
+<string name="home_beerstyles">Bierstijlen</string>
+<string name="home_beermail">Biermail</string>
+<string name="home_nowdrinking">Drinkt nu %1$s</string>
+<string name="home_preferences">Voorkeuren</string>
+<string name="home_calculator">Rekenmachine</string>
+<string name="home_about">Over</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_for">%1$s voor</string>
+<string name="calc_euro">¤</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+<string name="calc_fillinall">Vul eerst een hoeveelheid en de bier prijzen in</string>
+
+<string name="myratings_avg">gem. %1$s</string>
+<string name="myratings_noitems">Nog geen ratings; open een bier en kruip in je pen!</string>
+<string name="myratings_sortby">Sorteren op</string>
+<string-array name="myratings_sortby_names">
+<item>Naam</item>
+<item>Brouwerij</item>
+<item>Stijl</item>
+<item>Mijn rating</item>
+<item>Datum</item>
+<item>Score</item>
+</string-array>
+
+<string name="cellar_viewcellar">Kelder bekijken</string>
+<string name="cellar_wants">Wensen</string>
+<string name="cellar_haves">In bezit</string>
+<string name="cellar_wantthis">Ik wil dit</string>
+<string name="cellar_havethis">Ik heb dit</string>
+<string name="cellar_addingahave">Aan kelder toevoegen</string>
+<string name="cellar_addingawant">Aan verlanglijst toevoegen</string>
+<string name="cellar_memo">Memo</string>
+<string name="cellar_vintage">Jaartal</string>
+<string name="cellar_quantity">Aantal</string>
+<string name="cellar_addtocellar">Toevoegen aan kelder</string>
+<string name="cellar_remove">Wissen uit kelder</string>
+<string name="cellar_confirmremoval">%1$s uit je kelder wissen?</string>
+
+<string name="topbeers_country">Land:</string>
+<string name="topbeers_state">Staat:</string>
+<string name="topbeers_noitems">Kies een land om de top bieren ervan te zien&#8230;</string>
+
+<string name="places_nearby">Plaatsen in de buurt</string>
+<string name="places_map">Kaart</string>
+<string name="places_location">Lokatie</string>
+<string name="places_rateandcount">Beoordeling: %1$s</string>
+<string name="places_notyetrated">Nog niet beoordeeld</string>
+<string name="places_findhint">Geef de naam van de lokatie die je zoekt</string>
+<string name="places_usecurrent">Gebruik je huidige locatie</string>
+<string name="places_noitems">Geen plaatsen gevonden in deze omgeving!</string>
+<string name="places_brewpub">Brouwcafe</string>
+<string name="places_bar">Bar</string>
+<string name="places_beerstore">Bierwinkel</string>
+<string name="places_restaurant">Restaurant</string>
+<string name="places_brewer">Brouwer</string>
+<string name="places_unknown">Onbekend</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_checkins">Inchecken</string>
+<string name="places_checkinhere">Hier inchecken</string>
+<string name="places_checkedinnow">Je bent ingecheckt (nu verversen)</string>
+<string name="places_availablebeers">Beschikbaar</string>
+<string name="places_enteredat">Ingevoerd op %1$s</string>
+<string name="places_share">Check %1$s op @ratebeer http://ratebeer.com/Place/p/p/p/%2$s.htm</string>
+<string name="places_shareplace">Plaats delen&#8230;</string>
+
+<string name="brewers_share">Check %1$s op @ratebeer http://www.ratebeer.com/brewers/b/%2$s/</string>
+<string name="brewers_sharebrewer">Brouwer delen&#8230;</string>
+<string name="brewers_beers">Bieren</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Deelnemers:</string>
+<string name="events_noitems">Nog geen evenementen gepland in deze omgeving!</string>
+<string name="events_addattendance">Ja, voeg mij toe</string>
+<string name="events_removeattendance">Nee, haal mij van de lijst</string>
+<string name="events_nowattending">Je bent aan de deelnemerslijst toegevoegd</string>
+<string name="events_nownotattending">Je bent van de deelnemerslijst gehaald</string>
+<string name="events_share">Check %1$s op @ratebeer http://ratebeer.com/event/%2$</string>
+<string name="events_shareevent">Evenement delen&#8230;</string>
+
+<string name="search_resultsfor">Resultaten voor \'%1$s\'</string>
+<string name="search_beersearch">RateBeer doorzoeken</string>
+<string name="search_hint">Zoek naar bieren, plaatsen &amp; gebruikers</string>
+<string name="search_beers">Bieren</string>
+<string name="search_brewers">Brouwers</string>
+<string name="search_places">Plaatsen</string>
+<string name="search_users">Gebruikers</string>
+<string name="search_barcodescanner">Barcodescanner</string>
+<string name="search_nobeerswithbarcode">Geen bieren gevonden voor %1$s. Overweeg om de barcode toe te voegen aan de database.</string>
+<string name="search_clearhistory">Zoekgeschiedenis wissen</string>
+<string name="search_nobeers">Geen bieren gevonden.\n\nProbeer slechts een deel van de biernaam te gebruiken.</string>
+<string name="search_nobrewers">Geen brouwers gevonden.\n\nProbeer slechts een deel van de brouwerijnaam te gebruiken.</string>
+<string name="search_nopalces">Geen plaatsen gevonden.\n\nProbeer slechts een deel van de plaatsnaam te gebruiken.</string>
+<string name="search_nousers">Geen gebruikers gevonden.\n\nProbeer slechts een deel van de gebruikersnaam te gebruiken.</string>
+<string name="search_retired">stopgezet</string>
+<string name="search_alias">alias</string>
+<string name="search_rated">beoordeeld</string>
+<string name="search_ratings">%1$s beoordelingen</string>
+<string name="search_aliasedbeer">Dit bier is een alias: geen gegevens beschikbaar</string>
+
+<string name="details_bybrewer">door %1$s</string>
+<string name="details_score">Score</string>
+<string name="details_noscoreyet">Meer beoordelingen nodig</string>
+<string name="details_percentile">percentiel</string>
+<string name="details_ratings">beoordelingen</string>
+<string name="details_style">stijl</string>
+<string name="details_nodescription">Geen commerciële omschrijving</string>
+<string name="details_abvstyle">Stijl: %1$s\nAlcohol: %2$s</string>
+<string name="details_ratethis">Beoordelen</string>
+<string name="details_viewrerate">Beoordeling herzien</string>
+<string name="details_drinkingthis">Nu aan het drinken</string>
+<string name="details_recentratings">Beoordelingen</string>
+<string name="details_myrating">Mijn beoordeling:</string>
+<string name="details_ticklabel">Of alleen ticken:</string>
+<string name="details_otherratings">Recente beoordelingen:</string>
+<string name="details_availability">Beschikbaarheid</string>
+<string name="details_noavailability">Geen beschrikbaarheid bekend</string>
+<string name="details_share">Check %1$s op @ratebeer http://ratebeer.com/b/%2$s/</string>
+<string name="details_sharebeer">Bier delen&#8230;</string>
+
+<string name="upload_uploadphoto">Foto uploaden</string>
+<string name="upload_choose">Foto maken of bestaande selecteren</string>
+<string name="upload_newphoto">Nieuwe foto maken</string>
+<string name="upload_pick">Kiezen uit fotogallerij</string>
+
+<string name="user_dates">Ingeschreven: %1$s\nLaatst gezien: %2$s</string>
+<string name="user_beersrated">%1$s bieren beoordeeld\n%2$s plaatsen beoordeeld\nGem. gegeven score: %3$s\nGem. van beoordeelde bieren: %4$s</string>
+<string name="user_favsyle">Favoriete stijl: %1$s</string>
+<string name="user_nofavstyle">geen</string>
+<string name="user_picture">Gebruikersafbeelding</string>
+
+<string name="rate_aroma">Aroma</string>
+<string name="rate_appearance">Uiterlijk</string>
+<string name="rate_taste">Smaak</string>
+<string name="rate_palate">Mondgevoel</string>
+<string name="rate_overall">Geheel</string>
+<string name="rate_totalscore">Totaalscore</string>
+<string name="rate_comments">Omschrijving</string>
+<string name="rate_addrating">Beoordeling uploaden</string>
+<string name="rate_commenttooshort">Je omschrijving dient minstens 85 karakters lang te zijn</string>
+<string name="rate_ratingnotcompleted">Je beoordeling is nog niet compleet</string>
+<string name="rate_charstogo">%1$s karakters te gaan&#8230;</string>
+<string name="rate_commentok">Omschrijving is lang genoeg!</string>
+<string name="rate_showassistance">Beoordelingshulp tonen</string>
+<string name="rate_hideassistance">Beoordelingshulp verbergen</string>
+<string name="rate_assistance_words">caramel, brood, hooi, graan, chocolade, koffie, noten, toast, geroosterd, hars, bloemig, gras, spar, citrus, kruiden, deeg, boerenerf, kaas, kelder aroma, leer, aarde, bladeren, alcohol, banaan, bubblegum, butterscotch, kruidnagel, gekookte groente, hoestsnoepje, gember, drop, rozijn, rotte eieren, sojasaus, stink, rook, vanille, houterig</string>
+
+<string name="rate_offline_title">Offline beoordeling</string>
+<string name="rate_offline_info">Bij het proeven en maken van notities wordt je beoordeling automatisch lokaal opgeslagen. Als je offline werkt of er zijn verbindingsproblemen, kun je je beoordeling terug vinden bij de offline beoordelingen. Deze kunnen dan later worden geüpload. Offline ratings worden automatisch verwijderd nadat ze succesvol zijn toegevoegd op RateBeer.</string>
+<string name="rate_offline_availble">Offline beoordelen beschikbaar</string>
+<string name="rate_offline_notavailable">Offline beoordelen niet beschikbaar</string>
+<string name="rate_offline_savedat">%1$s opgeslagen</string>
+<string name="rate_offline_noitems">Geen offline beoordelingen opgeslagen</string>
+<string name="rate_offline_delete">Beoordeling verwijderen</string>
+<string name="rate_offline_confirmdelete">Beoordeling voor %1$s verwijderen?</string>
+<string name="rate_offline_addrating">Offline beoordeling toevoegen</string>
+<string name="rate_offline_discard">Verwijderen</string>
+<string name="rate_offline_customname">Beoordeelde bier:</string>
+<string name="rate_offline_confirmdiscard">Je verliest hiermee je beoordeling. Wil je doorgaan?</string>
+<string name="rate_offline_findbeer">Dit bier opzoeken&#8230;</string>
+<string name="rate_offline_name">Naam:</string>
+<string name="rate_offline_nonamegiven">Voer de naam in van het beoordeelde bier</string>
+<string name="rate_offline_alreadyrated">Sorry, maar dit bier heb je al beoordeeld. (Momenteel kan je beoordelingen niet updaten via de offline functie)</string>
+<string name="rate_offline_export">Exporteren</string>
+<string name="rate_offline_export_info">Je offline beoordelingen worden geëxporteerd naar JSON-bestand %1$s</string>
+<string name="rate_offline_import">Importeren</string>
+<string name="rate_offline_import_info">Eerder opgeslagen offline beoordelingen worden nu geïmporteerd uit %1$s</string>
+
+<string name="addav_addavailability">Beschikbaarheid toevoegen</string>
+<string name="addav_favourites">Favorieten/recent</string>
+<string name="addav_findaplace">Plaats opzoeken</string>
+<string name="addav_otherplace">Andere plaats:</string>
+<string name="addav_find">Zoeken</string>
+<string name="addav_on">Op:</string>
+<string name="addav_ontap">tap</string>
+<string name="addav_onbottlecan">fles/blik</string>
+<string name="addav_skip">Overslaan</string>
+<string name="addav_noplacesselected">Je hebt geen plaatsen geselecteerd</string>
+
+<string name="addupc_upccode">UPC code:</string>
+<string name="addupc_beer">Biernaam:</string>
+<string name="addupc_find">Zoeken</string>
+
+<string name="mail_noitems">Je hebt geen mails in je inbox</string>
+<string name="mail_sendmail">Mail verzenden</string>
+<string name="mail_couldnotretrieve">Je mail kon niet worden opgehaald</string>
+<string name="mail_notavailable">Lokale mailopslag is niet beschikbaar</string>
+<string name="mail_delete">Mail verwijderen</string>
+<string name="mail_confirmdelete">Deze mail van %1$s verwijderen?</string>
+<string name="mail_relpied">beantwoord</string>
+<string name="mail_new">nieuw</string>
+<string name="mail_read">gelezen</string>
+<string name="mail_view">Bekijken</string>
+<string name="mail_reply">Beantwoorden</string>
+<string name="mail_sendto">Verzenden naar</string>
+<string name="mail_subject">Onderwerp</string>
+<string name="mail_message">Bericht:</string>
+<string name="mail_includeoriginal">Oorspronkelijk bericht bijvoegen</string>
+<string name="mail_send">Versturen</string>
+<string name="mail_emptyfields">Vul alle velden in alvorens te versturen</string>
+<string name="mail_sendingmail">Biermail wordt verzonden</string>
+<string name="mail_sendingto">Verzenden naar %1$s</string>
+
+<string name="settings_display">Weergave voorkeuren</string>
+<string name="settings_distanceinkm">Afstanden weergeven in km</string>
+<string name="settings_distanceinkm_info">Anders worden miles gebruikt</string>
+<string name="settings_sharetext">Tekst bij het delen van een beoordeling</string>
+<string name="settings_sharetext_msg">Plaatshouders: %1$s voor de bier ID, %2$s voor de biernaam, %3$s voor de totaalscore en %4$s voor je gebruikers ID</string>
+<string name="settings_beermail">Biermail</string>
+<string name="settings_background">Notificaties ontvangen</string>
+<string name="settings_background_info">Periodiek controleren op nieuwe biermail</string>
+<string name="settings_updatefrequency">Verversingsfrequentie</string>
+<string name="settings_vibrate">Trillen bij notificatie</string>
+<string-array name="settings_frequency_names">
+<item>1 minuut</item>
+<item>10 minuten</item>
+<item>30 minuten</item>
+<item>1 uur</item>
+<item>4 uur</item>
+<item>24 uur</item>
+</string-array>
+
+<string name="error_offline">Je hebt geen verbinding met het internet of RateBeer.com is offline</string>
+<string name="error_authenticationfailed">Je gebruikersnaam of wachtwoord is onjuist</string>
+<string name="error_commandfailed">Actie kon helaas niet worden uitgevoerd. Je verbinding is slecht of RateBeer.com is offline</string>
+<string name="error_nouserorpass">Je moet zowel gebruikersnaam als wachtwoord invullen om je aan te melden</string>
+<string name="error_nolocation">Je lokatie kon niet worden vastgesteld</string>
+<string name="error_locationnotsupported">Je apparaat heeft geen ondersteuning voor het vaststellen van je lokatie of dit staat uitgeschakeld</string>
+<string name="error_sendreport">Foutrapport verzenden</string>
+<string name="error_stylenotfound">Bierstijl kan niet worden gevonden; a.u.b. melden met een foutrapport</string>
+<string name="error_cannotwrite">Kan niet naar bestand schrijven</string>
+<string name="error_cannotread">Bestand niet gevonden of beschadigd</string>
+<string name="error_filenotvalid">Het bestand bevat geen offline beoordelingen (in het juiste formaat)</string>
+<string name="error_nocamera">Foto kon niet worden genomen; je hebt geen camera of de SD kaart is niet beschikbaar</string>
+<string name="error_lc_install">Om een foutrapport te verzenden heb je de gratis Log Collector applicatie nodig. Wil je deze installeren uit de Play Store?</string>
+<string name="error_lc_run">De Log Collector applicatie zal nu een foutlog samenstellen en deze versturen naar rb@2312.nl.\nJe hebt de mogelijkheid om deze mail na te kijken en aan te passen voor het versturen.</string>
+<string name="error_invalidurl">Deze URL lijkt geen geldig websiteadres</string>
+
+</resources>

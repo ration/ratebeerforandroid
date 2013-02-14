@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item 
+		android:id="@+id/menu_add" 
+		android:title="@string/rate_offline_addrating"
+		android:icon="@drawable/ic_action_addrating"
+		android:showAsAction="ifRoom|withText" />
+
+	<item 
+		android:id="@+id/menu_export" 
+		android:title="@string/rate_offline_export"
+		android:icon="@drawable/ic_action_export"
+		android:showAsAction="ifRoom|withText" />
+	
+	<item 
+		android:id="@+id/menu_import" 
+		android:title="@string/rate_offline_import"
+		android:icon="@drawable/ic_menu_import"
+		android:showAsAction="never" />
+		
+</menu>

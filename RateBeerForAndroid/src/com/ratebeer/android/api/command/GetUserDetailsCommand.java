@@ -20,35 +20,127 @@ package com.ratebeer.android.api.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.HtmlCommand;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.UserSettings;
 
-public class GetUserDetailsCommand extends Command {
+public class GetUserDetailsCommand extends HtmlCommand {
 	
 	private final int userId;
 	private UserDetails details;
 	
-	public GetUserDetailsCommand(RateBeerApi api, int userId) {
+	public GetUserDetailsCommand(UserSettings api, int userId) {
 		super(api, ApiMethod.GetUserDetails);
 		this.userId = userId;
 	}
 	
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setDetails(UserDetails details) {
-		this.details = details;
-	}
-
 	public UserDetails getDetails() {
 		return details;
 	}
 
+	@Override
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/user/" + userId + "/");
+	}
+
+	@Override
+	protected void parse(String html) throws JSONException, ApiException {
+
+		// Parse the user's details and recent ratings
+		int userStart = html.indexOf("class=\"selected\">profile</a><br>");
+		if (userStart < 0) {
+			throw new ApiException(ApiException.ExceptionType.CommandFailed,
+					"The response HTML did not contain the unique event content string");
+		}
+
+		final String nameText = "<span class=\"userIsDrinking\">";
+		int nameStart = html.indexOf(nameText, userStart) + nameText.length();
+		String name = html.substring(nameStart, html.indexOf("</span>", nameStart));
+
+		int locationStart = html.indexOf("<span>", nameStart) + "<span>".length();
+		String location = html.substring(locationStart, html.indexOf("<br>", locationStart)).trim();
+		int ofEnd = location.indexOf("/>");
+		if (ofEnd >= 0 && location.indexOf("<", ofEnd) > 0) {
+			location = "of " + location.substring(ofEnd + 2, location.indexOf("<", ofEnd));
+		}
+
+		int joinedStart = html.indexOf("class=\"GrayItalic\">", locationStart) + "class=\"GrayItalic\">".length();
+		String joined = html.substring(joinedStart, html.indexOf("<", joinedStart)).trim();
+
+		int lastSeenStart = html.indexOf("class=\"GrayItalic\">", joinedStart) + "class=\"GrayItalic\">".length();
+		String lastSeen = html.substring(lastSeenStart, html.indexOf("<", lastSeenStart));
+
+		int beerRateCountStart = html.indexOf("<b>", lastSeenStart) + "<b>".length();
+		int beerRateCount = Integer.parseInt(html.substring(beerRateCountStart,
+				html.indexOf("</b>", beerRateCountStart)));
+
+		int placeRateCountStart = html.indexOf("<b>", beerRateCountStart) + "<b>".length();
+		int placeRateCount = Integer.parseInt(html.substring(placeRateCountStart,
+				html.indexOf("</b>", placeRateCountStart)));
+
+		int avgScoreGivenPresent = html.indexOf("Avg Score Given: ", placeRateCountStart);
+		String avgScoreGiven = null;
+		if (avgScoreGivenPresent >= 0) {
+			int avgScoreGivenStart = avgScoreGivenPresent + "Avg Score Given: ".length();
+			avgScoreGiven = HttpHelper.cleanHtml(html.substring(avgScoreGivenStart, html.indexOf(" ", avgScoreGivenStart)));
+		}
+
+		int avgBeerRatedPresent = html.indexOf("Avg Beer Rated: ", avgScoreGivenPresent);
+		String avgBeerRated = null;
+		if (avgBeerRatedPresent >= 0) {
+			int avgBeerRatedStart = avgBeerRatedPresent + "Avg Beer Rated: ".length();
+			avgBeerRated = HttpHelper.cleanHtml(html.substring(avgBeerRatedStart, html.indexOf(" ", avgBeerRatedStart)));
+		}
+
+		String styleText = "Favorite style: <a href=\"/beerstyles/";
+		int styleStart = html.indexOf(styleText, placeRateCountStart);
+		int styleId = -1;
+		String styleName = null;
+		if (styleStart >= 0) {
+			styleStart += styleText.length();
+			int styleIdStart = html.indexOf("/", styleStart) + 1;
+			styleId = Integer.parseInt(html.substring(styleIdStart, html.indexOf("/", styleIdStart)));
+			int styleNameStart = html.indexOf("<b>", styleStart) + "<b>".length();
+			styleName = HttpHelper.cleanHtml(html.substring(styleNameStart, html.indexOf("</b>", styleNameStart)));
+		}
+
+		List<RecentBeerRating> ratings = new ArrayList<RecentBeerRating>();
+		String ratingText = "style=\"height: 21px;\"><A HREF=\"/beer/";
+		int ratingStart = html.indexOf(ratingText, styleStart);
+		while (ratingStart >= 0) {
+			int beerIdStart = html.indexOf("/", ratingStart + ratingText.length()) + 1;
+			int beerId = Integer.parseInt(html.substring(beerIdStart, html.indexOf("/", beerIdStart)));
+
+			int beerNameStart = html.indexOf(">", beerIdStart) + ">".length();
+			String beerName = HttpHelper.cleanHtml(html.substring(beerNameStart, html.indexOf("<", beerNameStart)));
+
+			int beerStyleStart = html.indexOf("smallGray\">", beerNameStart) + "smallGray\">".length();
+			String beerStyle = HttpHelper.cleanHtml(html.substring(beerStyleStart, html.indexOf("<", beerStyleStart)));
+
+			int beerRatingStart = html.indexOf("bold;\">", beerStyleStart) + "bold;\">".length();
+			String beerRating = html.substring(beerRatingStart, html.indexOf("<", beerRatingStart));
+
+			int beerDateStart = html.indexOf("smallGray\">", beerRatingStart) + "smallGray\">".length();
+			String beerDate = html.substring(beerDateStart, html.indexOf("<", beerDateStart));
+
+			ratings.add(new RecentBeerRating(beerId, beerName, beerStyle, beerRating, beerDate));
+			ratingStart = html.indexOf(ratingText, beerDateStart);
+		}
+
+		// Set the user's rating on the original command as result
+		details = new UserDetails(name, joined, lastSeen, location, beerRateCount, placeRateCount,
+				avgScoreGiven, avgBeerRated, styleName, styleId, ratings);
+		
+	}
+	
 	public static class RecentBeerRating implements Parcelable {
 
 		public final int id;

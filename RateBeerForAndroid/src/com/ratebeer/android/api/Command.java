@@ -1,39 +1,45 @@
 /*
     This file is part of RateBeer For Android.
-    
-    RateBeer for Android is free software: you can redistribute it 
-    and/or modify it under the terms of the GNU General Public 
-    License as published by the Free Software Foundation, either 
+
+    RateBeer for Android is free software: you can redistribute it
+    and/or modify it under the terms of the GNU General Public
+    License as published by the Free Software Foundation, either
     version 3 of the License, or (at your option) any later version.
 
-    RateBeer for Android is distributed in the hope that it will be 
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+    RateBeer for Android is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
     of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with RateBeer for Android.  If not, see 
+    along with RateBeer for Android.  If not, see
     <http://www.gnu.org/licenses/>.
  */
 package com.ratebeer.android.api;
 
+/**
+ * Represents a command that can be executed against the RateBeer servers. The result may either be
+ * a {@link CommandSuccessResult} or a {@link CommandFailureResult}. The {@link HtmlCommand}, 
+ * {@link JsonCommand} and {@link EmptyResponseCommand} classes can be used as a helpers. 
+ * @author erickok
+ */
 public abstract class Command {
 
-	final private CommandService api;
-	final private ApiMethod method;
+	private final UserSettings userSettings;
+	private final ApiMethod method;
 
 	/**
 	 * Construct a command for a certain method
-	 * @param panel The panel to execute the command against
+	 * @param userSettings The currently signed in user settings
 	 * @param method The method to perform
 	 */
-	protected Command(CommandService api, ApiMethod method) {
-		this.api = api;
+	protected Command(UserSettings userSettings, ApiMethod method) {
+		this.userSettings = userSettings;
 		this.method = method;
 	}
-	
-	public CommandService getApi() {
-		return api;
+
+	public UserSettings getUserSettings() {
+		return userSettings;
 	}
 
 	public ApiMethod getMethod() {
@@ -42,15 +48,14 @@ public abstract class Command {
 
 	/**
 	 * Execute the set up command against the forum
+	 * @param apiConnection The current RateBeer API connection to execute the command against
 	 * @return The command result
 	 */
-	public CommandResult execute() {
-		return api.execute(this);
-	}
+	public abstract CommandResult execute(ApiConnection apiConnection);
 
 	@Override
 	public String toString() {
 		return method.toString();
 	}
-	
+
 }

@@ -21,142 +21,123 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.jakewharton.android.viewpagerindicator.TitlePageIndicator;
-import com.jakewharton.android.viewpagerindicator.TitleProvider;
+import com.actionbarsherlock.view.Menu;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.GetUserCellarCommand;
 import com.ratebeer.android.api.command.GetUserCellarCommand.CellarBeer;
-import com.ratebeer.android.gui.components.ArrayAdapter;
-import com.ratebeer.android.gui.components.RateBeerActivity;
+import com.ratebeer.android.api.command.RemoveFromCellarCommand;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
+import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
+import com.viewpagerindicator.TabPageIndicator;
 
+@EFragment(R.layout.fragment_cellarview)
+@OptionsMenu(R.menu.refresh)
 public class CellarViewFragment extends RateBeerFragment {
+	
+	private static final int MENU_REMOVE = 10;
 
-	private static final String STATE_USERID = "userId";
-	private static final String STATE_WANTS = "wants";
-	private static final String STATE_HAVES = "haves";
-
-	private LayoutInflater inflater;
-	private ViewPager pager;
-	private ListView wantsView;
-	private ListView havesView;
-
+	@FragmentArg
+	@InstanceState
 	protected int userId;
-	private ArrayList<CellarBeer> wants = new ArrayList<GetUserCellarCommand.CellarBeer>();
-	private ArrayList<CellarBeer> haves = new ArrayList<GetUserCellarCommand.CellarBeer>();
+	@InstanceState
+	protected ArrayList<CellarBeer> wants = null;
+	@InstanceState
+	protected ArrayList<CellarBeer> haves = null;
+
+	@ViewById
+	protected ViewPager pager;
+	@ViewById(R.id.wantsview)
+	protected ListView wantsView;
+	@ViewById(R.id.havesview)
+	protected ListView havesView;
+	@ViewById
+	protected TabPageIndicator titles;
+
+	private ListAdapter lastUsedListView = null;
 
 	public CellarViewFragment() {
-		this(-1);
 	}
 
-	/**
-	 * Show a user's cellar (wants and haves)
-	 * @param userId The user ID
-	 */
-	public CellarViewFragment(int userId) {
-		this.userId = userId;
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_cellarview, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		pager = (ViewPager) getView().findViewById(R.id.pager);
 		if (pager != null) {
-			// Phone layout (using a pager to show the two lists)
-			CellarPagerAdapter cellarPagerAdapter = new CellarPagerAdapter();
-			pager.setAdapter(cellarPagerAdapter);
-			wantsView = cellarPagerAdapter.getWantView();
-			havesView = cellarPagerAdapter.getHavesView();
-			TitlePageIndicator titles = (TitlePageIndicator) getView().findViewById(R.id.titles);
+			// Phone layout (using a pager to show the two lists): we still need to load the layout
+			pager.setAdapter(new CellarPagerAdapter());
 			titles.setViewPager(pager);
-		} else {
-			// Tablet layout (showing both lists at the same time)
-			wantsView = (ListView) getView().findViewById(R.id.wantsview);
-			havesView = (ListView) getView().findViewById(R.id.havesview);
 		}
 		wantsView.setOnItemClickListener(onCellarBeerClick);
 		havesView.setOnItemClickListener(onCellarBeerClick);
+		registerForContextMenu(wantsView);
+		registerForContextMenu(havesView);
 
-		if (savedInstanceState != null) {
-			userId = savedInstanceState.getInt(STATE_USERID);
-			if (savedInstanceState.containsKey(STATE_WANTS) && savedInstanceState.containsKey(STATE_HAVES)) {
-				wants = savedInstanceState.getParcelableArrayList(STATE_WANTS);
-				haves = savedInstanceState.getParcelableArrayList(STATE_HAVES);
-			}
+		if (wants != null && haves != null) {
+			publishCellar(wants, haves);
 		} else {
 			refreshCellar();
 		}
-		// Publish the current wants and haves view, even when it is not loaded yet (and thus still empty)
-		publishCellar(wants, haves);
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		MenuItem item = menu.add(RateBeerActivity.MENU_REFRESH, RateBeerActivity.MENU_REFRESH,
-				RateBeerActivity.MENU_REFRESH, R.string.app_refresh);
-		item.setIcon(R.drawable.ic_action_refresh);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		super.onCreateOptionsMenu(menu, inflater);
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		menu.add(Menu.NONE, MENU_REMOVE, MENU_REMOVE, R.string.cellar_remove);
+		lastUsedListView = ((AdapterView<ListAdapter>)v).getAdapter();
 	}
-
+	
 	@Override
-	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_REFRESH:
-			refreshCellar();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
+		final CellarBeer beer = (CellarBeer) lastUsedListView.getItem(acmi.position);
+		new ConfirmDialogFragment(new OnDialogResult() {
+			@Override
+			public void onConfirmed() {
+				removeBeerFromCellar(beer);
+			}
+		}, R.string.cellar_confirmremoval, beer.beerName).show(getFragmentManager(), "dialog");
+		return super.onContextItemSelected(item);
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(STATE_USERID, userId);
-		if (wants != null) {
-			outState.putParcelableArrayList(STATE_WANTS, wants);
-		}
-		if (haves != null) {
-			outState.putParcelableArrayList(STATE_HAVES, haves);
-		}
+	@OptionsItem(R.id.menu_refresh)
+	protected void refreshCellar() {
+		execute(new GetUserCellarCommand(getUser(), userId));
 	}
 
-	private void refreshCellar() {
-		execute(new GetUserCellarCommand(getRateBeerActivity().getApi(), userId));
+	protected void removeBeerFromCellar(CellarBeer beer) {
+		execute(new RemoveFromCellarCommand(getUser(), beer.beerId));
 	}
 
 	private OnItemClickListener onCellarBeerClick = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			CellarBeer item = ((CellarAdapter) parent.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new BeerViewFragment(item.beerName, item.beerId));
+			load(BeerViewFragment_.builder().beerId(item.beerId).beerName(item.beerName).build());
 		}
 	};
 
@@ -165,14 +146,16 @@ public class CellarViewFragment extends RateBeerFragment {
 		if (result.getCommand().getMethod() == ApiMethod.GetUserCellar) {
 			GetUserCellarCommand ucc = (GetUserCellarCommand) result.getCommand();
 			publishCellar(ucc.getWants(), ucc.getHaves());
+		} else if (result.getCommand().getMethod() == ApiMethod.RemoveFromCellar) {
+			// NOTE: No feedback, so we assume that the removal was actually successful and request a refresh
+			refreshCellar();
 		}
 	}
 
 	private void publishCellar(ArrayList<CellarBeer> wants, ArrayList<CellarBeer> haves) {
 		this.wants = wants;
 		this.haves = haves;
-		// Collections.sort(result, new PlacesComparator(sortOrder));
-		// Updated the list view adapters, which might be wrapped in a CellarPagerAdapter
+		// Updated the list view adapters (which might be wrapped in a CellarPagerAdapter)
 		if (wantsView.getAdapter() == null) {
 			wantsView.setAdapter(new CellarAdapter(getActivity(), wants));
 		} else {
@@ -202,7 +185,7 @@ public class CellarViewFragment extends RateBeerFragment {
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_cellarbeer, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_cellaritem, null);
 				holder = new ViewHolder();
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
 				holder.memo = (TextView) convertView.findViewById(R.id.memo);
@@ -232,25 +215,12 @@ public class CellarViewFragment extends RateBeerFragment {
 		TextView beer, memo, quantity, vintage;
 	}
 
-	private class CellarPagerAdapter extends PagerAdapter implements TitleProvider {
-
-		private ListView pagerWantsView;
-		private ListView pagerHavesView;
+	private class CellarPagerAdapter extends PagerAdapter {
 
 		public CellarPagerAdapter() {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
-			pagerWantsView = (ListView) inflater.inflate(R.layout.fragment_cellarlist, null);
-			pagerHavesView = (ListView) inflater.inflate(R.layout.fragment_cellarlist, null);
-			//pagerWantsView = (ListView) wantLayout.findViewById(R.id.list);
-			//pagerHavesView = (ListView) haveLayout.findViewById(R.id.list);
-		}
-
-		public ListView getHavesView() {
-			return pagerHavesView;
-		}
-
-		public ListView getWantView() {
-			return pagerWantsView;
+			wantsView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
+			havesView = (ListView) inflater.inflate(R.layout.fragment_pagerlist, null);
 		}
 
 		@Override
@@ -259,12 +229,12 @@ public class CellarViewFragment extends RateBeerFragment {
 		}
 
 		@Override
-		public String getTitle(int position) {
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.cellar_wants);
+				return getActivity().getString(R.string.cellar_wants).toUpperCase();
 			case 1:
-				return getActivity().getString(R.string.cellar_haves);
+				return getActivity().getString(R.string.cellar_haves).toUpperCase();
 			}
 			return null;
 		}
@@ -273,11 +243,11 @@ public class CellarViewFragment extends RateBeerFragment {
 		public Object instantiateItem(View container, int position) {
 			switch (position) {
 			case 0:
-				((ViewPager) container).addView(pagerWantsView, 0);
-				return pagerWantsView;
+				((ViewPager) container).addView(wantsView, 0);
+				return wantsView;
 			case 1:
-				((ViewPager) container).addView(pagerHavesView, 0);
-				return pagerHavesView;
+				((ViewPager) container).addView(havesView, 0);
+				return havesView;
 			}
 			return null;
 		}
@@ -291,19 +261,6 @@ public class CellarViewFragment extends RateBeerFragment {
 		public boolean isViewFromObject(View view, Object object) {
 			return view == (View) object;
 		}
-
-		@Override
-		public void finishUpdate(View container) {}
-
-		@Override
-		public Parcelable saveState() { return null; }
-
-		@Override
-		public void startUpdate(View container) {
-		}
-
-		@Override
-		public void restoreState(Parcelable state, ClassLoader loader) {}
 
 	}
 

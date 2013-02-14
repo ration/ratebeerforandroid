@@ -9,15 +9,15 @@
 		android:layout_height="0dip"
 		android:layout_weight="1">
 		<Button 
-			android:id="@+id/search" 
-			style="@style/HomeButton"
-			android:text="@string/home_search" 
-			android:drawableTop="@drawable/ic_home_search" />
-		<Button 
 			android:id="@+id/myprofile" 
 			style="@style/HomeButton"
 			android:text="@string/home_myprofile" 
 			android:drawableTop="@drawable/ic_home_myprofile" />
+		<Button 
+			android:id="@+id/beermail" 
+			style="@style/HomeButton"
+			android:text="@string/home_beermail" 
+			android:drawableTop="@drawable/ic_home_beermail" />
 		<Button 
 			android:id="@+id/beerstyles" 
 			style="@style/HomeButton"

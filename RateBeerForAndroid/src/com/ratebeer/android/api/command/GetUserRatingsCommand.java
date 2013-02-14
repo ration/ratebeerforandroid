@@ -17,18 +17,27 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
+import org.json.JSONException;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.HtmlCommand;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.UserSettings;
 
-public class GetUserRatingsCommand extends Command {
+public class GetUserRatingsCommand extends HtmlCommand {
+
+	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("M/d/yyyy");
 
 	private final int forUserId;
 	private final int pageNr;
@@ -42,31 +51,75 @@ public class GetUserRatingsCommand extends Command {
 	public static final int SORTBY_DATE = 5;
 	public static final int SORTBY_SCORE = 6;
 
-	public GetUserRatingsCommand(RateBeerApi api, int forUserId, int pageNr, int sortOrder) {
+	public GetUserRatingsCommand(UserSettings api, int forUserId, int pageNr, int sortOrder) {
 		super(api, ApiMethod.GetUserRatings);
 		this.forUserId = forUserId;
 		this.pageNr = pageNr;
 		this.sortOrder = sortOrder;
 	}
 
-	public int getForUserId() {
-		return forUserId;
-	}
-
-	public int getPageNr() {
-		return pageNr;
-	}
-
-	public int getSortOrder() {
-		return sortOrder;
-	}
-
-	public void setUserRatings(ArrayList<UserRating> ratings) {
-		this.ratings = ratings;
-	}
-
 	public ArrayList<UserRating> getUserRatings() {
 		return ratings;
+	}
+
+	@Override
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		return apiConnection.get("http://www.ratebeer.com/user/" + forUserId + "/ratings/" + pageNr + "/"
+				+ sortOrder + "/");
+	}
+
+	@Override
+	protected void parse(String html) throws JSONException, ApiException {
+
+		// Successful response?
+		if (html.indexOf("Beer Ratings</a></span>") < 0) {
+			throw new ApiException(ApiException.ExceptionType.CommandFailed,
+					"The response HTML did not contain the unique ratings table begin HTML string");
+		}
+		
+		// Maybe no ratings?
+		int tableStart = html.indexOf("<!-- RATINGS -->");
+		if (tableStart < 0) {
+			ratings = new ArrayList<UserRating>();
+			return;
+		}
+		
+		// Parse the beer ratings table
+		String rowText = "><A HREF=\"/beer/";
+		int rowStart = html.indexOf(rowText, tableStart) + rowText.length();
+		ratings = new ArrayList<UserRating>();
+
+		while (rowStart > 0 + rowText.length()) {
+
+			int idStart = html.indexOf("/", rowStart) + 1;
+			int beerId = Integer.parseInt(html.substring(idStart, html.indexOf("/", idStart)));
+
+			int beerStart = html.indexOf(">", idStart) + 1;
+			String beerName = HttpHelper.cleanHtml(html.substring(beerStart, html.indexOf("<", beerStart)));
+
+			int brewerStart = html.indexOf("/\">", beerStart) + 3;
+			String brewerName = HttpHelper.cleanHtml(html.substring(brewerStart, html.indexOf("<", brewerStart)));
+
+			int styleStart = html.indexOf("owrap>", brewerStart) + "owrap>".length();
+			String styleName = HttpHelper.cleanHtml(html.substring(styleStart, html.indexOf("</", styleStart)));
+
+			int scoreStart = html.indexOf("center>", styleStart) + "center>".length();
+			float score = Float.parseFloat(html.substring(scoreStart, html.indexOf("<", scoreStart)));
+
+			int myRatingStart = html.indexOf("center>", scoreStart) + "center>".length();
+			float myRating = Float.parseFloat(html.substring(myRatingStart, html.indexOf("<", myRatingStart)));
+
+			int dateStart = html.indexOf("align=right>", myRatingStart) + "align=right>".length();
+			Date date = new Date();
+			try {
+				date = DATE_FORMATTER.parse(html.substring(dateStart, html.indexOf("&", dateStart)));
+			} catch (ParseException e) {
+			}
+
+			ratings.add(new UserRating(beerId, beerName, brewerName, styleName, score, myRating, date));
+			rowStart = html.indexOf(rowText, dateStart) + rowText.length();
+		}
+
 	}
 
 	public static class UserRating implements Parcelable {
@@ -80,7 +133,7 @@ public class GetUserRatingsCommand extends Command {
 		public final Date date;
 
 		public UserRating(int beerId, String beerName, String brewerName, String styleName, float score,
-			float myRating, Date date) {
+				float myRating, Date date) {
 			this.beerId = beerId;
 			this.beerName = beerName;
 			this.brewerName = brewerName;
@@ -93,6 +146,7 @@ public class GetUserRatingsCommand extends Command {
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(beerId);
 			out.writeString(beerName);
@@ -102,14 +156,17 @@ public class GetUserRatingsCommand extends Command {
 			out.writeFloat(myRating);
 			out.writeLong(date.getTime());
 		}
+
 		public static final Parcelable.Creator<UserRating> CREATOR = new Parcelable.Creator<UserRating>() {
 			public UserRating createFromParcel(Parcel in) {
 				return new UserRating(in);
 			}
+
 			public UserRating[] newArray(int size) {
 				return new UserRating[size];
 			}
 		};
+
 		private UserRating(Parcel in) {
 			beerId = in.readInt();
 			beerName = in.readString();

@@ -19,45 +19,40 @@ package com.ratebeer.android.api.command;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.HttpHelper;
+import com.ratebeer.android.api.JsonCommand;
+import com.ratebeer.android.api.UserSettings;
 
-public class GetTopBeersCommand extends Command {
+public class GetTopBeersCommand extends JsonCommand {
 
 	private final TopListType topList;
 	private final Country country;
 	private ArrayList<TopBeer> beers;
 
-	public GetTopBeersCommand(RateBeerApi api) {
+	public GetTopBeersCommand(UserSettings api) {
 		this(api, TopListType.Top50, null);
 	}
 
-	public GetTopBeersCommand(RateBeerApi api, Country country) {
+	public GetTopBeersCommand(UserSettings api, Country country) {
 		this(api, TopListType.TopByCountry, country);
 	}
 
-	private GetTopBeersCommand(RateBeerApi api, TopListType topList, Country country) {
+	private GetTopBeersCommand(UserSettings api, TopListType topList, Country country) {
 		super(api, ApiMethod.GetTopBeers);
 		this.topList = topList;
 		this.country = country;
 	}
 
-	public TopListType getTopList() {
-		return topList;
-	}
-	
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setBeers(ArrayList<TopBeer> beers) {
-		this.beers = beers;
-	}
-	
 	public ArrayList<TopBeer> getBeers() {
 		return beers;
 	}
@@ -66,8 +61,7 @@ public class GetTopBeersCommand extends Command {
 	 * The type of top list to retrieve
 	 */
 	public static enum TopListType {
-		Top50,
-		TopByCountry
+		Top50, TopByCountry
 	}
 
 	public static class TopBeer implements Parcelable {
@@ -78,7 +72,7 @@ public class GetTopBeersCommand extends Command {
 		public final double score;
 		public final int rateCount;
 		public final String styleName;
-		
+
 		public TopBeer(int orderNr, int beerId, String beerName, double score, int rateCount, String styleName) {
 			this.orderNr = orderNr;
 			this.beerId = beerId;
@@ -91,6 +85,7 @@ public class GetTopBeersCommand extends Command {
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(orderNr);
 			out.writeInt(beerId);
@@ -99,14 +94,17 @@ public class GetTopBeersCommand extends Command {
 			out.writeInt(rateCount);
 			out.writeString(styleName);
 		}
+
 		public static final Parcelable.Creator<TopBeer> CREATOR = new Parcelable.Creator<TopBeer>() {
 			public TopBeer createFromParcel(Parcel in) {
 				return new TopBeer(in);
 			}
+
 			public TopBeer[] newArray(int size) {
 				return new TopBeer[size];
 			}
 		};
+
 		private TopBeer(Parcel in) {
 			orderNr = in.readInt();
 			beerId = in.readInt();
@@ -115,7 +113,32 @@ public class GetTopBeersCommand extends Command {
 			rateCount = in.readInt();
 			styleName = in.readString();
 		}
-		
+
+	}
+
+	@Override
+	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
+		switch (topList) {
+		case Top50:
+			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=top50&k=" + ApiConnection.RB_KEY);
+		case TopByCountry:
+			return apiConnection.get("http://www.ratebeer.com/json/tb.asp?m=country&c=" + country.getId() + "&k="
+					+ ApiConnection.RB_KEY);
+		}
+		return null;
+	}
+
+	@Override
+	protected void parse(JSONArray json) throws JSONException {
+		beers = new ArrayList<TopBeer>();
+		for (int i = 0; i < json.length(); i++) {
+			JSONObject result = json.getJSONObject(i);
+			double score = Double.parseDouble(result.getString("AverageRating"));
+			String beerStyle = result.has("BeerStyleName") ? HttpHelper.cleanHtml(result.getString("BeerStyleName"))
+					: "";
+			beers.add(new TopBeer(i + 1, result.getInt("BeerID"), HttpHelper.cleanHtml(result.getString("BeerName")),
+					score, result.getInt("RateCount"), beerStyle));
+		}
 	}
 
 }

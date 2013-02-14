@@ -27,7 +27,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.ratebeer.android.app.RateBeerForAndroid;
+import com.ratebeer.android.gui.components.helpers.ErrorLogEntry;
 
 /**
  * Helper to access the database to access persisting objects.
@@ -36,9 +36,10 @@ import com.ratebeer.android.app.RateBeerForAndroid;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	private static final String DATABASE_NAME = "ratebeer.db";
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 5;
 
 	private Dao<OfflineRating, Integer> ratingDao;
+	private Dao<BeerMail, Integer> mailDao;
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,8 +49,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
 		try {
 			TableUtils.createTable(connectionSource, OfflineRating.class);
+			TableUtils.createTable(connectionSource, BeerMail.class);
+			TableUtils.createTable(connectionSource, ErrorLogEntry.class);
 		} catch (SQLException e) {
-			Log.e(RateBeerForAndroid.LOG_NAME, "Could not create new table for OfflineRating", e);
+			Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Could not create new table for OfflineRating", e);
 		}
 	}
 
@@ -62,8 +65,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			case 2:
 				// We don't care about those old version; just drop and recreate the tables
 				TableUtils.dropTable(connectionSource, OfflineRating.class, true);
-				onCreate(sqLiteDatabase, connectionSource);
-				break;
+				TableUtils.createTable(connectionSource, OfflineRating.class);
+			case 3:
+				TableUtils.createTable(connectionSource, BeerMail.class);
+			case 4:
+				TableUtils.createTable(connectionSource, ErrorLogEntry.class);
 			/*case 3:
 				UpdateBuilder<OfflineRating, Integer> upgrade = getOfflineRatingDao().updateBuilder();
 				upgrade.updateColumnExpression("offlineId", "0");
@@ -73,7 +79,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			}
 			
 		} catch (SQLException e) {
-			Log.e(RateBeerForAndroid.LOG_NAME, "Could not upgrade the table for OfflineRating", e);
+			Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Could not upgrade the table for OfflineRating", e);
 		}
 	}
 
@@ -82,5 +88,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			ratingDao = getDao(OfflineRating.class);
 		}
 		return ratingDao;
+	}
+
+	public Dao<BeerMail, Integer>  getBeerMailDao() throws SQLException {
+		if (mailDao == null) {
+			mailDao = getDao(BeerMail.class);
+		}
+		return mailDao;
 	}
 }

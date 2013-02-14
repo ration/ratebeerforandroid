@@ -12,13 +12,14 @@
 		android:layout_marginTop="8dip"
 		android:layout_marginRight="10dip"
 		android:textSize="20dip"
-		android:textColor="@color/LabelColorLight"
+		android:textColor="@color/DialogTextColor"
 		android:text="@string/app_nowdrinking" />
 		
 	<EditText 
 		android:id="@+id/newstatus"
 		android:layout_toRightOf="@id/nowdrinking"
 		android:layout_alignBaseline="@id/nowdrinking"
+		android:inputType="textShortMessage|textCapWords"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent" />
 		
@@ -28,7 +29,7 @@
 		android:layout_below="@id/newstatus"
 		android:layout_marginTop="8dip"
 		android:textSize="18dip"
-		android:textColor="@color/LabelColorLight"
+		android:textColor="@color/DialogTextColor"
 		android:text="@string/app_settingdrinking_expl" />
 		
 </RelativeLayout>

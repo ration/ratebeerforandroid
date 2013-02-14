@@ -12,4 +12,24 @@
 			android:defaultValue="@string/app_ratedwithurl"
 			android:dialogMessage="@string/settings_sharetext_msg" />
 	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/settings_beermail">
+		<CheckBoxPreference 
+			android:key="enable_beermail"
+			android:title="@string/settings_background" 
+			android:summary="@string/settings_background_info"
+			android:defaultValue="true" />
+		<ListPreference 
+			android:key="beermail_updatefrequency"
+			android:title="@string/settings_updatefrequency"
+			android:entries="@array/settings_frequency_names"
+			android:entryValues="@array/settings_frequency_values" 
+			android:defaultValue="1800"
+			android:dependency="enable_beermail" />
+		<CheckBoxPreference 
+			android:key="beermail_vibrate"
+			android:title="@string/settings_vibrate" 
+			android:defaultValue="false"
+			android:dependency="enable_beermail" />
+	</PreferenceCategory>
 </PreferenceScreen>

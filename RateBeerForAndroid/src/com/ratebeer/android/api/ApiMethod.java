@@ -1,50 +1,89 @@
 /*
     This file is part of RateBeer For Android.
-    
-    RateBeer for Android is free software: you can redistribute it 
-    and/or modify it under the terms of the GNU General Public 
-    License as published by the Free Software Foundation, either 
+
+    RateBeer for Android is free software: you can redistribute it
+    and/or modify it under the terms of the GNU General Public
+    License as published by the Free Software Foundation, either
     version 3 of the License, or (at your option) any later version.
 
-    RateBeer for Android is distributed in the hope that it will be 
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+    RateBeer for Android is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
     of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with RateBeer for Android.  If not, see 
+    along with RateBeer for Android.  If not, see
     <http://www.gnu.org/licenses/>.
  */
 package com.ratebeer.android.api;
 
 public enum ApiMethod {
 
+	// @formatter:off
+	
+	// Administrative
 	SignIn,
 	SignOut,
-	GetUserId,
-	GetUserImage,
+	GetUserPremiumStatus,
+	GetDrinkingStatus,
+	SetDrinkingStatus,
+	
+	// Users
+	SearchUsers,
 	GetUserDetails,
 	GetUserRatings,
-	GetUserRating,
+	GetUserTicks,
 	GetUserCellar,
-	Search,
+	PostRating,
+	PostTick,
+	
+	// Cellar
+	AddToCellar,
+	RemoveFromCellar,
+	
+	// Beers
+	SearchBeers,
+	UpcSearch,
+	AddUpcCode,
 	GetBeerDetails,
-	GetBeerImage,
 	GetBeerRatings,
-	GetBeerRating,
-	GetBeerAvailability,
+	GetBeerTicks,
+	GetAliasedBeer,
+	GetTopBeers,
+	UploadBeerPhoto,
+	
+	// Brewers
+	SearchBrewers,
+	GetBrewerDetails,
+	GetBrewerBeers,
+	
+	// Styles
 	GetStyleDetails,
-	GetPlaces,
-	GetPlaceBeerAvailability,
+	
+	// Places
+	SearchPlaces,
+	GetPlaceDetails,
+	GetPlacesAround,
+	CheckIn,
+	GetCheckins,
+	
+	// Availability
+	GetFavouritePlaces, 
+	AddAvailability, 
+	GetAvailableBeers,
+	GetBeerAvailability,
+	
+	// Events
 	GetEvents,
 	GetEventDetails,
-	GetTopBeers,
-	SetDrinkingStatus,
-	PostRating, 
-	GetFavouritePlaces, 
-	FindPlaces, 
-	AddAvailability, 
-	AddToCellar,
-	SetEventAttendance;
+	SetEventAttendance,
+	
+	// Beermail
+	GetAllBeerMails, 
+	GetBeerMail, 
+	DeleteBeerMail,
+	SendBeerMail;
+	
+	// @formatter:on
 
 }

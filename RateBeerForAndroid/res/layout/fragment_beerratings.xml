@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/ownratinglabel"
+		style="@style/Label"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/details_myrating"
+		android:visibility="gone" />
+
+	<Button
+		android:id="@+id/ratethis"
+		style="@style/DetailsButtonSmall"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dip"
+		android:layout_marginLeft="10dip"
+		android:layout_marginRight="10dip"
+		android:text="@string/app_loading" />
+	
+	<include
+		android:id="@+id/ownrating"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		layout="@layout/list_item_rating"
+		android:padding="0dip"
+		android:visibility="gone" />
+
+	<TextView
+		android:id="@+id/ticklabel"
+		style="@style/Label"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/details_ticklabel"
+		android:visibility="gone" />
+	
+	<RatingBar
+		android:id="@+id/tick"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:numStars="5"
+		android:stepSize="1"
+		android:rating="0"
+		android:visibility="gone" />
+	
+	<TextView
+		android:id="@+id/otherratingslabel"
+		style="@style/Label"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/details_otherratings"
+		android:visibility="gone" />
+	
+</LinearLayout>

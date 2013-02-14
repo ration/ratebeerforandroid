@@ -18,19 +18,22 @@
 package com.ratebeer.android.gui.fragments;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.FragmentArg;
+import com.googlecode.androidannotations.annotations.InstanceState;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
+@EFragment(R.layout.fragment_addtocellar)
 public class AddToCellarFragment extends RateBeerFragment {
 
 	public enum CellarType {
@@ -38,85 +41,59 @@ public class AddToCellarFragment extends RateBeerFragment {
 		Have
 	}
 
-	private static final String STATE_BEERID = "beerId";
-	private static final String STATE_BEERNAME = "beerName";
-	private static final String STATE_CELLARTYPE = "cellarType";
-
-	private TextView addingwhatText, quantityLabel, vintageLabel;
-	private EditText memoText, vintageText, quantityText;
-	private Button addButton, cancelButton;
-
+	@FragmentArg
+	@InstanceState
 	protected String beerName;
+	@FragmentArg
+	@InstanceState
 	protected int beerId;
+	@FragmentArg
+	@InstanceState
 	protected CellarType cellarType;
 
+	@ViewById
+	protected TextView addingwhat;
+	@ViewById
+	protected TextView quantityLabel;
+	@ViewById
+	protected TextView vintageLabel;
+	@ViewById
+	protected EditText memo;
+	@ViewById
+	protected EditText vintage;
+	@ViewById
+	protected EditText quantity;
+	@ViewById(R.id.add)
+	protected Button addButton;
+	@ViewById(R.id.cancel)
+	protected Button cancelButton;
+
 	public AddToCellarFragment() {
-		this(null, -1, null);
 	}
 
-	/**
-	 * Allow adding of a beer to the cellar (a want or a have)
-	 * @param beerName The beer name, or null if not known
-	 * @param beerId The beer ID
-	 * @param cellarType Whether to add a want or a have
-	 */
-	public AddToCellarFragment(String beerName, int beerId, CellarType cellarType) {
-		this.beerName = beerName;
-		this.beerId = beerId;
-		this.cellarType = cellarType;
-	}
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_addtocellar, container, false);
-	}
+	@AfterViews
+	public void init() {
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		addingwhatText = (TextView) getView().findViewById(R.id.addingwhat);
-		memoText = (EditText) getView().findViewById(R.id.memo);
-		vintageLabel = (TextView) getView().findViewById(R.id.vintage_label);
-		vintageText = (EditText) getView().findViewById(R.id.vintage);
-		quantityLabel = (TextView) getView().findViewById(R.id.quantity_label);
-		quantityText = (EditText) getView().findViewById(R.id.quantity);
-		addButton = (Button) getView().findViewById(R.id.add);
 		addButton.setOnClickListener(onAddToCellar);
-		cancelButton = (Button) getView().findViewById(R.id.cancel);
 		cancelButton.setOnClickListener(onCancelClicked);
 
 		// Show/hide the appropriate fields
 		if (cellarType == CellarType.Want) {
 			vintageLabel.setVisibility(View.GONE);
-			vintageText.setVisibility(View.GONE);
+			vintage.setVisibility(View.GONE);
 			quantityLabel.setVisibility(View.GONE);
-			quantityText.setVisibility(View.GONE);
+			quantity.setVisibility(View.GONE);
 		}
 		
-		if (savedInstanceState != null) {
-			beerName = savedInstanceState.getString(STATE_BEERNAME);
-			beerId = savedInstanceState.getInt(STATE_BEERID);
-			cellarType = CellarType.valueOf(savedInstanceState.getString(STATE_CELLARTYPE));
-		}
-		addingwhatText.setText(cellarType == CellarType.Have? R.string.cellar_addingahave: R.string.cellar_addingawant);
+		addingwhat.setText(cellarType == CellarType.Have? R.string.cellar_addingahave: R.string.cellar_addingawant);
 		
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putString(STATE_BEERNAME, beerName);
-		outState.putInt(STATE_BEERID, beerId);
-		outState.putString(STATE_CELLARTYPE, cellarType.name());
-	}
-	
 	private OnClickListener onCancelClicked = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			// Just close this fragment
-			getSupportFragmentManager().popBackStack();
+			getFragmentManager().popBackStack();
 		}
 	};
 	
@@ -129,13 +106,13 @@ public class AddToCellarFragment extends RateBeerFragment {
 			i.putExtra(PosterService.EXTRA_BEERID, beerId);
 			i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
 			i.putExtra(PosterService.EXTRA_CELLARTYPE, cellarType.name());
-			i.putExtra(PosterService.EXTRA_MEMO, memoText.getText().toString());
-			i.putExtra(PosterService.EXTRA_VINTAGE, vintageText.getText().toString());
-			i.putExtra(PosterService.EXTRA_QUANTITY, quantityText.getText().toString());
+			i.putExtra(PosterService.EXTRA_MEMO, memo.getText().toString());
+			i.putExtra(PosterService.EXTRA_VINTAGE, vintage.getText().toString());
+			i.putExtra(PosterService.EXTRA_QUANTITY, quantity.getText().toString());
 			getActivity().startService(i);
 
 			// Close this fragment
-			getSupportFragmentManager().popBackStack();
+			getFragmentManager().popBackStack();
 			
 		}
 	};

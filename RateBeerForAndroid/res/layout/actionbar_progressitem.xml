@@ -8,7 +8,7 @@
 	<FrameLayout 
 		android:layout_width="26dip"
 		android:layout_height="match_parent"
-		android:paddingLeft="2dip">
+		android:paddingLeft="3dip">
 		
 		<ProgressBar
 			android:id="@+id/progress"

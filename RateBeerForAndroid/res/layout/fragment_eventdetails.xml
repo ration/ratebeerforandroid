@@ -54,7 +54,6 @@
 		android:id="@+id/attendeeslabel"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:layout_below="@id/map"
 		android:text="@string/events_attendees"
 		android:visibility="invisible"
 		style="@style/Label" />
@@ -64,6 +63,7 @@
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:layout_marginTop="5dip"
+		android:visibility="invisible"
 		style="@style/DetailsButtonSmall" />
 		
 </LinearLayout>

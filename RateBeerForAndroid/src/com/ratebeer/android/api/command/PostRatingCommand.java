@@ -17,11 +17,23 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.net.HttpURLConnection;
+import java.util.Arrays;
+
+import org.apache.http.message.BasicNameValuePair;
+
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.CommandFailureResult;
+import com.ratebeer.android.api.CommandResult;
+import com.ratebeer.android.api.CommandSuccessResult;
+import com.ratebeer.android.api.UserSettings;
 
 public class PostRatingCommand extends Command {
+
+	private static final String POST_SUCCESS = "This object may be found <a HREF=\"/";
 
 	private final int beerId;
 	private final int ratingID;
@@ -34,7 +46,8 @@ public class PostRatingCommand extends Command {
 	private final int overall;
 	private final String comment;
 
-	public PostRatingCommand(RateBeerApi api, int beerId, int ratingID, String origDate, String beerName, int aroma, int appearance, int taste, int palate, int overall, String comment) {
+	public PostRatingCommand(UserSettings api, int beerId, int ratingID, String origDate, String beerName, int aroma,
+			int appearance, int taste, int palate, int overall, String comment) {
 		super(api, ApiMethod.PostRating);
 		this.beerId = beerId;
 		this.ratingID = ratingID;
@@ -48,7 +61,8 @@ public class PostRatingCommand extends Command {
 		this.comment = comment;
 	}
 
-	public PostRatingCommand(RateBeerApi api, int beerId, String beerName, int aroma, int appearance, int taste, int palate, int overall, String comment) {
+	public PostRatingCommand(UserSettings api, int beerId, String beerName, int aroma, int appearance, int taste,
+			int palate, int overall, String comment) {
 		super(api, ApiMethod.PostRating);
 		this.beerId = beerId;
 		this.ratingID = -1;
@@ -62,50 +76,14 @@ public class PostRatingCommand extends Command {
 		this.comment = comment;
 	}
 
-	public int getBeerId() {
-		return beerId;
-	}
-
-	public int getRatingID() {
-		return ratingID;
-	}
-
-	public String getOriginalPostDate() {
-		return origDate;
-	}
-
 	public String getBeerName() {
 		return beerName;
 	}
 
-	public int getAroma() {
-		return aroma;
-	}
-
-	public int getAppearance() {
-		return appearance;
-	}
-
-	public int getTaste() {
-		return taste;
-	}
-
-	public int getPalate() {
-		return palate;
-	}
-
-	public int getOverall() {
-		return overall;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public float getTotal() {
+	private float getTotal() {
 		return calculateTotal(aroma, appearance, taste, palate, overall);
 	}
-	
+
 	/**
 	 * Static method to calculate the total score of a new rating
 	 * @param aroma
@@ -116,7 +94,39 @@ public class PostRatingCommand extends Command {
 	 * @return The total score, which is a float [0,5 .. 5]
 	 */
 	public static float calculateTotal(int aroma, int appearance, int taste, int palate, int overall) {
-		return (float)(aroma + appearance + taste + palate + overall) / 10F;
+		return (float) (aroma + appearance + taste + palate + overall) / 10F;
+	}
+
+	@Override
+	public CommandResult execute(ApiConnection apiConnection) {
+		try {
+
+			ApiConnection.ensureLogin(apiConnection, getUserSettings());
+			// NOTE: Maybe use the API call to http://www.ratebeer.com/m/m_saverating.asp, but it should be checked
+			// whether this allows updating of a rating too
+			// NOTE: We get an HTTP 302 (moved temporarily) response if everything is okay (to redirect us)
+			String result = apiConnection.post(ratingID <= 0 ? "http://www.ratebeer.com/saverating.asp"
+					: "http://www.ratebeer.com/updaterating.asp", Arrays.asList(new BasicNameValuePair("BeerID",
+					Integer.toString(beerId)),
+					new BasicNameValuePair("RatingID", ratingID <= 0 ? "" : Integer.toString(ratingID)),
+					new BasicNameValuePair("OrigDate", origDate == null ? "" : origDate), new BasicNameValuePair(
+							"aroma", Integer.toString(aroma)),
+					new BasicNameValuePair("appearance", Integer.toString(appearance)), new BasicNameValuePair(
+							"flavor", Integer.toString(taste)),
+					new BasicNameValuePair("palate", Integer.toString(palate)), new BasicNameValuePair("overall",
+							Integer.toString(overall)),
+					new BasicNameValuePair("totalscore", Float.toString(getTotal())), new BasicNameValuePair(
+							"Comments", comment)), HttpURLConnection.HTTP_MOVED_TEMP);
+			if (result.indexOf(POST_SUCCESS) >= 0) {
+				return new CommandSuccessResult(this);
+			} else {
+				return new CommandFailureResult(this, new ApiException(ApiException.ExceptionType.CommandFailed,
+						"The rating was posted, but the returned HTML did not contain the unique success string."));
+			}
+
+		} catch (ApiException e) {
+			return new CommandFailureResult(this, e);
+		}
 	}
 
 }

@@ -17,53 +17,39 @@
  */
 package com.ratebeer.android.app;
 
-import android.app.Application;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.preference.PreferenceManager;
+import java.io.File;
 
-import com.ratebeer.android.api.RateBeerApi;
+import android.app.Application;
+import android.content.Context;
+import android.os.Environment;
+
+import com.nostra13.universalimageloader.cache.disc.impl.FileCountLimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class RateBeerForAndroid extends Application {
 
-	public static final String LOG_NAME = "RateBeerForAndroid";
+	public static final String DEFAULT_FILES_DIR = Environment.getExternalStorageDirectory().toString()
+			+ "/RateBeerForAndroid";
 
-	private ApplicationSettings settings;
-	private RateBeerApi api;
+	private static ImageLoader imageCache;
 
-	/**
-	 * Returns the application-wide user settings
-	 * @return The user settings object
-	 */
-	public ApplicationSettings getSettings() {
-		if (settings == null) {
-			settings = new ApplicationSettings(getApplicationContext(), 
-					PreferenceManager.getDefaultSharedPreferences(this));
+	public static ImageLoader getImageCache(Context context) {
+		if (imageCache == null) {
+			imageCache = ImageLoader.getInstance();
+			File imageCacheDir = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/cache/");
+			imageCacheDir.mkdirs();
+			imageCache.init(new ImageLoaderConfiguration.Builder(context)
+					.defaultDisplayImageOptions(new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc().
+							imageScaleType(ImageScaleType.IN_SAMPLE_INT).build())
+					.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
+					.discCache(new FileCountLimitedDiscCache(imageCacheDir, new Md5FileNameGenerator(), 25)).build());
 		}
-		return settings;
-	}
-
-	/**
-	 * Returns the API to the ratebeer.com website
-	 * @return The RateBeer API object
-	 */
-	public RateBeerApi getApi() {
-		if (api == null) {
-			api = new RateBeerApi(getSettings());
-		}
-		return api;
-	}
-
-	/**
-	 * Returns whether the device is a tablet (or better: whether it can fit a tablet layout)
-	 * @param r The application resources
-	 * @return True if the device is a tablet, false otherwise
-	 */
-	public static boolean isTablet(Resources r) {
-		//boolean hasLargeScreen = ((r.getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
-		boolean hasXLargeScreen = ((r.getConfiguration().screenLayout & 
-				Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
-		return hasXLargeScreen;
+		return imageCache;
 	}
 
 }

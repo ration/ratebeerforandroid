@@ -17,29 +17,25 @@
  */
 package com.ratebeer.android.gui;
 
-import android.os.Bundle;
-
+import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.Extra;
 import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 
+@EActivity(R.layout.activity_signin)
 public class SignIn extends RateBeerActivity {
 
-	public static final String EXTRA_REDIRECT = "REDIRECT";
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState, R.layout.activity_signin);
+	@Extra
+	boolean extraIsRedirect;
+	
+	public boolean getExtraIsRedirect() {
+		return extraIsRedirect;
 	}
 
 	@Override
-	public void load(RateBeerFragment fragment) {
-		// Nothing to do
-	}
-
-	@Override
-	public void load(RateBeerFragment leftFragment, RateBeerFragment rightFragment) {
-		// Nothing to do
+	public void load(RateBeerFragment fragment, boolean addToBackStack) {
+		// Not used in SignIn
 	}
 	
 }

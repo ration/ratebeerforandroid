@@ -17,20 +17,28 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.net.HttpURLConnection;
+import java.util.Arrays;
+
+import org.apache.http.message.BasicNameValuePair;
+
+import com.ratebeer.android.api.ApiConnection;
+import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
-import com.ratebeer.android.api.Command;
-import com.ratebeer.android.api.RateBeerApi;
+import com.ratebeer.android.api.EmptyResponseCommand;
+import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 
-public class AddToCellarCommand extends Command {
-	
+public class AddToCellarCommand extends EmptyResponseCommand {
+
 	private final int beerId;
 	private final CellarType cellarType;
 	private final String memo;
 	private final String vintage;
 	private final String quantity;
 
-	public AddToCellarCommand(RateBeerApi api, CellarType cellarType, int beerId, String memo, String vintage, String quantity) {
+	public AddToCellarCommand(UserSettings api, CellarType cellarType, int beerId, String memo, String vintage,
+			String quantity) {
 		super(api, ApiMethod.AddToCellar);
 		this.beerId = beerId;
 		this.cellarType = cellarType;
@@ -39,32 +47,28 @@ public class AddToCellarCommand extends Command {
 		this.quantity = quantity;
 	}
 
-	public int getBeerId() {
-		return beerId;
-	}
-
-	public CellarType getCellarType() {
-		return cellarType;
-	}
-
-	public String getMemo() {
-		return memo;
-	}
-
-	public String getVintage() {
-		return vintage;
-	}
-
-	public String getQuantity() {
-		return quantity;
-	}
-
 	/**
 	 * Returns whether this beer to add to the cellar is wanted by the user (instead of a have)
 	 * @return True if the cellar type is Want, false otherwise
 	 */
-	public boolean isWant() {
+	private boolean isWant() {
 		return cellarType == CellarType.Want;
+	}
+
+	@Override
+	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
+		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+		if (isWant()) {
+			apiConnection.post("http://www.ratebeer.com/beerlistwant-process.asp", Arrays.asList(
+					new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("memo", memo),
+					new BasicNameValuePair("submit", "Add")), HttpURLConnection.HTTP_MOVED_TEMP);
+		} else {
+			apiConnection.post("http://www.ratebeer.com/beerlisthave-process.asp", Arrays.asList(
+					new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("Update", "0"),
+					new BasicNameValuePair("vintage", vintage), new BasicNameValuePair("memo", memo),
+					new BasicNameValuePair("quantity", quantity), new BasicNameValuePair("submit", "Add")),
+					HttpURLConnection.HTTP_MOVED_TEMP);
+		}
 	}
 
 }

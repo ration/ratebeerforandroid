@@ -18,207 +18,234 @@
 package com.ratebeer.android.gui.fragments;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.ItemClick;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.ViewById;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
-import com.ratebeer.android.api.command.GetUserIdCommand;
-import com.ratebeer.android.api.command.GetUserImageCommand;
-import com.ratebeer.android.api.command.Style;
+import com.ratebeer.android.api.command.GetDrinkingStatusCommand;
 import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
+import com.ratebeer.android.api.command.ImageUrls;
+import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
-import com.ratebeer.android.gui.SignIn;
+import com.ratebeer.android.gui.SignIn_;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
 import com.ratebeer.android.gui.fragments.SetDrinkingStatusDialogFragment.OnDialogResult;
-import com.ratebeer.android.gui.fragments.StylesFragment.StyleAdapter;
 
+@EFragment(R.layout.fragment_dashboard)
+@OptionsMenu(R.menu.dashboard)
 public class DashboardFragment extends RateBeerFragment {
 
-	private Button drinkingStatus, myProfileButton;
-	private ListView stylesView;
+	@ViewById
+	protected Button drinkingStatus;
+	@ViewById
+	protected Button myprofile, offlineratings, beerstyles, top50, places, events, beermail, bycountry;
+	@ViewById
+	protected ListView styles;
 	private LayoutInflater inflater;
 	private Float density = null;
 
 	public DashboardFragment() {
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		this.inflater = inflater;
-		return inflater.inflate(R.layout.fragment_dashboard, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	@AfterViews
+	public void init() {
 				
-		// Bind a click listener to the big dashboard buttons
-		((Button) getView().findViewById(R.id.search)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				getActivity().onSearchRequested();
-			}
-		});
-		myProfileButton = (Button) getView().findViewById(R.id.myprofile);
-		myProfileButton.setOnClickListener(onProfileButtonClick());
-		((Button) getView().findViewById(R.id.offlineratings)).
-			setOnClickListener(onButtonClick(new OfflineRatingsFragment(), false));
-		((Button) getView().findViewById(R.id.beerstyles)).
-			setOnClickListener(onButtonClick(new StylesFragment(), false));
-		((Button) getView().findViewById(R.id.top50)).
-			setOnClickListener(onButtonClick(new TopBeersFragment(TopListType.Top50), false));
-		((Button) getView().findViewById(R.id.bycountry)).
-			setOnClickListener(onButtonClick(new TopBeersFragment(TopListType.TopByCountry), false));
-		((Button) getView().findViewById(R.id.places)).
-			setOnClickListener(onButtonClick(new PlacesFragment(), false));
-		((Button) getView().findViewById(R.id.events)).
-			setOnClickListener(onButtonClick(new EventsFragment(), true));
+		offlineratings.setOnClickListener(onButtonClick(OfflineRatingsFragment_.builder().build(), false));
+		beerstyles.setOnClickListener(onButtonClick(StylesFragment_.builder().build(), false));
+		top50.setOnClickListener(onButtonClick(TopBeersFragment_.builder().topList(TopListType.Top50).build(), false));
+		bycountry.setOnClickListener(onButtonClick(TopBeersFragment_.builder().topList(TopListType.TopByCountry)
+				.build(), false));
+		places.setOnClickListener(onButtonClick(PlacesFragment_.builder().build(), false));
+		events.setOnClickListener(onButtonClick(EventsFragment_.builder().build(), true));
+		beermail.setOnClickListener(onButtonClick(MailsFragment_.builder().build(), true));
 		
 		updateProfileImage();
 		
 		// For tablets, also load the beer styles list
-		if (RateBeerForAndroid.isTablet(getResources())) {
-			stylesView = (ListView) getView().findViewById(R.id.styles);
-			stylesView.setAdapter(new StylesFragment.StyleAdapter(getActivity(), 
+		if (styles != null) {
+			styles.setAdapter(new StylesFragment.StyleAdapter(getActivity(), 
 					new ArrayList<Style>(Style.ALL_STYLES.values()), inflater));
-			stylesView.setOnItemClickListener(onItemSelected);
 		}
 		
 		// Update drinking status
-		drinkingStatus = (Button) getView().findViewById(R.id.drinking_status);
-		drinkingStatus.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new SetDrinkingStatusDialogFragment(new OnDialogResult() {
-					@Override
-					public void onSetNewStatus(String newStatus) {
-						// Update now drinking status
-						Intent i = new Intent(PosterService.ACTION_SETDRINKINGSTATUS);
-						i.putExtra(PosterService.EXTRA_NEWSTATUS, newStatus);
-						i.putExtra(PosterService.EXTRA_BEERID, PosterService.NO_BEER_EXTRA);
-						i.putExtra(PosterService.EXTRA_MESSENGER, new Messenger(new Handler() {
-							@Override
-							public void handleMessage(Message msg) {
-								// Callback from the poster service; just refresh the drinking status
-								// if (msg.arg1 == PosterService.RESULT_SUCCESS)
-								refreshDrinkingStatus();
-							}
-						}));
-						getActivity().startService(i);
-					}
-				}).show(getSupportFragmentManager(), "dialog");
-			}
-		});
 		showDrinkingStatus();
 		refreshDrinkingStatus();
 		
 		// Show legal stuff on first app start
-		if (getRateBeerApplication().getSettings().isFirstStart()) {
-			getRateBeerApplication().getSettings().recordFirstStart();
-			getRateBeerActivity().load(new TextInfoFragment(getString(R.string.app_legal_title), getString(R.string.app_legal)));
+		if (getSettings().isFirstStart()) {
+			getSettings().recordFirstStart();
+			load(TextInfoFragment_.builder().title(getString(R.string.app_legal_title))
+					.info(getString(R.string.app_legal)).build());
 		}
 		
 	}
+	
+	@Click
+	protected void drinkingStatusClicked() {
+		new SetDrinkingStatusDialogFragment(new OnDialogResult() {
+			@Override
+			public void onSetNewStatus(String newStatus) {
+				// Update now drinking status
+				Intent i = new Intent(PosterService.ACTION_SETDRINKINGSTATUS);
+				i.putExtra(PosterService.EXTRA_NEWSTATUS, newStatus);
+				i.putExtra(PosterService.EXTRA_BEERID, PosterService.NO_BEER_EXTRA);
+				i.putExtra(PosterService.EXTRA_MESSENGER, new Messenger(new Handler() {
+					@Override
+					public void handleMessage(Message msg) {
+						// Callback from the poster service; just refresh the drinking status
+						// if (msg.arg1 == PosterService.RESULT_SUCCESS)
+						execute(new GetDrinkingStatusCommand(getUser()));
+					}
+				}));
+				getActivity().startService(i);
+			}
+		}).show(getFragmentManager(), "dialog");
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		new SearchUiHelper(getActivity()).enhanceSearchInMenu(menu);
+	}
+
+	@OptionsItem(R.id.menu_search)
+	protected void onStartSearch() {
+		// Open standard search interface
+		// Note that this method is only called on API < 8 as SearchView is used for API level >= 8 (via ActionBarSherlock)
+		getActivity().onSearchRequested();		
+	}
+	
+	@OptionsItem(R.id.menu_scanbarcode)
+	protected void onStartBarcodeScanner() {
+    	// Start the search activity (without specific search string), which offers the actual scanning feature
+		load(SearchFragment_.builder().startBarcodeScanner(true).build());
+	}
+	
+	@OptionsItem(R.id.menu_calculator)
+	protected void onStartCalculator() {
+		// Start calculator screen
+		load(CalculatorFragment_.builder().build());
+	}
 
 	private void updateProfileImage() {
-		if (getRateBeerActivity().getUser() != null) {
-			execute(new GetUserImageCommand(getRateBeerActivity().getApi(), getRateBeerActivity().getUser().getUsername()));
+		if (getUser() != null) {
+			RateBeerForAndroid.getImageCache(getActivity()).loadImage(getActivity(),
+					ImageUrls.getUserPhotoUrl(getUser().getUsername()),
+					new ImageLoadingListener() {
+						@Override
+						public void onLoadingStarted() {
+						}
+
+						@Override
+						public void onLoadingFailed(FailReason arg0) {
+						}
+
+						@Override
+						public void onLoadingComplete(Bitmap arg0) {
+							if (getActivity() == null) {
+								return;
+							}
+							if (density == null) {
+								density = getResources().getDisplayMetrics().density;
+							}
+							Drawable d = new BitmapDrawable(getResources(), arg0);
+							d.setBounds(0, 0, (int) (48 * density), (int) (48 * density));
+							myprofile.setCompoundDrawables(null, d, null, null);
+						}
+
+						@Override
+						public void onLoadingCancelled() {
+						}
+					});
 		}
 	}
 
-	private OnClickListener onProfileButtonClick() {
-		return new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				UserSettings usr = getRateBeerActivity().getUser();
-				if (usr == null) {
-					// No user yet, but this is required so start the login screen
-					Intent i = new Intent(getActivity(), SignIn.class);
-					i.putExtra(SignIn.EXTRA_REDIRECT, true);
-					startActivity(i);
-				} else {
-					getRateBeerActivity().load(new UserViewFragment(usr.getUsername(), usr.getUserID()));
-				}
-			}
-		};
+	@Click
+	protected void myprofileClicked() {
+		if (getUser() == null) {
+			// No user yet, but this is required so start the login screen
+			SignIn_.intent(getActivity()).extraIsRedirect(true).start();
+		} else {
+			load(UserViewFragment_.builder().userName(getUser().getUsername())
+					.userId(getUser().getUserID()).build());
+		}
 	}
 
 	private OnClickListener onButtonClick(final RateBeerFragment fragment, final boolean requiresUser) {
 		return new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (requiresUser && getRateBeerActivity().getUser() == null) {
+				if (requiresUser && getUser() == null) {
 					// No user yet, but this is required so start the login screen
-					Intent i = new Intent(getActivity(), SignIn.class);
-					i.putExtra(SignIn.EXTRA_REDIRECT, true);
-					startActivity(i);
+					SignIn_.intent(getActivity()).extraIsRedirect(true).start();
 				} else {
-					getRateBeerActivity().load(fragment);
+					load(fragment);
 				}
 			}
 		};
 	}
 
-	private OnItemClickListener onItemSelected = new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Style item = ((StyleAdapter)stylesView.getAdapter()).getItem(position);
-			getRateBeerActivity().load(new StyleViewFragment(item));
-		}
-	};
+	@ItemClick(R.id.styles)
+	protected void onStyleClicked(Style item) {
+		load(StyleViewFragment_.builder().style(item).build());
+	}
 	
 	@Override
 	public void onTaskSuccessResult(CommandSuccessResult result) {
-		if (result.getCommand().getMethod() == ApiMethod.GetUserId) {
-			GetUserIdCommand getCommand = (GetUserIdCommand) result.getCommand();
+		if (getActivity() == null) {
+			return;
+		}
+		if (result.getCommand().getMethod() == ApiMethod.GetDrinkingStatus) {
+			GetDrinkingStatusCommand getCommand = (GetDrinkingStatusCommand) result.getCommand();
 			// Override the user settings, in which the drinking status is contained
-			getRateBeerActivity().getSettings().saveUserSettings(new UserSettings(getCommand.getUserId(), getRateBeerActivity().getUser().getUsername(), 
-					getRateBeerActivity().getUser().getPassword(), getCommand.getDrinkingStatus(), getCommand.isPremium()));
+			getSettings().saveUserSettings(new UserSettings(getUser().getUserID(), getUser().getUsername(), 
+					getUser().getPassword(), getCommand.getDrinkingStatus(), getUser().isPremium(), new Date()));
 			showDrinkingStatus();
-		} else if (result.getCommand().getMethod() == ApiMethod.GetUserImage) {
-			GetUserImageCommand userImageCommand = (GetUserImageCommand) result.getCommand();
-			if (userImageCommand.getImage() != null) {
-				if (density == null) {
-					density = getResources().getDisplayMetrics().density;
-				}
-				Drawable d = userImageCommand.getImage();
-				d.setBounds(0, 0, (int)(48 * density), (int)(48 * density));
-				myProfileButton.setCompoundDrawables(null, d, null, null);
-			}
 		}
 	}
 	
 	private void refreshDrinkingStatus() {
-		if (getRateBeerActivity() != null && getRateBeerActivity().getUser() != null) {
-			execute(new GetUserIdCommand(getRateBeerActivity().getApi()));
+		// At max refresh every 5 minutes
+		Date d = new Date((new Date()).getTime() - (5 * 60 * 1000)); // = 5 minutes ago
+		if (getUser() != null && getUser().getLastDrinkingStatusUpdate().before(d)) {
+			execute(new GetDrinkingStatusCommand(getUser()));
 		}	
 	}
 
 	public void showDrinkingStatus() {
-		if (getRateBeerActivity().getUser() == null || getRateBeerActivity().getUser().getDrinkingStatus() == null || 
-				getRateBeerActivity().getUser().getDrinkingStatus().equals("")) {
+		if (getUser() == null || getUser().getDrinkingStatus() == null || getUser().getDrinkingStatus().equals("")) {
 			drinkingStatus.setVisibility(View.GONE);
 		} else {
 			drinkingStatus.setVisibility(View.VISIBLE);
-			drinkingStatus.setText(getString(R.string.home_nowdrinking, getRateBeerActivity().getUser().getDrinkingStatus()));
+			drinkingStatus.setText(getString(R.string.home_nowdrinking, getUser().getDrinkingStatus()));
 		}
 	}
 

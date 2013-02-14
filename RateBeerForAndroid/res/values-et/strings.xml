@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Tühista</string>
+<string name="app_home">Algusesse</string>
+<string name="app_refresh">Uuenda</string>
+<string name="app_details">Lisainfo</string>
+<string name="app_share">Jaga</string>
+<string name="app_loading">Laadib&#8230;</string>
+<string name="app_legal">Selle rakenduse kasutamisega nõustud sa RateBeeri kasutuslepinguga, millega saad lähemalt tutvuda aadressil http://www.ratebeer.com/UserAgreement.asp\n\nIsegi kui sul pole RateBeeri kontot, saad selle rakendusega lugeda täpsemaid andmeid õllede kohta, vaadata parimate õllede nimekirju, tutvuda ümberringi toimuvate sündmuste ja kohalike õllekohtadega ning teha palju muudki. Kui soovid täisfunktsionaalsust, mille hulka kuulub ka õlle arvustamine ja saadavuskohtade lisamine, võid teha endale konto aadressil http://www.ratebeer.com/NewUser.asp</string>
+<string name="app_legal_title">Tere tulemast!</string>
+
+<string name="app_install">Paigalda</string>
+<string name="app_nomarket">Play Store ei ole sinu telefoni paigaldatud.</string>
+<string name="app_scannernotfound">Triipkoodi lugejat ei leitud.\nKas sa tahad seda paigaldada?</string>
+<string name="app_onlyifsignedin">See võimalus avaneb ainult pärast RateBeeri sisse logimist.</string>
+
+<string name="app_newstatus">Lisa uus staatus</string>
+<string name="app_nowdrinking">Hetkel joon</string>
+<string name="app_settingdrinking_expl">Võid valida ka „Hetkel joon“ õlle enda leheküljelt.</string>
+<string name="app_sharerating">Jaga Twitteris või Facebookis/&#8230;</string>
+<string name="app_postingrating">Postitan õlle hinde</string>
+<string name="app_rated">Hinne %2$s õllele %1$s</string>
+<string name="app_addingtocellar">Lisan õllekeldrisse</string>
+<string name="app_addwant">Ma tahan %1$s</string>
+<string name="app_addhave">Mul on %1$s</string>
+<string name="app_ratedwithurl">Hinne %2$s õllele %3$s with a  http://www.ratebeer.com/beer/b/%1$s/%4$s/ #RateBeerForAndroid</string>
+<string name="app_addingupccode">Lisa skannitud triipkood tootele</string>
+<string name="app_addingcodefor">Lisan triipkoodi %1$</string>
+<string name="app_noaccount">Pole veel oma kontot?\nhttp://www.ratebeer.com/NewUser.asp</string>
+<string name="app_newmails">Sulle on %1$ uut sõnumit</string>
+<string name="app_newmail">Sulle on uus sõnum</string>
+<string name="app_by">kasutajalt %1$s</string>
+<string name="app_andothers">ja teised</string>
+<string name="app_uploadingphoto">Laadin uut fotot üles</string>
+<string name="app_photofor">Laadin %1$s fotot üles</string>
+
+<string name="signin_username">Kasutajanimi:</string>
+<string name="signin_password">Parool:</string>
+<string name="signin_signin">Logi sisse</string>
+<string name="signin_signout">Logi välja</string>
+<string name="signin_connecting">Võtan ühendust&#8230;</string>
+<string name="signin_signoutsuccess">Edukalt välja logitud</string>
+<string name="signin_signinsuccess">Edukalt sisse logitud</string>
+
+<string name="home_beers">Õlled</string>
+<string name="home_places">Kohad</string>
+<string name="home_events">Üritused</string>
+<string name="home_search">Otsi</string>
+<string name="home_myprofile">Minu profiil</string>
+<string name="home_top50">Top 50</string>
+<string name="home_bycountry">Parimatest parim</string>
+<string name="home_offlineratings">Offlain-märkmed</string>
+<string name="home_beerstyles">Õllestiilid</string>
+<string name="home_beermail">Õllepost</string>
+<string name="home_nowdrinking">Joon hetkel %1$s</string>
+<string name="home_preferences">Eelistused</string>
+<string name="home_calculator">Kalkulaator</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_euro">¤</string>
+<string name="calc_cent">¢</string>
+<string name="calc_to_from">↑</string>
+<string name="calc_from_to">↓</string>
+
+<string name="myratings_avg">keskmiselt %1$s</string>
+<string name="myratings_noitems">Seda õlut ei ole veel arvustatud. Ava pudel ja kirjuta!</string>
+<string name="myratings_sortby">Järjesta</string>
+<string-array name="myratings_sortby_names">
+<item>Nimi</item>
+<item>Tootja</item>
+<item>Stiil</item>
+<item>Minu hinnang</item>
+<item>Kuupäev</item>
+<item>Punktid</item>
+</string-array>
+
+<string name="cellar_viewcellar">Vaata õllekeldrit</string>
+<string name="cellar_wants">Tahab</string>
+<string name="cellar_haves">On olemas</string>
+<string name="cellar_wantthis">Ma tahan</string>
+<string name="cellar_havethis">Mul on</string>
+<string name="cellar_addingahave">Lisa, mis sul on</string>
+<string name="cellar_addingawant">Lisa, mida sa tahad</string>
+<string name="cellar_memo">Märkmed</string>
+<string name="cellar_vintage">Aastakäik (aasta)</string>
+<string name="cellar_quantity">Kogus</string>
+<string name="cellar_addtocellar">Lisa õllekeldrisse</string>
+<string name="cellar_remove">Kustuta õllekeldrist</string>
+<string name="cellar_confirmremoval">Kas sa tahad %1$s oma õllekeldrist eemaldada?</string>
+
+<string name="topbeers_country">Riik</string>
+<string name="topbeers_state">Maakond</string>
+<string name="topbeers_noitems">Vali riik, mille parimat õlut soovid näha&#8230;</string>
+
+<string name="places_nearby">Kohad minu lähedal</string>
+<string name="places_map">Kaart</string>
+<string name="places_location">Asukoht</string>
+<string name="places_rateandcount">Hinne: %1$s</string>
+<string name="places_notyetrated">Pole veel hinnatud</string>
+<string name="places_findhint">Toksi sisse, mida soovid otsida</string>
+<string name="places_usecurrent">Kasuta enda praegust asukohta</string>
+<string name="places_noitems">Ühtegi õllekat ei ole läheduses!</string>
+<string name="places_brewpub">Õllebaar</string>
+<string name="places_bar">Baar</string>
+<string name="places_beerstore">Õllepood</string>
+<string name="places_restaurant">Restoran</string>
+<string name="places_brewer">Õlletootja</string>
+<string name="places_unknown">Tundmatu</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_availablebeers">Saadaval</string>
+<string name="places_enteredat">Sisestatud %1$s</string>
+
+<string name="brewers_sharebrewer">Jaga õllevabrikut&#8230;</string>
+<string name="brewers_beers">Õlled</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_attendees">Osalejad:</string>
+<string name="events_noitems">Selles piirkonnas ei toimu midagi!</string>
+<string name="events_addattendance">Jah, lisa mind</string>
+<string name="events_removeattendance">Ei, eemalda minu nimi</string>
+<string name="events_nowattending">Minu nimi on lisatud osalejate nimekirja</string>
+<string name="events_nownotattending">Minu nimi on eemaldatud osalejate nimekirjast</string>
+<string name="events_shareevent">Jaga sündmust&#8230;</string>
+
+<string name="search_resultsfor">\'%1$s\' tulemused</string>
+<string name="search_beersearch">RateBeeri otsing</string>
+<string name="search_hint">Otsi õlut, asukohti, kasutajaid</string>
+<string name="search_beers">Õlled</string>
+<string name="search_brewers">Õllevabrikud</string>
+<string name="search_places">Kohad</string>
+<string name="search_users">Kasutajad</string>
+<string name="search_barcodescanner">Triipkoodi skanner</string>
+<string name="search_nobeerswithbarcode">Triipkoodile %1$s vastavat õlut ei leitud. Ehk lisad selle andmebaasi lihtotsingu kaudu?</string>
+<string name="search_clearhistory">Kustuta ajalugu</string>
+<string name="search_noitems">Ei leidnud midagi. Ehk proovid uuesti õlle, koha või kasutaja nime osalise otsinguga?</string>
+<string name="search_retired">enam ei toodeta</string>
+<string name="search_alias">hüüdnimi</string>
+<string name="search_rated">arvustatud</string>
+<string name="search_ratings">%1$s hinnet</string>
+<string name="search_aliasedbeer">See on hüüdnimi, täpsemaid üksikasju pole</string>
+
+<string name="details_bybrewer">%1$s kaupa</string>
+<string name="details_score">Skoor</string>
+<string name="details_noscoreyet">Hindeid pole piisavalt</string>
+<string name="details_percentile">protsentiil</string>
+<string name="details_ratings">hinded</string>
+<string name="details_style">stiil</string>
+<string name="details_nodescription">Firmapoolset kirjeldust pole</string>
+<string name="details_abvstyle">Stiil: %1$s\nAlkoholisisaldus: %2$s</string>
+<string name="details_ratethis">Hinda</string>
+<string name="details_viewrerate">Hinda uuesti</string>
+<string name="details_drinkingthis">Hetkel joon</string>
+<string name="details_recentratings">Arvustused</string>
+<string name="details_myrating">Minu arvustus:</string>
+<string name="details_otherratings">Viimased arvustused:</string>
+<string name="details_availability">On saadaval</string>
+
+<string name="upload_uploadphoto">Lisa pilt</string>
+<string name="upload_choose">Vali pildi asukoht</string>
+<string name="upload_newphoto">Tee uus pilt</string>
+<string name="upload_pick">Vali galeriist</string>
+
+<string name="user_dates">Ühines: %1$\nViimati nähtud: %2$</string>
+<string name="user_beersrated">Hinnatud %1$s õlut\nHinnatud %2$s kohta\nKeskmine skoor: %3$s\nKeskmine hinnatud õlu: %4$s</string>
+<string name="user_favsyle">Lemmikstiil: %1$s</string>
+<string name="user_nofavstyle">puudub</string>
+
+<string name="rate_aroma">Aroom</string>
+<string name="rate_appearance">Välimus</string>
+<string name="rate_taste">Maitse</string>
+<string name="rate_palate">Palett</string>
+<string name="rate_overall">Kokkuvõtvalt</string>
+<string name="rate_totalscore">Lõppskoor</string>
+<string name="rate_comments">Kommentaarid</string>
+<string name="rate_addrating">Laadi minu arvustus üles</string>
+<string name="rate_commenttooshort">Kommentaar peab olema vähemalt 85 tähemärki.</string>
+<string name="rate_ratingnotcompleted">Sinu hinne ei ole veel täielik</string>
+<string name="rate_charstogo">%1$s tähemärki veel&#8230;</string>
+<string name="rate_commentok">Kommentaari pikkus on piisav!</string>
+<string name="rate_showassistance">Näita abimeest</string>
+<string name="rate_hideassistance">Peida abimees</string>
+
+<string name="rate_offline_title">Hinda võrguühenduseta</string>
+<string name="rate_offline_info">Õlut juues ja hindeid andes talletatakse skoor ja kommentaar kohapeal. Kui netiühendust pole või sellega on probleeme, saad oma hinde ka pärastpoole RateBeer.com-i saata. Offlain-hinded kustutatakse automaatselt, kui need on edukalt RateBeeri lisatud.</string>
+<string name="rate_offline_name">Nimi:</string>
+
+<string name="addav_find">Otsi</string>
+
+<string name="addupc_upccode">Triipkood:</string>
+<string name="addupc_beer">Õlle nimi:</string>
+<string name="addupc_find">Otsi</string>
+
+<string name="mail_noitems">Postkastis ei ole kirju</string>
+<string name="mail_sendmail">Saada kiri</string>
+<string name="mail_couldnotretrieve">Kirjade tõmbamine ebaõnnestus</string>
+<string name="mail_notavailable">Kohalik mäluseade ei ole praegu saadaval</string>
+<string name="mail_delete">Kustuta kiri</string>
+<string name="mail_confirmdelete">Kustuta %1$s kiri?</string>
+<string name="mail_relpied">vastatud</string>
+<string name="mail_new">uus</string>
+<string name="mail_read">loe</string>
+<string name="mail_reply">Vasta</string>
+<string name="mail_sendto">Saajale</string>
+<string name="mail_subject">Teema</string>
+<string name="mail_message">Sõnum:</string>
+<string name="mail_includeoriginal">Kaasa algne sõnum</string>
+<string name="mail_send">Saada</string>
+<string name="mail_emptyfields">Enne saatmist täida kõik väljad</string>
+<string name="mail_sendingmail">Saadan õllekirja</string>
+<string name="mail_sendingto">Saadan kasutajale %1$s</string>
+
+<string name="settings_display">Kuva eelistused</string>
+<string name="settings_distanceinkm">Näita vahemaid kilomeetrites</string>
+<string name="settings_distanceinkm_info">Muidu näidatakse vahemaid miilides</string>
+<string name="settings_sharetext">Hinde kirjutamisel kasutatav tekst</string>
+<string name="settings_sharetext_msg">Muutujad: %1$s on õlle ID, %2$s on õlle nimi, %3$s on lõppskoor ning %4$s on su kasutajatunnus.</string>
+<string name="settings_beermail">Õllepost</string>
+<string name="settings_background">Võimalda teadaanded</string>
+<string name="settings_background_info">Kontrolli õlleposti pidevalt</string>
+<string name="settings_updatefrequency">Värskenduste sagedus</string>
+<string name="settings_vibrate">Vibreeri teadaande puhul</string>
+<string-array name="settings_frequency_names">
+<item>1 minut</item>
+<item>10 minutit</item>
+<item>30 minutit</item>
+<item>1 tund</item>
+<item>4 tundi</item>
+<item>24 tundi</item>
+</string-array>
+
+<string name="error_offline">Sul ei ole Interneti-ühendust või on RateBeer.com maas</string>
+<string name="error_authenticationfailed">Vale kasutajanimi või parool</string>
+<string name="error_commandfailed">Käsklus luhtus ootamatult. Ühendus on halb või on RateBeer maas.</string>
+<string name="error_nouserorpass">Sisselogimiseks on vaja nii kasutajanime kui ka parooli</string>
+<string name="error_nolocation">Sinu asukohta ei olnud võimalik määrata</string>
+<string name="error_locationnotsupported">Seade ei võimalda asukohta tuvastada või oled selle funktsiooni välja lülitanud</string>
+<string name="error_sendreport">Saada veateade</string>
+<string name="error_stylenotfound">Seda õllestiili ei leitud, kanna palun sellest veast ette</string>
+<string name="error_cannotwrite">Ei suuda faili kirjutada</string>
+<string name="error_cannotread">Fail puudub või seda ei saa lugeda</string>
+<string name="error_filenotvalid">Failis pole offlain-hindeid (õiges formaadis)</string>
+<string name="error_nocamera">Ei saa pildistada. Kaamerat pole või ei ole SD-kaardile võimalik kirjutada.</string>
+<string name="error_invalidurl">Veebilehe internetiaadress ei ole vist korrektne</string>
+
+</resources>

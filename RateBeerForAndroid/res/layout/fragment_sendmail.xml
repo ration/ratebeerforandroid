@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	android:fillViewport="true">
+	<LinearLayout  
+		android:layout_width="match_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+			
+		<TextView
+			android:id="@+id/sendtolabel"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:text="@string/mail_sendto"
+			style="@style/Label" />
+		<EditText
+			android:id="@+id/sendto"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:inputType="textNoSuggestions|textFilter" />
+			
+		<TextView
+			android:id="@+id/subjectlabel"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:text="@string/mail_subject"
+			style="@style/Label" />
+		<EditText
+			android:id="@+id/subject"
+			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:inputType="textCapSentences|textEmailSubject" />
+			
+		<TextView
+			android:id="@+id/bodylabel"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:text="@string/mail_message"
+			style="@style/Label" />
+		<EditText
+			android:id="@+id/body"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:inputType="textCapSentences|textMultiLine"
+			android:scrollHorizontally="false"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip" />
+			
+		<CheckBox
+			android:id="@+id/includeoriginal"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:checked="true"
+			android:text="@string/mail_includeoriginal" />
+			
+		<Button
+			android:id="@+id/send"
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_marginBottom="10dip"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:text="@string/mail_send"
+			style="@style/DetailsButtonSmall" />
+			
+	</LinearLayout>
+</ScrollView>

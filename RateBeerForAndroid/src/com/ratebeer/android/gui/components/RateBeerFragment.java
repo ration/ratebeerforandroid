@@ -130,7 +130,7 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 			// Successfully signed out
 			Crouton.makeText(getActivity(), R.string.signin_signoutsuccess, Style.CONFIRM).show();
 			applicationSettings.saveUserSettings(null);
-			getActivity().invalidateOptionsMenu();
+			getActivity().supportInvalidateOptionsMenu();
 		}
 		
 		@Override
@@ -140,22 +140,7 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 				return;
 			}
 			// Sign out failure
-			String message = "";
-			switch (result.getException().getType()) {
-			case Offline:
-				message = getText(R.string.error_offline).toString();
-				break;
-			case AuthenticationFailed:
-				message = getText(R.string.error_authenticationfailed).toString();
-				break;
-			case CommandFailed:
-				message = getText(R.string.error_commandfailed).toString();
-				break;
-			case ConnectionError:
-				message = getText(R.string.error_connectionfailure).toString();
-				break;
-			}
-			Crouton.makeText(getActivity(), message, Style.INFO).show();
+			publishException(null, result.getException());
 		}
 		@Override
 		public boolean isBound() {

@@ -105,7 +105,7 @@ public class CalculatorFragment extends RateBeerFragment {
 	protected Spinner fromSystem, toSystem;
 	@ViewById
 	protected Button fromTo, toFrom, clear;
-	// These are not injected but loaded in the addButton method
+	@ViewById
 	protected Button from1, from2, from3, from4, to1, to2, to3, to4;
 	@ViewById
 	protected EditText fromQuantity, fromEuro, fromCent, toQuantity, toEuro, toCent;
@@ -120,14 +120,14 @@ public class CalculatorFragment extends RateBeerFragment {
 
 		fromSystem.setOnItemSelectedListener(onSystemChanged);
 		toSystem.setOnItemSelectedListener(onSystemChanged);
-		from1 = addButton(R.id.from1, fromQuantity, fromSystem, 0);
-		from2 = addButton(R.id.from2, fromQuantity, fromSystem, 1);
-		from3 = addButton(R.id.from3, fromQuantity, fromSystem, 2);
-		from4 = addButton(R.id.from4, fromQuantity, fromSystem, 3);
-		to1 = addButton(R.id.to1, toQuantity, toSystem, 0);
-		to2 = addButton(R.id.to2, toQuantity, toSystem, 1);
-		to3 = addButton(R.id.to3, toQuantity, toSystem, 2);
-		to4 = addButton(R.id.to4, toQuantity, toSystem, 3);
+		addButton(from1, fromQuantity, fromSystem, 0);
+		addButton(from2, fromQuantity, fromSystem, 1);
+		addButton(from3, fromQuantity, fromSystem, 2);
+		addButton(from4, fromQuantity, fromSystem, 3);
+		addButton(to1, toQuantity, toSystem, 0);
+		addButton(to2, toQuantity, toSystem, 1);
+		addButton(to3, toQuantity, toSystem, 2);
+		addButton(to4, toQuantity, toSystem, 3);
 		populateSystemSpinners();
 		fromTo.setOnClickListener(new OnClickListener() {
 			@Override
@@ -145,15 +145,13 @@ public class CalculatorFragment extends RateBeerFragment {
 
 	}
 
-	private Button addButton(int field, final EditText quantityText, final Spinner system, final int valueIndex) {
-		Button button = (Button) getView().findViewById(field);
+	private void addButton(Button button, final EditText quantityText, final Spinner system, final int valueIndex) {
 		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				quantityText.setText(df.format(defaults.get((MeasurementSystem)system.getSelectedItem())[valueIndex]));
 			}
 		});
-		return button;
 	}
 
 	private void calculate(EditText quan1, EditText euro1, EditText cent1, EditText quan2, EditText euro2,

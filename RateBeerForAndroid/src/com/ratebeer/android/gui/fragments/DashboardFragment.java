@@ -53,7 +53,6 @@ import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
 import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
-import com.ratebeer.android.gui.SignIn_;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
@@ -192,7 +191,7 @@ public class DashboardFragment extends RateBeerFragment {
 	protected void myprofileClicked() {
 		if (getUser() == null) {
 			// No user yet, but this is required so start the login screen
-			SignIn_.intent(getActivity()).extraIsRedirect(true).start();
+			com.ratebeer.android.gui.SignIn_.intent(getActivity()).extraIsRedirect(true).start();
 		} else {
 			load(UserViewFragment_.builder().userName(getUser().getUsername())
 					.userId(getUser().getUserID()).build());
@@ -205,7 +204,7 @@ public class DashboardFragment extends RateBeerFragment {
 			public void onClick(View v) {
 				if (requiresUser && getUser() == null) {
 					// No user yet, but this is required so start the login screen
-					SignIn_.intent(getActivity()).extraIsRedirect(true).start();
+					com.ratebeer.android.gui.SignIn_.intent(getActivity()).extraIsRedirect(true).start();
 				} else {
 					load(fragment);
 				}

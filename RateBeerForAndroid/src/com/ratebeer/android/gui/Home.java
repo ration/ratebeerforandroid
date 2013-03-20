@@ -36,15 +36,8 @@ import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
-import com.ratebeer.android.gui.fragments.AboutFragment_;
-import com.ratebeer.android.gui.fragments.AddUpcCodeFragment_;
-import com.ratebeer.android.gui.fragments.BeerViewFragment_;
+import com.ratebeer.android.gui.fragments.*;
 import com.ratebeer.android.gui.fragments.DashboardFragment;
-import com.ratebeer.android.gui.fragments.DashboardFragment_;
-import com.ratebeer.android.gui.fragments.MailViewFragment_;
-import com.ratebeer.android.gui.fragments.MailsFragment_;
-import com.ratebeer.android.gui.fragments.RateFragment_;
-import com.ratebeer.android.gui.fragments.SearchFragment_;
 import com.ratebeer.android.gui.fragments.SendMailFragment;
 
 @EActivity(R.layout.activity_home)

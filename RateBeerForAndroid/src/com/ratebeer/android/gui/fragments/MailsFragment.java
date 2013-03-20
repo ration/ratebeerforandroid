@@ -52,7 +52,6 @@ import com.ratebeer.android.api.command.DeleteBeerMailCommand;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
 import com.ratebeer.android.gui.components.BeermailService;
-import com.ratebeer.android.gui.components.BeermailService_;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
@@ -94,7 +93,7 @@ public class MailsFragment extends RateBeerFragment {
 	@OptionsItem(R.id.menu_refresh)
 	protected void refreshMails() {
 		// Start the background service to get new mail
-		Intent i = new Intent(getActivity(), BeermailService_.class);
+		Intent i = new Intent(getActivity(), com.ratebeer.android.gui.components.BeermailService_.class);
 		i.putExtra(BeermailService.EXTRA_MESSENGER, new Messenger(new Handler() {
 			@Override
 			public void handleMessage(Message msg) {

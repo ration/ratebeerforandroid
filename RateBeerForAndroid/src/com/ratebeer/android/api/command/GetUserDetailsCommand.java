@@ -61,16 +61,13 @@ public class GetUserDetailsCommand extends HtmlCommand {
 					"The response HTML did not contain the unique event content string");
 		}
 
-		final String nameText = "<span class=\"userIsDrinking\">";
+		final String nameText = "<h1>";
 		int nameStart = html.indexOf(nameText, userStart) + nameText.length();
-		String name = html.substring(nameStart, html.indexOf("</span>", nameStart));
+		String name = html.substring(nameStart, html.indexOf("<span", nameStart)).trim();
 
-		int locationStart = html.indexOf("<span>", nameStart) + "<span>".length();
+		String locationText = "<div style=\"float: left;\">";
+		int locationStart = html.indexOf(locationText, nameStart) + locationText.length();
 		String location = html.substring(locationStart, html.indexOf("<br>", locationStart)).trim();
-		int ofEnd = location.indexOf("/>");
-		if (ofEnd >= 0 && location.indexOf("<", ofEnd) > 0) {
-			location = "of " + location.substring(ofEnd + 2, location.indexOf("<", ofEnd));
-		}
 
 		int joinedStart = html.indexOf("class=\"GrayItalic\">", locationStart) + "class=\"GrayItalic\">".length();
 		String joined = html.substring(joinedStart, html.indexOf("<", joinedStart)).trim();

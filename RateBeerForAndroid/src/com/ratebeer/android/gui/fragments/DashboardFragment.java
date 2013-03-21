@@ -53,7 +53,7 @@ import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
 import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
-import com.ratebeer.android.gui.SignIn_;
+import com.ratebeer.android.gui.*;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.SearchUiHelper;

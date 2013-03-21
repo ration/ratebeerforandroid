@@ -63,7 +63,9 @@ public class GetUserDetailsCommand extends HtmlCommand {
 
 		final String nameText = "<h1>";
 		int nameStart = html.indexOf(nameText, userStart) + nameText.length();
-		String name = html.substring(nameStart, html.indexOf("<span", nameStart)).trim();
+		String name = html.substring(nameStart, html.indexOf("</h1>", nameStart)).trim();
+		if (name.indexOf(" ") >= 0)
+			name = name.substring(0, name.indexOf(" "));
 
 		String locationText = "<div style=\"float: left;\">";
 		int locationStart = html.indexOf(locationText, nameStart) + locationText.length();

@@ -18,6 +18,7 @@
 package com.ratebeer.android.api.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +62,7 @@ public class GetBeerAvailabilityCommand extends JsonCommand {
 			results.add(new PlaceSearchResult(Integer.parseInt(result.getString("PlaceID")), HttpHelper
 					.cleanHtml(result.getString("PlaceName")), HttpHelper.cleanHtml(result.getString("Country"))));
 		}
+		Collections.sort(results);
 
 	}
 

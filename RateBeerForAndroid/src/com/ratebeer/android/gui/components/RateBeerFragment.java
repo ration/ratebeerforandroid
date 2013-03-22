@@ -171,7 +171,8 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 	 * @param command The command to execute
 	 */
 	protected void execute(Command command) {
-		getRateBeerActivity().execute(this, command);
+		if (getRateBeerActivity() != null)
+			getRateBeerActivity().execute(this, command);
 	}
 
 	@Override

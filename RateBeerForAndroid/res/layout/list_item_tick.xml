@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content"
+	android:padding="10dip">
+	
+	<TextView
+		android:id="@+id/liked"
+		android:layout_width="60dip" 
+		android:layout_height="wrap_content"
+		android:textSize="35dip"
+		android:gravity="center_horizontal" />
+	
+	<TextView
+		android:id="@+id/beerName"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/liked"
+		android:paddingTop="3dip"
+		style="@style/ListHeaderText" />
+	
+	<TextView
+		android:id="@+id/date"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_below="@id/beerName" />
+	
+	<TextView
+		android:id="@+id/brewer"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/date"
+		android:layout_toRightOf="@id/liked"
+		android:layout_toLeftOf="@id/date" />
+	
+</RelativeLayout>

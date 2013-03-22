@@ -17,8 +17,12 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONException;
 
@@ -114,6 +118,7 @@ public class GetUserDetailsCommand extends HtmlCommand {
 		List<RecentBeerRating> ratings = new ArrayList<RecentBeerRating>();
 		String ratingText = "style=\"height: 21px;\"><A HREF=\"/beer/";
 		int ratingStart = html.indexOf(ratingText, styleStart);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy", Locale.US);
 		while (ratingStart >= 0) {
 			int beerIdStart = html.indexOf("/", ratingStart + ratingText.length()) + 1;
 			int beerId = Integer.parseInt(html.substring(beerIdStart, html.indexOf("/", beerIdStart)));
@@ -128,7 +133,13 @@ public class GetUserDetailsCommand extends HtmlCommand {
 			String beerRating = html.substring(beerRatingStart, html.indexOf("<", beerRatingStart));
 
 			int beerDateStart = html.indexOf("smallGray\">", beerRatingStart) + "smallGray\">".length();
-			String beerDate = html.substring(beerDateStart, html.indexOf("<", beerDateStart));
+			String beerDateString = html.substring(beerDateStart, html.indexOf("<", beerDateStart));
+			Date beerDate;
+			try {
+				beerDate = dateFormat.parse(beerDateString);
+			} catch (ParseException e) {
+				beerDate = null;
+			}
 
 			ratings.add(new RecentBeerRating(beerId, beerName, beerStyle, beerRating, beerDate));
 			ratingStart = html.indexOf(ratingText, beerDateStart);
@@ -146,9 +157,9 @@ public class GetUserDetailsCommand extends HtmlCommand {
 		public final String name;
 		public final String styleName;
 		public final String rating;
-		public final String date;
+		public final Date date;
 		
-		public RecentBeerRating(int id, String name, String styleName, String rating, String date) {
+		public RecentBeerRating(int id, String name, String styleName, String rating, Date date) {
 			this.id = id;
 			this.name = name;
 			this.styleName = styleName;
@@ -164,7 +175,7 @@ public class GetUserDetailsCommand extends HtmlCommand {
 			out.writeString(name);
 			out.writeString(styleName);
 			out.writeString(rating);
-			out.writeString(date);
+			out.writeLong(date.getTime());
 		}
 		public static final Parcelable.Creator<RecentBeerRating> CREATOR = new Parcelable.Creator<RecentBeerRating>() {
 			public RecentBeerRating createFromParcel(Parcel in) {
@@ -179,7 +190,7 @@ public class GetUserDetailsCommand extends HtmlCommand {
 			name = in.readString();
 			styleName = in.readString();
 			rating = in.readString();
-			date = in.readString();
+			date = new Date(in.readLong());
 		}
 		
 	}

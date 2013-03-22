@@ -88,6 +88,9 @@
 		<item>Score</item>
 	</string-array>
 
+	<string name="ticks_viewticks">View ticks</string>
+	<string name="ticks_noitems">No ticks yet; open up a beer and start those taste buds!</string>
+	
 	<string name="cellar_viewcellar">View cellar</string>
 	<string name="cellar_wants">Wants</string>
 	<string name="cellar_haves">Haves</string>

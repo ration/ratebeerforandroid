@@ -85,8 +85,20 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 	protected ListView eventView;
 	@ViewById(R.id.attendees)
 	protected ListView attendeesView;
-	private TextView nameText, detailsText, contactText, attendeeslabel;
-	private Button locationText, timeText, setattendanceButton;
+	@ViewById(R.id.name)
+	protected TextView nameText;
+	@ViewById(R.id.details)
+	protected TextView detailsText;
+	@ViewById(R.id.contact)
+	protected TextView contactText;
+	@ViewById
+	protected TextView attendeeslabel;
+	@ViewById(R.id.location)
+	protected Button locationText;
+	@ViewById(R.id.time)
+	protected Button timeText;
+	@ViewById(R.id.setattendance)
+	protected Button setattendanceButton;
 	private FrameLayout mapFrame;
 	private AttendeeAdapter attendeeAdapter;
 	
@@ -103,7 +115,6 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 			// Tablet
 			attendeeAdapter = new AttendeeAdapter(getActivity(), new ArrayList<Attendee>());
 			attendeesView.setAdapter(attendeeAdapter);
-			initFields(getView());
 		}
 		
 		if (details != null) {

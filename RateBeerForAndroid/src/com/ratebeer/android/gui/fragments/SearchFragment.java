@@ -425,7 +425,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right
 			// Get the right view, using a ViewHolder
 			BrewerViewHolder holder;
 			if (convertView == null) {
@@ -461,7 +460,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right
 			// Get the right view, using a ViewHolder
 			PlaceViewHolder holder;
 			if (convertView == null) {
@@ -497,7 +495,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right
 			// Get the right view, using a ViewHolder
 			UserViewHolder holder;
 			if (convertView == null) {

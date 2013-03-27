@@ -137,6 +137,11 @@
 	<string name="brewers_sharebrewer">Share brewer&#8230;</string>
 	<string name="brewers_beers">Beers</string>
 	<string name="brewers_facebook">Facebook</string>
+	<string-array name="brewers_sortby_names">
+		<item>Name</item>
+		<item>Number of ratings</item>
+		<item>Score</item>
+	</string-array>
 	
 	<string name="events_attendees">Attendees:</string>
 	<string name="events_noitems">No events planned in this area!</string>

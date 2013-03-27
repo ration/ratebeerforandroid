@@ -166,9 +166,9 @@ public class SearchBeersCommand extends JsonCommand {
 		public int compare(BeerSearchResult lhs, BeerSearchResult rhs) {
 			switch (sortBy) {
 			case RateCount:
-				return Double.compare(lhs.rateCount, rhs.rateCount);
+				return -Double.compare(lhs.rateCount, rhs.rateCount);
 			case Score:
-				return Double.compare(lhs.overallPerc, rhs.overallPerc);
+				return -Double.compare(lhs.overallPerc, rhs.overallPerc);
 			default:
 				return lhs.beerName.compareTo(rhs.beerName);
 			}

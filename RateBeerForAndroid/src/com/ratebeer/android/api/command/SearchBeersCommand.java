@@ -20,6 +20,8 @@ package com.ratebeer.android.api.command;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +36,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.UserSettings;
+import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResultComparator.SortBy;
 
 public class SearchBeersCommand extends JsonCommand {
 
@@ -84,6 +87,7 @@ public class SearchBeersCommand extends JsonCommand {
 					.parseInt(result.getString("RateCount")), result.getInt("IsRated") == 1, result
 					.getBoolean("IsAlias"), result.getBoolean("Retired")));
 		}
+		Collections.sort(results, new BeerSearchResultComparator(SortBy.Name));
 
 	}
 
@@ -144,4 +148,31 @@ public class SearchBeersCommand extends JsonCommand {
 
 	}
 
+	public static class BeerSearchResultComparator implements Comparator<BeerSearchResult> {
+
+		public enum SortBy {
+			Name,
+			RateCount,
+			Score
+		}
+
+		private final SortBy sortBy;
+		
+		public BeerSearchResultComparator(SortBy sortBy) {
+			this.sortBy = sortBy;
+		}
+		
+		@Override
+		public int compare(BeerSearchResult lhs, BeerSearchResult rhs) {
+			switch (sortBy) {
+			case RateCount:
+				return Double.compare(lhs.rateCount, rhs.rateCount);
+			case Score:
+				return Double.compare(lhs.overallPerc, rhs.overallPerc);
+			default:
+				return lhs.beerName.compareTo(rhs.beerName);
+			}
+		}
+		
+	}
 }

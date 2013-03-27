@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,8 @@ import com.ratebeer.android.api.command.GetBrewerDetailsCommand;
 import com.ratebeer.android.api.command.GetBrewerDetailsCommand.BrewerDetails;
 import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
+import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResultComparator;
+import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResultComparator.SortBy;
 import com.ratebeer.android.api.command.State;
 import com.ratebeer.android.app.location.LocationUtils;
 import com.ratebeer.android.app.location.SimpleItemizedOverlay;
@@ -77,7 +80,7 @@ import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_brewerview)
-@OptionsMenu({R.menu.refresh, R.menu.share})
+@OptionsMenu({R.menu.refresh, R.menu.brewer, R.menu.share})
 public class BrewerViewFragment extends RateBeerFragment implements OnBalloonClickListener {
 
 	protected static final String BASE_URI_FACEBOOK = "https://www.facebook.com/%1$s";
@@ -123,6 +126,11 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 	protected void onRefresh() {
 		refreshDetails();
 		refreshBeers();
+	}
+	
+	@OptionsItem(R.id.menu_sortby)
+	protected void onSort() {
+		new BrewerBeersSortDialog(this).show(getActivity().getSupportFragmentManager(), null);
 	}
 	
 	@OptionsItem(R.id.menu_share)
@@ -217,6 +225,12 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBrewerBeers) {
 			publishBeers(((GetBrewerBeersCommand) result.getCommand()).getBeers());
 		}
+	}
+
+	public void setSortOrder(SortBy sortBy) {
+		// Sort and publish again (which stores and shows the updated list)
+		Collections.sort(beers, new BeerSearchResultComparator(sortBy));
+		publishBeers(beers);
 	}
 
 	private void publishDetails(BrewerDetails details) {

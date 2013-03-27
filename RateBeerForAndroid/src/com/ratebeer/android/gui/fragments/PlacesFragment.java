@@ -277,10 +277,6 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			if (getActivity() == null) {
-				return convertView;
-			}
-			
 			// Get the right view, using a ViewHolder
 			ViewHolder holder;
 			if (convertView == null) {

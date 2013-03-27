@@ -173,7 +173,12 @@ public class SearchFragment extends RateBeerFragment {
 		scan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 		if (ActivityUtil.isIntentAvailable(getActivity(), scan)) {
 			// Ask the barcode scanner to allow the user to scan some code
-			startActivityForResult(scan, ACTIVITY_BARCODE);
+			try {
+				startActivityForResult(scan, ACTIVITY_BARCODE);
+			} catch (Exception e) {
+				// Can't start the barcode scanner, for example with a SecurityException, even though it is there
+				Crouton.makeText(getActivity(), R.string.app_notsupported, Style.INFO).show();
+			}
 		} else {
 			// Show a message if the user should install the barcode scanner for this feature
 			new ConfirmDialogFragment(new OnDialogResult() {

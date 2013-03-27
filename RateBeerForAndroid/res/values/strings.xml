@@ -14,8 +14,9 @@
 	<string name="app_install">Install now</string>
 	<string name="app_nomarket">The Play Store is not installed on your device.</string>
 	<string name="app_scannernotfound">The barcode scanner can not be found.\nWould you like to install this from the Play Store?</string>
+	<string name="app_notsupported">Your barcode scanner app is not supported, sorry.</string>
 	<string name="app_onlyifsignedin">This feature is only available after signing in to RateBeer.</string>
-
+	
 	<string name="app_newstatus">Enter new status</string>
 	<string name="app_nowdrinking">Now drinking</string>
 	<string name="app_settingdrinking_expl">You can also choose \'Drinking this\' from a beer\'s details screen.</string>

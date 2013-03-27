@@ -38,7 +38,9 @@
 			android:id="@+id/details"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:maxHeight="130dip"
 			android:autoLink="all"
+			android:scrollbars="vertical"
 			style="@style/DetailsField" />
 	
 		<TextView

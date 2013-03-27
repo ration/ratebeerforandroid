@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.gui.fragments;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +71,7 @@ public class UserViewFragment extends RateBeerFragment {
 	private TextView nameText, locationText, dates, favStyleText, recentratingslabel;
 	private Button beersratedButton, cellarButton;
 	private RecentBeerRatingsAdapter recentRatingsAdapter;
+	private DateFormat displayDateFormat;
 
 
 	public UserViewFragment() {
@@ -78,6 +80,7 @@ public class UserViewFragment extends RateBeerFragment {
 	@AfterViews
 	public void init() {
 
+		displayDateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
 		userView.setAdapter(new UserViewAdapter());
 		userView.setItemsCanFocus(true);
 		
@@ -223,7 +226,7 @@ public class UserViewFragment extends RateBeerFragment {
 			holder.beer.setText(item.name);
 			holder.style.setText(item.styleName);
 			holder.score.setText(item.rating);
-			holder.date.setText(item.date);
+			holder.date.setText(item.date == null? "": displayDateFormat.format(item.date));
 			
 			return convertView;
 		}

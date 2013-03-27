@@ -75,7 +75,7 @@ public class SearchPlacesCommand extends JsonCommand {
 
 	}
 
-	public static class PlaceSearchResult implements Parcelable {
+	public static class PlaceSearchResult implements Parcelable, Comparable<PlaceSearchResult> {
 
 		public final int placeId;
 		public final String placeName;
@@ -111,6 +111,11 @@ public class SearchPlacesCommand extends JsonCommand {
 			placeId = in.readInt();
 			placeName = in.readString();
 			city = in.readString();
+		}
+
+		@Override
+		public int compareTo(PlaceSearchResult another) {
+			return city.compareTo(another.city);
 		}
 
 	}

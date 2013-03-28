@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -111,7 +112,7 @@ public class BeermailService extends DatabaseConsumerService {
 		callbackMessenger(intent, RESULT_STARTED);
 
 		// Look for (new) beermail
-		SimpleDateFormat sentDateFormat = new SimpleDateFormat("M/d/yyyy h:m:s a");
+		SimpleDateFormat sentDateFormat = new SimpleDateFormat("M/d/yyyy h:m:s a", Locale.US);
 		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(user);
 		CommandResult result = allMails.execute(apiConnection);
 		if (result instanceof CommandSuccessResult) {

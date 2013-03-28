@@ -17,17 +17,22 @@
  */
 package com.ratebeer.android.gui.components;
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EReceiver;
+import com.googlecode.androidannotations.annotations.SystemService;
 import com.ratebeer.android.app.ApplicationSettings;
+import com.ratebeer.android.app.location.PassiveLocationUpdateReceiver;
 import com.ratebeer.android.gui.components.helpers.Log;
 
 /**
@@ -39,23 +44,27 @@ public class BootReceiver extends BroadcastReceiver {
 
 	@Bean
 	protected Log Log;
-	
+	@SystemService
+	protected LocationManager locationManager;
+
 	private static AlarmManager mgr;
 	private static PendingIntent pi = null;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Boot signal received, starting beermail service");
-		startAlarm(context);
+		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
+				"Boot signal received, starting beermail service");
+		startBeerMailAlarm(context);
+		startPassiveLocationUpdates(context);
 	}
 
-	public static void cancelAlarm() {
+	public static void cancelBeerMailAlarm() {
 		if (mgr != null) {
 			mgr.cancel(pi);
 		}
 	}
 
-	public static void startAlarm(Context context) {
+	public static void startBeerMailAlarm(Context context) {
 		if (isBeermailEnabled(context)) {
 			// Set up PendingIntent for the alarm service
 			mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -77,6 +86,16 @@ public class BootReceiver extends BroadcastReceiver {
 	private static int getBeermailUpdateFrequencyInMilliseconds(Context context) {
 		return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(
 				ApplicationSettings.BEERMAIL_UPDATEFREQUENCY, "3600")) * 1000;
+	}
+
+	@TargetApi(Build.VERSION_CODES.FROYO)
+	private void startPassiveLocationUpdates(Context context) {
+		if (android.os.Build.VERSION.SDK_INT >= 8) {
+			locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER,
+					PassiveLocationUpdateReceiver.PASSIVE_MAX_TIME, PassiveLocationUpdateReceiver.PASSIVE_MAX_DISTANCE,
+					PendingIntent.getActivity(context, 0, new Intent(context, PassiveLocationUpdateReceiver.class),
+							PendingIntent.FLAG_UPDATE_CURRENT));
+		}
 	}
 
 }

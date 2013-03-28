@@ -12,7 +12,8 @@
 		android:id="@+id/name"
 		style="@style/DetailsHeadertext"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
+		android:layout_height="wrap_content"
+		android:textIsSelectable="true" />
 
 	<Button
 		android:id="@+id/location"
@@ -35,17 +36,20 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:autoLink="all"
-		style="@style/DetailsField" />
+		style="@style/DetailsField"
+		android:textIsSelectable="true" />
 
 	<TextView
 		android:id="@+id/contact"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:autoLink="all"
-		style="@style/DetailsField" />
+		style="@style/DetailsField"
+		android:textIsSelectable="true" />
 
-	<FrameLayout
+	<fragment
 		android:id="@+id/map"
+		android:name="com.google.android.gms.maps.MapFragment"
 		android:layout_marginTop="10dip"
 		android:layout_width="fill_parent"
 		android:layout_height="150dip" />
@@ -56,7 +60,8 @@
 		android:layout_width="match_parent"
 		android:text="@string/events_attendees"
 		android:visibility="invisible"
-		style="@style/Label" />
+		style="@style/Label"
+		android:textIsSelectable="false" />
 	
 	<Button
 		android:id="@+id/setattendance"

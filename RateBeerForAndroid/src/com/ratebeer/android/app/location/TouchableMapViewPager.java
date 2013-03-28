@@ -22,7 +22,7 @@ import android.graphics.Rect;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.FrameLayout;
+import android.view.View;
 
 import com.ratebeer.android.R;
 
@@ -43,8 +43,8 @@ public class TouchableMapViewPager extends ViewPager {
 	
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		FrameLayout map = (FrameLayout) findViewById(R.id.map);
-		if (map != null && map.getChildCount() > 0 && map.getChildAt(0) != null) {
+		View map = findViewById(R.id.map);
+		if (map != null) {
 			Rect rect = new Rect();
             map.getHitRect(rect);
             int pageOffset = getMeasuredWidth() * activePage ;

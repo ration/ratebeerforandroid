@@ -1,9 +1,13 @@
 package com.ratebeer.android.app.location;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
 
-import com.google.android.maps.GeoPoint;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 import com.ratebeer.android.app.ApplicationSettings;
@@ -11,9 +15,10 @@ import com.ratebeer.android.app.ApplicationSettings;
 public class LocationUtils {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
-	
+	private static final float DEFAULT_ZOOM = 10F;
+
 	/**
-	 * Calculate (with a reasonable accuracy) the distance between two GPS coordinates. Taken from 
+	 * Calculate (with a reasonable accuracy) the distance between two GPS coordinates. Taken from
 	 * http://stackoverflow.com/a/123305/243165
 	 * @param lat1 Latitude of point 1
 	 * @param lng1 Longitude of point 1
@@ -39,7 +44,7 @@ public class LocationUtils {
 	 * @param place The place object to calculate the distance to
 	 * @param currentLocation Our current location, or null if not known
 	 * @return If our current location is known, the distance between this and the place's location is returned, in
-	 * miles or kilometers (according to the user settings)
+	 *         miles or kilometers (according to the user settings)
 	 */
 	public static String getPlaceDistance(ApplicationSettings settings, Resources resources, Place place,
 			Location currentLocation) {
@@ -55,14 +60,30 @@ public class LocationUtils {
 						.getString(R.string.places_m));
 	}
 
-	/**
-	 * Convert latitude and longitude in double format to a GeoPoint object
-	 * @param lat The latitude, like 4.542334
-	 * @param lon The longitude, like 23.182631
-	 * @return The converted GeoPoint object, like (4542334, 23182631)
-	 */
-	public static GeoPoint getPoint(double lat, double lon) {
-		return new GeoPoint((int)(lat * 1E6), (int)(lon * 1E6));
+	public static void initGoogleMap(GoogleMap map, double latitude, double longitude) {
+		map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), DEFAULT_ZOOM));
+	}
+
+	public static String getPlaceSnippet(Context context, Place place) {
+		return place.avgRating > 0 ? context.getString(R.string.places_rateandcount, Integer.toString(place.avgRating))
+				: context.getString(R.string.places_notyetrated);
+	}
+
+	public static float getPlaceColour(Place place) {
+		switch (place.placeType) {
+		case 1:
+			return BitmapDescriptorFactory.HUE_RED;
+		case 2:
+			return BitmapDescriptorFactory.HUE_BLUE;
+		case 3:
+			return BitmapDescriptorFactory.HUE_GREEN;
+		case 4:
+			return BitmapDescriptorFactory.HUE_YELLOW;
+		case 5:
+			return BitmapDescriptorFactory.HUE_MAGENTA;
+		default:
+			return BitmapDescriptorFactory.HUE_RED;
+		}
 	}
 
 }

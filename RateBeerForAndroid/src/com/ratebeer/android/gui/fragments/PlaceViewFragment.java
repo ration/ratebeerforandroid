@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,8 +40,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.maps.MapView;
-import com.google.android.maps.OverlayItem;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
@@ -60,9 +64,6 @@ import com.ratebeer.android.api.command.GetCheckinsCommand.CheckedInUser;
 import com.ratebeer.android.api.command.GetPlaceDetailsCommand;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 import com.ratebeer.android.app.location.LocationUtils;
-import com.ratebeer.android.app.location.SimpleItemizedOverlay;
-import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
-import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
@@ -73,7 +74,7 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_placeview)
 @OptionsMenu({R.menu.refresh, R.menu.share})
-public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClickListener {
+public class PlaceViewFragment extends RateBeerFragment {
 	
 	@FragmentArg
 	@InstanceState
@@ -84,6 +85,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 	@FragmentArg
 	@InstanceState
 	protected Location currentLocation = null;
+	private GoogleMap map;
 	@InstanceState
 	protected ArrayList<CheckedInUser> checkins = null;
 	@InstanceState
@@ -99,7 +101,6 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 	protected TextView ratingText;
 	private TextView typeText;
 	private Button addressText, phoneText, checkinhereButton;
-	private FrameLayout mapFrame;
 	private ListView checkinsView;
 	private ListView availableBeersView;
 	private TextView availableBeersEmpty;
@@ -255,15 +256,14 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		addressText.setText(place.address + "\n" + place.city + distanceText);
 		phoneText.setText(place.phoneNumber);
 
-		// Get the activity-wide MapView to show on this fragment and center on this place's location
-		MapView mapView = ((RateBeerActivity)getActivity()).requestMapViewInstance();
-		mapView.getController().setCenter(LocationUtils.getPoint(place.latitude, place.longitude));
-		mapFrame.addView(mapView);
-		final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, place.placeType, this);
-		to.addOverlay(new OverlayItem(LocationUtils.getPoint(place.latitude, place.longitude), place.placeName,
-				place.avgRating > 0 ? getString(R.string.places_rateandcount, Integer.toString(place.avgRating))
-						: getString(R.string.places_notyetrated)));
-		mapView.getOverlays().add(to);
+		if (map != null) {
+			LocationUtils.initGoogleMap(map, place.latitude, place.longitude);
+			map.addMarker(new MarkerOptions()
+				.position(new LatLng(place.latitude, place.longitude))
+				.title(place.placeName)
+				.snippet(LocationUtils.getPlaceSnippet(getActivity(), place))
+				.icon(BitmapDescriptorFactory.defaultMarker(LocationUtils.getPlaceColour(place))));
+		}
 		
 		// Make fields visible too
 		ratingText.setVisibility(View.VISIBLE);
@@ -271,11 +271,6 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		phoneText.setVisibility(View.VISIBLE);
 		checkinhereButton.setVisibility(View.VISIBLE);
 		
-	}
-
-	@Override
-	public void onBalloonClicked(OverlayItem item) {
-		// No action, for now
 	}
 
 	private class CheckinsAdapter extends ArrayAdapter<CheckedInUser> {
@@ -396,7 +391,7 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 			typeText = (TextView) pagerDetailsView.findViewById(R.id.type);
 			addressText = (Button) pagerDetailsView.findViewById(R.id.address);
 			phoneText = (Button) pagerDetailsView.findViewById(R.id.phone);
-			mapFrame = (FrameLayout) pagerDetailsView.findViewById(R.id.map);
+			map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 			addressText.setOnClickListener(onAddressClick);
 			phoneText.setOnClickListener(onPhoneClick);
 
@@ -411,11 +406,11 @@ public class PlaceViewFragment extends RateBeerFragment implements OnBalloonClic
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details).toUpperCase();
+				return getActivity().getString(R.string.app_details).toUpperCase(Locale.getDefault());
 			case 1:
-				return getActivity().getString(R.string.places_checkins).toUpperCase();
+				return getActivity().getString(R.string.places_checkins).toUpperCase(Locale.getDefault());
 			case 2:
-				return getActivity().getString(R.string.places_availablebeers).toUpperCase();
+				return getActivity().getString(R.string.places_availablebeers).toUpperCase(Locale.getDefault());
 			}
 			return null;
 		}

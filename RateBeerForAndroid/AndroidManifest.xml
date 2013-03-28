@@ -22,6 +22,7 @@
 	android:versionName="1.4.4-dev"
 	android:installLocation="auto">
 	
+	<!-- Supported and required Android features -->
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -39,12 +40,21 @@
 		android:xlargeScreens="true" 
 		android:anyDensity="true" />
 
+	<!-- Additional features for Google Maps -->
+	<permission 
+		android:name="com.example.mapdemo.permission.MAPS_RECEIVE"
+		android:protectionLevel="signature" />
+	<uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE" />
+	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+	<uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+	
 	<application 
 		android:name="com.ratebeer.android.app.RateBeerForAndroid" 
 		android:icon="@drawable/icon" 
 		android:logo="@drawable/logo"
 		android:label="@string/app_name"
 		android:hardwareAccelerated="true"
+		android:allowBackup="true"
 		android:theme="@style/Theme.RateBeer">
 		
 		<!-- Activities -->
@@ -97,8 +107,11 @@
 			</intent-filter>
 		</receiver>
 		
-		<!-- Google Maps -->
-		<uses-library android:name="com.google.android.maps" android:required="true" />
+		<!-- Google Maps and location -->
+		<receiver android:name="com.ratebeer.android.app.location.PassiveLocationUpdateReceiver_" />
+		<meta-data 
+			android:name="com.google.android.maps.v2.API_KEY" 
+			android:value="AIzaSyCB1GwDznbJT9QJMhthO5L_ZJ71KBcaJUc" />
 		
 	</application>
 	

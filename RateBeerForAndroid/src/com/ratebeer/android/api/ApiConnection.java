@@ -22,7 +22,6 @@ import org.pixmob.httpclient.HttpResponse;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.text.TextUtils;
 
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
@@ -247,23 +246,16 @@ public class ApiConnection {
 	public int signIn(String username, String password) throws ApiException {
 
 		if (!isConnected())
-			throw new ApiException(ExceptionType.Offline, "User is not connected to a network (as reported by the system)");
-		
-		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
-				"Prepare for a sign in with username '" + username + "' and "
-						+ (TextUtils.isEmpty(username) ? "an empty password" : "a non-empty password"));
+			throw new ApiException(ExceptionType.Offline,
+					"User is not connected to a network (as reported by the system)");
+
 		HttpRequestBuilder prepared = httpClient.post("http://www.ratebeer.com/Signin_r.asp");
 		prepared.param("SaveInfo", "on");
 		prepared.param("username", username);
 		prepared.param("pwd", password);
-		prepared.expect(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK);
-		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Call '" + prepared.toString()
-				+ "' with expected code '" + HttpURLConnection.HTTP_MOVED_TEMP + "'");
+		prepared.expect(HttpURLConnection.HTTP_MOVED_TEMP);
 		final String uidText = "?uid=";
 		for (int i = 0; i < RETRIES; i++) {
-			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Try " + (i + 1) + " (max is " + RETRIES
-					+ ")");
-			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Current isSignedIn value: " + isSignedIn);
 			try {
 				HttpResponse reply = prepared.execute();
 				// We should have a session cookie now, which means we are signed in to RateBeer
@@ -276,21 +268,26 @@ public class ApiConnection {
 					cookies = "Cookies contain a SessionCode key.";
 				else
 					cookies = "Cookies parsed, but did not contain a SessionCode.";
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
+						"Returned status code was " + reply.getStatusCode());
 				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "The command executed fully. "
 						+ cookies);
-				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Returned status code was " + reply.getStatusCode());
 				for (Entry<String, List<String>> header : reply.getHeaders().entrySet()) {
 					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Header '" + header.getKey()
 							+ "': " + header.getValue());
 				}
+				for (String cookie : reply.getHeaders().get("Set-Cookie")) {
+					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Manual cookie: " + cookie);
+				}
 				isSignedIn = reply.getCookies().containsKey("SessionCode");
 				if (isSignedIn()) {
 					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "isSignedIn is now set to true");
-					// Find the user ID in the redirect response header
-					// This should be encoded as a Location header, like
-					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now find the user ID, which we expect in a Location header field");
+					// Find the user ID in the redirect response header 'Location'
+					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
+							"Now find the user ID, which we expect in a Location header field");
 					String header = reply.getFirstHeaderValue("Location");
-					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Location header value is '" + header + "'");
+					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Location header value is '"
+							+ header + "'");
 					if (header != null && header.indexOf(uidText) >= 0) {
 						Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
 								"Location header contains the uidText ('"
@@ -305,17 +302,20 @@ public class ApiConnection {
 							"Tried to sign in but the response header did not include the user ID. Header was: "
 									+ header.toString());
 				}
-				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "isSignedIn is now set to false, as no header with key SessionCode was found. We try again...");
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
+						"isSignedIn is now set to false, as no header with key SessionCode was found. We try again...");
 				// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy
 				// authentication/cookie mess by just trying again
 			} catch (HttpClientException e) {
-				Log.i(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "GET failed: " + e.toString() + " (now retry)");
+				Log.i(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "GET failed: " + e.toString()
+						+ " (now retry)");
 				// Retry
 			}
 		}
-		
-		throw new ApiException(ExceptionType.ConnectionError, "We tried " + RETRIES + " times but the request to " + prepared.toString() + " still failed.");
-		
+
+		throw new ApiException(ExceptionType.ConnectionError, "We tried " + RETRIES + " times but the request to "
+				+ prepared.toString() + " still failed.");
+
 	}
 
 	public void signOut() throws ApiException {

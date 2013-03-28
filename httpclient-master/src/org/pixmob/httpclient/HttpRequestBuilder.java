@@ -316,7 +316,11 @@ public final class HttpRequestBuilder {
             final Map<String, List<String>> headerFields = conn.getHeaderFields();
             final Map<String, String> inMemoryCookies = hc.getInMemoryCookies();
             if (headerFields != null) {
-                final List<String> newCookies = headerFields.get("Set-Cookie");
+                List<String> newCookies = headerFields.get("Set-Cookie");
+                if (newCookies == null) {
+                	// Malicious web servers may return lower case header fields
+                	newCookies = headerFields.get("set-cookie");
+                }
                 if (newCookies != null) {
                     for (final String newCookie : newCookies) {
                         final String rawCookie = newCookie.split(";", 2)[0];

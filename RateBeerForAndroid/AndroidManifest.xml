@@ -111,7 +111,9 @@
 		<receiver android:name="com.ratebeer.android.app.location.PassiveLocationUpdateReceiver_" />
 		<meta-data 
 			android:name="com.google.android.maps.v2.API_KEY" 
-			android:value="AIzaSyCB1GwDznbJT9QJMhthO5L_ZJ71KBcaJUc" />
+			android:value="AIzaSyA4iVFyBTWzsFgqVKxLyF9Fto996YN_pLQ" />
+		<!-- Debug: AIzaSyA4iVFyBTWzsFgqVKxLyF9Fto996YN_pLQ -->
+		<!-- Release: AIzaSyCB1GwDznbJT9QJMhthO5L_ZJ71KBcaJUc -->
 		
 	</application>
 	

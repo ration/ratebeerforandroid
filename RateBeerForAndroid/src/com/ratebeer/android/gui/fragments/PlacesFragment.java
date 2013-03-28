@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import android.content.Context;
 import android.location.Address;
@@ -38,9 +39,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
@@ -83,6 +86,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 	protected TabPageIndicator titles;
 	protected GoogleMap map;
 	private ListView placesView;
+	private Map<String, Place> markersMap;
 
 	public PlacesFragment() {
 	}
@@ -212,21 +216,27 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		if (lastLocation != null && map != null) {
 
 			// TODO: Show user location
-			// TODO: Add on click listener and call: 
-			// load(PlaceViewFragment_.builder().place(((PlaceOverlayItem) item).getPlace()).currentLocation(lastLocation).build());
 			LocationUtils.initGoogleMap(map, lastLocation.getLatitude(), lastLocation.getLongitude());
 			for (Place place : places) {
-				map.addMarker(new MarkerOptions()
+				Marker m = map.addMarker(new MarkerOptions()
 					.position(new LatLng(place.latitude, place.longitude))
 					.title(place.placeName)
 					.snippet(LocationUtils.getPlaceSnippet(getActivity(), place))
 					.icon(BitmapDescriptorFactory.defaultMarker(LocationUtils.getPlaceColour(place))));
+				markersMap.put(m.getId(), place);
 			}
+			map.setOnInfoWindowClickListener(onInfoWindowClicked);
 			
 		}
 		
 	}
 
+	private OnInfoWindowClickListener onInfoWindowClicked = new OnInfoWindowClickListener() {
+		@Override
+		public void onInfoWindowClick(Marker marker) {
+			load(PlaceViewFragment_.builder().place(markersMap.get(marker.getId())).currentLocation(lastLocation).build());
+		}
+	};
 	
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {

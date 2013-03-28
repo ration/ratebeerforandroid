@@ -29,8 +29,8 @@
 <string name="app_addingupccode">Lisa skannitud triipkood tootele</string>
 <string name="app_addingcodefor">Lisan triipkoodi %1$</string>
 <string name="app_noaccount">Pole veel oma kontot?\nhttp://www.ratebeer.com/NewUser.asp</string>
-<string name="app_newmails">Sulle on %1$ uut sõnumit</string>
 <string name="app_newmail">Sulle on uus sõnum</string>
+<string name="app_newmails">Sulle on %1$s uut sõnumit</string>
 <string name="app_by">kasutajalt %1$s</string>
 <string name="app_andothers">ja teised</string>
 <string name="app_uploadingphoto">Laadin uut fotot üles</string>
@@ -49,7 +49,7 @@
 <string name="home_events">Üritused</string>
 <string name="home_search">Otsi</string>
 <string name="home_myprofile">Minu profiil</string>
-<string name="home_top50">Top 50</string>
+<string name="home_top50">Tipp-50</string>
 <string name="home_bycountry">Parimatest parim</string>
 <string name="home_offlineratings">Offlain-märkmed</string>
 <string name="home_beerstyles">Õllestiilid</string>
@@ -135,21 +135,20 @@
 <string name="search_barcodescanner">Triipkoodi skanner</string>
 <string name="search_nobeerswithbarcode">Triipkoodile %1$s vastavat õlut ei leitud. Ehk lisad selle andmebaasi lihtotsingu kaudu?</string>
 <string name="search_clearhistory">Kustuta ajalugu</string>
-<string name="search_noitems">Ei leidnud midagi. Ehk proovid uuesti õlle, koha või kasutaja nime osalise otsinguga?</string>
 <string name="search_retired">enam ei toodeta</string>
 <string name="search_alias">hüüdnimi</string>
 <string name="search_rated">arvustatud</string>
 <string name="search_ratings">%1$s hinnet</string>
 <string name="search_aliasedbeer">See on hüüdnimi, täpsemaid üksikasju pole</string>
 
-<string name="details_bybrewer">%1$s kaupa</string>
+<string name="details_bybrewer">Tootja: %1$s</string>
 <string name="details_score">Skoor</string>
 <string name="details_noscoreyet">Hindeid pole piisavalt</string>
 <string name="details_percentile">protsentiil</string>
-<string name="details_ratings">hinded</string>
+<string name="details_ratings">hinnet</string>
 <string name="details_style">stiil</string>
 <string name="details_nodescription">Firmapoolset kirjeldust pole</string>
-<string name="details_abvstyle">Stiil: %1$s\nAlkoholisisaldus: %2$s</string>
+<string name="details_abvstyle">Stiil: %1$s\nAlkoholisisaldus: %2$s&#37;</string>
 <string name="details_ratethis">Hinda</string>
 <string name="details_viewrerate">Hinda uuesti</string>
 <string name="details_drinkingthis">Hetkel joon</string>

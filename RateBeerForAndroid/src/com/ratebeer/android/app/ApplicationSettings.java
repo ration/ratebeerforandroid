@@ -23,6 +23,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.api.Scope;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.UserSettings;
@@ -42,6 +43,7 @@ public class ApplicationSettings {
 	public static final String BEERMAIL_UPDATEFREQUENCY = "beermail_updatefrequency";
 	private static final String BEERMAIL_VIBRATE = "beermail_vibrate";
 	
+	@RootContext
 	protected Context context;
 	protected SharedPreferences prefs;
 	

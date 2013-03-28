@@ -12,6 +12,13 @@
     <!-- Release key -->
     <string name="app_googlemapskey" translatable="false">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
 
+    <!-- Matches the enum values of BeerSearchResultComparator.SortBy -->
+	<string-array name="brewers_sortby_values" translatable="false">
+		<item>Name</item>
+		<item>RateCount</item>
+		<item>Score</item>
+	</string-array>
+	
 	<string-array name="settings_frequency_values" translatable="false">
 		<item>60</item>
 		<item>600</item>

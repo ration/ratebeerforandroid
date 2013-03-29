@@ -19,6 +19,7 @@ package com.ratebeer.android.gui.fragments;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,9 +39,8 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -62,7 +62,7 @@ import com.ratebeer.android.app.location.MyLocation;
 import com.ratebeer.android.app.location.MyLocation.LocationResult;
 import com.ratebeer.android.app.location.TouchableMapViewPager;
 import com.ratebeer.android.gui.components.RateBeerActivity;
-import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.RateBeerMapFragment;
 import com.ratebeer.android.gui.components.SelectLocationDialog;
 import com.ratebeer.android.gui.components.SelectLocationDialog.OnLocationSelectedListener;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
@@ -70,7 +70,7 @@ import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_places)
 @OptionsMenu(R.menu.places)
-public class PlacesFragment extends RateBeerFragment implements OnLocationSelectedListener {
+public class PlacesFragment extends RateBeerMapFragment implements OnLocationSelectedListener {
 
 	private static final int DEFAULT_RADIUS = 25;
 	private static final String GEOCODER_PROVIDER = "geocoder";
@@ -84,9 +84,8 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 	protected TouchableMapViewPager pager;
 	@ViewById
 	protected TabPageIndicator titles;
-	protected GoogleMap map;
 	private ListView placesView;
-	private Map<String, Place> markersMap;
+	private Map<String, Place> markersMap = new HashMap<String, GetPlacesAroundCommand.Place>();
 
 	public PlacesFragment() {
 	}
@@ -213,20 +212,21 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			((PlacesAdapter) placesView.getAdapter()).replace(result);
 		}
 
-		if (lastLocation != null && map != null) {
+		if (lastLocation != null && getMap() != null) {
 
 			// TODO: Show user location
-			LocationUtils.initGoogleMap(map, lastLocation.getLatitude(), lastLocation.getLongitude());
+			LocationUtils.initGoogleMap(getMap(), lastLocation.getLatitude(), lastLocation.getLongitude());
 			for (Place place : places) {
-				Marker m = map.addMarker(new MarkerOptions()
+				Marker m = getMap().addMarker(new MarkerOptions()
 					.position(new LatLng(place.latitude, place.longitude))
 					.title(place.placeName)
 					.snippet(LocationUtils.getPlaceSnippet(getActivity(), place))
 					.icon(BitmapDescriptorFactory.defaultMarker(LocationUtils.getPlaceColour(place))));
 				markersMap.put(m.getId(), place);
 			}
-			map.setOnInfoWindowClickListener(onInfoWindowClicked);
-			
+			getMap().setOnInfoWindowClickListener(onInfoWindowClicked);
+			getMap().setMyLocationEnabled(true);
+
 		}
 		
 	}
@@ -320,7 +320,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			placesView = pagerListView;
 			placesView.setOnItemClickListener(onItemSelected);
 			
-			map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+			setMapView((MapView) pagerMapView.findViewById(R.id.map_nearby));
 		}
 		
 		@Override

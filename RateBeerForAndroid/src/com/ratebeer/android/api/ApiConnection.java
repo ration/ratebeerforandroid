@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.http.NameValuePair;
 import org.pixmob.httpclient.HttpClient;
@@ -243,7 +242,7 @@ public class ApiConnection {
 		return isSignedIn;
 	}
 
-	public int signIn(String username, String password) throws ApiException {
+	public int signIn(String username, String password) throws ApiException, NumberFormatException {
 
 		if (!isConnected())
 			throw new ApiException(ExceptionType.Offline,
@@ -257,55 +256,25 @@ public class ApiConnection {
 		final String uidText = "?uid=";
 		for (int i = 0; i < RETRIES; i++) {
 			try {
+
 				HttpResponse reply = prepared.execute();
+				
 				// We should have a session cookie now, which means we are signed in to RateBeer
-				String cookies;
-				if (reply.getCookies() == null)
-					cookies = "Cookies were null (never initialized).";
-				else if (reply.getCookies().isEmpty())
-					cookies = "Cookies were empty (no cookies returned by the server).";
-				else if (reply.getCookies().containsKey("SessionCode"))
-					cookies = "Cookies contain a SessionCode key.";
-				else
-					cookies = "Cookies parsed, but did not contain a SessionCode.";
-				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
-						"Returned status code was " + reply.getStatusCode());
-				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "The command executed fully. "
-						+ cookies);
-				for (Entry<String, List<String>> header : reply.getHeaders().entrySet()) {
-					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Header '" + header.getKey()
-							+ "': " + header.getValue());
-				}
-				for (String cookie : reply.getHeaders().get("Set-Cookie")) {
-					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Manual cookie: " + cookie);
-				}
 				isSignedIn = reply.getCookies().containsKey("SessionCode");
 				if (isSignedIn()) {
-					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "isSignedIn is now set to true");
 					// Find the user ID in the redirect response header 'Location'
-					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
-							"Now find the user ID, which we expect in a Location header field");
 					String header = reply.getFirstHeaderValue("Location");
-					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Location header value is '"
-							+ header + "'");
 					if (header != null && header.indexOf(uidText) >= 0) {
-						Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
-								"Location header contains the uidText ('"
-										+ uidText
-										+ "') we were looking for! Parse it as an Integer now and return success result.");
 						return Integer.parseInt(header.substring(header.indexOf(uidText) + uidText.length()));
 					}
-					Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
-							"Location header was empty or did not contain the uidText ('" + uidText
-									+ "') we were looking for. Thow an exception.");
 					throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
-							"Tried to sign in but the response header did not include the user ID. Header was: "
+							"Tried to sign in but the response header did not include the user ID. 'Location' header was: "
 									+ header.toString());
 				}
-				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
-						"isSignedIn is now set to false, as no header with key SessionCode was found. We try again...");
-				// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy
+				// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy 
 				// authentication/cookie mess by just trying again
+				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
+						"Could not sign in as no cookie with key SessionCode was found. We try again...");
 			} catch (HttpClientException e) {
 				Log.i(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "GET failed: " + e.toString()
 						+ " (now retry)");

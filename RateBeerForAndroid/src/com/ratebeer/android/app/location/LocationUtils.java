@@ -15,7 +15,7 @@ import com.ratebeer.android.app.ApplicationSettings;
 public class LocationUtils {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
-	private static final float DEFAULT_ZOOM = 10F;
+	private static final float DEFAULT_ZOOM = 12F;
 
 	/**
 	 * Calculate (with a reasonable accuracy) the distance between two GPS coordinates. Taken from
@@ -61,7 +61,7 @@ public class LocationUtils {
 	}
 
 	public static void initGoogleMap(GoogleMap map, double latitude, double longitude) {
-		map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), DEFAULT_ZOOM));
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), DEFAULT_ZOOM));
 	}
 
 	public static String getPlaceSnippet(Context context, Place place) {

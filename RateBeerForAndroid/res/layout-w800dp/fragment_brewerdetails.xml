@@ -34,9 +34,8 @@
 			android:visibility="invisible"
 			android:autoLink="all" />
 			
-		<fragment
-			android:id="@+id/map"
-			android:name="com.google.android.gms.maps.SupportMapFragment"
+		<com.google.android.gms.maps.MapView
+			android:id="@+id/map_brewer"
 			android:layout_width="fill_parent"
 			android:layout_height="250dip"
 			android:layout_marginTop="10dip"

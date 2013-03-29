@@ -38,8 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -60,7 +59,7 @@ import com.ratebeer.android.api.command.GetEventDetailsCommand.Attendee;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.EventDetails;
 import com.ratebeer.android.api.command.SetEventAttendanceCommand;
 import com.ratebeer.android.app.location.LocationUtils;
-import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.RateBeerMapFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
@@ -69,7 +68,7 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_eventview)
 @OptionsMenu({R.menu.refresh, R.menu.share})
-public class EventViewFragment extends RateBeerFragment {
+public class EventViewFragment extends RateBeerMapFragment {
 
 	@FragmentArg
 	@InstanceState
@@ -98,9 +97,9 @@ public class EventViewFragment extends RateBeerFragment {
 	protected Button timeText;
 	@ViewById(R.id.setattendance)
 	protected Button setattendanceButton;
-	private GoogleMap map;
-	private SupportMapFragment mapFragment;
 	private AttendeeAdapter attendeeAdapter;
+	@ViewById(R.id.map_event)
+	protected MapView mapEvent;
 	
 	public EventViewFragment() {
 	}
@@ -115,6 +114,7 @@ public class EventViewFragment extends RateBeerFragment {
 			// Tablet
 			attendeeAdapter = new AttendeeAdapter(getActivity(), new ArrayList<Attendee>());
 			attendeesView.setAdapter(attendeeAdapter);
+			setMapView(mapEvent);
 		}
 		
 		if (details != null) {
@@ -185,7 +185,7 @@ public class EventViewFragment extends RateBeerFragment {
 			setattendanceButton.setText(R.string.events_addattendance);
 		}
 
-		if (map != null) {
+		if (getMap() != null) {
 			try {
 				// Use Geocoder to look up the coordinates of this brewer
 				try {
@@ -193,23 +193,23 @@ public class EventViewFragment extends RateBeerFragment {
 							+ details.city, 1);
 					if (point.size() <= 0) {
 						// Cannot find address: hide the map
-						getFragmentManager().beginTransaction().hide(mapFragment).commit();
+						getMapView().setVisibility(View.GONE);
 					} else {
 						// Found a location! Center the map here
-						LocationUtils.initGoogleMap(map, point.get(0).getLatitude(), point.get(0).getLongitude());
-						map.addMarker(new MarkerOptions()
+						LocationUtils.initGoogleMap(getMap(), point.get(0).getLatitude(), point.get(0).getLongitude());
+						getMap().addMarker(new MarkerOptions()
 								.position(new LatLng(point.get(0).getLatitude(), point.get(0).getLongitude()))
 								.title(details.location).snippet(details.city)
 								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-						getFragmentManager().beginTransaction().show(mapFragment).commit();
+						getMapView().setVisibility(View.VISIBLE);
 					}
 				} catch (IOException e) {
 					// Can't connect to Geocoder server: hide the map
-					getFragmentManager().beginTransaction().hide(mapFragment).commit();
+					getMapView().setVisibility(View.GONE);
 				}
 			} catch (NoSuchMethodError e) {
 				// Geocoder is not available at all: hide the map
-				getFragmentManager().beginTransaction().hide(mapFragment).commit();
+				getMapView().setVisibility(View.GONE);
 			}
 		}
 
@@ -351,8 +351,7 @@ public class EventViewFragment extends RateBeerFragment {
 		locationText = (Button) fields.findViewById(R.id.location);
 		detailsText = (TextView) fields.findViewById(R.id.details);
 		contactText = (TextView) fields.findViewById(R.id.contact);
-		map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
+		setMapView((MapView) fields.findViewById(R.id.map_event));
 		attendeeslabel = (TextView) fields.findViewById(R.id.attendeeslabel);
 		setattendanceButton = (Button) fields.findViewById(R.id.setattendance);
 		locationText.setOnClickListener(onLocationClicked );

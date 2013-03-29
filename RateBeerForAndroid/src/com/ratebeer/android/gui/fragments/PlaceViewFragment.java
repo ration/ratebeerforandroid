@@ -40,8 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -64,7 +63,7 @@ import com.ratebeer.android.api.command.GetCheckinsCommand.CheckedInUser;
 import com.ratebeer.android.api.command.GetPlaceDetailsCommand;
 import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 import com.ratebeer.android.app.location.LocationUtils;
-import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.RateBeerMapFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
@@ -74,7 +73,7 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_placeview)
 @OptionsMenu({R.menu.refresh, R.menu.share})
-public class PlaceViewFragment extends RateBeerFragment {
+public class PlaceViewFragment extends RateBeerMapFragment {
 	
 	@FragmentArg
 	@InstanceState
@@ -85,7 +84,6 @@ public class PlaceViewFragment extends RateBeerFragment {
 	@FragmentArg
 	@InstanceState
 	protected Location currentLocation = null;
-	private GoogleMap map;
 	@InstanceState
 	protected ArrayList<CheckedInUser> checkins = null;
 	@InstanceState
@@ -256,9 +254,9 @@ public class PlaceViewFragment extends RateBeerFragment {
 		addressText.setText(place.address + "\n" + place.city + distanceText);
 		phoneText.setText(place.phoneNumber);
 
-		if (map != null) {
-			LocationUtils.initGoogleMap(map, place.latitude, place.longitude);
-			map.addMarker(new MarkerOptions()
+		if (getMap() != null) {
+			LocationUtils.initGoogleMap(getMap(), place.latitude, place.longitude);
+			getMap().addMarker(new MarkerOptions()
 				.position(new LatLng(place.latitude, place.longitude))
 				.title(place.placeName)
 				.snippet(LocationUtils.getPlaceSnippet(getActivity(), place))
@@ -391,7 +389,7 @@ public class PlaceViewFragment extends RateBeerFragment {
 			typeText = (TextView) pagerDetailsView.findViewById(R.id.type);
 			addressText = (Button) pagerDetailsView.findViewById(R.id.address);
 			phoneText = (Button) pagerDetailsView.findViewById(R.id.phone);
-			map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+			setMapView((MapView) pagerDetailsView.findViewById(R.id.map_place));
 			addressText.setOnClickListener(onAddressClick);
 			phoneText.setOnClickListener(onPhoneClick);
 

@@ -49,7 +49,7 @@ public class Home extends RateBeerActivity {
 	@AfterViews
 	public void init() {
 		// Start the background service, if necessary
-		BootReceiver.startAlarm(getApplicationContext());
+		BootReceiver.startBeerMailAlarm(getApplicationContext());
 
 		// Show search directly in action bar on larger screens
 		// For phones the DashboardFragment and SearchFragment will show an icon

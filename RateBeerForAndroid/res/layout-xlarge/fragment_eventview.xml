@@ -14,7 +14,8 @@
 			android:id="@+id/name"
 			style="@style/DetailsHeadertext"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+			android:textIsSelectable="true" />
 	
 		<Button
 			android:id="@+id/location"
@@ -38,15 +39,19 @@
 			android:id="@+id/details"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:maxHeight="130dip"
 			android:autoLink="all"
-			style="@style/DetailsField" />
+			android:scrollbars="vertical"
+			style="@style/DetailsField"
+			android:textIsSelectable="true" />
 	
 		<TextView
 			android:id="@+id/contact"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:autoLink="all"
-			style="@style/DetailsField" />
+			style="@style/DetailsField"
+			android:textIsSelectable="true" />
 	
 	</LinearLayout>
 	
@@ -77,8 +82,8 @@
 		android:layout_alignParentRight="true"
 		android:cacheColorHint="@color/BackgroundLight" />
 	
-	<FrameLayout
-		android:id="@+id/map"
+	<com.google.android.gms.maps.MapView
+		android:id="@+id/map_event"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:layout_below="@id/header"

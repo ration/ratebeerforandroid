@@ -19,10 +19,12 @@ package com.ratebeer.android.gui.fragments;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -37,8 +39,12 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.maps.MapView;
-import com.google.android.maps.OverlayItem;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.InstanceState;
@@ -54,12 +60,9 @@ import com.ratebeer.android.api.command.GetPlacesAroundCommand.Place;
 import com.ratebeer.android.app.location.LocationUtils;
 import com.ratebeer.android.app.location.MyLocation;
 import com.ratebeer.android.app.location.MyLocation.LocationResult;
-import com.ratebeer.android.app.location.PlaceOverlayItem;
-import com.ratebeer.android.app.location.SimpleItemizedOverlay;
-import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
 import com.ratebeer.android.app.location.TouchableMapViewPager;
 import com.ratebeer.android.gui.components.RateBeerActivity;
-import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.RateBeerMapFragment;
 import com.ratebeer.android.gui.components.SelectLocationDialog;
 import com.ratebeer.android.gui.components.SelectLocationDialog.OnLocationSelectedListener;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
@@ -67,9 +70,10 @@ import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_places)
 @OptionsMenu(R.menu.places)
-public class PlacesFragment extends RateBeerFragment implements OnLocationSelectedListener, OnBalloonClickListener {
+public class PlacesFragment extends RateBeerMapFragment implements OnLocationSelectedListener {
 
 	private static final int DEFAULT_RADIUS = 25;
+	private static final String GEOCODER_PROVIDER = "geocoder";
 
 	@InstanceState
 	protected ArrayList<Place> places = null;
@@ -81,7 +85,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 	@ViewById
 	protected TabPageIndicator titles;
 	private ListView placesView;
-	private FrameLayout mapFrame;
+	private Map<String, Place> markersMap = new HashMap<String, GetPlacesAroundCommand.Place>();
 
 	public PlacesFragment() {
 	}
@@ -94,10 +98,18 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		titles.setOnPageChangeListener(pager.getOnPageChangeListener());
 
 		if (places != null) {
-			refreshPlaces();
-		} else {
-			refreshPlaces();
-		}		
+			publishResults(places);
+		}
+		
+		// Retrieve already with a (old) stored location
+		lastLocation = getSettings().getLastUserLocation();
+		if (lastLocation != null) {
+			execute(new GetPlacesAroundCommand(getUser(), DEFAULT_RADIUS, 
+					lastLocation.getLatitude(), lastLocation.getLongitude()));
+		}
+		
+		// Always trigger a location update as well
+		refreshPlaces();
 
 	}
 
@@ -106,6 +118,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		new SelectLocationDialog(this).show(getFragmentManager(), "SelectLocationDialog");
 	}
 
+	// Implements OnLocationSelectedListener
 	@Override
 	public void onStartLocationSearch(String query) {
 		// Try to find a location for the user query, using a Geocoder
@@ -116,18 +129,19 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 				publishException(null, getString(R.string.error_nolocation));
 			} else {
 				// Found a location! Now look for places
-				lastLocation = new Location("");
+				lastLocation = new Location(GEOCODER_PROVIDER);
 				lastLocation.setLongitude(point.get(0).getLongitude());
 				lastLocation.setLatitude(point.get(0).getLatitude());
 				execute(new GetPlacesAroundCommand(getUser(), DEFAULT_RADIUS, lastLocation.getLatitude(),
 						lastLocation.getLongitude()));
 			}
 		} catch (IOException e) {
-			// Canot connect to geocoder server: give an error
+			// Can't connect to Geocoder server: give an error
 			publishException(null, getString(R.string.error_nolocation));
 		}		
 	}
 	
+	// Implements OnLocationSelectedListener
 	@Override
 	public void onUseCurrentLocation() {
 		refreshPlaces();
@@ -165,6 +179,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 				getView().post(new Runnable() {
 					@Override
 					public void run() {
+						getSettings().saveLastUserLocation(lastLocation);
 						execute(new GetPlacesAroundCommand(getUser(), DEFAULT_RADIUS, 
 								lastLocation.getLatitude(), lastLocation.getLongitude()));
 					}
@@ -197,65 +212,31 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			((PlacesAdapter) placesView.getAdapter()).replace(result);
 		}
 
-		if (lastLocation != null) {
-			
-			// Get the activity-wide MapView to show on this fragment and center on this current location
-			MapView mapView = ((RateBeerActivity)getActivity()).requestMapViewInstance();
-			mapView.getController().animateTo(LocationUtils.getPoint(lastLocation.getLatitude(), 
-					lastLocation.getLongitude()));
-			mapFrame.addView(mapView);
-			
-			// Add an overlay of different type of places
-			SimpleItemizedOverlay brewpubOverlay = getPlaceTypeMarker(mapView, 1, this);
-			SimpleItemizedOverlay barOverlay = getPlaceTypeMarker(mapView, 2, this);
-			SimpleItemizedOverlay storeOverlay = getPlaceTypeMarker(mapView, 3, this);
-			SimpleItemizedOverlay restaurantOverlay = getPlaceTypeMarker(mapView, 4, this);
-			SimpleItemizedOverlay brewerOverlay = getPlaceTypeMarker(mapView, 5, this);
-			for (Place place : this.places) {
-				// Create an overlay item with a specific point and a name/description for the balloon
-				OverlayItem item = new PlaceOverlayItem(LocationUtils.getPoint(place.latitude, place.longitude),
-						place.placeName, place.avgRating > 0 ? getString(R.string.places_rateandcount,
-								Integer.toString(place.avgRating)) : getString(R.string.places_notyetrated), place);
-				// Place it in the right overlay to get the right icon
-				switch (place.placeType) {
-				case 1:
-					brewpubOverlay.addOverlay(item);
-					break;
-				case 2:
-					barOverlay.addOverlay(item);
-					break;
-				case 3:
-					storeOverlay.addOverlay(item);
-					break;
-				case 4:
-					restaurantOverlay.addOverlay(item);
-					break;
-				case 5:
-					brewerOverlay.addOverlay(item);
-					break;
-				default:
-					brewpubOverlay.addOverlay(item);
-					break;
-				}
-				mapView.getOverlays().add(brewpubOverlay);
-				mapView.getOverlays().add(barOverlay);
-				mapView.getOverlays().add(storeOverlay);
-				mapView.getOverlays().add(restaurantOverlay);
-				mapView.getOverlays().add(brewerOverlay);
-				
+		if (lastLocation != null && getMap() != null) {
+
+			// TODO: Show user location
+			LocationUtils.initGoogleMap(getMap(), lastLocation.getLatitude(), lastLocation.getLongitude());
+			for (Place place : places) {
+				Marker m = getMap().addMarker(new MarkerOptions()
+					.position(new LatLng(place.latitude, place.longitude))
+					.title(place.placeName)
+					.snippet(LocationUtils.getPlaceSnippet(getActivity(), place))
+					.icon(BitmapDescriptorFactory.defaultMarker(LocationUtils.getPlaceColour(place))));
+				markersMap.put(m.getId(), place);
 			}
-			
+			getMap().setOnInfoWindowClickListener(onInfoWindowClicked);
+			getMap().setMyLocationEnabled(true);
+
 		}
 		
 	}
 
-	@Override
-	public void onBalloonClicked(OverlayItem item) {
-		if (item instanceof PlaceOverlayItem) {
-			load(PlaceViewFragment_.builder().place(((PlaceOverlayItem) item).getPlace()).currentLocation(lastLocation)
-					.build());
+	private OnInfoWindowClickListener onInfoWindowClicked = new OnInfoWindowClickListener() {
+		@Override
+		public void onInfoWindowClick(Marker marker) {
+			load(PlaceViewFragment_.builder().place(markersMap.get(marker.getId())).currentLocation(lastLocation).build());
 		}
-	}
+	};
 	
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {
@@ -322,24 +303,6 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		}
 	}
 	
-	public static SimpleItemizedOverlay getPlaceTypeMarker(MapView mapView, int placeType, OnBalloonClickListener bcl) {
-		Resources res = mapView.getContext().getResources();
-		switch (placeType) {
-		case 1:
-			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_red), mapView, bcl);
-		case 2:
-			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_blue), mapView, bcl);
-		case 3:
-			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_green), mapView, bcl);
-		case 4:
-			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_yellow), mapView, bcl);
-		case 5:
-			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_purple), mapView, bcl);
-		default:
-			return new SimpleItemizedOverlay(res.getDrawable(R.drawable.map_marker_red), mapView, bcl);
-		}
-	}
-
 	protected static class ViewHolder {
 		TextView placeName, placeType, distance, city, score;
 	}
@@ -357,7 +320,7 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 			placesView = pagerListView;
 			placesView.setOnItemClickListener(onItemSelected);
 			
-			mapFrame = pagerMapView;
+			setMapView((MapView) pagerMapView.findViewById(R.id.map_nearby));
 		}
 		
 		@Override
@@ -369,9 +332,9 @@ public class PlacesFragment extends RateBeerFragment implements OnLocationSelect
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.places_nearby).toUpperCase();
+				return getActivity().getString(R.string.places_nearby).toUpperCase(Locale.getDefault());
 			case 1:
-				return getActivity().getString(R.string.places_map).toUpperCase();
+				return getActivity().getString(R.string.places_map).toUpperCase(Locale.getDefault());
 			}
 			return null;
 		}

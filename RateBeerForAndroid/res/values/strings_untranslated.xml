@@ -7,11 +7,6 @@
     <string name="app_weblink" translatable="false">Web: http://2312.nl</string>
     <string name="app_maillink" translatable="false">Mail: rb@2312.nl</string>
     
-    <!-- Debug key -->
-	<!-- <string name="app_googlemapskey">0tkfMrcfmFeOYepTmK7jTpCSyChzQ-a34wn0k7A</string> -->
-    <!-- Release key -->
-    <string name="app_googlemapskey" translatable="false">0tkfMrcfmFeMk6gz4Ok0a51w4Q1hKs23Yz7BDuQ</string>
-
     <!-- Matches the enum values of BeerSearchResultComparator.SortBy -->
 	<string-array name="brewers_sortby_values" translatable="false">
 		<item>Name</item>

@@ -19,14 +19,11 @@ package com.ratebeer.android.gui.components;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
-import android.widget.FrameLayout;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Bean;
@@ -45,7 +42,6 @@ import com.ratebeer.android.gui.components.helpers.Log;
 import com.ratebeer.android.gui.components.helpers.OnProgressChangedListener;
 import com.ratebeer.android.gui.components.helpers.RateBeerTaskCaller;
 import com.ratebeer.android.gui.fragments.DashboardFragment;
-import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
 @EBean
 public abstract class RateBeerActivity extends SherlockFragmentActivity implements OnProgressChangedListener {
@@ -62,9 +58,6 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 	private boolean inProgress = false; // Whether there is any progress going on (which is not exclusively a RateBeerTask)
 	// Local progress reporter (showing progress in the action bar)
 	private OnProgressChangedListener onProgressChangedListener = this;
-
-	// Google Maps container management
-	private MapView mapViewInstance = null;
 
 	@Bean
 	protected Log Log;
@@ -98,7 +91,7 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 		super.onResume();
 		
 		// Update the user settings indicator
-		invalidateOptionsMenu();
+		supportInvalidateOptionsMenu();
 
 		// Restore 'up' button state
 		Fragment now = getSupportFragmentManager().findFragmentById(R.id.frag_content);
@@ -169,7 +162,7 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 	public void setProgress(boolean inProgress) {
 		this.inProgress = inProgress;
 		// Redraw the options menu so the refresh action bar item can show a undetermined progress indicator
-		invalidateOptionsMenu();
+		supportInvalidateOptionsMenu();
 	}
 
 	/**
@@ -215,32 +208,6 @@ public abstract class RateBeerActivity extends SherlockFragmentActivity implemen
 			}
 		}
 	};
-
-	@SuppressWarnings("rawtypes")
-	public MapView requestMapViewInstance() {
-
-		// Create the map view if if we didn't have one yet
-		if (mapViewInstance == null) {
-			mapViewInstance = new MapView(this, getString(R.string.app_googlemapskey));
-			mapViewInstance.setClickable(true);
-			mapViewInstance.setBuiltInZoomControls(true);
-			mapViewInstance.getController().setZoom(15);
-		}
-		for (Overlay overlay : mapViewInstance.getOverlays()) {
-			if (overlay instanceof BalloonItemizedOverlay) {
-				((BalloonItemizedOverlay) overlay).hideAllBalloons();
-			}
-		}
-		mapViewInstance.getOverlays().clear();
-		
-		// Make sure it is not attached to any view
-		if (mapViewInstance.getParent() != null && mapViewInstance.getParent() instanceof FrameLayout) {
-			((FrameLayout)mapViewInstance.getParent()).removeView(mapViewInstance);
-		}
-		
-		return mapViewInstance;
-		
-	}
 
 	private UserSettings getUser() {
 		return applicationSettings.getUserSettings();

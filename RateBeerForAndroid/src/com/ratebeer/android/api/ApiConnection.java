@@ -96,6 +96,9 @@ public class ApiConnection {
 
 		// Prepare a POST request to url
 		HttpRequestBuilder prepared = httpClient.post(url);
+		for (NameValuePair pair : parameters) {
+			prepared.param(pair.getName(), pair.getValue());
+		}
 
 		// Build a multipart http POST request where the content type and file contents are written to
 		final String BOUNDARY = "xxxxxxxxxx";

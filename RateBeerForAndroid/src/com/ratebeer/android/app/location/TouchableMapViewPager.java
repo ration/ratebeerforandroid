@@ -43,7 +43,7 @@ public class TouchableMapViewPager extends ViewPager {
 	
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		View map = findViewById(R.id.map);
+		View map = findViewById(R.id.map_nearby);
 		if (map != null) {
 			Rect rect = new Rect();
             map.getHitRect(rect);

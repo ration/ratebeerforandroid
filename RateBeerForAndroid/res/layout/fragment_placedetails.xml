@@ -30,9 +30,9 @@
 		android:visibility="invisible"
 		style="@style/DetailsButton" />
 
-	<fragment
-		android:id="@+id/map"
-		android:name="com.google.android.gms.maps.SupportMapFragment"
+	<com.google.android.gms.maps.MapView
+		android:id="@+id/map_place"
+		android:layout_width="match_parent"
 		android:layout_height="0dip"
 		android:layout_weight="1"
 		android:layout_marginTop="10dip" />

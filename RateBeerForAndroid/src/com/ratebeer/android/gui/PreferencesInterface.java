@@ -43,6 +43,7 @@ public class PreferencesInterface extends SherlockPreferenceActivity {
 	public PreferencesInterface() {
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

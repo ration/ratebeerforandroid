@@ -44,8 +44,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -71,7 +70,7 @@ import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResultCompa
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResultComparator.SortBy;
 import com.ratebeer.android.api.command.State;
 import com.ratebeer.android.app.location.LocationUtils;
-import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.RateBeerMapFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
@@ -81,7 +80,7 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_brewerview)
 @OptionsMenu({R.menu.refresh, R.menu.brewer, R.menu.share})
-public class BrewerViewFragment extends RateBeerFragment {
+public class BrewerViewFragment extends RateBeerMapFragment {
 
 	protected static final String BASE_URI_FACEBOOK = "https://www.facebook.com/%1$s";
 	protected static final String BASE_URI_TWITTER = "https://twitter.com/%1$s";
@@ -101,8 +100,6 @@ public class BrewerViewFragment extends RateBeerFragment {
 	protected ListView beersView;
 	protected TextView nameText, descriptionText;
 	protected Button locationText, websiteButton, facebookButton, twitterButton;
-	private GoogleMap map;
-	private SupportMapFragment mapFragment;
 
 	public BrewerViewFragment() {
 	}
@@ -281,7 +278,7 @@ public class BrewerViewFragment extends RateBeerFragment {
 		facebookButton.setVisibility(brewer.facebook.equals("") || brewer.facebook.equals("null")? View.GONE: View.VISIBLE);
 		twitterButton.setVisibility(brewer.twitter.equals("") || brewer.twitter.equals("null")? View.GONE: View.VISIBLE);
 
-		if (map != null) {
+		if (getMap() != null) {
 			try {
 				// Use Geocoder to look up the coordinates of this brewer
 				try {
@@ -289,23 +286,23 @@ public class BrewerViewFragment extends RateBeerFragment {
 							+ brewer.city, 1);
 					if (point.size() <= 0) {
 						// Cannot find address: hide the map
-						getFragmentManager().beginTransaction().hide(mapFragment).commit();
+						getMapView().setVisibility(View.GONE);
 					} else {
 						// Found a location! Center the map here
-						LocationUtils.initGoogleMap(map, point.get(0).getLatitude(), point.get(0).getLongitude());
-						map.addMarker(new MarkerOptions()
+						LocationUtils.initGoogleMap(getMap(), point.get(0).getLatitude(), point.get(0).getLongitude());
+						getMap().addMarker(new MarkerOptions()
 								.position(new LatLng(point.get(0).getLatitude(), point.get(0).getLongitude()))
 								.title(brewer.brewerName).snippet(brewer.city)
 								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-						getFragmentManager().beginTransaction().show(mapFragment).commit();
+						getMapView().setVisibility(View.VISIBLE);
 					}
 				} catch (IOException e) {
 					// Can't connect to Geocoder server: hide the map
-					getFragmentManager().beginTransaction().hide(mapFragment).commit();
+					getMapView().setVisibility(View.GONE);
 				}
 			} catch (NoSuchMethodError e) {
 				// Geocoder is not available at all: hide the map
-				getFragmentManager().beginTransaction().hide(mapFragment).commit();
+				getMapView().setVisibility(View.GONE);
 			}
 		}
 
@@ -369,8 +366,7 @@ public class BrewerViewFragment extends RateBeerFragment {
 			websiteButton = (Button) pagerDetailsView.findViewById(R.id.website);
 			facebookButton = (Button) pagerDetailsView.findViewById(R.id.facebook);
 			twitterButton = (Button) pagerDetailsView.findViewById(R.id.twitter);
-			map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-			mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
+			setMapView((MapView) pagerDetailsView.findViewById(R.id.map_brewer));
 			locationText.setOnClickListener(onLocationClick);
 			websiteButton.setOnClickListener(onWebsiteClick);
 			facebookButton.setOnClickListener(onFacebookClick);

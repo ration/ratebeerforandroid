@@ -18,8 +18,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ratebeer.android"
-	android:versionCode="43"
-	android:versionName="1.5.0-dev"
+	android:versionCode="44"
+	android:versionName="1.5.0"
 	android:installLocation="auto">
 	
 	<!-- Supported and required Android features -->
@@ -111,7 +111,7 @@
 		<receiver android:name="com.ratebeer.android.app.location.PassiveLocationUpdateReceiver_" />
 		<meta-data 
 			android:name="com.google.android.maps.v2.API_KEY" 
-			android:value="AIzaSyA4iVFyBTWzsFgqVKxLyF9Fto996YN_pLQ" />
+			android:value="AIzaSyCB1GwDznbJT9QJMhthO5L_ZJ71KBcaJUc" />
 		<!-- Debug: AIzaSyA4iVFyBTWzsFgqVKxLyF9Fto996YN_pLQ -->
 		<!-- Release: AIzaSyCB1GwDznbJT9QJMhthO5L_ZJ71KBcaJUc -->
 		

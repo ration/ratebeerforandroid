@@ -14,7 +14,8 @@
 			android:id="@+id/name"
 			style="@style/DetailsHeadertext"
 			android:layout_height="wrap_content"
-			android:layout_width="fill_parent" />
+			android:layout_width="fill_parent"
+			android:textIsSelectable="true" />
 	
 		<Button
 			android:id="@+id/location"
@@ -31,15 +32,16 @@
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="10dip"
 			android:visibility="invisible"
-			android:autoLink="all" />
-			
-		<FrameLayout
-			android:id="@+id/map"
+			android:autoLink="all"
+			android:textIsSelectable="true" />
+
+		<com.google.android.gms.maps.MapView
+			android:id="@+id/map_brewer"
 			android:layout_width="fill_parent"
 			android:layout_height="150dip"
-			android:layout_marginTop="10dip"
-			android:layout_marginBottom="10dip" />
-			
+			android:layout_marginBottom="10dip"
+			android:layout_marginTop="10dip" />
+
 		<Button
 			android:id="@+id/website"
 			style="@style/DetailsButtonSmall"

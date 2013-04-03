@@ -30,7 +30,7 @@
 <string name="app_addingcodefor">Lisan triipkoodi %1$</string>
 <string name="app_noaccount">Pole veel oma kontot?\nhttp://www.ratebeer.com/NewUser.asp</string>
 <string name="app_newmail">Sulle on uus sõnum</string>
-<string name="app_newmails">Sulle on %1$ uut sõnumit</string>
+<string name="app_newmails">Sulle on %1$s uut sõnumit</string>
 <string name="app_by">kasutajalt %1$s</string>
 <string name="app_andothers">ja teised</string>
 <string name="app_uploadingphoto">Laadin uut fotot üles</string>

@@ -50,7 +50,6 @@ public class UpcSearchCommand extends JsonCommand {
 	@Override
 	protected void parse(JSONArray json) throws JSONException {
 
-		// Will this ever return more than one?
 		for (int i = 0; i < json.length(); i++) {
 			// [{"BeerID":422,"BeerName":"Stone India Pale Ale (IPA)","BrewerID":76,"BrewerName":"Stone Brewing Co.","AverageRating":3.980633,"alcohol":6.9}]
 			JSONObject jsonObject = json.getJSONObject(i);

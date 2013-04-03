@@ -90,7 +90,13 @@ public class GetEventDetailsCommand extends HtmlCommand {
 		String location = HttpHelper.cleanHtml(html.substring(locationStart, html.indexOf("<", locationStart)));
 
 		int addressStart = html.indexOf("\">", locationStart) + "\">".length();
-		String address = HttpHelper.cleanHtml(html.substring(addressStart, html.indexOf(" [ map ]", addressStart)).trim());
+		String addressFull[] = HttpHelper.cleanHtml(html.substring(addressStart, html.indexOf(" [ map ]", addressStart)).trim()).split("\n");
+		String address = addressFull[0].trim();
+		String city = "";
+		if (addressFull.length > 1) {
+			city = addressFull[1].trim();
+			city = city.replace("                          ", " ");
+		}
 
 		String detailsText = "<strong><h3>Details</h3></strong><br>";
 		int detailsStart = html.indexOf(detailsText, addressStart) + detailsText.length();
@@ -113,7 +119,7 @@ public class GetEventDetailsCommand extends HtmlCommand {
 		}
 
 		// Set the user's rating on the original command as result
-		this.details = new EventDetails(name, days, times, location, address, null, details, contact, attendees);
+		this.details = new EventDetails(name, days, times, location, address, city, details, contact, attendees);
 		
 	}
 

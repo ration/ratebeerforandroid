@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import android.content.Context;
@@ -38,14 +40,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapView;
-import com.google.android.maps.OverlayItem;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
@@ -58,17 +60,17 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.command.Country;
+import com.ratebeer.android.api.command.GetAliasedBeerCommand;
 import com.ratebeer.android.api.command.GetBrewerBeersCommand;
 import com.ratebeer.android.api.command.GetBrewerDetailsCommand;
 import com.ratebeer.android.api.command.GetBrewerDetailsCommand.BrewerDetails;
 import com.ratebeer.android.api.command.SearchBeersCommand;
 import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResult;
+import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResultComparator;
+import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResultComparator.SortBy;
 import com.ratebeer.android.api.command.State;
 import com.ratebeer.android.app.location.LocationUtils;
-import com.ratebeer.android.app.location.SimpleItemizedOverlay;
-import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
-import com.ratebeer.android.gui.components.RateBeerActivity;
-import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.RateBeerMapFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.viewpagerindicator.TabPageIndicator;
@@ -77,8 +79,8 @@ import de.neofonie.mobile.app.android.widget.crouton.Crouton;
 import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_brewerview)
-@OptionsMenu({R.menu.refresh, R.menu.share})
-public class BrewerViewFragment extends RateBeerFragment implements OnBalloonClickListener {
+@OptionsMenu({R.menu.refresh, R.menu.brewer, R.menu.share})
+public class BrewerViewFragment extends RateBeerMapFragment {
 
 	protected static final String BASE_URI_FACEBOOK = "https://www.facebook.com/%1$s";
 	protected static final String BASE_URI_TWITTER = "https://twitter.com/%1$s";
@@ -98,7 +100,6 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 	protected ListView beersView;
 	protected TextView nameText, descriptionText;
 	protected Button locationText, websiteButton, facebookButton, twitterButton;
-	protected FrameLayout mapFrame;
 
 	public BrewerViewFragment() {
 	}
@@ -123,6 +124,11 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 	protected void onRefresh() {
 		refreshDetails();
 		refreshBeers();
+	}
+	
+	@OptionsItem(R.id.menu_sortby)
+	protected void onSort() {
+		new BrewerBeersSortDialog(this).show(getActivity().getSupportFragmentManager(), null);
 	}
 	
 	@OptionsItem(R.id.menu_share)
@@ -199,10 +205,9 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			BeerSearchResult item = ((BrewerBeersAdapter) beersView.getAdapter()).getItem(position);
 			if (item.isAlias) {
-				// Unfortunately this is the only possible workaround for now to prohibit viewing an aliased beer as
-				// if it were a normal one (see issue 8)
-				// TODO: Actually we might want to link to the full website or even parse that HTML page
-				Crouton.makeText(getActivity(), R.string.search_aliasedbeer, Style.INFO).show();
+				// No aliased beer id: try to parse it instead
+				Crouton.makeText(getActivity(), R.string.search_aliasedbeer_redirect, Style.INFO).show();
+				execute(new GetAliasedBeerCommand(getUser(), item.beerId));
 				return;
 			}
 			load(BeerViewFragment_.builder().beerId(item.beerId).beerName(item.beerName).ratingsCount(item.rateCount)
@@ -216,7 +221,17 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 			publishDetails(((GetBrewerDetailsCommand) result.getCommand()).getDetails());
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBrewerBeers) {
 			publishBeers(((GetBrewerBeersCommand) result.getCommand()).getBeers());
+		} else if (result.getCommand().getMethod() == ApiMethod.GetAliasedBeer) {
+			// Alias found: redirect to beer details
+			load(BeerViewFragment_.builder().beerId(((GetAliasedBeerCommand) result.getCommand()).getAliasedBeerId())
+					.build());
 		}
+	}
+
+	public void setSortOrder(SortBy sortBy) {
+		// Sort and publish again (which stores and shows the updated list)
+		Collections.sort(beers, new BeerSearchResultComparator(sortBy));
+		publishBeers(beers);
 	}
 
 	private void publishDetails(BrewerDetails details) {
@@ -225,7 +240,7 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 			return;
 		}
 		// Show details
-		setDetails(details);
+		setDetails();
 	}
 
 	private void publishBeers(ArrayList<BeerSearchResult> beers) {
@@ -237,7 +252,7 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		}
 	}
 
-	private void setDetails(BrewerDetails details) {
+	private void setDetails() {
 		nameText.setText(brewer.brewerName);
 		descriptionText.setText(brewer.description == null? "": brewer.description);
 		String state = "";
@@ -263,40 +278,34 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		facebookButton.setVisibility(brewer.facebook.equals("") || brewer.facebook.equals("null")? View.GONE: View.VISIBLE);
 		twitterButton.setVisibility(brewer.twitter.equals("") || brewer.twitter.equals("null")? View.GONE: View.VISIBLE);
 
-		// Get the activity-wide MapView to show on this fragment and center on this brewer's location
-		MapView mapView = ((RateBeerActivity) getActivity()).requestMapViewInstance();
-		try {
-			// Use Geocoder to look up the coordinates
+		if (getMap() != null) {
 			try {
-				List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address + " "
-						+ details.city, 1);
-				if (point.size() <= 0) {
-					// Cannot find address: hide the map
-					mapFrame.setVisibility(View.GONE);
-				} else {
-					// Found a location! Center the map here
-					GeoPoint center = LocationUtils.getPoint(point.get(0).getLatitude(), point.get(0).getLongitude());
-					mapView.getController().setCenter(center);
-					mapFrame.setVisibility(View.VISIBLE);
-					final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, 5, this);
-					to.addOverlay(new OverlayItem(center, brewer.brewerName, brewer.city + state));
-					mapView.getOverlays().add(to);
+				// Use Geocoder to look up the coordinates of this brewer
+				try {
+					List<Address> point = new Geocoder(getActivity()).getFromLocationName(brewer.address + " "
+							+ brewer.city, 1);
+					if (point.size() <= 0) {
+						// Cannot find address: hide the map
+						getMapView().setVisibility(View.GONE);
+					} else {
+						// Found a location! Center the map here
+						LocationUtils.initGoogleMap(getMap(), point.get(0).getLatitude(), point.get(0).getLongitude());
+						getMap().addMarker(new MarkerOptions()
+								.position(new LatLng(point.get(0).getLatitude(), point.get(0).getLongitude()))
+								.title(brewer.brewerName).snippet(brewer.city)
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+						getMapView().setVisibility(View.VISIBLE);
+					}
+				} catch (IOException e) {
+					// Can't connect to Geocoder server: hide the map
+					getMapView().setVisibility(View.GONE);
 				}
-			} catch (IOException e) {
-				// Canot connect to geocoder server: hide the map
-				mapFrame.setVisibility(View.GONE);
+			} catch (NoSuchMethodError e) {
+				// Geocoder is not available at all: hide the map
+				getMapView().setVisibility(View.GONE);
 			}
-		} catch (NoSuchMethodError e) {
-			// Geocoder is not available at all: hide the map
-			mapFrame.setVisibility(View.GONE);
 		}
-		mapFrame.addView(mapView);
 
-	}
-
-	@Override
-	public void onBalloonClicked(OverlayItem item) {
-		// No event, yet
 	}
 
 	private class BrewerBeersAdapter extends ArrayAdapter<BeerSearchResult> {
@@ -357,7 +366,7 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 			websiteButton = (Button) pagerDetailsView.findViewById(R.id.website);
 			facebookButton = (Button) pagerDetailsView.findViewById(R.id.facebook);
 			twitterButton = (Button) pagerDetailsView.findViewById(R.id.twitter);
-			mapFrame = (FrameLayout) pagerDetailsView.findViewById(R.id.map);
+			setMapView((MapView) pagerDetailsView.findViewById(R.id.map_brewer));
 			locationText.setOnClickListener(onLocationClick);
 			websiteButton.setOnClickListener(onWebsiteClick);
 			facebookButton.setOnClickListener(onFacebookClick);
@@ -374,9 +383,9 @@ public class BrewerViewFragment extends RateBeerFragment implements OnBalloonCli
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details).toUpperCase();
+				return getActivity().getString(R.string.app_details).toUpperCase(Locale.getDefault());
 			case 1:
-				return getActivity().getString(R.string.brewers_beers).toUpperCase();
+				return getActivity().getString(R.string.brewers_beers).toUpperCase(Locale.getDefault());
 			}
 			return null;
 		}

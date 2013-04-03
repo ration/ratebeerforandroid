@@ -34,13 +34,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
-import com.google.android.maps.MapView;
-import com.google.android.maps.OverlayItem;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.FragmentArg;
@@ -58,10 +59,7 @@ import com.ratebeer.android.api.command.GetEventDetailsCommand.Attendee;
 import com.ratebeer.android.api.command.GetEventDetailsCommand.EventDetails;
 import com.ratebeer.android.api.command.SetEventAttendanceCommand;
 import com.ratebeer.android.app.location.LocationUtils;
-import com.ratebeer.android.app.location.SimpleItemizedOverlay;
-import com.ratebeer.android.app.location.SimpleItemizedOverlay.OnBalloonClickListener;
-import com.ratebeer.android.gui.components.RateBeerActivity;
-import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.RateBeerMapFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
@@ -70,7 +68,7 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
 
 @EFragment(R.layout.fragment_eventview)
 @OptionsMenu({R.menu.refresh, R.menu.share})
-public class EventViewFragment extends RateBeerFragment implements OnBalloonClickListener {
+public class EventViewFragment extends RateBeerMapFragment {
 
 	@FragmentArg
 	@InstanceState
@@ -85,10 +83,23 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 	protected ListView eventView;
 	@ViewById(R.id.attendees)
 	protected ListView attendeesView;
-	private TextView nameText, detailsText, contactText, attendeeslabel;
-	private Button locationText, timeText, setattendanceButton;
-	private FrameLayout mapFrame;
+	@ViewById(R.id.name)
+	protected TextView nameText;
+	@ViewById(R.id.details)
+	protected TextView detailsText;
+	@ViewById(R.id.contact)
+	protected TextView contactText;
+	@ViewById
+	protected TextView attendeeslabel;
+	@ViewById(R.id.location)
+	protected Button locationText;
+	@ViewById(R.id.time)
+	protected Button timeText;
+	@ViewById(R.id.setattendance)
+	protected Button setattendanceButton;
 	private AttendeeAdapter attendeeAdapter;
+	@ViewById(R.id.map_event)
+	protected MapView mapEvent;
 	
 	public EventViewFragment() {
 	}
@@ -103,7 +114,7 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 			// Tablet
 			attendeeAdapter = new AttendeeAdapter(getActivity(), new ArrayList<Attendee>());
 			attendeesView.setAdapter(attendeeAdapter);
-			initFields(getView());
+			setMapView(mapEvent);
 		}
 		
 		if (details != null) {
@@ -150,14 +161,14 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 		// Update the event name and title
 		this.eventName = details.name;
 		// Show details
-		setDetails(details);
+		setDetails();
 	}
 
 	/**
 	 * Overrides the different textual details about this event, as shown as header, as well as the list of attendees
 	 * @param details The event details object, which includes the list of attendees
 	 */
-	public void setDetails(EventDetails details) {
+	public void setDetails() {
 		nameText.setText(details.name);
 		timeText.setText(details.days + (details.times == null || details.times.equals("")? "": "\n" + details.times));
 		timeText.setVisibility(View.VISIBLE);
@@ -173,42 +184,35 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 		} else {
 			setattendanceButton.setText(R.string.events_addattendance);
 		}
-		
-		// Get the activity-wide MapView to show on this fragment and center on this event's location
-		final MapView mapView = ((RateBeerActivity)getActivity()).requestMapViewInstance();
-		mapFrame.addView(mapView);
-		try {
-			// Use Geocoder to look up the coordinates
-			try {
-				List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address
-						+ (details.city != null ? " " + details.city : ""), 1);
-				if (point.size() <= 0) {
-					// Cannot find address: hide the map
-					mapFrame.setVisibility(View.GONE);
-				} else {
-					// Found a location! Center the map here
-					mapFrame.setVisibility(View.VISIBLE);
-					mapView.getController().setCenter(
-							LocationUtils.getPoint(point.get(0).getLatitude(), point.get(0).getLongitude()));
-					final SimpleItemizedOverlay to = PlacesFragment.getPlaceTypeMarker(mapView, 2, this);
-					to.addOverlay(new OverlayItem(LocationUtils.getPoint(point.get(0).getLatitude(), point.get(0)
-							.getLongitude()), details.name, details.times));
-					mapView.getOverlays().add(to);
-				}
-			} catch (IOException e) {
-				// Canot connect to geocoder server: hide the map
-				mapFrame.setVisibility(View.GONE);
-			}
-		} catch (NoSuchMethodError e) {
-			// Geocoder is not available at all: hide the map
-			mapFrame.setVisibility(View.GONE);
-		}
-		
-	}
 
-	@Override
-	public void onBalloonClicked(OverlayItem item) {
-		// No action, for now
+		if (getMap() != null) {
+			try {
+				// Use Geocoder to look up the coordinates of this brewer
+				try {
+					List<Address> point = new Geocoder(getActivity()).getFromLocationName(details.address + " "
+							+ details.city, 1);
+					if (point.size() <= 0) {
+						// Cannot find address: hide the map
+						getMapView().setVisibility(View.GONE);
+					} else {
+						// Found a location! Center the map here
+						LocationUtils.initGoogleMap(getMap(), point.get(0).getLatitude(), point.get(0).getLongitude());
+						getMap().addMarker(new MarkerOptions()
+								.position(new LatLng(point.get(0).getLatitude(), point.get(0).getLongitude()))
+								.title(details.location).snippet(details.city)
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+						getMapView().setVisibility(View.VISIBLE);
+					}
+				} catch (IOException e) {
+					// Can't connect to Geocoder server: hide the map
+					getMapView().setVisibility(View.GONE);
+				}
+			} catch (NoSuchMethodError e) {
+				// Geocoder is not available at all: hide the map
+				getMapView().setVisibility(View.GONE);
+			}
+		}
+
 	}
 
 	private OnClickListener onLocationClicked = new OnClickListener() {
@@ -347,7 +351,7 @@ public class EventViewFragment extends RateBeerFragment implements OnBalloonClic
 		locationText = (Button) fields.findViewById(R.id.location);
 		detailsText = (TextView) fields.findViewById(R.id.details);
 		contactText = (TextView) fields.findViewById(R.id.contact);
-		mapFrame = (FrameLayout) fields.findViewById(R.id.map);
+		setMapView((MapView) fields.findViewById(R.id.map_event));
 		attendeeslabel = (TextView) fields.findViewById(R.id.attendeeslabel);
 		setattendanceButton = (Button) fields.findViewById(R.id.setattendance);
 		locationText.setOnClickListener(onLocationClicked );

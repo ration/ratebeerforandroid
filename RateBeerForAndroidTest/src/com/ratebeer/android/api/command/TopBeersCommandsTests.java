@@ -49,7 +49,7 @@ public class TopBeersCommandsTests extends AndroidTestCase {
 		assertEquals(25, style.beers.size()); // Not logged in, so we should see 25 (only premium users see 50)
 		TopBeer westvleteren = style.beers.get(0);
 		assertNotNull(westvleteren);
-		assertEquals("Westvleteren 12", westvleteren.beerName);
+		assertEquals("Westvleteren 12 (XII)", westvleteren.beerName);
 		assertEquals(4934, westvleteren.beerId);
 		assertEquals(1, westvleteren.orderNr);
 		assertTrue("Westvleteren score is between 4 and 5", westvleteren.score > 4D && westvleteren.score < 5D);

@@ -73,7 +73,7 @@ public class GetStyleDetailsCommand extends HtmlCommand {
 		List<String> servedIn = new ArrayList<String>();
 		int servedInStart = html.indexOf(servedInText, descriptionStart);
 		while (servedInStart >= 0) {
-			servedIn.add(HttpHelper.cleanHtml(html.substring(servedInStart + servedInText.length(), html.indexOf("<br>", servedInStart))));
+			servedIn.add(HttpHelper.cleanHtml(html.substring(servedInStart + servedInText.length(), html.indexOf("<br>", servedInStart))).trim());
 			servedInStart = html.indexOf(servedInText, servedInStart + 1);
 		}
 

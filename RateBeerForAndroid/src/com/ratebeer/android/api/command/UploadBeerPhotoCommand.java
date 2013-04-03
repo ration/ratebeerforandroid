@@ -26,9 +26,10 @@ import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,7 +67,6 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
-		ApiConnection.ensureLogin(apiConnection, getUserSettings());
 		try {
 
 			// Produce SHA-1 string of signature fields and secret key
@@ -79,14 +79,16 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 			// Post the photo and parameters
 			DefaultHttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost("http://api.cloudinary.com/v1_1/ratebeer/image/upload");
+			HttpParams params = post.getParams();
+			HttpClientParams.setRedirecting(params, false);
 			post.setEntity(new MultipartEntity(new Part[] {
-					new FilePart("file", photo), 
+					new FilePart("file", photo, FilePart.DEFAULT_CONTENT_TYPE, FilePart.DEFAULT_CHARSET), 
 					new StringPart("api_key", "447414912764277"),
 					new StringPart("timestamp", time),
 					new StringPart("public_id", "beer_" + beerId),
-					new StringPart("format", "jpg"),
-					new StringPart("signature", byteArrayToHexString(digest))
-			}, post.getParams()));
+					new StringPart("signature", byteArrayToHexString(digest)),
+					new StringPart("format", "jpg")
+			}, params));
 			HttpResponse response = client.execute(post);
 			
 			// Parse result as JSON stream

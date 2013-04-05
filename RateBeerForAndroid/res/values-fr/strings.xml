@@ -162,7 +162,6 @@
 <string name="search_alias">alias</string>
 <string name="search_rated">évalué</string>
 <string name="search_ratings">%1$s évaluations</string>
-<string name="search_aliasedbeer">Ce nom est un alias: aucun détail disponible</string>
 
 <string name="details_bybrewer">par %1$s.</string>
 <string name="details_score">Pointage</string>
@@ -287,8 +286,8 @@
 </string-array>
 
 <string name="error_offline">Vous n\'êtes pas connecté à Internet ou RateBeer.com est indisponible</string>
-<string name="error_authenticationfailed">Le nom d\'utilisateur ou le mot de passe est incorrect.</string>
 <string name="error_commandfailed">La commande a échouée. La connexion est trop faible ou RateBeer.com est indisponible</string>
+<string name="error_authenticationfailed">Le nom d\'utilisateur ou le mot de passe est incorrect.</string>
 <string name="error_nouserorpass">Le nom d\'utilisateur et le mot de passe sont des champs obligatoires</string>
 <string name="error_nolocation">Votre emplacement n\'a pu être déterminé</string>
 <string name="error_locationnotsupported">Votre appareil ne supporte pas la géolocalisation ou elle est désactivée</string>
@@ -298,8 +297,6 @@
 <string name="error_cannotread">Aucun fichier ou impossible de le lire</string>
 <string name="error_filenotvalid">Le fichier ne contient aucune évaluation hors-ligne (dans le format désiré)</string>
 <string name="error_nocamera">Impossible de prendre une photo; soit vous n\'avez pas de caméra soit il est impossible d\'écrire sur le stockage SD externe</string>
-<string name="error_lc_install">Pour envoyer un rapport d\'erreur, vous devez avoir l\'application gratuite et libre de droits Log Collector. Voulez-vous l\'installer à partir du Play Store?</string>
-<string name="error_lc_run">L\'application Log Collection va maintenant prendre le journal d\'erreurs de l\'appareil et l\'envoyer à rb@2312.nl.\nVous aurez l\'opportunité de réviser et de modifier les données qui seront envoyées.</string>
 <string name="error_invalidurl">L\'adresse URL semble être invalide</string>
 
 </resources>

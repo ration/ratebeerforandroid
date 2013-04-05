@@ -177,7 +177,7 @@
 <string name="details_drinkingthis">Ich trinke dies gerade</string>
 <string name="details_recentratings">Bewertungen</string>
 <string name="details_myrating">Meine Bewertung:</string>
-<string name="details_ticklabel">Oder gib eine Kurzbewertng ab:</string>
+<string name="details_ticklabel">Oder gib eine Kurzbewertung ab:</string>
 <string name="details_otherratings">Ältere Bewertungen:</string>
 <string name="details_availability">Verfügbarkeit</string>
 <string name="details_noavailability">Bisher sind keine Verfügbarkeiten gelistet</string>
@@ -205,7 +205,7 @@
 <string name="rate_addrating">Meine Bewertung hochladen</string>
 <string name="rate_commenttooshort">Der Kommentar sollte mindestens 85 Zeichen haben.</string>
 <string name="rate_ratingnotcompleted">Dein Test ist noch nicht fertig</string>
-<string name="rate_charstogo">Noch %1$s zeichen notwendig</string>
+<string name="rate_charstogo">Noch %1$s Zeichen notwendig</string>
 <string name="rate_commentok">Die Kommtarlänge ist OK!</string>
 <string name="rate_showassistance">Hilfe anzeigen</string>
 <string name="rate_hideassistance">Hilfe ausblenden</string>
@@ -298,8 +298,6 @@
 <string name="error_cannotread">Keine Datei gefunden oder Datei nicht vorhanden</string>
 <string name="error_filenotvalid">Die Datei enthält keine Offline Tests (im richtigen Format)</string>
 <string name="error_nocamera">Ein Foto kann nicht geschossen werden; entweder es ist keine Kamera vorhanden oder der externe SD Speicher kann nicht beschrieben werden</string>
-<string name="error_lc_install">Um ausführliche Informationen zu einem Fehler senden zu können wird das kostenlose Programm Log Collector benötigt. Soll es aus dem Play Store installiert werden?</string>
-<string name="error_lc_run">Der Log Collector sammelt nun die benötigten Informationen und sendet sie an rb@2312.nl. Du hast vor dem Senden die Möglichkeit, die gesammelten Informationen anzuschauen und zu verändern.</string>
 <string name="error_invalidurl">Diese URL scheint ungültig zu sein</string>
 
 </resources>

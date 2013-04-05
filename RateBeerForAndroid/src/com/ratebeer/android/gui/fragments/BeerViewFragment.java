@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
@@ -218,7 +219,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		if (ownRatings != null && ownRatings.size() > 0) {
 			BeerRating ownRating = ownRatings.get(0);
 			// Start new rating fragment, with pre-populated fields
-			SimpleDateFormat df = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+			SimpleDateFormat df = new SimpleDateFormat("M/d/yyyy h:mm:ss a", Locale.US);
 			load(RateFragment_.buildFromConcrete(beerName, beerId, ownRating.ratingId,
 					df.format(ownRating.timeEntered), ownRating.appearance, ownRating.aroma, ownRating.flavor,
 					ownRating.mouthfeel, ownRating.overall, ownRating.comments));
@@ -496,8 +497,8 @@ public class BeerViewFragment extends RateBeerFragment {
 		boolean noScoreYet = details.overallPerc == GetBeerDetailsCommand.NO_SCORE_YET;
 		noscoreyetText.setVisibility(noScoreYet? View.VISIBLE: View.GONE);
 		scoreCard.setVisibility(noScoreYet? View.GONE: View.VISIBLE);
-		scoreText.setText(Integer.toString((int)details.overallPerc));
-		stylepctlText.setText(Integer.toString((int)details.stylePerc));
+		scoreText.setText(String.format("%.0f", details.overallPerc));
+		stylepctlText.setText(String.format("%.0f", details.stylePerc));
 		ratingsText.setText(ratingsCount == UNKNOWN_RATINGS_COUNT? "?": Integer.toString(ratingsCount));
 		abvstyleButton.setText(getString(R.string.details_abvstyle, details.beerStyle, String.format(DECIMAL_FORMATTER, details.alcohol)));
 		abvstyleButton.setVisibility(View.VISIBLE);

@@ -34,25 +34,22 @@ import com.googlecode.androidannotations.annotations.EBean;
 public abstract class RateBeerMapFragment extends RateBeerFragment {
 
 	private MapView map = null;
-	private Bundle onCreateBundle = null;
 	
 	public RateBeerMapFragment() {
 	}
 	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		onCreateBundle = savedInstanceState;
-	}
-	
 	/**
 	 * Registers a map view contained in this fragment, so its life cycle can be managed
-	 * @param mapView The MapView object that should be managed and can be received using getMapView() or getMap()
+	 * @param mapView The MapView object that should be managed and which can be received using getMapView() or getMap()
 	 */
 	protected void setMapView(MapView mapView) {
 		this.map = mapView;
 		if (map != null) {
-			map.onCreate(onCreateBundle);
+			// Ideally we should pass the Fragment's savedInstanceState to let MapView reconstruct itself. However, due
+			// to https://code.google.com/p/gmaps-api-issues/issues/detail?id=5083 this will cause exceptions on 
+			// orientation changes (when the contained Parcelable objects are to be unpacked). Instead the fragemnts 
+			// will manually re-initialize and re-populate the map.
+			map.onCreate(null);
 			try {
 				// Force initialization of the Google Play Services
 				// See http://stackoverflow.com/questions/13905230/mapview-and-cameraupdate-in-api-v2

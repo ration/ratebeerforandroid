@@ -65,20 +65,22 @@ public class GetUserDetailsCommand extends HtmlCommand {
 					"The response HTML did not contain the unique event content string");
 		}
 
-		final String nameText = "<h1>";
+		final String nameText = "<span class=\"userIsDrinking\">";
 		int nameStart = html.indexOf(nameText, userStart) + nameText.length();
-		String name = html.substring(nameStart, html.indexOf("</h1>", nameStart)).trim();
+		String name = html.substring(nameStart, html.indexOf("</span>", nameStart)).trim();
 		if (name.indexOf(" ") >= 0)
 			name = name.substring(0, name.indexOf(" "));
 
-		String locationText = "<div style=\"float: left;\">";
+		String locationText = "<span>";
 		int locationStart = html.indexOf(locationText, nameStart) + locationText.length();
 		String location = html.substring(locationStart, html.indexOf("<br>", locationStart)).trim();
 
-		int joinedStart = html.indexOf("class=\"GrayItalic\">", locationStart) + "class=\"GrayItalic\">".length();
+		String joinedText = "class=\"GrayItalic\">";
+		int joinedStart = html.indexOf(joinedText, locationStart) + joinedText.length();
 		String joined = html.substring(joinedStart, html.indexOf("<", joinedStart)).trim();
 
-		int lastSeenStart = html.indexOf("class=\"GrayItalic\">", joinedStart) + "class=\"GrayItalic\">".length();
+		String lastSeenText = "class=\"GrayItalic\">";
+		int lastSeenStart = html.indexOf(lastSeenText, joinedStart) + lastSeenText.length();
 		String lastSeen = html.substring(lastSeenStart, html.indexOf("<", lastSeenStart));
 
 		int beerRateCountStart = html.indexOf("<b>", lastSeenStart) + "<b>".length();

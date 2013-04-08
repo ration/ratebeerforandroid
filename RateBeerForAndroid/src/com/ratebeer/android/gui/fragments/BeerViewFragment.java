@@ -508,8 +508,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		// Only show the buttons bar if we have a signed in user
 		drinkingThisButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
 		addAvailabilityButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
-		//TODO: Enable this again when photo uploads are working
-		//uploadphotoButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
+		uploadphotoButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
 		uploadphotoButton.setVisibility(View.GONE);
 		// Only show the cellar buttons bar if we have a signed in premium user
 		wantthisButton.setVisibility(getUser() != null && getUser().isPremium()? View.VISIBLE: View.GONE);
@@ -806,11 +805,11 @@ public class BeerViewFragment extends RateBeerFragment {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details).toUpperCase();
+				return getActivity().getString(R.string.app_details).toUpperCase(Locale.getDefault());
 			case 1:
-				return getActivity().getString(R.string.details_recentratings).toUpperCase();
+				return getActivity().getString(R.string.details_recentratings).toUpperCase(Locale.getDefault());
 			case 2:
-				return getActivity().getString(R.string.details_availability).toUpperCase();
+				return getActivity().getString(R.string.details_availability).toUpperCase(Locale.getDefault());
 			}
 			return null;
 		}

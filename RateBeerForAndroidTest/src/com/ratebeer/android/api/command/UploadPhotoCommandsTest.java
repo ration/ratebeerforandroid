@@ -20,8 +20,8 @@ public class UploadPhotoCommandsTest extends AndroidTestCase {
 
 		// Try to upload a local photo for 'La Frivole Blonde' (beer id 208093)
 		File photo = new File(Environment.getExternalStorageDirectory().toString() + "/Download/RateBeerTest208093.jpg");
-		UploadBeerPhotoCommand styleCommand = new UploadBeerPhotoCommand(empty, 208093, photo);
-		CommandResult result = styleCommand.execute(apiConnection);
+		UploadBeerPhotoCommand uploadCommand = new UploadBeerPhotoCommand(empty, 208093, photo);
+		CommandResult result = uploadCommand.execute(apiConnection);
 		if (result instanceof CommandFailureResult) {
 			fail("Upload failed: " + ((CommandFailureResult) result).getException().toString());
 		}

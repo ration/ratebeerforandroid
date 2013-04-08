@@ -563,7 +563,7 @@ public class PosterService extends DatabaseConsumerService {
 		builder.setContentIntent(PendingIntent.getActivity(this, 0, contentIntent, 0));
 
 		// Send notification
-		Notification notification = builder.getNotification();
+		Notification notification = builder.build();
 		notificationManager.notify(id, notification);
 
 	}

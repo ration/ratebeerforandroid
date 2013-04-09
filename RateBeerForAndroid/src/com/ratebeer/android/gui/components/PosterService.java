@@ -110,7 +110,7 @@ public class PosterService extends DatabaseConsumerService {
 	private static final int NOTIFY_ADDUPCCODE = 6;
 	private static final int NOTIFY_POSTINGTICK = 7;
 
-	private static final int IMAGE_MAX_SIZE = 800; // Max pixels in one dimension
+	private static final int IMAGE_MAX_SIZE = 1280; // Max pixels in one dimension
 
 	@Bean
 	protected Log Log;

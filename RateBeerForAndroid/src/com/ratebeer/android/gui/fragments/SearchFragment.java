@@ -19,6 +19,7 @@ package com.ratebeer.android.gui.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
@@ -406,7 +407,7 @@ public class SearchFragment extends RateBeerFragment {
 			// Bind the data
 			BeerSearchResult item = getItem(position);
 			holder.beer.setText(item.beerName);
-			holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
+			holder.overall.setText((item.overallPerc >= 0 ? String.format("%.0f", item.overallPerc) : "?"));
 			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
 			holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
 			holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
@@ -562,13 +563,13 @@ public class SearchFragment extends RateBeerFragment {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.search_beers).toUpperCase();
+				return getActivity().getString(R.string.search_beers).toUpperCase(Locale.getDefault());
 			case 1:
-				return getActivity().getString(R.string.search_brewers).toUpperCase();
+				return getActivity().getString(R.string.search_brewers).toUpperCase(Locale.getDefault());
 			case 2:
-				return getActivity().getString(R.string.search_places).toUpperCase();
+				return getActivity().getString(R.string.search_places).toUpperCase(Locale.getDefault());
 			case 3:
-				return getActivity().getString(R.string.search_users).toUpperCase();
+				return getActivity().getString(R.string.search_users).toUpperCase(Locale.getDefault());
 			}
 			return null;
 		}

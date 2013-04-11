@@ -45,6 +45,10 @@ import de.neofonie.mobile.app.android.widget.crouton.Style;
 @EBean
 public abstract class RateBeerFragment extends SherlockFragment implements RateBeerTaskCaller {
 
+	// Action bar items provided by RateBeerFragment
+	public static final int MENU_SIGNIN = 9801;
+	public static final int MENU_SIGNOUT = 9802;
+	
 	protected boolean showSignInMenuItem = true;
 
 	@Bean
@@ -61,12 +65,12 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 
 		// Provide sign in/my profile action option
 		// Note: text and action is not set until onPrepareOptionsMenu
-		MenuItem signin = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNIN, RateBeerActivity.MENU_SIGNIN, "");
+		MenuItem signin = menu.add(Menu.NONE, MENU_SIGNIN, MENU_SIGNIN, "");
 		signin.setIcon(R.drawable.ic_action_signin);
 		signin.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		// Provide sign out option (always shown in (overflow) menu)
 		// Note: action is not shown until onPrepareOptionsMenu
-		MenuItem signout = menu.add(Menu.NONE, RateBeerActivity.MENU_SIGNOUT, RateBeerActivity.MENU_SIGNOUT, R.string.signin_signout);
+		MenuItem signout = menu.add(Menu.NONE, MENU_SIGNOUT, MENU_SIGNOUT, R.string.signin_signout);
 		signout.setIcon(R.drawable.ic_menu_signout);
 		signout.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
@@ -78,8 +82,8 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 		super.onPrepareOptionsMenu(menu);
 
 		// Add user sign in/out item
-		MenuItem signIn = menu.findItem(RateBeerActivity.MENU_SIGNIN);
-		MenuItem signOut = menu.findItem(RateBeerActivity.MENU_SIGNOUT);
+		MenuItem signIn = menu.findItem(MENU_SIGNIN);
+		MenuItem signOut = menu.findItem(MENU_SIGNOUT);
 		if (showSignInMenuItem && getActivity() != null) {
 			String userText = getUser() == null? getString(R.string.signin_signin): getUser().getUsername();
 			signIn.setVisible(true);
@@ -93,7 +97,7 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 		// If there is an action bar item representing MENU_REFRESH and we have tasks in progress, show custom view with an undetermined progress indicator
 		if (getActivity() != null && getRateBeerActivity().isInProgress()) {
 			for (int i = 0; i < menu.size(); i++) {
-				if (menu.getItem(i).getItemId() == RateBeerActivity.MENU_REFRESH || menu.getItem(i).getItemId() == R.id.menu_refresh) {
+				if (menu.getItem(i).getItemId() == R.id.menu_refresh) {
 					View view = getRateBeerActivity().getLayoutInflater().inflate(R.layout.actionbar_progressitem, null);
 					menu.getItem(i).setActionView(view);
 				}
@@ -105,14 +109,14 @@ public abstract class RateBeerFragment extends SherlockFragment implements RateB
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case RateBeerActivity.MENU_SIGNIN:
+		case MENU_SIGNIN:
 			if (getUser() == null) {
 				SignIn_.intent(getActivity()).start();
 			} else {
 				load(UserViewFragment_.builder().userId(getUser().getUserID()).userName(getUser().getUsername()).build());
 			}
 			return true;
-		case RateBeerActivity.MENU_SIGNOUT:
+		case MENU_SIGNOUT:
 			getRateBeerActivity().execute(signOutHandler, new SignOutCommand(getUser()));
 			return true;
 		}

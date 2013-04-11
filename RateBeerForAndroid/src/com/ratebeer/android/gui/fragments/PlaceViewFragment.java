@@ -249,9 +249,9 @@ public class PlaceViewFragment extends RateBeerMapFragment {
 		nameText.setText(place.placeName);
 		typeText.setText(PlacesFragment.getPlaceTypeName(getActivity(), place.placeType));
 		ratingText.setText(place.avgRating == -1? "?": Integer.toString(place.avgRating));
-		String distanceText = place.distance == -1D ? "" : "\n"
-				+ LocationUtils.getPlaceDistance(getSettings(), getResources(), place, currentLocation);
-		addressText.setText(place.address + "\n" + place.city + distanceText);
+		String distanceText = LocationUtils.getPlaceDistance(getSettings(), getResources(), place, currentLocation);
+		addressText.setText(place.address + "\n" + place.city
+				+ (place.distance == -1D || distanceText == null ? "" : "\n" + distanceText));
 		phoneText.setText(place.phoneNumber);
 
 		if (getMap() != null) {

@@ -48,6 +48,8 @@ public class LocationUtils {
 	 */
 	public static String getPlaceDistance(ApplicationSettings settings, Resources resources, Place place,
 			Location currentLocation) {
+		if (currentLocation == null)
+			return null;
 		// Calculate distance
 		double distance = LocationUtils.distanceInMiles(place.latitude, place.longitude, currentLocation.getLatitude(),
 				currentLocation.getLongitude());

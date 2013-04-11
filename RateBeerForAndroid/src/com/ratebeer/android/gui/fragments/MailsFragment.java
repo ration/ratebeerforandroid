@@ -87,7 +87,6 @@ public class MailsFragment extends RateBeerFragment {
 		load(SendMailFragment_.builder().build());
 	}
 
-
 	@OptionsItem(R.id.menu_refresh)
 	protected void refreshMails() {
 		// Start the background service to get new mail

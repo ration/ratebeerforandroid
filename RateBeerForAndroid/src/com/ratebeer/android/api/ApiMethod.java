@@ -81,7 +81,7 @@ public enum ApiMethod {
 	
 	// Beermail
 	GetAllBeerMails, 
-	GetBeerMail, 
+	GetBeerMailPart, 
 	DeleteBeerMail,
 	SendBeerMail;
 	

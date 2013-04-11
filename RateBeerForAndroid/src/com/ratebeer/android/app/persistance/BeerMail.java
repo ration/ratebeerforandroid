@@ -95,16 +95,14 @@ public class BeerMail implements Parcelable {
 	}
 
 	/**
-	 * Returns a content snippet of subject and possibly body text of restricted length
+	 * Returns a content snippet of the subject, with restricted length
 	 * @return A string with some of the mail's textual content
 	 */
 	public String getSomeContent(int maxLength) {
 		if (subject.length() > maxLength) {
 			return subject.substring(0, maxLength - 1);
-		} else if (subject.length() + 2 + body.length() > maxLength) {
-			return (subject + ": " + body).substring(0, maxLength - 1);
 		}
-		return subject + ": " + body;
+		return subject;
 	}
 	
 	public void setIsRead(boolean messageRead) {

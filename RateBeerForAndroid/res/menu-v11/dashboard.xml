@@ -17,6 +17,27 @@
 		android:id="@+id/menu_calculator" 
 		android:title="@string/home_calculator"
 		android:icon="@drawable/ic_action_calculator"
-		android:showAsAction="ifRoom" />
+		android:showAsAction="ifRoom"
+		android:orderInCategory="9901" />
+	
+	<item 
+		android:id="@+id/menu_preferences" 
+		android:title="@string/home_preferences"
+		android:icon="@android:drawable/ic_menu_preferences"
+		android:orderInCategory="9902" />
+	
+	<item 
+		android:id="@+id/menu_sendreport" 
+		android:title="@string/error_sendreport"
+		android:icon="@android:drawable/ic_menu_send"
+		android:showAsAction="never"
+		android:orderInCategory="9903" />
+	
+	<item 
+		android:id="@+id/menu_about" 
+		android:title="@string/home_about"
+		android:icon="@android:drawable/ic_menu_info_details"
+		android:showAsAction="never"
+		android:orderInCategory="9904" />
 	
 </menu>

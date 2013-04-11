@@ -33,18 +33,18 @@ public class UpcSearchCommandTests extends AndroidTestCase {
 		// UpcSearchCommand test
 		ApiConnection apiConnection = ApiConnection_.getInstance_(getContext());
 		UserSettings user = TestHelper.getUser(getContext(), false);
-		UpcSearchCommand command = new UpcSearchCommand(user, "636251770128");
+		UpcSearchCommand command = new UpcSearchCommand(user, "652682011012");
 		command.execute(apiConnection);
 		ArrayList<UpcSearchResult> results = command.getUpcSearchResults();
 		assertNotNull(results);
 		assertEquals(1, results.size());
 		UpcSearchResult result = results.get(0);
-		assertEquals(422, result.beerId);
-		assertEquals("Stone India Pale Ale (IPA)", result.beerName);
-		assertEquals(76, result.brewerId);
-		assertEquals("Stone Brewing Co.", result.brewerName);
-		assertTrue(result.averageRating > 2.98 && result.averageRating < 4.98);
-		assertTrue(result.abv > 6.4 && result.abv < 7.4);
+		assertEquals(15917, result.beerId);
+		assertEquals("Three Floyds Dark Lord Russian Imperial Stout", result.beerName);
+		assertEquals(231, result.brewerId);
+		assertEquals("Three Floyds Brewing Company", result.brewerName);
+		assertTrue("Average rating is ~4.32", result.averageRating >= 4.01 && result.averageRating <= 4.99);
+		assertTrue("ABV is ~15%", result.abv >= 10.1 && result.abv <= 19.9);
 		
 	}
 

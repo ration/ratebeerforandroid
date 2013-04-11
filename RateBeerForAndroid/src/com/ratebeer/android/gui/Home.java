@@ -20,9 +20,15 @@ package com.ratebeer.android.gui;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
@@ -36,7 +42,15 @@ import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
-import com.ratebeer.android.gui.fragments.*;
+import com.ratebeer.android.gui.fragments.AddUpcCodeFragment_;
+import com.ratebeer.android.gui.fragments.BeerViewFragment_;
+import com.ratebeer.android.gui.fragments.DashboardFragment;
+import com.ratebeer.android.gui.fragments.DashboardFragment_;
+import com.ratebeer.android.gui.fragments.MailViewFragment_;
+import com.ratebeer.android.gui.fragments.MailsFragment_;
+import com.ratebeer.android.gui.fragments.RateFragment_;
+import com.ratebeer.android.gui.fragments.SearchFragment_;
+import com.ratebeer.android.gui.fragments.SendMailFragment;
 
 @EActivity(R.layout.activity_home)
 public class Home extends RateBeerActivity {
@@ -52,6 +66,9 @@ public class Home extends RateBeerActivity {
 		// Show search directly in action bar on larger screens
 		// For phones the DashboardFragment and SearchFragment will show an icon
 		new SearchUiHelper(this).addSearchToActionBar(getSupportActionBar());
+		
+		// If supported, allow NFC message exchange through Android Beam
+		startNfc();
 		
 		if (firstStart)
 			handleStartIntent();
@@ -166,5 +183,33 @@ public class Home extends RateBeerActivity {
 		trans.commit();
 		getSupportActionBar().setDisplayHomeAsUpEnabled(!(fragment instanceof DashboardFragment));
 	}
+
+	/**
+	 * If the device is new enough and supports/has enabled NFC, allow NFC message exchange through Anroid Beam.
+	 */
+	@TargetApi(14)
+	private void startNfc() {
+		if (android.os.Build.VERSION.SDK_INT >= 14) {
+			NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
+			if (nfc != null)
+				nfc.setNdefPushMessageCallback(onCreateNfcMessage, this);
+		}
+		
+	}
+
+	/**
+	 * Marshals the request to create a message (to send to the now-nearbye device) to the currently shown Fragment.
+	 */
+	private CreateNdefMessageCallback onCreateNfcMessage = new CreateNdefMessageCallback() {
+		@TargetApi(14)
+		@Override
+		public NdefMessage createNdefMessage(NfcEvent event) {
+			// A device is close; ask the currently visible fragment to create a message
+			Fragment content = getSupportFragmentManager().findFragmentById(R.id.frag_content);
+			if (content != null && content instanceof CreateNdefMessageCallback)
+				return ((CreateNdefMessageCallback)content).createNdefMessage(event);
+			return null;
+		}
+	};	
 
 }

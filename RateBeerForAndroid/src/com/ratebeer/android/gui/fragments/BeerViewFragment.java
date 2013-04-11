@@ -25,11 +25,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -83,7 +88,7 @@ import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_beerview)
 @OptionsMenu({R.menu.refresh, R.menu.share})
-public class BeerViewFragment extends RateBeerFragment {
+public class BeerViewFragment extends RateBeerFragment implements CreateNdefMessageCallback {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
 	private static final int UNKNOWN_RATINGS_COUNT = -1;
@@ -571,6 +576,17 @@ public class BeerViewFragment extends RateBeerFragment {
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {
 		publishException(null, result.getException());
+	}
+
+	/**
+	 * This fragment can beam NFC messages describing the currently-visible beer
+	 */
+	@TargetApi(14)
+	@Override
+	public NdefMessage createNdefMessage(NfcEvent event) {
+		return new NdefMessage(new NdefRecord[] {
+				NdefRecord.createUri("http://ratebeer.com/b/" + Integer.toString(beerId))
+		});
 	}
 
 	private class BeerRatingsAdapter extends ArrayAdapter<BeerRating> {

@@ -56,9 +56,14 @@ public class GetBeerMailPartCommand extends JsonCommand {
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
 		ApiConnection.ensureLogin(apiConnection, getUserSettings());
-		return apiConnection.get("http://www.ratebeer.com/json/message-view.asp?k=" + ApiConnection.RB_KEY + "&u="
-				+ Integer.toString(getUserSettings().getUserID()) + "&mid=" + Integer.toString(messageId) + "&r="
-				+ (fetchReplies ? "1" : "0"));
+		// TODO: message-view.asp no longer marks a message as read (and there is no other API call to do so)
+		// HACK: First make the normal call
+		String result = apiConnection.get("http://www.ratebeer.com/json/message-view.asp?k=" + ApiConnection.RB_KEY
+				+ "&u=" + Integer.toString(getUserSettings().getUserID()) + "&mid=" + Integer.toString(messageId)
+				+ "&r=" + (fetchReplies ? "1" : "0"));
+		// HACK: Then make a fake a call to the HTML page of the message thread to mark it as read
+		apiConnection.get("http://www.ratebeer.com/showmessage/" + messageId + "/");
+		return result;
 	}
 
 	@Override

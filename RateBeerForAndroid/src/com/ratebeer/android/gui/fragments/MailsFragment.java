@@ -169,7 +169,7 @@ public class MailsFragment extends RateBeerFragment {
 			break;
 		case MENU_REPLY:
 			// Start the mail reply screen
-			load(SendMailFragment.buildReplyFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
+			load(SendMailFragment.buildReplyFromExisting(mail));
 			break;
 		}
 		return super.onContextItemSelected(item);

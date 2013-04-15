@@ -20,8 +20,8 @@ package com.ratebeer.android.gui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Click;
@@ -38,9 +38,6 @@ import com.ratebeer.android.gui.components.RateBeerFragment;
 @EFragment(R.layout.fragment_sendmail)
 public class SendMailFragment extends RateBeerFragment {
 
-	private static final String REPLY_SUBJECT_PREFIX = "Re: ";
-	private static final String REPLY_BODY_PREFIX = "\n\nOriginal Message\n......................................................\n";
-
 	@FragmentArg
 	@InstanceState
 	protected String sendToField = null;
@@ -52,16 +49,21 @@ public class SendMailFragment extends RateBeerFragment {
 	protected String bodyField = null;
 	@FragmentArg
 	@InstanceState
-	protected String replyField = null;
+	protected int replyToField = PosterService.NO_REPLY_EXTRA;
+	@FragmentArg
+	@InstanceState
+	protected int recipientField = PosterService.NO_REPLY_EXTRA;
 
+	@ViewById(R.id.sendtolabel)
+	protected TextView sendtoLabel;
 	@ViewById(R.id.sendto)
 	protected EditText sendtoEdit;
+	@ViewById(R.id.subjectlabel)
+	protected TextView subjectLabel;
 	@ViewById(R.id.subject)
 	protected EditText subjectEdit;
 	@ViewById(R.id.body)
 	protected EditText bodyEdit;
-	@ViewById
-	protected CheckBox includeoriginal;
 
 	public SendMailFragment() {
 	}
@@ -72,20 +74,19 @@ public class SendMailFragment extends RateBeerFragment {
 	 */
 	public static SendMailFragment buildReplyFromExtras(Bundle extras) {
 		// Assume there is an extra containing the BeerMail object
-		BeerMail replyTo = extras.getParcelable(BeermailService.EXTRA_MAIL);
-		String subject = replyTo.getSubject();
-		return buildConcrete(replyTo.getSenderName(), subject.startsWith(REPLY_SUBJECT_PREFIX) ? subject
-				: REPLY_SUBJECT_PREFIX + subject, null, REPLY_BODY_PREFIX + replyTo.getBody());
+		return buildReplyFromExisting((BeerMail) extras.getParcelable(BeermailService.EXTRA_MAIL));
 	}
 
 	/**
 	 * Recover from the failure of sending a beermail
-	 * @param extras A bundle that assumes extras with PosterService.EXTRA_SENDTO, PosterService.EXTRA_SUBJECT and PosterService.EXTRA_BODY
+	 * @param extras A bundle that assumes extras with PosterService.EXTRA_SENDTO, PosterService.EXTRA_SUBJECT,
+	 *            PosterService.EXTRA_BODY and PosterService.EXTRA_REPLYTO
 	 */
 	public static SendMailFragment buildFromFailedSend(Bundle extras) {
 		// Assume the extras contain all required fields
 		return buildConcrete(extras.getString(PosterService.EXTRA_SENDTO),
-				extras.getString(PosterService.EXTRA_SUBJECT), extras.getString(PosterService.EXTRA_BODY), null);
+				extras.getString(PosterService.EXTRA_SUBJECT), extras.getString(PosterService.EXTRA_BODY),
+				extras.getInt(PosterService.EXTRA_REPLYTO), extras.getInt(PosterService.EXTRA_RECIPIENT));
 	}
 
 	/**
@@ -93,20 +94,21 @@ public class SendMailFragment extends RateBeerFragment {
 	 * @param sendTo The name of the beer to be rated
 	 * @param subject The ID of the beer to be rated
 	 */
-	public static SendMailFragment buildReplyFromExisting(String from, String subject, String originalMessage) {
-		return buildConcrete(from, subject.startsWith(REPLY_SUBJECT_PREFIX) ? subject : REPLY_SUBJECT_PREFIX + subject, 
-				null, REPLY_BODY_PREFIX + originalMessage);
+	public static SendMailFragment buildReplyFromExisting(BeerMail replyTo) {
+		return buildConcrete(replyTo.getSenderName(), replyTo.getSubject(), null, replyTo.getMessageId(),
+				replyTo.getSenderId());
 	}
 
-	private static SendMailFragment buildConcrete(String sendTo, String subject, String body, String reply) {
-		return SendMailFragment_.builder().sendToField(sendTo).subjectField(subject).bodyField(body).replyField(reply)
-				.build();
+	private static SendMailFragment buildConcrete(String sendTo, String subject, String body, int replyTo, int recipient) {
+		return SendMailFragment_.builder().sendToField(sendTo).subjectField(subject).bodyField(body)
+				.recipientField(recipient).replyToField(replyTo).build();
 	}
-	
+
 	@AfterViews
 	public void init() {
 
 		// Fill fields from the message we are replying to
+		// (The fields are then set to null to prevent them from overriding new text entry on an orientation change)
 		if (sendToField != null) {
 			sendtoEdit.setText(sendToField);
 			sendToField = null;
@@ -120,9 +122,14 @@ public class SendMailFragment extends RateBeerFragment {
 			bodyField = null;
 		}
 		
-		// Is a reply? Then disable the 'include' checkbox
-		includeoriginal.setVisibility(replyField != null? View.VISIBLE: View.GONE);
-		
+		// If this is a reply then do disable the 'send to' view, as that cannot actually be changed
+		if (replyToField != PosterService.NO_REPLY_EXTRA && recipientField != PosterService.NO_REPLY_EXTRA) {
+			sendtoLabel.setVisibility(View.GONE);
+			sendtoEdit.setVisibility(View.GONE);
+			subjectLabel.setVisibility(View.GONE);
+			subjectEdit.setVisibility(View.GONE);
+		}
+
 	}
 
 	@Click(R.id.send)
@@ -133,16 +140,13 @@ public class SendMailFragment extends RateBeerFragment {
 		String body = bodyEdit.getText().toString();
 		if (!sendTo.equals("") && !subject.equals("") && !body.equals("")) {
 
-			// Include original text of message we are replying to?
-			if (includeoriginal.isChecked() && replyField != null) {
-				body += replyField;
-			}
-			
 			// Use the poster service to send this new mail
 			Intent i = new Intent(PosterService.ACTION_SENDMAIL);
 			i.putExtra(PosterService.EXTRA_SENDTO, sendTo);
 			i.putExtra(PosterService.EXTRA_SUBJECT, subject);
 			i.putExtra(PosterService.EXTRA_BODY, body);
+			i.putExtra(PosterService.EXTRA_REPLYTO, replyToField);
+			i.putExtra(PosterService.EXTRA_RECIPIENT, recipientField);
 			getActivity().startService(i);
 
 			// Close this fragment

@@ -131,12 +131,6 @@ public class Home extends RateBeerActivity {
 			return;
 		}
 
-		// Open the beermail reply screen to a specific mail
-		if (action.equals(BeermailService.ACTION_REPLYBEERMAIL)) {
-			load(SendMailFragment.buildReplyFromExtras(getIntent().getExtras()));
-			return;
-		}
-		
 		// Normal startup; show dashboard
 		load(DashboardFragment_.builder().build());
 

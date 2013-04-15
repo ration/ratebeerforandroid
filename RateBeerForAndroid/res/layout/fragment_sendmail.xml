@@ -57,15 +57,6 @@
 			android:layout_marginLeft="10dip"
 			android:layout_marginRight="10dip" />
 			
-		<CheckBox
-			android:id="@+id/includeoriginal"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="10dip"
-			android:layout_marginRight="10dip"
-			android:checked="true"
-			android:text="@string/mail_includeoriginal" />
-			
 		<Button
 			android:id="@+id/send"
 			android:layout_height="wrap_content"

@@ -275,6 +275,7 @@
 	<string name="mail_emptyfields">Please complete all fields before sending</string>
 	<string name="mail_sendingmail">Sending beermail</string>
 	<string name="mail_sendingto">Sending to %1$s</string>
+	<string name="mail_replyingto">Replying to %1$s</string>
 			
 	<string name="settings_display">Display preferences</string>
 	<string name="settings_distanceinkm">Show distances in km</string>

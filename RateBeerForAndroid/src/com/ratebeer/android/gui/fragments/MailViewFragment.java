@@ -95,11 +95,10 @@ public class MailViewFragment extends RateBeerFragment {
 		// If the body text was already loaded earlier, then it was stored in the database and we can show it now
 		if (mail.getBody() != null) {
 			updateBodyText();
-		} else {
-			// Still need to load the body text (original message) from the server
-			execute(new GetBeerMailPartCommand(getUser(), mail.getMessageId(), false));
 		}
-
+		// Load the body text (original message) from the server, even when it was stored because this call also markes
+		// the message as read
+		execute(new GetBeerMailPartCommand(getUser(), mail.getMessageId(), false));
 		// Always retrieve the replies from the server; these are not stored in the database
 		execute(new GetBeerMailPartCommand(getUser(), mail.getMessageId(), true));
 
@@ -116,7 +115,7 @@ public class MailViewFragment extends RateBeerFragment {
 
 	@OptionsItem(R.id.menu_reply)
 	protected void onReply() {
-		load(SendMailFragment_.buildReplyFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
+		load(SendMailFragment_.buildReplyFromExisting(mail));
 	}
 
 	@OptionsItem(R.id.menu_delete)

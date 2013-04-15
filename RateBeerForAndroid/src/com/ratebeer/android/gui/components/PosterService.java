@@ -44,6 +44,7 @@ import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.PostRatingCommand;
 import com.ratebeer.android.api.command.PostTickCommand;
 import com.ratebeer.android.api.command.SendBeerMailCommand;
+import com.ratebeer.android.api.command.SendBeerReplyCommand;
 import com.ratebeer.android.api.command.SetDrinkingStatusCommand;
 import com.ratebeer.android.api.command.UploadBeerPhotoCommand;
 import com.ratebeer.android.app.ApplicationSettings;
@@ -93,11 +94,14 @@ public class PosterService extends DatabaseConsumerService {
 	public static final String EXTRA_SENDTO = "SENDTO";
 	public static final String EXTRA_SUBJECT = "SUBJECT";
 	public static final String EXTRA_BODY = "BODY";
+	public static final String EXTRA_REPLYTO = "REPLYTO";
+	public static final String EXTRA_RECIPIENT = "RECIPIENT";
 	public static final String EXTRA_PHOTO = "PHOTO";
 	public static final String EXTRA_UPCCODE = "UPCCODE";
 	public static final int EXTRA_TICK_DELETE = -1;
 	public static final int NO_BEER_EXTRA = -1;
 	public static final int NO_OFFLINE_EXTRA = -1;
+	public static final int NO_REPLY_EXTRA = 0;
 	public static final int RESULT_SUCCESS = 0;
 	public static final int RESULT_FAILURE = 1;
 
@@ -378,16 +382,27 @@ public class PosterService extends DatabaseConsumerService {
 			String sendTo = intent.getStringExtra(EXTRA_SENDTO);
 			String subject = intent.getStringExtra(EXTRA_SUBJECT);
 			String body = intent.getStringExtra(EXTRA_BODY);
+			int replyTo = intent.getIntExtra(EXTRA_REPLYTO, NO_REPLY_EXTRA);
+			int recipient = intent.getIntExtra(EXTRA_RECIPIENT, NO_REPLY_EXTRA);
 
-			// Synchronously send the mail
+			// Synchronously send the mail or reply
 			// During the operation a notification will be shown
-			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Now sending mail to " + sendTo);
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
+					(replyTo == NO_REPLY_EXTRA ? "Now sending mail to " : "Now sending reply to " + replyTo + " to ")
+							+ sendTo);
 			Intent recoverIntent = new Intent(getApplicationContext(), Home_.class);
 			recoverIntent.replaceExtras(intent.getExtras());
 			recoverIntent.setAction(ACTION_SENDMAIL);
-			createNotification(NOTIFY_SENDMAIL, getString(R.string.mail_sendingmail), getString(
-					R.string.mail_sendingto, sendTo), true, recoverIntent, sendTo, NO_BEER_EXTRA);
-			CommandResult result = new SendBeerMailCommand(user, sendTo, subject, body).execute(apiConnection);
+			createNotification(
+					NOTIFY_SENDMAIL,
+					getString(R.string.mail_sendingmail),
+					getString((replyTo == NO_REPLY_EXTRA ? R.string.mail_sendingto : R.string.mail_replyingto), sendTo),
+					true, recoverIntent, sendTo, NO_BEER_EXTRA);
+			CommandResult result;
+			if (replyTo == NO_REPLY_EXTRA)
+				result = new SendBeerMailCommand(user, sendTo, subject, body).execute(apiConnection);
+			else
+				result = new SendBeerReplyCommand(user, replyTo, recipient, body).execute(apiConnection);
 			if (result instanceof CommandSuccessResult) {
 				notificationManager.cancel(NOTIFY_SENDMAIL);
 			} else {

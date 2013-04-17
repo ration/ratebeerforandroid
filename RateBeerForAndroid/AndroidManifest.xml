@@ -18,8 +18,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ratebeer.android"
-	android:versionCode="47"
-	android:versionName="1.5.3"
+	android:versionCode="48"
+	android:versionName="1.5.4"
 	android:installLocation="auto">
 	
 	<!-- Supported and required Android features -->
@@ -34,6 +34,7 @@
 	<uses-permission android:name="android.permission.NFC" />
 	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 	<uses-feature android:name="android.hardware.location" android:required="false" />
+	<uses-feature android:name="android.hardware.nfc" android:required="false" />
 	<supports-screens 
 		android:smallScreens="true" 
 		android:normalScreens="true" 

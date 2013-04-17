@@ -175,7 +175,7 @@ public class PlacesFragment extends RateBeerMapFragment implements OnLocationSel
 			}
 			// Now get the places at this location, if this fragment is still bound to an activity
 			PlacesFragment.this.lastLocation = location;
-			if (getActivity() != null && PlacesFragment.this.lastLocation != null) {
+			if (getActivity() != null && getView() != null && PlacesFragment.this.lastLocation != null) {
 				getView().post(new Runnable() {
 					@Override
 					public void run() {

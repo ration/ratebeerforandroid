@@ -122,6 +122,7 @@ public class BeermailService extends DatabaseConsumerService {
 			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Error retrieving new beer mails: " + e);
 			// If requested, call back the messenger, i.e. the calling activity
 			callbackMessenger(intent, RESULT_FAILURE);
+			return;
 		}
 
 		// Successfully retrieved beer mails

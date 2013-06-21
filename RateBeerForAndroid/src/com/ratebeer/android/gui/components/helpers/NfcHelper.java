@@ -21,7 +21,7 @@ public class NfcHelper {
 	}
 
 	/**
-	 * If the device is new enough and supports/has enabled NFC, allow NFC message exchange through Anroid Beam.
+	 * If the device is new enough and supports/has enabled NFC, allow NFC message exchange through Android Beam.
 	 */
 	@TargetApi(14)
 	public void startNfc() {
@@ -34,7 +34,7 @@ public class NfcHelper {
 	}
 
 	/**
-	 * Marshals the request to create a message (to send to the now-nearbye device) to the currently shown Fragment.
+	 * Marshals the request to create a message (to send to the now-nearby device) to the currently shown Fragment.
 	 */
 	private CreateNdefMessageCallback onCreateNfcMessage = new CreateNdefMessageCallback() {
 		@TargetApi(14)

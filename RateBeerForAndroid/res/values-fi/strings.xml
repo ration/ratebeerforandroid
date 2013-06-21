@@ -39,6 +39,15 @@
 <string name="calc_euro">€</string>
 
 <string name="myratings_sortby">Järjestä</string>
+<string-array name="myratings_sortby_names">
+<item>Name</item>
+<item>Brewer</item>
+<item>Style</item>
+<item>My rating</item>
+<item>Date</item>
+<item>Score</item>
+</string-array>
+
 
 <string name="cellar_memo">Muistio</string>
 <string name="cellar_quantity">Määrä</string>

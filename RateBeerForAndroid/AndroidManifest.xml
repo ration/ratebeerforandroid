@@ -18,8 +18,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ratebeer.android"
-	android:versionCode="49"
-	android:versionName="1.5.5"
+	android:versionCode="50"
+	android:versionName="1.5.6"
 	android:installLocation="auto">
 	
 	<!-- Supported and required Android features -->

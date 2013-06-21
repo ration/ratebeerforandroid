@@ -236,6 +236,7 @@
 	<string name="rate_offline_name">Name:</string>
 	<string name="rate_offline_nonamegiven">Please enter the name of the beer you have rated</string>
 	<string name="rate_offline_alreadyrated">Sorry, but you already rated this beer and you cannot re-rate beers from an offline-only rating at the moment</string>
+	<string name="rate_offline_isalias">Sorry, you can\'t rate an alias</string>
 	<string name="rate_offline_export">Export</string>
 	<string name="rate_offline_export_info">Your offline ratings will now be exported to a JSON-encoded text file at %1$s</string>
 	<string name="rate_offline_import">Import</string>

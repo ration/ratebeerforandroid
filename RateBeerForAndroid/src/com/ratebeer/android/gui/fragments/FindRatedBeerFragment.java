@@ -132,6 +132,8 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 			OfflineRating offline = offlineRatingDao.queryForId(offlineId);
 			if (item.isRated) {
 				Crouton.makeText(getActivity(), R.string.rate_offline_alreadyrated, Style.ALERT).show();
+			} else if (item.isAlias) {
+				Crouton.showText(getActivity(), R.string.rate_offline_isalias, Style.ALERT);
 			} else {
 				offline.update(item.beerId, item.beerName);
 				offlineRatingDao.update(offline);

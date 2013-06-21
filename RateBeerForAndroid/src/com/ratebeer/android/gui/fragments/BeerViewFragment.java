@@ -65,6 +65,7 @@ import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetBeerAvailabilityCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
+import com.ratebeer.android.api.command.GetBeerPhotoAvailableCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand.BeerRating;
 import com.ratebeer.android.api.command.GetUserTicksCommand;
@@ -102,6 +103,8 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 	protected int ratingsCount = UNKNOWN_RATINGS_COUNT;
 	@InstanceState
 	protected BeerDetails details = null;
+	@InstanceState
+	protected Boolean photoIsAvailable = null;
 	@InstanceState
 	protected ArrayList<BeerRating> ownRatings = null;
 	@InstanceState
@@ -149,6 +152,7 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 
 		if (details != null) {
 			publishDetails(details);
+			publishPhotoAvailability(photoIsAvailable);
 			refreshImage(); // Note: always requested, although the image is cached
 			publishOwnRating(ownRatings);
 			publishOwnTick(ownTicks);
@@ -156,6 +160,7 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 			setAvailability(availability);
 		} else {
 			refreshDetails();
+			refreshPhotoAvailability();
 			refreshImage();
 			refreshOwnRating();
 			refreshOwnTick();
@@ -168,6 +173,7 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 	@OptionsItem(R.id.menu_refresh)
 	protected void onRefresh() {
 		refreshDetails();
+		refreshPhotoAvailability();
 		refreshImage();
 		refreshOwnRating();
 		refreshOwnTick();
@@ -191,6 +197,10 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 
 	private void refreshDetails() {
 		execute(new GetBeerDetailsCommand(getUser(), beerId));
+	}
+
+	private void refreshPhotoAvailability() {
+		execute(new GetBeerPhotoAvailableCommand(getUser(), beerId));
 	}
 
 	private void refreshOwnRating() {
@@ -409,7 +419,18 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 			}
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerAvailability) {
 			publishAvailability(((GetBeerAvailabilityCommand) result.getCommand()).getPlaces());
+		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerPhotoAvailable) {
+			publishPhotoAvailability(((GetBeerPhotoAvailableCommand) result.getCommand()).hasPhotoAvailable());
 		}
+	}
+
+	private void publishPhotoAvailability(Boolean photoIsAvailable) {
+		this.photoIsAvailable = photoIsAvailable;
+		if (photoIsAvailable == null) {
+			return;
+		}
+		// Show the beer photo upload field, if appropriate
+		setPhotoAvailability(photoIsAvailable);
 	}
 
 	private void publishDetails(BeerDetails details) {
@@ -509,10 +530,13 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 		// Only show the buttons bar if we have a signed in user
 		drinkingThisButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
 		addAvailabilityButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
-		uploadphotoButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
 		// Only show the cellar buttons bar if we have a signed in premium user
 		wantthisButton.setVisibility(getUser() != null && getUser().isPremium()? View.VISIBLE: View.GONE);
 		havethisButton.setVisibility(getUser() != null && getUser().isPremium()? View.VISIBLE: View.GONE);
+	}
+
+	public void setPhotoAvailability(Boolean photoIsAvailable) {
+		uploadphotoButton.setVisibility(photoIsAvailable != null && !photoIsAvailable? View.VISIBLE: View.GONE);
 	}
 
 	public void setOwnRating(ArrayList<BeerRating> ownRatings) {

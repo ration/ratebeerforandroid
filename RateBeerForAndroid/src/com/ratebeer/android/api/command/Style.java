@@ -107,10 +107,10 @@ public class Style implements Parcelable {
 		addStyle("india-pale-ale-ipa", 17, "India Pale Ale (IPA)");
 		addStyle("irish-ale", 62, "Irish Ale");
 		addStyle("kolsch", 39, "Kölsch");
-		addStyle("lambic--faro", 77, "Lambic - Faro");
-		addStyle("lambic--fruit", 14, "Lambic - Fruit");
-		addStyle("lambic--gueuze", 73, "Lambic - Gueuze");
-		addStyle("lambic--unblended", 78, "Lambic - Unblended");
+		addStyle("lambic-style--faro", 77, "Lambic Style - Faro");
+		addStyle("lambic-style--fruit", 14, "Lambic Style - Fruit");
+		addStyle("lambic-style--gueuze", 73, "Lambic Style - Gueuze");
+		addStyle("lambic-style--unblended", 78, "Lambic Style - Unblended");
 		addStyle("low-alcohol", 75, "Low Alcohol");
 		addStyle("malt-liquor", 8, "Malt Liquor");
 		addStyle("mead", 44, "Mead");

@@ -43,6 +43,7 @@ public class PreferencesInterface extends SherlockPreferenceActivity {
 	public PreferencesInterface() {
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -87,9 +88,9 @@ public class PreferencesInterface extends SherlockPreferenceActivity {
 					|| key.equals(ApplicationSettings.BEERMAIL_UPDATEFREQUENCY)) {
 				// If a beermail setting was changed, start/stop the service accordingly
 				if (applicationSettings.isBeermailEnabled()) {
-					BootReceiver.startAlarm(getApplicationContext());
+					BootReceiver.startBeerMailAlarm(getApplicationContext());
 				} else {
-					BootReceiver.cancelAlarm();
+					BootReceiver.cancelBeerMailAlarm();
 				}
 			}
 		}

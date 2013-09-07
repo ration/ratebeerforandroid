@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
@@ -64,6 +65,7 @@ import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetBeerAvailabilityCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand;
 import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
+import com.ratebeer.android.api.command.GetBeerPhotoAvailableCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand;
 import com.ratebeer.android.api.command.GetRatingsCommand.BeerRating;
 import com.ratebeer.android.api.command.GetUserTicksCommand;
@@ -77,12 +79,13 @@ import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ActivityUtil;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
+import com.ratebeer.android.gui.components.helpers.NfcHelper.NdefUriProvider;
 import com.ratebeer.android.gui.fragments.AddToCellarFragment.CellarType;
 import com.viewpagerindicator.TabPageIndicator;
 
 @EFragment(R.layout.fragment_beerview)
 @OptionsMenu({R.menu.refresh, R.menu.share})
-public class BeerViewFragment extends RateBeerFragment {
+public class BeerViewFragment extends RateBeerFragment implements NdefUriProvider {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
 	private static final int UNKNOWN_RATINGS_COUNT = -1;
@@ -100,6 +103,8 @@ public class BeerViewFragment extends RateBeerFragment {
 	protected int ratingsCount = UNKNOWN_RATINGS_COUNT;
 	@InstanceState
 	protected BeerDetails details = null;
+	@InstanceState
+	protected Boolean photoIsAvailable = null;
 	@InstanceState
 	protected ArrayList<BeerRating> ownRatings = null;
 	@InstanceState
@@ -147,6 +152,7 @@ public class BeerViewFragment extends RateBeerFragment {
 
 		if (details != null) {
 			publishDetails(details);
+			publishPhotoAvailability(photoIsAvailable);
 			refreshImage(); // Note: always requested, although the image is cached
 			publishOwnRating(ownRatings);
 			publishOwnTick(ownTicks);
@@ -154,6 +160,7 @@ public class BeerViewFragment extends RateBeerFragment {
 			setAvailability(availability);
 		} else {
 			refreshDetails();
+			refreshPhotoAvailability();
 			refreshImage();
 			refreshOwnRating();
 			refreshOwnTick();
@@ -166,6 +173,7 @@ public class BeerViewFragment extends RateBeerFragment {
 	@OptionsItem(R.id.menu_refresh)
 	protected void onRefresh() {
 		refreshDetails();
+		refreshPhotoAvailability();
 		refreshImage();
 		refreshOwnRating();
 		refreshOwnTick();
@@ -189,6 +197,10 @@ public class BeerViewFragment extends RateBeerFragment {
 
 	private void refreshDetails() {
 		execute(new GetBeerDetailsCommand(getUser(), beerId));
+	}
+
+	private void refreshPhotoAvailability() {
+		execute(new GetBeerPhotoAvailableCommand(getUser(), beerId));
 	}
 
 	private void refreshOwnRating() {
@@ -218,7 +230,7 @@ public class BeerViewFragment extends RateBeerFragment {
 		if (ownRatings != null && ownRatings.size() > 0) {
 			BeerRating ownRating = ownRatings.get(0);
 			// Start new rating fragment, with pre-populated fields
-			SimpleDateFormat df = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+			SimpleDateFormat df = new SimpleDateFormat("M/d/yyyy h:mm:ss a", Locale.US);
 			load(RateFragment_.buildFromConcrete(beerName, beerId, ownRating.ratingId,
 					df.format(ownRating.timeEntered), ownRating.appearance, ownRating.aroma, ownRating.flavor,
 					ownRating.mouthfeel, ownRating.overall, ownRating.comments));
@@ -407,7 +419,18 @@ public class BeerViewFragment extends RateBeerFragment {
 			}
 		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerAvailability) {
 			publishAvailability(((GetBeerAvailabilityCommand) result.getCommand()).getPlaces());
+		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerPhotoAvailable) {
+			publishPhotoAvailability(((GetBeerPhotoAvailableCommand) result.getCommand()).hasPhotoAvailable());
 		}
+	}
+
+	private void publishPhotoAvailability(Boolean photoIsAvailable) {
+		this.photoIsAvailable = photoIsAvailable;
+		if (photoIsAvailable == null) {
+			return;
+		}
+		// Show the beer photo upload field, if appropriate
+		setPhotoAvailability(photoIsAvailable);
 	}
 
 	private void publishDetails(BeerDetails details) {
@@ -496,8 +519,8 @@ public class BeerViewFragment extends RateBeerFragment {
 		boolean noScoreYet = details.overallPerc == GetBeerDetailsCommand.NO_SCORE_YET;
 		noscoreyetText.setVisibility(noScoreYet? View.VISIBLE: View.GONE);
 		scoreCard.setVisibility(noScoreYet? View.GONE: View.VISIBLE);
-		scoreText.setText(Integer.toString((int)details.overallPerc));
-		stylepctlText.setText(Integer.toString((int)details.stylePerc));
+		scoreText.setText(String.format("%.0f", details.overallPerc));
+		stylepctlText.setText(String.format("%.0f", details.stylePerc));
 		ratingsText.setText(ratingsCount == UNKNOWN_RATINGS_COUNT? "?": Integer.toString(ratingsCount));
 		abvstyleButton.setText(getString(R.string.details_abvstyle, details.beerStyle, String.format(DECIMAL_FORMATTER, details.alcohol)));
 		abvstyleButton.setVisibility(View.VISIBLE);
@@ -507,10 +530,13 @@ public class BeerViewFragment extends RateBeerFragment {
 		// Only show the buttons bar if we have a signed in user
 		drinkingThisButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
 		addAvailabilityButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
-		uploadphotoButton.setVisibility(getUser() != null? View.VISIBLE: View.GONE);
 		// Only show the cellar buttons bar if we have a signed in premium user
 		wantthisButton.setVisibility(getUser() != null && getUser().isPremium()? View.VISIBLE: View.GONE);
 		havethisButton.setVisibility(getUser() != null && getUser().isPremium()? View.VISIBLE: View.GONE);
+	}
+
+	public void setPhotoAvailability(Boolean photoIsAvailable) {
+		uploadphotoButton.setVisibility(photoIsAvailable != null && !photoIsAvailable? View.VISIBLE: View.GONE);
 	}
 
 	public void setOwnRating(ArrayList<BeerRating> ownRatings) {
@@ -570,6 +596,14 @@ public class BeerViewFragment extends RateBeerFragment {
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {
 		publishException(null, result.getException());
+	}
+
+	/**
+	 * This fragment can beam NFC messages describing the currently-visible beer
+	 */
+	@Override
+	public Uri createNdefUri() {
+		return Uri.parse("http://ratebeer.com/b/" + Integer.toString(beerId));
 	}
 
 	private class BeerRatingsAdapter extends ArrayAdapter<BeerRating> {
@@ -803,11 +837,11 @@ public class BeerViewFragment extends RateBeerFragment {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.app_details).toUpperCase();
+				return getActivity().getString(R.string.app_details).toUpperCase(Locale.getDefault());
 			case 1:
-				return getActivity().getString(R.string.details_recentratings).toUpperCase();
+				return getActivity().getString(R.string.details_recentratings).toUpperCase(Locale.getDefault());
 			case 2:
-				return getActivity().getString(R.string.details_availability).toUpperCase();
+				return getActivity().getString(R.string.details_availability).toUpperCase(Locale.getDefault());
 			}
 			return null;
 		}

@@ -20,6 +20,8 @@ package com.ratebeer.android.api.command;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +36,7 @@ import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.JsonCommand;
 import com.ratebeer.android.api.UserSettings;
+import com.ratebeer.android.api.command.SearchBeersCommand.BeerSearchResultComparator.SortBy;
 
 public class SearchBeersCommand extends JsonCommand {
 
@@ -79,11 +82,12 @@ public class SearchBeersCommand extends JsonCommand {
 			JSONObject result = json.getJSONObject(i);
 			String pctl = result.getString("OverallPctl");
 			results.add(new BeerSearchResult(Integer.parseInt(result.getString("BeerID")), HttpHelper.cleanHtml(result
-					// TODO: This should parse as a double and be displayed as integer instead
-					.getString("BeerName")), (pctl.equals("null") ? -1 : (int) Double.parseDouble(pctl)), Integer
+			// TODO: This should parse as a double and be displayed as integer instead
+					.getString("BeerName")), (pctl.equals("null") ? -1 : Float.parseFloat(pctl)), Integer
 					.parseInt(result.getString("RateCount")), result.getInt("IsRated") == 1, result
 					.getBoolean("IsAlias"), result.getBoolean("Retired")));
 		}
+		Collections.sort(results, new BeerSearchResultComparator(SortBy.Name));
 
 	}
 
@@ -91,13 +95,13 @@ public class SearchBeersCommand extends JsonCommand {
 
 		public final int beerId;
 		public final String beerName;
-		public final int overallPerc;
+		public final float overallPerc;
 		public final int rateCount;
 		public final boolean isRated;
 		public final boolean isAlias;
 		public final boolean isRetired;
 
-		public BeerSearchResult(int beerId, String beerName, int overallPerc, int rateCount, boolean isRated,
+		public BeerSearchResult(int beerId, String beerName, float overallPerc, int rateCount, boolean isRated,
 				boolean isAlias, boolean isRetired) {
 			this.beerId = beerId;
 			this.beerName = beerName;
@@ -115,7 +119,7 @@ public class SearchBeersCommand extends JsonCommand {
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(beerId);
 			out.writeString(beerName);
-			out.writeInt(overallPerc);
+			out.writeFloat(overallPerc);
 			out.writeInt(rateCount);
 			out.writeInt(isRated ? 1 : 0);
 			out.writeInt(isAlias ? 1 : 0);
@@ -144,4 +148,29 @@ public class SearchBeersCommand extends JsonCommand {
 
 	}
 
+	public static class BeerSearchResultComparator implements Comparator<BeerSearchResult> {
+
+		public enum SortBy {
+			Name, RateCount, Score
+		}
+
+		private final SortBy sortBy;
+
+		public BeerSearchResultComparator(SortBy sortBy) {
+			this.sortBy = sortBy;
+		}
+
+		@Override
+		public int compare(BeerSearchResult lhs, BeerSearchResult rhs) {
+			switch (sortBy) {
+			case RateCount:
+				return -Double.compare(lhs.rateCount, rhs.rateCount);
+			case Score:
+				return -Double.compare(lhs.overallPerc, rhs.overallPerc);
+			default:
+				return lhs.beerName.compareTo(rhs.beerName);
+			}
+		}
+
+	}
 }

@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +58,7 @@ public class GetUserTicksCommand extends JsonCommand {
 
 	@Override
 	protected void parse(JSONArray json) throws JSONException {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mm:ss a", Locale.US);
 		userTicks = new ArrayList<UserTick>();
 		for (int i = 0; i < json.length(); i++) {
 			JSONObject result = json.getJSONObject(i);

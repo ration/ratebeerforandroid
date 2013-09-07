@@ -24,6 +24,7 @@ public enum ApiMethod {
 	// Administrative
 	SignIn,
 	SignOut,
+	GetFeed,
 	GetUserPremiumStatus,
 	GetDrinkingStatus,
 	SetDrinkingStatus,
@@ -51,6 +52,7 @@ public enum ApiMethod {
 	GetAliasedBeer,
 	GetTopBeers,
 	UploadBeerPhoto,
+	GetBeerPhotoAvailable,
 	
 	// Brewers
 	SearchBrewers,
@@ -80,7 +82,7 @@ public enum ApiMethod {
 	
 	// Beermail
 	GetAllBeerMails, 
-	GetBeerMail, 
+	GetBeerMailPart, 
 	DeleteBeerMail,
 	SendBeerMail;
 	

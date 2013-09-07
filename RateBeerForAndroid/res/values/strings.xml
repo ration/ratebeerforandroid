@@ -14,8 +14,9 @@
 	<string name="app_install">Install now</string>
 	<string name="app_nomarket">The Play Store is not installed on your device.</string>
 	<string name="app_scannernotfound">The barcode scanner can not be found.\nWould you like to install this from the Play Store?</string>
+	<string name="app_notsupported">Your barcode scanner app is not supported, sorry.</string>
 	<string name="app_onlyifsignedin">This feature is only available after signing in to RateBeer.</string>
-
+	
 	<string name="app_newstatus">Enter new status</string>
 	<string name="app_nowdrinking">Now drinking</string>
 	<string name="app_settingdrinking_expl">You can also choose \'Drinking this\' from a beer\'s details screen.</string>
@@ -88,6 +89,9 @@
 		<item>Score</item>
 	</string-array>
 
+	<string name="ticks_viewticks">View ticks</string>
+	<string name="ticks_noitems">No ticks yet; open up a beer and start those taste buds!</string>
+	
 	<string name="cellar_viewcellar">View cellar</string>
 	<string name="cellar_wants">Wants</string>
 	<string name="cellar_haves">Haves</string>
@@ -134,6 +138,11 @@
 	<string name="brewers_sharebrewer">Share brewer&#8230;</string>
 	<string name="brewers_beers">Beers</string>
 	<string name="brewers_facebook">Facebook</string>
+	<string-array name="brewers_sortby_names">
+		<item>Name</item>
+		<item>Number of ratings</item>
+		<item>Score</item>
+	</string-array>
 	
 	<string name="events_attendees">Attendees:</string>
 	<string name="events_noitems">No events planned in this area!</string>
@@ -227,6 +236,7 @@
 	<string name="rate_offline_name">Name:</string>
 	<string name="rate_offline_nonamegiven">Please enter the name of the beer you have rated</string>
 	<string name="rate_offline_alreadyrated">Sorry, but you already rated this beer and you cannot re-rate beers from an offline-only rating at the moment</string>
+	<string name="rate_offline_isalias">Sorry, you can\'t rate an alias</string>
 	<string name="rate_offline_export">Export</string>
 	<string name="rate_offline_export_info">Your offline ratings will now be exported to a JSON-encoded text file at %1$s</string>
 	<string name="rate_offline_import">Import</string>
@@ -266,6 +276,7 @@
 	<string name="mail_emptyfields">Please complete all fields before sending</string>
 	<string name="mail_sendingmail">Sending beermail</string>
 	<string name="mail_sendingto">Sending to %1$s</string>
+	<string name="mail_replyingto">Replying to %1$s</string>
 			
 	<string name="settings_display">Display preferences</string>
 	<string name="settings_distanceinkm">Show distances in km</string>

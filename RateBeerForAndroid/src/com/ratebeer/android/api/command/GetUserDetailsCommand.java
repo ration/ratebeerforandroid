@@ -17,8 +17,12 @@
  */
 package com.ratebeer.android.api.command;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONException;
 
@@ -33,15 +37,15 @@ import com.ratebeer.android.api.HttpHelper;
 import com.ratebeer.android.api.UserSettings;
 
 public class GetUserDetailsCommand extends HtmlCommand {
-	
+
 	private final int userId;
 	private UserDetails details;
-	
+
 	public GetUserDetailsCommand(UserSettings api, int userId) {
 		super(api, ApiMethod.GetUserDetails);
 		this.userId = userId;
 	}
-	
+
 	public UserDetails getDetails() {
 		return details;
 	}
@@ -63,19 +67,21 @@ public class GetUserDetailsCommand extends HtmlCommand {
 
 		final String nameText = "<span class=\"userIsDrinking\">";
 		int nameStart = html.indexOf(nameText, userStart) + nameText.length();
-		String name = html.substring(nameStart, html.indexOf("</span>", nameStart));
+		String name = html.substring(nameStart, html.indexOf("</span>", nameStart)).trim();
+		if (name.indexOf(" ") >= 0)
+			name = name.substring(0, name.indexOf(" "));
 
-		int locationStart = html.indexOf("<span>", nameStart) + "<span>".length();
-		String location = html.substring(locationStart, html.indexOf("<br>", locationStart)).trim();
-		int ofEnd = location.indexOf("/>");
-		if (ofEnd >= 0 && location.indexOf("<", ofEnd) > 0) {
-			location = "of " + location.substring(ofEnd + 2, location.indexOf("<", ofEnd));
-		}
+		String locationText = "<span>";
+		int locationStart = html.indexOf(locationText, nameStart) + locationText.length();
+		String location = HttpHelper.cleanHtml(html.substring(locationStart, html.indexOf("<br>", locationStart)))
+				.trim();
 
-		int joinedStart = html.indexOf("class=\"GrayItalic\">", locationStart) + "class=\"GrayItalic\">".length();
+		String joinedText = "class=\"GrayItalic\">";
+		int joinedStart = html.indexOf(joinedText, locationStart) + joinedText.length();
 		String joined = html.substring(joinedStart, html.indexOf("<", joinedStart)).trim();
 
-		int lastSeenStart = html.indexOf("class=\"GrayItalic\">", joinedStart) + "class=\"GrayItalic\">".length();
+		String lastSeenText = "class=\"GrayItalic\">";
+		int lastSeenStart = html.indexOf(lastSeenText, joinedStart) + lastSeenText.length();
 		String lastSeen = html.substring(lastSeenStart, html.indexOf("<", lastSeenStart));
 
 		int beerRateCountStart = html.indexOf("<b>", lastSeenStart) + "<b>".length();
@@ -90,14 +96,16 @@ public class GetUserDetailsCommand extends HtmlCommand {
 		String avgScoreGiven = null;
 		if (avgScoreGivenPresent >= 0) {
 			int avgScoreGivenStart = avgScoreGivenPresent + "Avg Score Given: ".length();
-			avgScoreGiven = HttpHelper.cleanHtml(html.substring(avgScoreGivenStart, html.indexOf(" ", avgScoreGivenStart)));
+			avgScoreGiven = HttpHelper.cleanHtml(html.substring(avgScoreGivenStart,
+					html.indexOf(" ", avgScoreGivenStart)));
 		}
 
 		int avgBeerRatedPresent = html.indexOf("Avg Beer Rated: ", avgScoreGivenPresent);
 		String avgBeerRated = null;
 		if (avgBeerRatedPresent >= 0) {
 			int avgBeerRatedStart = avgBeerRatedPresent + "Avg Beer Rated: ".length();
-			avgBeerRated = HttpHelper.cleanHtml(html.substring(avgBeerRatedStart, html.indexOf(" ", avgBeerRatedStart)));
+			avgBeerRated = HttpHelper
+					.cleanHtml(html.substring(avgBeerRatedStart, html.indexOf(" ", avgBeerRatedStart)));
 		}
 
 		String styleText = "Favorite style: <a href=\"/beerstyles/";
@@ -115,6 +123,7 @@ public class GetUserDetailsCommand extends HtmlCommand {
 		List<RecentBeerRating> ratings = new ArrayList<RecentBeerRating>();
 		String ratingText = "style=\"height: 21px;\"><A HREF=\"/beer/";
 		int ratingStart = html.indexOf(ratingText, styleStart);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy", Locale.US);
 		while (ratingStart >= 0) {
 			int beerIdStart = html.indexOf("/", ratingStart + ratingText.length()) + 1;
 			int beerId = Integer.parseInt(html.substring(beerIdStart, html.indexOf("/", beerIdStart)));
@@ -129,27 +138,33 @@ public class GetUserDetailsCommand extends HtmlCommand {
 			String beerRating = html.substring(beerRatingStart, html.indexOf("<", beerRatingStart));
 
 			int beerDateStart = html.indexOf("smallGray\">", beerRatingStart) + "smallGray\">".length();
-			String beerDate = html.substring(beerDateStart, html.indexOf("<", beerDateStart));
+			String beerDateString = html.substring(beerDateStart, html.indexOf("<", beerDateStart));
+			Date beerDate;
+			try {
+				beerDate = dateFormat.parse(beerDateString);
+			} catch (ParseException e) {
+				beerDate = null;
+			}
 
 			ratings.add(new RecentBeerRating(beerId, beerName, beerStyle, beerRating, beerDate));
 			ratingStart = html.indexOf(ratingText, beerDateStart);
 		}
 
 		// Set the user's rating on the original command as result
-		details = new UserDetails(name, joined, lastSeen, location, beerRateCount, placeRateCount,
-				avgScoreGiven, avgBeerRated, styleName, styleId, ratings);
-		
+		details = new UserDetails(name, joined, lastSeen, location, beerRateCount, placeRateCount, avgScoreGiven,
+				avgBeerRated, styleName, styleId, ratings);
+
 	}
-	
+
 	public static class RecentBeerRating implements Parcelable {
 
 		public final int id;
 		public final String name;
 		public final String styleName;
 		public final String rating;
-		public final String date;
-		
-		public RecentBeerRating(int id, String name, String styleName, String rating, String date) {
+		public final Date date;
+
+		public RecentBeerRating(int id, String name, String styleName, String rating, Date date) {
 			this.id = id;
 			this.name = name;
 			this.styleName = styleName;
@@ -160,31 +175,35 @@ public class GetUserDetailsCommand extends HtmlCommand {
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(id);
 			out.writeString(name);
 			out.writeString(styleName);
 			out.writeString(rating);
-			out.writeString(date);
+			out.writeLong(date.getTime());
 		}
+
 		public static final Parcelable.Creator<RecentBeerRating> CREATOR = new Parcelable.Creator<RecentBeerRating>() {
 			public RecentBeerRating createFromParcel(Parcel in) {
 				return new RecentBeerRating(in);
 			}
+
 			public RecentBeerRating[] newArray(int size) {
 				return new RecentBeerRating[size];
 			}
 		};
+
 		private RecentBeerRating(Parcel in) {
 			id = in.readInt();
 			name = in.readString();
 			styleName = in.readString();
 			rating = in.readString();
-			date = in.readString();
+			date = new Date(in.readLong());
 		}
-		
+
 	}
-	
+
 	public static class UserDetails implements Parcelable {
 
 		public final String name;
@@ -198,9 +217,10 @@ public class GetUserDetailsCommand extends HtmlCommand {
 		public final String favStyleName;
 		public final int favStyleId;
 		public final List<RecentBeerRating> recentBeerRatings;
-		
-		public UserDetails(String name, String joined, String lastSeen, String location, int beerRateCount, 
-				int placeRateCount, String avgScoreGiven, String avgBeerRated, String favStyleName, int favStyleId, List<RecentBeerRating> recentBeerRatings) {
+
+		public UserDetails(String name, String joined, String lastSeen, String location, int beerRateCount,
+				int placeRateCount, String avgScoreGiven, String avgBeerRated, String favStyleName, int favStyleId,
+				List<RecentBeerRating> recentBeerRatings) {
 			this.name = name;
 			this.location = location;
 			this.joined = joined;
@@ -217,6 +237,7 @@ public class GetUserDetailsCommand extends HtmlCommand {
 		public int describeContents() {
 			return 0;
 		}
+
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeString(name);
 			out.writeString(location);
@@ -230,14 +251,17 @@ public class GetUserDetailsCommand extends HtmlCommand {
 			out.writeInt(favStyleId);
 			out.writeTypedList(recentBeerRatings);
 		}
+
 		public static final Parcelable.Creator<UserDetails> CREATOR = new Parcelable.Creator<UserDetails>() {
 			public UserDetails createFromParcel(Parcel in) {
 				return new UserDetails(in);
 			}
+
 			public UserDetails[] newArray(int size) {
 				return new UserDetails[size];
 			}
 		};
+
 		private UserDetails(Parcel in) {
 			name = in.readString();
 			location = in.readString();
@@ -252,7 +276,7 @@ public class GetUserDetailsCommand extends HtmlCommand {
 			recentBeerRatings = new ArrayList<GetUserDetailsCommand.RecentBeerRating>();
 			in.readTypedList(recentBeerRatings, RecentBeerRating.CREATOR);
 		}
-		
+
 	}
 
 }

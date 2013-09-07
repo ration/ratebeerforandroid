@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_ok">OK</string>
+<string name="app_cancel">Peruuta</string>
+<string name="app_home">Koti</string>
+<string name="app_refresh">Päivitä</string>
+<string name="app_details">Yksityiskohdat</string>
+<string name="app_share">Jaa</string>
+<string name="app_loading">Käyttämällä tätä ohjelmaa, hyväksyt</string>
+<string name="app_legal_title">Tervetuloa!</string>
+
+<string name="app_install">Asenna</string>
+<string name="app_nomarket">Play-kauppa ei ole asennettuna laitteeseesi.</string>
+<string name="app_scannernotfound">Viivakoodinlukijaa ei löydy.\nHaluatko asentaa sen Play-kaupasta?</string>
+<string name="app_onlyifsignedin">Tämä toiminto on käytössä, kirjauduttuasi RateBeer:in.</string>
+
+<string name="app_nowdrinking">Nyt juodaan</string>
+<string name="app_requiressignin">Kirjaudu sisään, RateBeer-tiliisi käyttääksesi tätä ominaisuutta.</string>
+<string name="app_noaccount">Eikä sinulla ole vielä tunnusta?\nhttp://www.ratebeer.com/NewUser.asp</string>
+
+<string name="signin_username">Käyttäjänimi:</string>
+<string name="signin_password">Salasana:</string>
+<string name="signin_signin">Kirjaudu sisään:</string>
+<string name="signin_signout">Kirjaudu ulos:</string>
+<string name="signin_connecting">Kirjaudutaan&#8230;</string>
+<string name="signin_signoutsuccess">Hyväksytysti uloskirjattu</string>
+<string name="signin_signinsuccess">Hyväksytysti sisäänkirjattu</string>
+
+<string name="home_beers">Kaljat</string>
+<string name="home_places">Paikat</string>
+<string name="home_search">Haku</string>
+<string name="home_myprofile">Profiili</string>
+<string name="home_top50">Top 50</string>
+<string name="home_bycountry">Parhaat maittain</string>
+<string name="home_calculator">Laskin</string>
+
+<string name="calc_clear">X</string>
+<string name="calc_euro">€</string>
+
+<string name="myratings_sortby">Järjestä</string>
+<string-array name="myratings_sortby_names">
+<item>Name</item>
+<item>Brewer</item>
+<item>Style</item>
+<item>My rating</item>
+<item>Date</item>
+<item>Score</item>
+</string-array>
+
+
+<string name="cellar_memo">Muistio</string>
+<string name="cellar_quantity">Määrä</string>
+
+<string name="topbeers_country">Maa:</string>
+<string name="topbeers_state">Osavaltio:</string>
+<string name="topbeers_noitems">Valitse maasi, katsoaksesi</string>
+
+<string name="places_map">Kartta</string>
+<string name="places_location">Sijainti</string>
+<string name="places_notyetrated">Ei vielä arvosteltu</string>
+<string name="places_usecurrent">Käytä nykyistä sijaintia</string>
+<string name="places_brewpub">Pubi</string>
+<string name="places_bar">Baari</string>
+<string name="places_beerstore">Kaljakauppa</string>
+<string name="places_restaurant">Ravintola</string>
+<string name="places_brewer">Panimo</string>
+<string name="places_unknown">Tuntematon</string>
+<string name="places_km">km</string>
+<string name="places_m">m</string>
+<string name="places_availablebeers">Saatavilla</string>
+
+<string name="brewers_beers">Kaljat</string>
+<string name="brewers_facebook">Facebook</string>
+
+<string name="events_addattendance">Kyllä, lisää nimeni</string>
+<string name="events_removeattendance">Ei, poista nimeni</string>
+
+<string name="search_beers">Kaljat</string>
+<string name="search_brewers">Panimot</string>
+<string name="search_places">Paikat</string>
+<string name="search_users">Käyttäjät</string>
+<string name="search_barcodescanner">Viivakoodinlukija</string>
+<string name="search_clearhistory">Pyyhi historia</string>
+<string name="search_nobeers">Kaljoja ei löytynyt.\n\nYritä etsiä vain jollakin nimen osalla.</string>
+<string name="search_nobrewers">Panimoita ei löytynyt.\n\nYritä etsiä vain jollakin nimen osalla.</string>
+<string name="search_nopalces">Paikkoja ei löytynyt.\n\nYritä etsiä vain jollakin nimen osalla.</string>
+<string name="search_nousers">Käyttäjiä ei löytynyt.\n\nYritä etsiä vain jollakin nimen osalla.</string>
+<string name="search_rated">arvosteltu</string>
+
+<string name="details_score">Piste</string>
+<string name="details_ratings">arvostelut</string>
+<string name="details_style">Tyyli</string>
+<string name="details_ratethis">Arvostele tämä</string>
+<string name="details_viewrerate">Uuudelleen arvostele tämä</string>
+<string name="details_drinkingthis">Juo tämä</string>
+<string name="details_recentratings">Arvostelut</string>
+<string name="details_myrating">Arvosteluni</string>
+<string name="details_otherratings">Viimeaikaiset arvostelut</string>
+<string name="details_availability">Saatavuus</string>
+<string name="details_noavailability">Saatavuutta ei vielä tiedossa</string>
+
+<string name="upload_uploadphoto">Lähetä kuva</string>
+<string name="upload_choose">Valitse kuvalähde</string>
+<string name="upload_newphoto">Ota uusi kuva</string>
+<string name="upload_pick">Valitse galleriasta</string>
+
+<string name="user_nofavstyle">ei mitään</string>
+<string name="user_picture">Käyttäjän kuva</string>
+
+<string name="rate_aroma">Aromi</string>
+<string name="rate_taste">Maku</string>
+<string name="rate_totalscore">Kokonaispisteet</string>
+<string name="rate_comments">Kommentit</string>
+<string name="rate_addrating">Lähetä arvosteluni</string>
+<string name="rate_commenttooshort">Kommentin tulisi olla ainakin 85-merkkiä pitkä</string>
+<string name="rate_ratingnotcompleted">Arvostelusi ei ole vielä valmis</string>
+<string name="rate_commentok">Kommentin pituus on OK!</string>
+<string name="rate_assistance_words">karamelli, leipä, ?, muro, suklaa, kahvi, pähkinä, paahtoleipä, ?, </string>
+
+<string name="rate_offline_delete">Poista arvostelu</string>
+<string name="rate_offline_addrating">Lisää offline arvostelu</string>
+<string name="rate_offline_discard">Hylkää</string>
+<string name="rate_offline_confirmdiscard">Menetät arvostelusi ja kommenttisi. Oletko varma?</string>
+<string name="rate_offline_findbeer">Etsi tämä olut&#8230;</string>
+<string name="rate_offline_name">Nimi:</string>
+<string name="rate_offline_nonamegiven">Anna oluen nimi, jonka olet arvostellut</string>
+<string name="rate_offline_export">Vie</string>
+<string name="rate_offline_import">Tuo</string>
+
+<string name="addav_addavailability">Lisää saatavuus</string>
+<string name="addav_favourites">Suosikit</string>
+<string name="addav_findaplace">Löydä paikka</string>
+<string name="addav_otherplace">Muu paikka:</string>
+<string name="addav_find">Löydä</string>
+<string name="addav_on">On:</string>
+<string name="addav_ontap">näpäytä</string>
+<string name="addav_onbottlecan">pullo</string>
+
+<string name="addupc_upccode">UPC-koodi</string>
+<string name="addupc_beer">Oluen nimi</string>
+<string name="addupc_find">Löydä</string>
+
+<string name="mail_noitems">Ei viestejä</string>
+<string name="mail_sendmail">Lähetä</string>
+<string name="mail_couldnotretrieve">Viestin vastaanotto epäonnistui</string>
+<string name="mail_notavailable">Paikallisten viestien </string>
+<string name="mail_delete">Poista</string>
+<string name="mail_confirmdelete">Poistetaanko tämä viesti %1$s?</string>
+<string name="mail_relpied">vastattu</string>
+<string name="mail_new">uusi</string>
+<string name="mail_read">lue</string>
+<string name="mail_view">Näytä</string>
+<string name="mail_reply">Vastaa</string>
+<string name="mail_sendto">Vastaanottaja:</string>
+<string name="mail_subject">Aihe:</string>
+<string name="mail_message">Viesti:</string>
+<string name="mail_includeoriginal">Sisällytä alkuperäinen viesti</string>
+<string name="mail_send">Lähetä</string>
+<string name="mail_emptyfields">Täytä kaikki kentät, ennen lähettämistä</string>
+<string name="mail_sendingmail">Lähetetään "olutpostia"</string>
+<string name="mail_sendingto">Lähetetään %1$s</string>
+
+<string name="settings_display">Näytä </string>
+<string name="settings_distanceinkm">Näytä etäisyydet km</string>
+<string name="settings_distanceinkm_info">Muutoin etäisyydet näytetään maileina</string>
+<string name="settings_beermail">Olutposti</string>
+<string name="settings_background">Hyväksy ilmoitukset</string>
+<string name="settings_updatefrequency">Päivityksen aikaväli</string>
+<string name="settings_vibrate">Värinä ilmoituksessa</string>
+<string-array name="settings_frequency_names">
+<item>1minuutti</item>
+<item>10minuuttia</item>
+<item>30minuuttia</item>
+<item>1tunti</item>
+<item>4tuntia</item>
+<item>24tuntia</item>
+</string-array>
+
+<string name="error_offline">Ei internet-yhteyttä</string>
+<string name="error_connectionfailure">Yhteysvirhe - yhteytesi on huono tai ohjelma on offline-tilassa</string>
+<string name="error_authenticationfailed">Väärä käyttäjänimi tai salasana</string>
+<string name="error_nouserorpass">Täytä sekä, käyttäjänimi, -että salasana kentät, kirjautuaksesi sisään</string>
+<string name="error_nolocation">Sijaintiasi ei voi määrittää</string>
+<string name="error_sendreport">Lähetä virhesanoma</string>
+<string name="error_cannotwrite">Ei voi kirjoittaa</string>
+<string name="error_cannotread">Tiedostoa ei voida lukea</string>
+<string name="error_invalidurl">URL-osoite ei ole käytössä</string>
+
+</resources>

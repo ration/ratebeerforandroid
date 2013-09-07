@@ -132,6 +132,8 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 			OfflineRating offline = offlineRatingDao.queryForId(offlineId);
 			if (item.isRated) {
 				Crouton.makeText(getActivity(), R.string.rate_offline_alreadyrated, Style.ALERT).show();
+			} else if (item.isAlias) {
+				Crouton.showText(getActivity(), R.string.rate_offline_isalias, Style.ALERT);
 			} else {
 				offline.update(item.beerId, item.beerName);
 				offlineRatingDao.update(offline);
@@ -193,7 +195,7 @@ public class FindRatedBeerFragment extends RateBeerFragment {
 			// Bind the data
 			BeerSearchResult item = getItem(position);
 			holder.beer.setText(item.beerName);
-			holder.overall.setText((item.overallPerc >= 0? Integer.toString(item.overallPerc): "?"));
+			holder.overall.setText((item.overallPerc >= 0? String.format("%.0f", item.overallPerc): "?"));
 			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
 			holder.rated.setVisibility(item.isRated? View.VISIBLE: View.GONE);
 			holder.retired.setVisibility(item.isRetired? View.VISIBLE: View.GONE);

@@ -51,9 +51,7 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.command.DeleteBeerMailCommand;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.app.persistance.DatabaseHelper;
-import com.ratebeer.android.gui.components.BeermailService;
-import com.ratebeer.android.gui.components.RateBeerActivity;
-import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.*;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 import com.ratebeer.android.gui.fragments.ConfirmDialogFragment.OnDialogResult;
 
@@ -88,7 +86,6 @@ public class MailsFragment extends RateBeerFragment {
 	protected void onSendMail() {
 		load(SendMailFragment_.builder().build());
 	}
-
 
 	@OptionsItem(R.id.menu_refresh)
 	protected void refreshMails() {
@@ -172,7 +169,7 @@ public class MailsFragment extends RateBeerFragment {
 			break;
 		case MENU_REPLY:
 			// Start the mail reply screen
-			load(SendMailFragment.buildReplyFromExisting(mail.getSenderName(), mail.getSubject(), mail.getBody()));
+			load(SendMailFragment.buildReplyFromExisting(mail));
 			break;
 		}
 		return super.onContextItemSelected(item);

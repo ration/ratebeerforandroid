@@ -36,6 +36,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.ItemClick;
@@ -53,8 +54,10 @@ import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
 import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
+import com.ratebeer.android.gui.*;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.ErrorLogSender;
 import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
 import com.ratebeer.android.gui.fragments.SetDrinkingStatusDialogFragment.OnDialogResult;
 
@@ -71,6 +74,9 @@ public class DashboardFragment extends RateBeerFragment {
 	private LayoutInflater inflater;
 	private Float density = null;
 
+	@Bean
+	protected ErrorLogSender errorLogSender;
+	
 	public DashboardFragment() {
 	}
 
@@ -152,6 +158,21 @@ public class DashboardFragment extends RateBeerFragment {
 	protected void onStartCalculator() {
 		// Start calculator screen
 		load(CalculatorFragment_.builder().build());
+	}
+
+	@OptionsItem(R.id.menu_preferences)
+	protected void onOpenPreferences() {
+		PreferencesInterface_.intent(getActivity()).start();
+	}
+
+	@OptionsItem(R.id.menu_sendreport)
+	protected void onSendErrorReport() {
+		errorLogSender.collectAndSendLog(getUser() == null? "<none>": getUser().getUsername());
+	}
+
+	@OptionsItem(R.id.menu_about)
+	protected void onOpenAbout() {
+		load(AboutFragment_.builder().build());
 	}
 
 	private void updateProfileImage() {

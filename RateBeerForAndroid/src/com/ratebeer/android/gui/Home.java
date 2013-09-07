@@ -19,6 +19,7 @@ package com.ratebeer.android.gui;
 
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,20 +29,17 @@ import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.InstanceState;
 import com.googlecode.androidannotations.annotations.OptionsItem;
-import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.ratebeer.android.R;
 import com.ratebeer.android.gui.components.BeermailService;
 import com.ratebeer.android.gui.components.BootReceiver;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerActivity;
 import com.ratebeer.android.gui.components.RateBeerFragment;
+import com.ratebeer.android.gui.components.helpers.NfcHelper;
 import com.ratebeer.android.gui.components.helpers.SearchUiHelper;
 import com.ratebeer.android.gui.fragments.*;
-import com.ratebeer.android.gui.fragments.DashboardFragment;
-import com.ratebeer.android.gui.fragments.SendMailFragment;
 
 @EActivity(R.layout.activity_home)
-@OptionsMenu(R.menu.home)
 public class Home extends RateBeerActivity {
 
 	@InstanceState
@@ -50,11 +48,15 @@ public class Home extends RateBeerActivity {
 	@AfterViews
 	public void init() {
 		// Start the background service, if necessary
-		BootReceiver.startAlarm(getApplicationContext());
+		BootReceiver.startBeerMailAlarm(getApplicationContext());
 
 		// Show search directly in action bar on larger screens
 		// For phones the DashboardFragment and SearchFragment will show an icon
 		new SearchUiHelper(this).addSearchToActionBar(getSupportActionBar());
+		
+		// If supported, allow NFC message exchange through Android Beam
+		if ((android.os.Build.VERSION.SDK_INT >= 14 && getPackageManager().hasSystemFeature("android.hardware.nfc")))
+			new NfcHelper(this).startNfc();
 		
 		if (firstStart)
 			handleStartIntent();
@@ -125,12 +127,6 @@ public class Home extends RateBeerActivity {
 			return;
 		}
 
-		// Open the beermail reply screen to a specific mail
-		if (action.equals(BeermailService.ACTION_REPLYBEERMAIL)) {
-			load(SendMailFragment.buildReplyFromExtras(getIntent().getExtras()));
-			return;
-		}
-		
 		// Normal startup; show dashboard
 		load(DashboardFragment_.builder().build());
 
@@ -138,16 +134,7 @@ public class Home extends RateBeerActivity {
 		
 	}
 
-	@OptionsItem(R.id.menu_preferences)
-	protected void onOpenPreferences() {
-		PreferencesInterface_.intent(this).start();
-	}
-
-	@OptionsItem(R.id.menu_about)
-	protected void onOpenAbout() {
-		load(AboutFragment_.builder().build());
-	}
-
+	@SuppressLint("InlinedApi")
 	@OptionsItem(android.R.id.home)
 	protected void onUp() {
 		// Home button click in the action bar

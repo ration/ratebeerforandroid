@@ -52,7 +52,6 @@ import com.ratebeer.android.api.CommandSuccessResult;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand;
 import com.ratebeer.android.api.command.GetAllBeerMailsCommand.Mail;
-import com.ratebeer.android.api.command.GetBeerMailCommand;
 import com.ratebeer.android.app.ApplicationSettings;
 import com.ratebeer.android.app.persistance.BeerMail;
 import com.ratebeer.android.gui.Home_;
@@ -115,189 +114,171 @@ public class BeermailService extends DatabaseConsumerService {
 		SimpleDateFormat sentDateFormat = new SimpleDateFormat("M/d/yyyy h:m:s a", Locale.US);
 		GetAllBeerMailsCommand allMails = new GetAllBeerMailsCommand(user);
 		CommandResult result = allMails.execute(apiConnection);
-		if (result instanceof CommandSuccessResult) {
-
-			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Received " + allMails.getMails().size() + " mail headers.");
-
-			final int MAX_CONTENTLENGTH = 50;
-			int unreadMails = 0;
-			BeerMail firstUnread = null;
-			List<String> mailBy = new ArrayList<String>();
-			List<String> mailLines = new ArrayList<String>();
-			try {
-
-				Dao<BeerMail, Integer> dao = getHelper().getBeerMailDao();
-				for (Mail mail : allMails.getMails()) {
-
-					// Get the existing mail or retrieve new details
-					BeerMail beerMail = dao.queryForId(mail.messageID);
-					if (beerMail == null || beerMail.getBody().equals(getString(R.string.mail_couldnotretrieve))) {
-
-						// Get the body too
-						String body;
-						GetBeerMailCommand gbmCommand = new GetBeerMailCommand(user, mail.messageID);
-						CommandResult gbmResult = gbmCommand.execute(apiConnection);
-						if (gbmResult instanceof CommandSuccessResult) {
-							body = gbmCommand.getMail().body;
-						} else {
-							// TODO: Allow later retrieval of the mail body, e.g. in the mail details screen
-							body = getString(R.string.mail_couldnotretrieve);
-						}
-
-						if (beerMail == null) {
-							// Create a beer mail object to save to the database
-							Date sent = null;
-							try {
-								// Parse mail date
-								sent = sentDateFormat.parse(mail.sent);
-							} catch (ParseException e) {
-								// Cannot parse date; ignore and don't show instead
-							}
-							// Add to the database
-							beerMail = new BeerMail(mail.messageID, mail.senderID, mail.senderName, mail.messageRead,
-									mail.replied, sent, mail.subject, body);
-							dao.create(beerMail);
-						} else {
-							// Update existing beermail object and pretend it isn't read yet
-							beerMail.updateBody(body);
-							beerMail.setIsRead(false);
-							dao.update(beerMail);
-						}
-					}
-
-					// Count unread mails
-					if (!beerMail.isRead()) {
-						unreadMails++;
-						mailBy.add(beerMail.getSenderName());
-						mailLines.add(beerMail.getSomeContent(MAX_CONTENTLENGTH ));
-						if (firstUnread == null) {
-							firstUnread = beerMail;
-						}
-					}
-
-				}
-
-				// Look for deleted or updated mails
-				if (allMails.getMails().size() > 0) {
-
-					// Consider all mails within the time period of our last update
-					Mail oldestInUpdate = allMails.getMails().get(allMails.getMails().size() - 1);
-					List<BeerMail> existing = dao.queryBuilder().orderBy(BeerMail.MESSAGEID_FIELD_NAME, false).where()
-							.gt(BeerMail.MESSAGEID_FIELD_NAME, oldestInUpdate.messageID).query();
-
-					// See if these still existed in the last update
-					for (BeerMail check : existing) {
-						Mail present = null;
-						for (Mail mail : allMails.getMails()) {
-							if (mail.messageID == check.getMessageId()) {
-								present = mail;
-								break;
-							}
-						}
-						if (present == null) {
-							// Not available any longer: it was removed
-							dao.delete(check);
-						} else {
-							// Update this entry
-							if (!check.isRead()) // Never make a message 'unread'
-								check.setIsRead(present.messageRead);
-							check.setIsReplied(present.replied);
-							dao.update(check);
-						}
-					}
-
-				}
-
-			} catch (SQLException e) {
-				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Error saving beermail to database: " + e);
-				// If requested, call back the messenger, i.e. the calling activity
-				callbackMessenger(intent, RESULT_FAILURE);
-				return;
-			}
-
-			// Create a notification about the new mails
-			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "User has " + unreadMails + " unread mails.");
-			if (!intent.hasExtra(EXTRA_MESSENGER) && unreadMails > 0) {
-
-				// Prepare senders text
-				String newMailsText = getString(R.string.app_newmails, unreadMails);
-				String mailByText = "";
-				final int MAX_SENDERS = 3;
-				for (int i = 0; i < mailBy.size() && i < MAX_SENDERS; i++) {
-					mailByText += mailBy.get(i) + ", ";
-				}
-				mailByText = mailByText.substring(0, mailByText.length() - 2);
-				if (mailBy.size() > MAX_SENDERS) {
-					mailByText += getString(R.string.app_andothers);
-				}
-				
-				// Set notification action target
-				Intent contentIntent = new Intent(this, Home_.class);
-				contentIntent.setAction(ACTION_VIEWBEERMAILS);
-
-				// Retrieve user of some sender to show with the notification
-				Bitmap avatar = null;
-				try {
-					avatar = BitmapFactory.decodeStream(apiConnection.getRaw("http://www.ratebeer.com/UserPics/"
-							+ firstUnread.getSenderName() + ".jpg"));
-				} catch (Exception e) {
-					// Could not load? Just don't show an image 
-				}
-				
-				// Build old style notification
-				Builder builder = new NotificationCompat2.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
-						.setTicker(getString(R.string.app_newmail)).setContentTitle(newMailsText)
-						.setContentText(mailByText)
-						.setContentIntent(PendingIntent.getActivity(this, 0, contentIntent, 0));
-				if (avatar != null) {
-					builder.setLargeIcon(avatar);
-				}
-				
-				// Enrich notification with Jelly Bean inbox style
-				InboxStyle inbox = new NotificationCompat2.InboxStyle(builder).setBigContentTitle(newMailsText);
-				for (int i = 0; i < mailBy.size() && i < MAX_SENDERS; i++) {
-					inbox.addLine(mailBy.get(i) + ": " + mailLines.get(i));
-				}
-				if (unreadMails - 3 > 0) {
-					inbox.setSummaryText(getString(R.string.app_moremail, Integer.toString(unreadMails - 3)));
-				}
-				if (unreadMails == 1) {
-					Intent replyIntent = new Intent(this, Home_.class);
-					replyIntent.setAction(ACTION_REPLYBEERMAIL);
-					replyIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
-					builder.addAction(R.drawable.ic_stat_reply, getString(R.string.mail_reply),
-							PendingIntent.getActivity(this, 0, replyIntent, 0));
-					Intent viewIntent = new Intent(this, Home_.class);
-					viewIntent.setAction(ACTION_VIEWBEERMAIL);
-					viewIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
-					builder.addAction(R.drawable.ic_stat_viewmail, getString(R.string.mail_view),
-							PendingIntent.getActivity(this, 0, viewIntent, 0));
-				}
-
-				// Create notification, apply settings and release
-				Notification notification = inbox.build();
-				notification.flags |= Notification.FLAG_AUTO_CANCEL;
-				if (applicationSettings.getVibrateOnNotification()) {
-					notification.defaults = Notification.DEFAULT_VIBRATE;
-				}
-				notification.ledARGB = 0xff003366;
-				notification.ledOnMS = 300;
-				notification.ledOffMS = 1000;
-				notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-				notificationManager.notify(NOTIFY_NEWBEERMAIL, notification);
-				
-			}
-
-			// If requested, call back the messenger, i.e. the calling activity
-			callbackMessenger(intent, RESULT_SUCCESS);
-
-		} else {
+		
+		// Return error if the command was unsuccessful
+		if (!(result instanceof CommandSuccessResult)) {
 			String e = result instanceof CommandFailureResult ? ((CommandFailureResult) result).getException()
 					.toString() : "Unknown error";
 			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Error retrieving new beer mails: " + e);
 			// If requested, call back the messenger, i.e. the calling activity
 			callbackMessenger(intent, RESULT_FAILURE);
+			return;
 		}
+
+		// Successfully retrieved beer mails
+		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Received " + allMails.getMails().size()
+				+ " mail headers.");
+		final int MAX_CONTENTLENGTH = 50;
+		int unreadMails = 0;
+		BeerMail firstUnread = null;
+		List<String> mailBy = new ArrayList<String>();
+		List<String> mailLines = new ArrayList<String>();
+		try {
+
+			Dao<BeerMail, Integer> dao = getHelper().getBeerMailDao();
+			// Traverse though the mails we just received
+			for (Mail mail : allMails.getMails()) {
+
+				// Create beer mail object if we did not know about this mail yet
+				BeerMail beerMail = dao.queryForId(mail.messageID);
+				if (beerMail == null) {
+						Date sent = null;
+						try {
+							// Parse mail date
+							sent = sentDateFormat.parse(mail.sent);
+						} catch (ParseException e) {
+							// Cannot parse date; ignore and don't show instead
+						}
+						// Add to the database
+						beerMail = new BeerMail(mail.messageID, mail.senderID, mail.senderName, mail.messageRead,
+								mail.replied, sent, mail.subject, null);
+						dao.create(beerMail);
+				}
+
+				// Count unread mails
+				if (!beerMail.isRead()) {
+					unreadMails++;
+					mailBy.add(beerMail.getSenderName());
+					mailLines.add(beerMail.getSomeContent(MAX_CONTENTLENGTH));
+					if (firstUnread == null) {
+						firstUnread = beerMail;
+					}
+				}
+
+			}
+
+			// Look for deleted or updated mails
+			if (allMails.getMails().size() > 0) {
+
+				// Consider all locally stored mails within the time period of this new update
+				Mail oldestInUpdate = allMails.getMails().get(allMails.getMails().size() - 1);
+				List<BeerMail> existing = dao.queryBuilder().orderBy(BeerMail.MESSAGEID_FIELD_NAME, false).where()
+						.gt(BeerMail.MESSAGEID_FIELD_NAME, oldestInUpdate.messageID).query();
+
+				// See if these still existed in the last update
+				for (BeerMail check : existing) {
+					Mail present = null;
+					for (Mail mail : allMails.getMails()) {
+						if (mail.messageID == check.getMessageId()) {
+							present = mail;
+							break;
+						}
+					}
+					if (present == null) {
+						// Not available any longer: it was removed
+						dao.delete(check);
+					} else {
+						// Update this entry
+						check.setIsRead(present.messageRead);
+						check.setIsReplied(present.replied);
+						dao.update(check);
+					}
+				}
+
+			}
+
+		} catch (SQLException e) {
+			Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Error saving beermail to database: " + e);
+			// If requested, call back the messenger, i.e. the calling activity
+			callbackMessenger(intent, RESULT_FAILURE);
+			return;
+		}
+
+		// Create a notification about the new mails
+		Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "User has " + unreadMails + " unread mails.");
+		if (!intent.hasExtra(EXTRA_MESSENGER) && unreadMails > 0) {
+
+			// Prepare senders text
+			String newMailsText = getString(R.string.app_newmails, unreadMails);
+			String mailByText = "";
+			final int MAX_SENDERS = 3;
+			for (int i = 0; i < mailBy.size() && i < MAX_SENDERS; i++) {
+				mailByText += mailBy.get(i) + ", ";
+			}
+			mailByText = mailByText.substring(0, mailByText.length() - 2);
+			if (mailBy.size() > MAX_SENDERS) {
+				mailByText += getString(R.string.app_andothers);
+			}
+			
+			// Set notification action target
+			Intent contentIntent = new Intent(this, Home_.class);
+			contentIntent.setAction(ACTION_VIEWBEERMAILS);
+
+			// Retrieve user of some sender to show with the notification
+			Bitmap avatar = null;
+			try {
+				avatar = BitmapFactory.decodeStream(apiConnection.getRaw("http://www.ratebeer.com/UserPics/"
+						+ firstUnread.getSenderName() + ".jpg"));
+			} catch (Exception e) {
+				// Could not load? Just don't show an image 
+			}
+			
+			// Build old style notification
+			Builder builder = new NotificationCompat2.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
+					.setTicker(getString(R.string.app_newmail)).setContentTitle(newMailsText)
+					.setContentText(mailByText)
+					.setContentIntent(PendingIntent.getActivity(this, 0, contentIntent, 0));
+			if (avatar != null) {
+				builder.setLargeIcon(avatar);
+			}
+			
+			// Enrich notification with Jelly Bean inbox style
+			InboxStyle inbox = new NotificationCompat2.InboxStyle(builder).setBigContentTitle(newMailsText);
+			for (int i = 0; i < mailBy.size() && i < MAX_SENDERS; i++) {
+				inbox.addLine(mailBy.get(i) + ": " + mailLines.get(i));
+			}
+			if (unreadMails - 3 > 0) {
+				inbox.setSummaryText(getString(R.string.app_moremail, Integer.toString(unreadMails - 3)));
+			}
+			if (unreadMails == 1) {
+				Intent replyIntent = new Intent(this, Home_.class);
+				replyIntent.setAction(ACTION_REPLYBEERMAIL);
+				replyIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
+				builder.addAction(R.drawable.ic_stat_reply, getString(R.string.mail_reply),
+						PendingIntent.getActivity(this, 0, replyIntent, 0));
+				Intent viewIntent = new Intent(this, Home_.class);
+				viewIntent.setAction(ACTION_VIEWBEERMAIL);
+				viewIntent.putExtra(BeermailService.EXTRA_MAIL, firstUnread);
+				builder.addAction(R.drawable.ic_stat_viewmail, getString(R.string.mail_view),
+						PendingIntent.getActivity(this, 0, viewIntent, 0));
+			}
+
+			// Create notification, apply settings and release
+			Notification notification = inbox.build();
+			notification.flags |= Notification.FLAG_AUTO_CANCEL;
+			if (applicationSettings.getVibrateOnNotification()) {
+				notification.defaults = Notification.DEFAULT_VIBRATE;
+			}
+			notification.ledARGB = 0xff003366;
+			notification.ledOnMS = 300;
+			notification.ledOffMS = 1000;
+			notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+			notificationManager.notify(NOTIFY_NEWBEERMAIL, notification);
+			
+		}
+
+		// If requested, call back the messenger, i.e. the calling activity
+		callbackMessenger(intent, RESULT_SUCCESS);
 
 	}
 
@@ -322,8 +303,8 @@ public class BeermailService extends DatabaseConsumerService {
 				// Send it back to the messenger, i.e. the activity
 				callback.send(msg);
 			} catch (RemoteException e) {
-				Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Cannot call back to activity to deliver message '" + msg.toString()
-						+ "'");
+				Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,
+						"Cannot call back to activity to deliver message '" + msg.toString() + "'");
 			}
 		}
 	}

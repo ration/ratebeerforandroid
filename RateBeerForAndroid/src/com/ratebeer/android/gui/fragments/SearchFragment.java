@@ -19,6 +19,7 @@ package com.ratebeer.android.gui.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
@@ -173,7 +174,12 @@ public class SearchFragment extends RateBeerFragment {
 		scan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 		if (ActivityUtil.isIntentAvailable(getActivity(), scan)) {
 			// Ask the barcode scanner to allow the user to scan some code
-			startActivityForResult(scan, ACTIVITY_BARCODE);
+			try {
+				startActivityForResult(scan, ACTIVITY_BARCODE);
+			} catch (Exception e) {
+				// Can't start the barcode scanner, for example with a SecurityException, even though it is there
+				Crouton.makeText(getActivity(), R.string.app_notsupported, Style.INFO).show();
+			}
 		} else {
 			// Show a message if the user should install the barcode scanner for this feature
 			new ConfirmDialogFragment(new OnDialogResult() {
@@ -401,7 +407,7 @@ public class SearchFragment extends RateBeerFragment {
 			// Bind the data
 			BeerSearchResult item = getItem(position);
 			holder.beer.setText(item.beerName);
-			holder.overall.setText((item.overallPerc >= 0 ? Integer.toString(item.overallPerc) : "?"));
+			holder.overall.setText((item.overallPerc >= 0 ? String.format("%.0f", item.overallPerc) : "?"));
 			holder.count.setText(Integer.toString(item.rateCount) + " " + getString(R.string.details_ratings));
 			holder.rated.setVisibility(item.isRated ? View.VISIBLE : View.GONE);
 			holder.retired.setVisibility(item.isRetired ? View.VISIBLE : View.GONE);
@@ -425,7 +431,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right
 			// Get the right view, using a ViewHolder
 			BrewerViewHolder holder;
 			if (convertView == null) {
@@ -461,7 +466,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right
 			// Get the right view, using a ViewHolder
 			PlaceViewHolder holder;
 			if (convertView == null) {
@@ -497,7 +501,6 @@ public class SearchFragment extends RateBeerFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// Get the right
 			// Get the right view, using a ViewHolder
 			UserViewHolder holder;
 			if (convertView == null) {
@@ -560,13 +563,13 @@ public class SearchFragment extends RateBeerFragment {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.search_beers).toUpperCase();
+				return getActivity().getString(R.string.search_beers).toUpperCase(Locale.getDefault());
 			case 1:
-				return getActivity().getString(R.string.search_brewers).toUpperCase();
+				return getActivity().getString(R.string.search_brewers).toUpperCase(Locale.getDefault());
 			case 2:
-				return getActivity().getString(R.string.search_places).toUpperCase();
+				return getActivity().getString(R.string.search_places).toUpperCase(Locale.getDefault());
 			case 3:
-				return getActivity().getString(R.string.search_users).toUpperCase();
+				return getActivity().getString(R.string.search_users).toUpperCase(Locale.getDefault());
 			}
 			return null;
 		}

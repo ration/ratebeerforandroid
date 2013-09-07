@@ -30,7 +30,7 @@
 <string name="app_addingcodefor">Lisan triipkoodi %1$</string>
 <string name="app_noaccount">Pole veel oma kontot?\nhttp://www.ratebeer.com/NewUser.asp</string>
 <string name="app_newmail">Sulle on uus sõnum</string>
-<string name="app_newmails">Sulle on %1$ uut sõnumit</string>
+<string name="app_newmails">Sulle on %1$s uut sõnumit</string>
 <string name="app_by">kasutajalt %1$s</string>
 <string name="app_andothers">ja teised</string>
 <string name="app_uploadingphoto">Laadin uut fotot üles</string>
@@ -139,7 +139,6 @@
 <string name="search_alias">hüüdnimi</string>
 <string name="search_rated">arvustatud</string>
 <string name="search_ratings">%1$s hinnet</string>
-<string name="search_aliasedbeer">See on hüüdnimi, täpsemaid üksikasju pole</string>
 
 <string name="details_bybrewer">Tootja: %1$s</string>
 <string name="details_score">Skoor</string>
@@ -231,8 +230,8 @@
 </string-array>
 
 <string name="error_offline">Sul ei ole Interneti-ühendust või on RateBeer.com maas</string>
-<string name="error_authenticationfailed">Vale kasutajanimi või parool</string>
 <string name="error_commandfailed">Käsklus luhtus ootamatult. Ühendus on halb või on RateBeer maas.</string>
+<string name="error_authenticationfailed">Vale kasutajanimi või parool</string>
 <string name="error_nouserorpass">Sisselogimiseks on vaja nii kasutajanime kui ka parooli</string>
 <string name="error_nolocation">Sinu asukohta ei olnud võimalik määrata</string>
 <string name="error_locationnotsupported">Seade ei võimalda asukohta tuvastada või oled selle funktsiooni välja lülitanud</string>

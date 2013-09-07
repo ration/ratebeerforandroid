@@ -17,6 +17,7 @@
  */
 package com.ratebeer.android.gui.components;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.widget.EditText;
 
 import com.ratebeer.android.R;
 
+@SuppressLint("ValidFragment")
 public class SelectLocationDialog extends DialogFragment {
 
 	private final OnLocationSelectedListener placesFragment;
@@ -50,7 +52,8 @@ public class SelectLocationDialog extends DialogFragment {
 				// Get the query text and ask the places fragment to start a search
 				if (placesFragment != null)
 					placesFragment.onStartLocationSearch(((EditText)view.findViewById(R.id.query)).getText().toString());
-				dismiss();
+				if (getActivity() != null)
+					dismiss();
 			}
 		});
 		((Button)view.findViewById(R.id.currentlocation)).setOnClickListener(new View.OnClickListener() {
@@ -59,7 +62,8 @@ public class SelectLocationDialog extends DialogFragment {
 				// Ask the places fragment to use the current location
 				if (placesFragment != null)
 					placesFragment.onUseCurrentLocation();
-				dismiss();
+				if (getActivity() != null)
+					dismiss();
 			}
 		});
 		return view;

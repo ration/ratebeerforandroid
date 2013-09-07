@@ -20,14 +20,17 @@ package com.ratebeer.android.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.location.Location;
 import android.preference.PreferenceManager;
 
 import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.api.Scope;
 import com.ratebeer.android.R;
 import com.ratebeer.android.api.UserSettings;
 import com.ratebeer.android.api.command.Country;
 import com.ratebeer.android.api.command.State;
+import com.ratebeer.android.app.location.PassiveLocationUpdateReceiver;
 
 @EBean(scope = Scope.Singleton)
 public class ApplicationSettings {
@@ -41,7 +44,10 @@ public class ApplicationSettings {
 	public static final String ENABLE_BEERMAIL = "enable_beermail";
 	public static final String BEERMAIL_UPDATEFREQUENCY = "beermail_updatefrequency";
 	private static final String BEERMAIL_VIBRATE = "beermail_vibrate";
+	private static final String LAST_USER_LOCATION_LAT = "last_user_location_latitude";
+	private static final String LAST_USER_LOCATION_LONG = "last_user_location_longitude";
 	
+	@RootContext
 	protected Context context;
 	protected SharedPreferences prefs;
 	
@@ -123,7 +129,7 @@ public class ApplicationSettings {
 
 	/**
 	 * Stores the last used state in the Android preferences so the app can pre-select it
-	 * @param name The state to store
+	 * @param name The state to store, or null to remove the setting
 	 */
 	public void saveLastUsedState(State state) {
 		Editor editor = prefs.edit();
@@ -177,5 +183,39 @@ public class ApplicationSettings {
 	public boolean getVibrateOnNotification() {
 		return prefs.getBoolean(BEERMAIL_VIBRATE, false);
 	}
-	
+
+	/**
+	 * Stores the last user location known so the app can quickly show a map location
+	 * @param name The location to store, or null to remove the last location
+	 */
+	public void saveLastUserLocation(Location location) {
+		Editor editor = prefs.edit();
+		if (location == null) {
+			// Remove the last used user location
+			editor.remove(LAST_USER_LOCATION_LAT);
+			editor.remove(LAST_USER_LOCATION_LONG);
+		} else {
+			// Store the last used user location
+			editor.putLong(LAST_USER_LOCATION_LAT, (long) (location.getLatitude() * 1E6));
+			editor.putLong(LAST_USER_LOCATION_LONG, (long) (location.getLongitude() * 1E6));
+		}
+		editor.commit();
+	}
+
+	/**
+	 * Returns the last user location we know about
+	 * @return The user's last location, or null if not known at all
+	 */
+	public Location getLastUserLocation() {
+		long latitude = prefs.getLong(LAST_USER_LOCATION_LAT, Long.MIN_VALUE);
+		long longitude = prefs.getLong(LAST_USER_LOCATION_LONG, Long.MIN_VALUE);
+		if (latitude == Long.MIN_VALUE || longitude == Long.MIN_VALUE)
+			return null;
+		// A latitude and longitude were stored (as Long values); return a storage Location object
+		Location location = new Location(PassiveLocationUpdateReceiver.STORAGE_PROVIDER);
+		location.setLatitude((double)(latitude) / 1E6);
+		location.setLongitude((double)(longitude) / 1E6);
+		return location;
+	}
+
 }

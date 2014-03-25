@@ -74,7 +74,7 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 			String time = Long.toString(new Date().getTime());
 			String signature = "format=jpg&public_id=beer_" + beerId + "&timestamp=" + time;
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
-			byte[] digest = md.digest((signature + "JxrhzpSKyDHydbihBRbrfJi5BNY").getBytes());
+			byte[] digest = md.digest((signature + "LfEYVhBV9Uyoo4KfF7fEWrTGVlU").getBytes());
 			
 			// Post the photo and parameters
 			DefaultHttpClient client = new DefaultHttpClient();
@@ -83,7 +83,7 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 			HttpClientParams.setRedirecting(params, false);
 			post.setEntity(new MultipartEntity(new Part[] {
 					new FilePart("file", photo, FilePart.DEFAULT_CONTENT_TYPE, FilePart.DEFAULT_CHARSET), 
-					new StringPart("api_key", "447414912764277"),
+					new StringPart("api_key", "595279775179754"),
 					new StringPart("timestamp", time),
 					new StringPart("public_id", "beer_" + beerId),
 					new StringPart("signature", byteArrayToHexString(digest)),

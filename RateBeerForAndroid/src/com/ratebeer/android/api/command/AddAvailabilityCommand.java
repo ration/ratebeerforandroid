@@ -17,11 +17,7 @@
  */
 package com.ratebeer.android.api.command;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.http.message.BasicNameValuePair;
+import java.net.HttpURLConnection;
 
 import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
@@ -31,46 +27,20 @@ import com.ratebeer.android.api.UserSettings;
 
 public class AddAvailabilityCommand extends EmptyResponseCommand {
 
-	public static final int NO_EXTRA_PLACE = -1;
-
 	private final int beerId;
-	private final int[] selectedFavourites;
-	private final String extraPlaceName;
-	private final int extraPlaceId;
-	private final boolean onBottleCan;
-	private final boolean onTap;
+	private final int placeId;
 
-	public AddAvailabilityCommand(UserSettings api, int beerId, int[] selectedFavourites, String extraPlaceName,
-			int extraPlaceId, boolean onBottleCan, boolean onTap) {
+	public AddAvailabilityCommand(UserSettings api, int beerId, int placeId) {
 		super(api, ApiMethod.AddAvailability);
 		this.beerId = beerId;
-		this.selectedFavourites = selectedFavourites;
-		this.extraPlaceName = extraPlaceName;
-		this.extraPlaceId = extraPlaceId;
-		this.onBottleCan = onBottleCan;
-		this.onTap = onTap;
+		this.placeId = placeId;
 	}
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
 		ApiConnection.ensureLogin(apiConnection, getUserSettings());
-		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>(Arrays.asList(new BasicNameValuePair(
-				"UserID", Integer.toString(getUserSettings().getUserID())),
-				new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("PlaceName",
-						extraPlaceId == AddAvailabilityCommand.NO_EXTRA_PLACE ? "" : extraPlaceName),
-				new BasicNameValuePair("PlaceName2", extraPlaceId == AddAvailabilityCommand.NO_EXTRA_PLACE ? ""
-						: extraPlaceName), new BasicNameValuePair("PlaceID",
-						extraPlaceId == AddAvailabilityCommand.NO_EXTRA_PLACE ? "" : Integer.toString(extraPlaceId))));
-		for (int p = 0; p < selectedFavourites.length; p++) {
-			params.add(new BasicNameValuePair("placeid", Integer.toString(selectedFavourites[p])));
-		}
-		if (onBottleCan) {
-			params.add(new BasicNameValuePair("ServedBottle", "on"));
-		}
-		if (onTap) {
-			params.add(new BasicNameValuePair("ServedTap", "on"));
-		}
-		apiConnection.post("http://www.ratebeer.com/Ratings/Beer/Avail-Save.asp", params);
+		apiConnection.get("http://ratebeer.com/json/where.asp?bd=" + beerId + "&pd=" + placeId + "&k="
+				+ ApiConnection.RB_KEY, HttpURLConnection.HTTP_MOVED_PERM);
 	}
 
 }

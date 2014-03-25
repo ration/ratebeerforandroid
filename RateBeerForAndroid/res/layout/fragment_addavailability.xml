@@ -19,29 +19,6 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal">
-		<TextView
-			android:layout_width="0dip"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/addav_on" />
-		<CheckBox
-			android:id="@+id/onbottlecan"
-			android:layout_width="0dip"
-			android:layout_height="wrap_content"
-			android:layout_weight="2.5"
-			android:text="@string/addav_onbottlecan" />
-		<CheckBox
-			android:id="@+id/ontap"
-			android:layout_width="0dip"
-			android:layout_height="wrap_content"
-			android:layout_weight="2"
-			android:text="@string/addav_ontap" />
-	</LinearLayout>
-	
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
 		android:layout_margin="10dip"
 		android:orientation="horizontal">
 		<Button

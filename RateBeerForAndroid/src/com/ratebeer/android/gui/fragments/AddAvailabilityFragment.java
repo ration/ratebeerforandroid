@@ -19,6 +19,7 @@ package com.ratebeer.android.gui.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -47,7 +48,6 @@ import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
-import com.ratebeer.android.api.command.AddAvailabilityCommand;
 import com.ratebeer.android.api.command.GetFavouritePlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
@@ -164,8 +164,8 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		public void onClick(View v) {
 			
 			long[] ids1, ids2;
+			// The method name was changed in Android 2.2...
 			if (android.os.Build.VERSION.SDK_INT >= 8) {
-				// Use a try {}, because the method name was changed in Android...
 				// For Android 2.2+
 				ids1 = favouritesView.getCheckedItemIds();
 				ids2 = findresultsView.getCheckedItemIds();
@@ -180,30 +180,19 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 				return;
 			}
 			
-			// See which favourite places are selected
-			int[] selectedFavourites = new int[ids1.length];
-			for (int f = 0; f < ids1.length; f++) {
-				selectedFavourites[f] = getFavouritesAdapter().getItem((int) ids1[f]).placeId;
-			}
-			
-			// See if a place was searched for and selected
-			String extraPlaceName = null;
-			int extraPlaceId = AddAvailabilityCommand.NO_EXTRA_PLACE;
+			int placeId = -1;
 			//if (resPos != AdapterView.INVALID_POSITION) {
 			if (ids2.length > 0) {
-				extraPlaceName = getFindresutlsAdapter().getItem((int) ids2[0]).placeName;
-				extraPlaceId = getFindresutlsAdapter().getItem((int) ids2[0]).placeId;
+				placeId = getFindresutlsAdapter().getItem((int) ids2[0]).placeId;
+			} else {
+				placeId = getFavouritesAdapter().getItem((int) ids1[0]).placeId;
 			}
 
 			// Use the poster service to add the new availability info
 			Intent i = new Intent(PosterService.ACTION_ADDAVAILABILITY);
 			i.putExtra(PosterService.EXTRA_BEERID, beerId);
 			i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
-			i.putExtra(PosterService.EXTRA_SELECTEDPLACES, selectedFavourites);
-			i.putExtra(PosterService.EXTRA_EXTRAPLACENAME, extraPlaceName);
-			i.putExtra(PosterService.EXTRA_EXTRAPLACEID, extraPlaceId);
-			i.putExtra(PosterService.EXTRA_ONBOTTLECAN, onbottlecan.isChecked());
-			i.putExtra(PosterService.EXTRA_ONTAP, ontap.isChecked());
+			i.putExtra(PosterService.EXTRA_PLACEID, placeId);
 			getActivity().startService(i);
 
 			// Close this fragment
@@ -317,9 +306,9 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getActivity().getString(R.string.addav_favourites).toUpperCase();
+				return getActivity().getString(R.string.addav_favourites).toUpperCase(Locale.getDefault());
 			case 1:
-				return getActivity().getString(R.string.addav_findaplace).toUpperCase();
+				return getActivity().getString(R.string.addav_findaplace).toUpperCase(Locale.getDefault());
 			}
 			return null;
 		}

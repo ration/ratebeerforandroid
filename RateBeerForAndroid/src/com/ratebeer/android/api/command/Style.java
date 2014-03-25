@@ -83,7 +83,7 @@ public class Style implements Parcelable {
 		addStyle("california-common", 42, "California Common");
 		addStyle("cider", 10, "Cider");
 		addStyle("cream-ale", 35, "Cream Ale");
-		addStyle("czech-pilsner-sv283tly", 31, "Czech Pilsner/Světlý");
+		addStyle("czech-pilsner-sv283tly", 31, "Czech Pilsner (Světlý)");
 		addStyle("doppelbock", 26, "Doppelbock");
 		addStyle("dortmunder-helles", 60, "Dortmunder/Helles");
 		addStyle("dry-stout", 22, "Dry Stout");
@@ -141,9 +141,10 @@ public class Style implements Parcelable {
 		addStyle("schwarzbier", 29, "Schwarzbier");
 		addStyle("scotch-ale", 102, "Scotch Ale");
 		addStyle("scottish-ale", 21, "Scottish Ale");
+		addStyle("session-ipa", 121, "Session IPA");
 		addStyle("smoked", 41, "Smoked");
-		addStyle("sour-ale-wild-ale", 52, "Sour Ale/Wild Ale");
 		addStyle("sour-red-brown", 118, "Sour Red/Brown");
+		addStyle("sour-wild-ale", 52, "Sour/Wild Ale");
 		addStyle("specialty-grain", 106, "Specialty Grain");
 		addStyle("spice-herb-vegetable", 57, "Spice/Herb/Vegetable");
 		addStyle("stout", 6, "Stout");

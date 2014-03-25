@@ -49,41 +49,26 @@ public class GetStyleDetailsCommand extends HtmlCommand {
 
 	@Override
 	protected String makeRequest(ApiConnection apiConnection) throws ApiException {
-		return apiConnection.get("http://www.ratebeer.com/beerstyles/s/" + styleId + "/");
+		return apiConnection.get("http://www.ratebeer.com/ajax/top-beer-by-style.asp?style=" + styleId + "&sort=-1&order=0&min=10&max=9999&retired=0&new=0&mine=0&");
 	}
 
 	@Override
 	protected void parse(String html) throws JSONException, ApiException {
 
 		// Parse the top beers table
-		int tableStart = html.indexOf("<small><b>MORE BEER STYLES</b></small><br>");
+		int tableStart = html.indexOf("<tr class=\"tbl head\">");
 		if (tableStart < 0) {
 			throw new ApiException(ApiException.ExceptionType.CommandFailed,
 					"The response HTML did not contain the unique top beers of the style table begin HTML string");
 		}
 
-		int nameStart = html.indexOf("<h1>") + "<h1>".length();
-		String name = HttpHelper.cleanHtml(html.substring(nameStart, html.indexOf("</h1>", nameStart)));
-
-		int descriptionStart = html.indexOf("\">", nameStart) + "\">".length();
-		String description = HttpHelper.cleanHtml(html.substring(descriptionStart,
-				html.indexOf("</div>", descriptionStart)).trim());
-
-		String servedInText = ".gif\">&nbsp;";
-		List<String> servedIn = new ArrayList<String>();
-		int servedInStart = html.indexOf(servedInText, descriptionStart);
-		while (servedInStart >= 0) {
-			servedIn.add(HttpHelper.cleanHtml(html.substring(servedInStart + servedInText.length(), html.indexOf("<br>", servedInStart))).trim());
-			servedInStart = html.indexOf(servedInText, servedInStart + 1);
-		}
-
-		String rowText = "<td class=\"lineNumber orange\">";
-		int rowStart = html.indexOf(rowText, descriptionStart) + rowText.length();
+		String rowText = "<TR><TD class=\"tbl row\">";
+		int rowStart = html.indexOf(rowText, tableStart) + rowText.length();
 		ArrayList<TopBeer> beers = new ArrayList<TopBeer>();
 
 		while (rowStart > 0 + rowText.length()) {
 
-			int orderNr = Integer.parseInt(html.substring(rowStart, html.indexOf(" ", rowStart)));
+			int orderNr = Integer.parseInt(html.substring(rowStart, html.indexOf("<", rowStart)));
 
 			int idStart1 = html.indexOf("<A HREF=\"/beer/", rowStart) + "<A HREF=\"/beer/".length();
 			int idStart2 = html.indexOf("/", idStart1) + "/".length();
@@ -92,17 +77,18 @@ public class GetStyleDetailsCommand extends HtmlCommand {
 			int beerStart = html.indexOf(">", idStart2) + ">".length();
 			String beerName = HttpHelper.cleanHtml(html.substring(beerStart, html.indexOf("<", beerStart)));
 
-			int scoreStart = html.indexOf("<b>", beerStart) + "<b>".length();
-			float score = Float.parseFloat(html.substring(scoreStart, html.indexOf("<", scoreStart)));
+			int countStart = html.indexOf("tbl count\">", beerStart) + "tbl count\">".length();
+			int count = Integer.parseInt(html.substring(countStart, html.indexOf("<", countStart)));
 
-			int countStart = html.indexOf("#999999\">", scoreStart) + "#999999\">".length();
-			int count = Integer.parseInt(html.substring(countStart, html.indexOf("&", countStart)));
+			int scoreStart = html.indexOf("tbl score\"", countStart) + "tbl score\"".length();
+			int scoreStart2 = html.indexOf("\">", scoreStart) + "\">".length();
+			float score = Float.parseFloat(html.substring(scoreStart2, html.indexOf("<", scoreStart2)));
 
 			beers.add(new TopBeer(orderNr, beerId, beerName, score, count, Integer.toString(styleId)));
 			rowStart = html.indexOf(rowText, countStart) + rowText.length();
 		}
 
-		details = new StyleDetails(name, description, servedIn, beers);
+		details = new StyleDetails(null, null, null, beers);
 
 	}
 

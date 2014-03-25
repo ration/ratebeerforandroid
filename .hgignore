@@ -8,3 +8,4 @@ gen/
 .apt_generated/
 local.properties
 ant.properties
+.settings/

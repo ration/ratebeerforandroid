@@ -90,6 +90,7 @@ public class StyleViewFragment extends RateBeerFragment {
 		} else {
 			refreshDetails();
 		}
+		nameText.setText(style.getName());
 		
 	}
 
@@ -123,8 +124,8 @@ public class StyleViewFragment extends RateBeerFragment {
 	 * @param details The style details object, which includes the list of top beers in the style
 	 */
 	public void setDetails(StyleDetails details) {
-		nameText.setText(details.name);
-		descriptionText.setText(details.description);
+		//nameText.setText(details.name);
+		//descriptionText.setText(details.description);
 		// TODO: Add servedIn
 		beersAdapter.replace(details.beers);
 	}

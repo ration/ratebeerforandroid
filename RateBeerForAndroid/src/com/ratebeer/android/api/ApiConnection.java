@@ -255,7 +255,7 @@ public class ApiConnection {
 		prepared.param("SaveInfo", "on");
 		prepared.param("username", username);
 		prepared.param("pwd", password);
-		prepared.expect(HttpURLConnection.HTTP_MOVED_TEMP);
+		prepared.expect(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK);
 		final String uidText = "?uid=";
 		for (int i = 0; i < RETRIES; i++) {
 			try {
@@ -273,6 +273,9 @@ public class ApiConnection {
 					throw new ApiException(ApiException.ExceptionType.AuthenticationFailed,
 							"Tried to sign in but the response header did not include the user ID. 'Location' header was: "
 									+ header.toString());
+				}
+				if (reply.getStatusCode() == HttpURLConnection.HTTP_OK && readStream(reply.getPayload()).indexOf("User name or password is invalid") >= 0) {
+					throw new ApiException(ExceptionType.AuthenticationFailed, "Incorrect username or password");
 				}
 				// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy 
 				// authentication/cookie mess by just trying again

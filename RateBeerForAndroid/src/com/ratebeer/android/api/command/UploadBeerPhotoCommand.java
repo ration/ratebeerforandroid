@@ -39,6 +39,9 @@ import com.android.internalcopy.http.multipart.FilePart;
 import com.android.internalcopy.http.multipart.MultipartEntity;
 import com.android.internalcopy.http.multipart.Part;
 import com.android.internalcopy.http.multipart.StringPart;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.DiscCacheUtil;
+import com.nostra13.universalimageloader.core.assist.MemoryCacheUtil;
 import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiException.ExceptionType;
@@ -98,6 +101,11 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 			if (json.has("error"))
 				throw new ApiException(ExceptionType.CommandFailed, "Photo upload completed but unsuccesful: "
 						+ json.getJSONObject("error").getString("message"));
+			
+			// No error; now clear our internal cache so we can view the photo ourself
+			MemoryCacheUtil.removeFromCache(ImageUrls.getBeerPhotoUrl(beerId), ImageLoader.getInstance().getMemoryCache());
+			DiscCacheUtil.removeFromCache(ImageUrls.getBeerPhotoUrl(beerId), ImageLoader.getInstance().getDiscCache());
+			
 		} catch (JSONException e) {
 			throw new ApiException(ExceptionType.CommandFailed, "Photo upload completed but unsuccesful: "
 					+ e.toString());

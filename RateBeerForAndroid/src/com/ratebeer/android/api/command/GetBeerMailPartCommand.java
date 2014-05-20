@@ -18,6 +18,7 @@
 package com.ratebeer.android.api.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -71,6 +72,7 @@ public class GetBeerMailPartCommand extends JsonCommand {
 					(reply.has("UserName") ? reply.getString("UserName") : null), reply.getInt("Source"), reply
 							.getInt("Destination")));
 		}
+		Collections.reverse(parts);
 
 	}
 

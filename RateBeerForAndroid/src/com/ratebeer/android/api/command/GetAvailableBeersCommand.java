@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,7 +60,7 @@ public class GetAvailableBeersCommand extends JsonCommand {
 	protected void parse(JSONArray json) throws JSONException {
 
 		// Parse the JSON response
-		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mm:ss a");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mm:ss a", Locale.US);
 		results = new ArrayList<AvailableBeer>();
 		for (int i = 0; i < json.length(); i++) {
 			JSONObject result = json.getJSONObject(i);

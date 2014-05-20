@@ -24,6 +24,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.nostra13.universalimageloader.cache.disc.impl.FileCountLimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.impl.LimitedAgeDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -43,15 +44,15 @@ public class RateBeerForAndroid extends Application {
 		if (imageCache == null) {
 			imageCache = ImageLoader.getInstance();
 			Builder imageCacheBuilder = new ImageLoaderConfiguration.Builder(context).defaultDisplayImageOptions(
-					new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc()
+					new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisc(true)
 							.imageScaleType(ImageScaleType.IN_SAMPLE_INT).build()).memoryCache(
 					new UsingFreqLimitedMemoryCache(2 * 1024 * 1024));
 			File imageCacheDir = new File(RateBeerForAndroid.DEFAULT_FILES_DIR + "/cache/");
 			imageCacheDir.mkdirs();
 			// Only if the cache directory is valid (and we can list its files) do we use a local disk cache
+			// Max cache age is 1 hour
 			if (imageCacheDir != null || imageCacheDir.listFiles() == null) {
-				imageCacheBuilder
-						.discCache(new FileCountLimitedDiscCache(imageCacheDir, new Md5FileNameGenerator(), 25));
+				imageCacheBuilder.discCache(new LimitedAgeDiscCache(imageCacheDir, 60 * 60));
 			}
 			imageCache.init(imageCacheBuilder.build());
 		}

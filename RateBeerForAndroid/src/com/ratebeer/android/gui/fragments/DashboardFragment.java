@@ -54,7 +54,8 @@ import com.ratebeer.android.api.command.GetTopBeersCommand.TopListType;
 import com.ratebeer.android.api.command.ImageUrls;
 import com.ratebeer.android.api.command.Style;
 import com.ratebeer.android.app.RateBeerForAndroid;
-import com.ratebeer.android.gui.*;
+import com.ratebeer.android.gui.PreferencesInterface_;
+import com.ratebeer.android.gui.SignIn_;
 import com.ratebeer.android.gui.components.PosterService;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ErrorLogSender;
@@ -177,32 +178,32 @@ public class DashboardFragment extends RateBeerFragment {
 
 	private void updateProfileImage() {
 		if (getUser() != null) {
-			RateBeerForAndroid.getImageCache(getActivity()).loadImage(getActivity(),
+			RateBeerForAndroid.getImageCache(getActivity()).loadImage(
 					ImageUrls.getUserPhotoUrl(getUser().getUsername()),
 					new ImageLoadingListener() {
 						@Override
-						public void onLoadingStarted() {
+						public void onLoadingStarted(String url, View view) {
 						}
 
 						@Override
-						public void onLoadingFailed(FailReason arg0) {
+						public void onLoadingFailed(String url, View view, FailReason reason) {
 						}
 
 						@Override
-						public void onLoadingComplete(Bitmap arg0) {
+						public void onLoadingComplete(String url, View view, Bitmap bitmap) {
 							if (getActivity() == null) {
 								return;
 							}
 							if (density == null) {
 								density = getResources().getDisplayMetrics().density;
 							}
-							Drawable d = new BitmapDrawable(getResources(), arg0);
+							Drawable d = new BitmapDrawable(getResources(), bitmap);
 							d.setBounds(0, 0, (int) (48 * density), (int) (48 * density));
 							myprofile.setCompoundDrawables(null, d, null, null);
 						}
 
 						@Override
-						public void onLoadingCancelled() {
+						public void onLoadingCancelled(String url, View view) {
 						}
 					});
 		}

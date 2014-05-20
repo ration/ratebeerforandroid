@@ -193,6 +193,12 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 
 	private void refreshImage() {
 		RateBeerForAndroid.getImageCache(getActivity()).displayImage(ImageUrls.getBeerPhotoUrl(beerId), imageView);
+		imageView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onShowFullScreenPhoto();
+			}
+		});
 	}
 
 	private void refreshDetails() {
@@ -275,6 +281,12 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 		// Manually set the last update date of the drinking status back, so a visit to the home screen refreshes it
 		getSettings().saveUserSettings(new UserSettings(getUser().getUserID(), getUser().getUsername(), 
 				getUser().getPassword(), getUser().getDrinkingStatus(), getUser().isPremium(), new Date(1)));
+	}
+
+	protected void onShowFullScreenPhoto() {
+		// Open the photo in a separate full screen image fragment
+		load(FullScreenImageFragment_.builder().photoLowResUrl(ImageUrls.getBeerPhotoUrl(beerId))
+				.photoHighResUrl(ImageUrls.getBeerPhotoHighResUrl(beerId)).build());
 	}
 
 	protected void onAddAvailability() {

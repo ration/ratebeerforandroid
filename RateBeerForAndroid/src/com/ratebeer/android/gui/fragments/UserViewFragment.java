@@ -101,11 +101,23 @@ public class UserViewFragment extends RateBeerFragment {
 
 	private void refreshImage() {
 		RateBeerForAndroid.getImageCache(getActivity()).displayImage(ImageUrls.getUserPhotoUrl(userName), imageView);
+		imageView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onShowFullScreenPhoto();
+			}
+		});
 	}
 
 	@OptionsItem(R.id.menu_refresh)
 	protected void refreshDetails() {
 		execute(new GetUserDetailsCommand(getUser(), userId));
+	}
+
+	protected void onShowFullScreenPhoto() {
+		// Open the photo in a separate full screen image fragment
+		load(FullScreenImageFragment_.builder().photoLowResUrl(ImageUrls.getUserPhotoUrl(userName))
+				.photoHighResUrl(ImageUrls.getUserPhotoHighResUrl(userName)).build());
 	}
 
 	public OnClickListener onShowAllRatingsClick = new OnClickListener() {

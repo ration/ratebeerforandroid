@@ -27,7 +27,6 @@
 	<string name="app_removingtick">Removing your tick</string>
 	<string name="app_addingavailability">Publishing availability</string>
 	<string name="app_addingforbeer">Adding availability for %1$s</string>
-	<string name="app_addingavailability">Publishing availability</string>
 	<string name="app_rated">Rated %1$s with a %2$s</string>
 	<string name="app_forbeer">For %1$s</string>
 	<string name="app_addingtocellar">Adding to cellar</string>
@@ -93,6 +92,7 @@
 	<string name="ticks_noitems">No ticks yet; open up a beer and start those taste buds!</string>
 	
 	<string name="cellar_viewcellar">View cellar</string>
+	<string name="cellar_viewticks">View ticks</string>
 	<string name="cellar_wants">Wants</string>
 	<string name="cellar_haves">Haves</string>
 	<string name="cellar_wantthis">Want this</string>

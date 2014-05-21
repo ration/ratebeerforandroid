@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
@@ -30,12 +31,14 @@ import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
+import com.ratebeer.android.api.command.GetBeerDetailsCommand;
+import com.ratebeer.android.api.command.GetBeerDetailsCommand.BeerDetails;
 import com.ratebeer.android.api.command.GetUserTicksCommand;
 import com.ratebeer.android.api.command.GetUserTicksCommand.UserTick;
 import com.ratebeer.android.gui.components.RateBeerFragment;
 import com.ratebeer.android.gui.components.helpers.ArrayAdapter;
 
-@EFragment(R.layout.fragment_userratings)
+@EFragment(R.layout.fragment_userticks)
 @OptionsMenu(R.menu.refresh)
 public class UserTicksFragment extends RateBeerFragment {
 
@@ -73,9 +76,8 @@ public class UserTicksFragment extends RateBeerFragment {
 	private OnItemClickListener onItemSelected = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			// TODO: When ticks work correctly, enable these two lines
-			//UserTick item = ((UserTicksAdapter) ticksView.getAdapter()).getItem(position);
-			//load(BeerViewFragment_.builder().beerId(item.beerdId).beerName(item.beerName).build());
+			UserTick item = ((UserTicksAdapter) ticksView.getAdapter()).getItem(position);
+			load(BeerViewFragment_.builder().beerId(item.beerdId).beerName(item.beerName).build());
 		}
 	};
 
@@ -83,6 +85,8 @@ public class UserTicksFragment extends RateBeerFragment {
 	public void onTaskSuccessResult(CommandSuccessResult result) {
 		if (result.getCommand().getMethod() == ApiMethod.GetUserTicks) {
 			publishResults(((GetUserTicksCommand) result.getCommand()).getUserTicks());
+		} else if (result.getCommand().getMethod() == ApiMethod.GetBeerDetails) {
+			publishTickNames((GetBeerDetailsCommand) result.getCommand());
 		}
 	}
 
@@ -102,6 +106,14 @@ public class UserTicksFragment extends RateBeerFragment {
 		emptyText.setVisibility(result.size() == 0 ? View.VISIBLE : View.GONE);
 	}
 
+	private void publishTickNames(GetBeerDetailsCommand command) {
+		if (ticksView.getAdapter() == null) {
+			// Huh? This should really never happen... but let's be defensive about it and silently ignore it
+			return;
+		}
+		((UserTicksAdapter) ticksView.getAdapter()).updateNames(command.getDetails());
+	}
+
 	@Override
 	public void onTaskFailureResult(CommandFailureResult result) {
 		publishException(emptyText, result.getException());
@@ -113,6 +125,20 @@ public class UserTicksFragment extends RateBeerFragment {
 			super(context, objects);
 		}
 
+		public void updateNames(BeerDetails details) {
+			// Find the beer for which we received the names and refresh the adapter views
+			for (int i = 0; i < getCount(); i++) {
+				UserTick tick = getItem(i);
+				if (tick.beerdId == details.beerId) {
+					tick.beerName = details.beerName;
+					tick.brewerName = details.brewerName;
+					tick.isLoadingNames = false;
+					notifyDataSetChanged();
+					break;
+				}
+			}
+		}
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -121,9 +147,10 @@ public class UserTicksFragment extends RateBeerFragment {
 			if (convertView == null || convertView.getTag() == null) {
 				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_tick, null);
 				holder = new ViewHolder();
+				holder.loading = (ProgressBar) convertView.findViewById(R.id.loading);
 				holder.beer = (TextView) convertView.findViewById(R.id.beer);
 				holder.brewer = (TextView) convertView.findViewById(R.id.brewer);
-				holder.liked = (TextView) convertView.findViewById(R.id.score);
+				holder.liked = (TextView) convertView.findViewById(R.id.liked);
 				holder.date = (TextView) convertView.findViewById(R.id.date);
 				convertView.setTag(holder);
 			} else {
@@ -132,11 +159,26 @@ public class UserTicksFragment extends RateBeerFragment {
 
 			// Bind the data
 			UserTick item = getItem(position);
-			// TODO: When tick loading works correctly, enable these two lines
-			//holder.beer.setText(item.beerName);
-			//holder.brewer.setText(item.brewerName);
-			holder.liked.setText(Integer.toString(item.liked));
-			holder.date.setText(displayDateFormat.format(item.timeEntered));
+			if (item.beerName != null && item.brewerName != null) {
+				holder.loading.setVisibility(View.GONE);
+				holder.beer.setVisibility(View.VISIBLE);
+				holder.beer.setText(item.beerName);
+				holder.brewer.setVisibility(View.VISIBLE);
+				holder.brewer.setText(item.brewerName);
+				holder.liked.setVisibility(View.VISIBLE);
+				holder.liked.setText(Integer.toString(item.liked));
+				holder.date.setVisibility(View.VISIBLE);
+				holder.date.setText(displayDateFormat.format(item.timeEntered));
+			} else {
+				holder.loading.setVisibility(View.VISIBLE);
+				holder.beer.setVisibility(View.GONE);
+				holder.brewer.setVisibility(View.GONE);
+				holder.liked.setVisibility(View.GONE);
+				holder.date.setVisibility(View.GONE);
+				if (!item.isLoadingNames) {
+					execute(new GetBeerDetailsCommand(getUser(), item.beerdId));
+				}
+			}
 
 			return convertView;
 		}
@@ -144,6 +186,7 @@ public class UserTicksFragment extends RateBeerFragment {
 	}
 
 	protected static class ViewHolder {
+		ProgressBar loading;
 		TextView beer, brewer, liked, date;
 	}
 

@@ -39,14 +39,31 @@
 		android:visibility="invisible"
 		style="@style/DetailsButton" />
 		
-	<Button 
-		android:id="@+id/cellar"
-		android:layout_width="match_parent" 
+	<LinearLayout
+		android:id="@+id/buttonwrapper"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/cellar_viewcellar"
-		android:visibility="gone"
-		style="@style/DetailsButtonSmall" />
-		
+		android:orientation="horizontal" >
+
+		<Button
+			android:id="@+id/cellar"
+			style="@style/DetailsButtonSmall"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cellar_viewcellar"
+			android:visibility="gone" />
+
+		<Button
+			android:id="@+id/ticks"
+			style="@style/DetailsButtonSmall"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cellar_viewticks"
+			android:visibility="gone" />
+	</LinearLayout>
+	
 	<TextView
 		android:id="@+id/recentratingslabel"
 		android:layout_height="wrap_content"

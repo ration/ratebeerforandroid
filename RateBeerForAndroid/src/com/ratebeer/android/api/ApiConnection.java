@@ -253,7 +253,7 @@ public class ApiConnection {
 
 		HttpRequestBuilder prepared = httpClient.post("http://www.ratebeer.com/Signin_r.asp");
 		prepared.param("SaveInfo", "on");
-		prepared.param("username", username);
+		prepared.param("username", username.trim());
 		prepared.param("pwd", password);
 		prepared.expect(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK);
 		final String uidText = "?uid=";

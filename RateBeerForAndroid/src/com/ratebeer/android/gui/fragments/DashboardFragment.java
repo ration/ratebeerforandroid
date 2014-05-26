@@ -68,7 +68,7 @@ public class DashboardFragment extends RateBeerFragment {
 	@ViewById
 	protected Button drinkingStatus;
 	@ViewById
-	protected Button myprofile, offlineratings, beerstyles, top50, places, events, beermail, bycountry;
+	protected Button myprofile, offlineratings, customlists, beerstyles, top50, places, events, beermail, bycountry;
 	@ViewById
 	protected ListView styles;
 	private LayoutInflater inflater;
@@ -83,6 +83,7 @@ public class DashboardFragment extends RateBeerFragment {
 	@AfterViews
 	public void init() {
 				
+		customlists.setOnClickListener(onButtonClick(CustomListsFragment_.builder().build(), false));
 		offlineratings.setOnClickListener(onButtonClick(OfflineRatingsFragment_.builder().build(), false));
 		beerstyles.setOnClickListener(onButtonClick(StylesFragment_.builder().build(), false));
 		top50.setOnClickListener(onButtonClick(TopBeersFragment_.builder().topList(TopListType.Top50).build(), false));

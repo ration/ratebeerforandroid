@@ -61,6 +61,7 @@
 	<string name="home_top50">Top 50</string>
 	<string name="home_bycountry">Best by country</string>
 	<string name="home_offlineratings">Offline notes</string>
+	<string name="home_customlists">Custom lists</string>
 	<string name="home_beerstyles">Beer styles</string>
 	<string name="home_beermail">Beermail</string>
 	<string name="home_nowdrinking">Now drinking %1$s</string>
@@ -90,6 +91,24 @@
 
 	<string name="ticks_viewticks">View ticks</string>
 	<string name="ticks_noitems">No ticks yet; open up a beer and start those taste buds!</string>
+
+	<string name="custom_nolists">Create a custom beer list using the + button in the top</string>
+	<string name="custom_noitems">Add beers using the + button or from any beer details screen</string>
+	<string name="custom_newlist">New list</string>
+	<string name="custom_addbeer">Add beer</string>
+	<string name="custom_deletelist">Delete list</string>
+	<string name="custom_confirmdeletelist">Delete the whole list %1$s?</string>
+	<string name="custom_removebeer">Remove from list</string>
+	<string name="custom_confirmremovebeer">Remove %1$s from the list?</string>
+	<string name="custom_listname">List name</string>
+	<string name="custom_notavailable">Custom lists currently not available</string>
+	<string name="custom_nonamegiven">Please enter the name of the beer to add to the list</string>
+	<string-array name="custom_sortby_names">
+		<item>Name</item>
+		<item>Brewer</item>
+		<item>Score</item>
+		<item>Date added</item>
+	</string-array>
 	
 	<string name="cellar_viewcellar">View cellar</string>
 	<string name="cellar_viewticks">View ticks</string>

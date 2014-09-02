@@ -64,6 +64,8 @@ public class Home extends RateBeerActivity {
 
 	protected void handleStartIntent() {
 
+		firstStart = false;
+		
 		// Start a search?
 		if (getIntent().hasExtra(SearchManager.QUERY)) {
 			load(SearchFragment_.builder().query(getIntent().getStringExtra(SearchManager.QUERY)).build());
@@ -129,8 +131,6 @@ public class Home extends RateBeerActivity {
 
 		// Normal startup; show dashboard
 		load(DashboardFragment_.builder().build());
-
-		firstStart = false;
 		
 	}
 

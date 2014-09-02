@@ -18,8 +18,8 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ratebeer.android"
-	android:versionCode="52"
-	android:versionName="1.5.8"
+	android:versionCode="54"
+	android:versionName="1.6.1"
 	android:installLocation="auto">
 	
 	<!-- Supported and required Android features -->
@@ -114,8 +114,6 @@
 		<meta-data 
 			android:name="com.google.android.maps.v2.API_KEY" 
 			android:value="AIzaSyCB1GwDznbJT9QJMhthO5L_ZJ71KBcaJUc" />
-		<!-- Debug: AIzaSyA4iVFyBTWzsFgqVKxLyF9Fto996YN_pLQ -->
-		<!-- Release: AIzaSyCB1GwDznbJT9QJMhthO5L_ZJ71KBcaJUc -->
 		
 	</application>
 	

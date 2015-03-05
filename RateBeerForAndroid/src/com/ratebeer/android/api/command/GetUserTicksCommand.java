@@ -78,6 +78,12 @@ public class GetUserTicksCommand extends JsonCommand {
 		public final int beerdId;
 		public final int liked;
 		public final Date timeEntered;
+<<<<<<< HEAD
+=======
+		public boolean isLoadingNames = false;
+		public String beerName = null;
+		public String brewerName = null;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 
 		public UserTick(int beerId, int liked, Date timeEntered) {
 			this.beerdId = beerId;

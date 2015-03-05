@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< HEAD
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:layout_width="match_parent" 
 	android:layout_height="wrap_content"
@@ -13,25 +14,72 @@
 	
 	<TextView
 		android:id="@+id/beerName"
+=======
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:padding="10dip" >
+
+	<ProgressBar
+		android:id="@+id/loading"
+		style="@android:style/Widget.ProgressBar.Small"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_margin="14dp"
+		android:indeterminate="true"
+		android:indeterminateOnly="true" />
+
+	<TextView
+		android:id="@+id/liked"
+		android:layout_width="60dip"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:textSize="35dip"
+		android:visibility="gone" />
+
+	<TextView
+		android:id="@+id/beer"
+		style="@style/ListHeaderText"
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/liked"
 		android:paddingTop="3dip"
+<<<<<<< HEAD
 		style="@style/ListHeaderText" />
 	
+=======
+		android:visibility="gone" />
+
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	<TextView
 		android:id="@+id/date"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
+<<<<<<< HEAD
 		android:layout_below="@id/beerName" />
 	
+=======
+		android:layout_below="@id/beer"
+		android:visibility="gone" />
+
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	<TextView
 		android:id="@+id/brewer"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/date"
+<<<<<<< HEAD
 		android:layout_toRightOf="@id/liked"
 		android:layout_toLeftOf="@id/date" />
 	
 </RelativeLayout>
+=======
+		android:layout_toLeftOf="@id/date"
+		android:layout_toRightOf="@id/liked"
+		android:visibility="gone" />
+
+</RelativeLayout>
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6

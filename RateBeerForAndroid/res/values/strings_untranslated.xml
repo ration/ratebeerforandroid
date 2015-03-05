@@ -13,6 +13,16 @@
 		<item>RateCount</item>
 		<item>Score</item>
 	</string-array>
+<<<<<<< HEAD
+=======
+	<!-- Matches the enum values of CustomListBeerComparator.SortBy -->
+	<string-array name="custom_sortby_values" translatable="false">
+		<item>Name</item>
+		<item>RateCount</item>
+		<item>Score</item>
+		<item>TimeSaved</item>
+	</string-array>
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	
 	<string-array name="settings_frequency_values" translatable="false">
 		<item>60</item>

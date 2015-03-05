@@ -39,6 +39,12 @@ import com.android.internalcopy.http.multipart.FilePart;
 import com.android.internalcopy.http.multipart.MultipartEntity;
 import com.android.internalcopy.http.multipart.Part;
 import com.android.internalcopy.http.multipart.StringPart;
+<<<<<<< HEAD
+=======
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.DiscCacheUtil;
+import com.nostra13.universalimageloader.core.assist.MemoryCacheUtil;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiException.ExceptionType;
@@ -74,7 +80,11 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 			String time = Long.toString(new Date().getTime());
 			String signature = "format=jpg&public_id=beer_" + beerId + "&timestamp=" + time;
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
+<<<<<<< HEAD
 			byte[] digest = md.digest((signature + "JxrhzpSKyDHydbihBRbrfJi5BNY").getBytes());
+=======
+			byte[] digest = md.digest((signature + "LfEYVhBV9Uyoo4KfF7fEWrTGVlU").getBytes());
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			
 			// Post the photo and parameters
 			DefaultHttpClient client = new DefaultHttpClient();
@@ -83,7 +93,11 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 			HttpClientParams.setRedirecting(params, false);
 			post.setEntity(new MultipartEntity(new Part[] {
 					new FilePart("file", photo, FilePart.DEFAULT_CONTENT_TYPE, FilePart.DEFAULT_CHARSET), 
+<<<<<<< HEAD
 					new StringPart("api_key", "447414912764277"),
+=======
+					new StringPart("api_key", "595279775179754"),
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 					new StringPart("timestamp", time),
 					new StringPart("public_id", "beer_" + beerId),
 					new StringPart("signature", byteArrayToHexString(digest)),
@@ -98,6 +112,14 @@ public class UploadBeerPhotoCommand extends EmptyResponseCommand {
 			if (json.has("error"))
 				throw new ApiException(ExceptionType.CommandFailed, "Photo upload completed but unsuccesful: "
 						+ json.getJSONObject("error").getString("message"));
+<<<<<<< HEAD
+=======
+			
+			// No error; now clear our internal cache so we can view the photo ourself
+			MemoryCacheUtil.removeFromCache(ImageUrls.getBeerPhotoUrl(beerId), ImageLoader.getInstance().getMemoryCache());
+			DiscCacheUtil.removeFromCache(ImageUrls.getBeerPhotoUrl(beerId), ImageLoader.getInstance().getDiscCache());
+			
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		} catch (JSONException e) {
 			throw new ApiException(ExceptionType.CommandFailed, "Photo upload completed but unsuccesful: "
 					+ e.toString());

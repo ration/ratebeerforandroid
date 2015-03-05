@@ -69,7 +69,11 @@ public class UserViewFragment extends RateBeerFragment {
 	@ViewById(R.id.image)
 	protected ImageView imageView;
 	private TextView nameText, locationText, dates, favStyleText, recentratingslabel;
+<<<<<<< HEAD
 	private Button beersratedButton, cellarButton;
+=======
+	private Button beersratedButton, cellarButton, ticksButton;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	private RecentBeerRatingsAdapter recentRatingsAdapter;
 	private DateFormat displayDateFormat;
 
@@ -101,6 +105,15 @@ public class UserViewFragment extends RateBeerFragment {
 
 	private void refreshImage() {
 		RateBeerForAndroid.getImageCache(getActivity()).displayImage(ImageUrls.getUserPhotoUrl(userName), imageView);
+<<<<<<< HEAD
+=======
+		imageView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onShowFullScreenPhoto();
+			}
+		});
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	}
 
 	@OptionsItem(R.id.menu_refresh)
@@ -108,6 +121,15 @@ public class UserViewFragment extends RateBeerFragment {
 		execute(new GetUserDetailsCommand(getUser(), userId));
 	}
 
+<<<<<<< HEAD
+=======
+	protected void onShowFullScreenPhoto() {
+		// Open the photo in a separate full screen image fragment
+		load(FullScreenImageFragment_.builder().photoLowResUrl(ImageUrls.getUserPhotoUrl(userName))
+				.photoHighResUrl(ImageUrls.getUserPhotoHighResUrl(userName)).build());
+	}
+
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	public OnClickListener onShowAllRatingsClick = new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
@@ -121,7 +143,18 @@ public class UserViewFragment extends RateBeerFragment {
 			load(CellarViewFragment_.builder().userId(userId).build());
 		}
 	};
+<<<<<<< HEAD
 	
+=======
+
+	public OnClickListener onViewTicksClick = new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			load(UserTicksFragment_.builder().build());
+		}
+	};
+
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	private void onRecentBeerRatingClick(int beerId) {
 		load(BeerViewFragment_.builder().beerId(beerId).build());
 	}
@@ -153,6 +186,10 @@ public class UserViewFragment extends RateBeerFragment {
 		beersratedButton.setVisibility(View.VISIBLE);
 		// Show the cellar button only with a signed in premium user
 		cellarButton.setVisibility(getUser() != null && getUser().isPremium()? View.VISIBLE: View.GONE);
+<<<<<<< HEAD
+=======
+		ticksButton.setVisibility(getUser() != null && userId == getUser().getUserID()? View.VISIBLE: View.GONE);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		recentratingslabel.setVisibility(View.VISIBLE);
 		recentRatingsAdapter.replace(details.recentBeerRatings);
 	}
@@ -181,6 +218,11 @@ public class UserViewFragment extends RateBeerFragment {
 			beersratedButton.setOnClickListener(onShowAllRatingsClick);
 			cellarButton = (Button) fields.findViewById(R.id.cellar);
 			cellarButton.setOnClickListener(onViewCellarClick);
+<<<<<<< HEAD
+=======
+			ticksButton = (Button) fields.findViewById(R.id.ticks);
+			ticksButton.setOnClickListener(onViewTicksClick);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			
 			// Set the list of attendees
 			recentRatingsAdapter = new RecentBeerRatingsAdapter(getActivity(), new ArrayList<RecentBeerRating>());

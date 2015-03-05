@@ -28,4 +28,15 @@ public class ImageUrls {
 		return "http://res.cloudinary.com/ratebeer/image/upload/w_300,c_limit,q_100,d_user_def.png/user_" + username + ".jpg";
 	}
 
+<<<<<<< HEAD
+=======
+	public static String getBeerPhotoHighResUrl(int beerId) {
+		return "http://res.cloudinary.com/ratebeer/image/upload/w_1024,c_limit,q_100,d_beer_def.png/beer_" + beerId + ".jpg";
+	}
+
+	public static String getUserPhotoHighResUrl(String username) {
+		return "http://res.cloudinary.com/ratebeer/image/upload/w_1024,c_limit,q_100,d_user_def.png/user_" + username + ".jpg";
+	}
+
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 }

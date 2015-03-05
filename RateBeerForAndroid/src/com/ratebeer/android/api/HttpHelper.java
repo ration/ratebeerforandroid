@@ -66,7 +66,11 @@ public class HttpHelper {
 		query = query.replaceAll("ß", "ss");
 		query = query.replaceAll("ø", "o");
 		query = query.replaceAll("Ø", "O");
+<<<<<<< HEAD
 		return query;
+=======
+		return query.trim();
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	}
 
 }

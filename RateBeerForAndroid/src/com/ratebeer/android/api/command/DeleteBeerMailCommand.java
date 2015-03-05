@@ -17,6 +17,11 @@
  */
 package com.ratebeer.android.api.command;
 
+<<<<<<< HEAD
+=======
+import java.net.HttpURLConnection;
+
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
 import com.ratebeer.android.api.ApiMethod;
@@ -40,8 +45,13 @@ public class DeleteBeerMailCommand extends EmptyResponseCommand {
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
 		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+<<<<<<< HEAD
 		apiConnection.get("http://www.ratebeer.com/DeleteMessage.asp?MessageID="
 				+ Integer.toString(mail.getMessageId()));
+=======
+		apiConnection.get("http://www.ratebeer.com/DeleteMessage.asp?MessageIDs="
+				+ Integer.toString(mail.getMessageId()), HttpURLConnection.HTTP_MOVED_TEMP);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	}
 
 }

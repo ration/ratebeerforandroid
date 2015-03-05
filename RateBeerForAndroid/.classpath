@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+<<<<<<< HEAD
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+=======
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="libs/ormlite-android-4.24.jar"/>
 	<classpathentry kind="lib" path="libs/ormlite-core-4.24.jar"/>
 	<classpathentry kind="lib" path="libs/crouton-1.5.jar"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="libs/universal-image-loader-1.6.3.jar" sourcepath="/home/eric/Downloads/dev/universal-image-loader-1.6.3-sources.jar"/>
+=======
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="libs/androidannotations-api-2.7.jar"/>
 	<classpathentry kind="src" path=".apt_generated">
@@ -15,5 +21,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+<<<<<<< HEAD
+=======
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

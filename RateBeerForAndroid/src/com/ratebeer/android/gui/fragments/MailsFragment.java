@@ -90,7 +90,11 @@ public class MailsFragment extends RateBeerFragment {
 	@OptionsItem(R.id.menu_refresh)
 	protected void refreshMails() {
 		// Start the background service to get new mail
+<<<<<<< HEAD
 		Intent i = new Intent(getActivity(), com.ratebeer.android.gui.components.BeermailService_.class);
+=======
+		Intent i = new Intent(getActivity(), BeermailService_.class);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		i.putExtra(BeermailService.EXTRA_MESSENGER, new Messenger(new Handler() {
 			@Override
 			public void handleMessage(Message msg) {

@@ -8,3 +8,7 @@ gen/
 .apt_generated/
 local.properties
 ant.properties
+<<<<<<< HEAD
+=======
+.settings/
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6

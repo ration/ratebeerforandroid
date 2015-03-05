@@ -16,14 +16,20 @@
 		android:id="@+id/location"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+<<<<<<< HEAD
 		android:layout_below="@id/name"
+=======
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		style="@style/DetailsField" />
 	
 	<TextView
 		android:id="@+id/dates"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+<<<<<<< HEAD
 		android:layout_below="@id/location"
+=======
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		style="@style/DetailsField" />
 	
 	<TextView
@@ -41,6 +47,7 @@
 		android:visibility="invisible"
 		style="@style/DetailsButton" />
 		
+<<<<<<< HEAD
 	<Button 
 		android:id="@+id/cellar"
 		android:layout_width="match_parent" 
@@ -49,6 +56,33 @@
 		android:visibility="gone"
 		style="@style/DetailsButtonSmall" />
 		
+=======
+	<LinearLayout
+		android:id="@+id/buttonwrapper"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
+
+		<Button
+			android:id="@+id/cellar"
+			style="@style/DetailsButtonSmall"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cellar_viewcellar"
+			android:visibility="gone" />
+
+		<Button
+			android:id="@+id/ticks"
+			style="@style/DetailsButtonSmall"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cellar_viewticks"
+			android:visibility="gone" />
+	</LinearLayout>
+	
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	<TextView
 		android:id="@+id/recentratingslabel"
 		android:layout_height="wrap_content"

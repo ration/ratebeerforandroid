@@ -45,6 +45,14 @@
 			android:text="@string/home_offlineratings" 
 			android:drawableTop="@drawable/ic_home_offline" />
 		<Button 
+<<<<<<< HEAD
+=======
+			android:id="@+id/customlists" 
+			style="@style/HomeButton"
+			android:text="@string/home_customlists" 
+			android:drawableTop="@drawable/ic_home_offline" />
+		<Button 
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			android:id="@+id/places" 
 			style="@style/HomeButton"
 			android:text="@string/home_places" 

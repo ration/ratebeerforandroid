@@ -17,11 +17,15 @@
  */
 package com.ratebeer.android.api.command;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
+=======
+import java.net.HttpURLConnection;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 
 import com.ratebeer.android.api.ApiConnection;
 import com.ratebeer.android.api.ApiException;
@@ -31,6 +35,7 @@ import com.ratebeer.android.api.UserSettings;
 
 public class AddAvailabilityCommand extends EmptyResponseCommand {
 
+<<<<<<< HEAD
 	public static final int NO_EXTRA_PLACE = -1;
 
 	private final int beerId;
@@ -49,11 +54,21 @@ public class AddAvailabilityCommand extends EmptyResponseCommand {
 		this.extraPlaceId = extraPlaceId;
 		this.onBottleCan = onBottleCan;
 		this.onTap = onTap;
+=======
+	private final int beerId;
+	private final int placeId;
+
+	public AddAvailabilityCommand(UserSettings api, int beerId, int placeId) {
+		super(api, ApiMethod.AddAvailability);
+		this.beerId = beerId;
+		this.placeId = placeId;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	}
 
 	@Override
 	protected void makeRequest(ApiConnection apiConnection) throws ApiException {
 		ApiConnection.ensureLogin(apiConnection, getUserSettings());
+<<<<<<< HEAD
 		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>(Arrays.asList(new BasicNameValuePair(
 				"UserID", Integer.toString(getUserSettings().getUserID())),
 				new BasicNameValuePair("BeerID", Integer.toString(beerId)), new BasicNameValuePair("PlaceName",
@@ -71,6 +86,10 @@ public class AddAvailabilityCommand extends EmptyResponseCommand {
 			params.add(new BasicNameValuePair("ServedTap", "on"));
 		}
 		apiConnection.post("http://www.ratebeer.com/Ratings/Beer/Avail-Save.asp", params);
+=======
+		apiConnection.get("http://ratebeer.com/json/where.asp?bd=" + beerId + "&pd=" + placeId + "&k="
+				+ ApiConnection.RB_KEY, HttpURLConnection.HTTP_MOVED_PERM);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	}
 
 }

@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< HEAD
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:padding="10dip"
 	android:orientation="vertical">
+=======
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:padding="10dip" >
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 
 	<TextView
 		android:id="@+id/name"
@@ -15,6 +23,13 @@
 	<TextView
 		android:id="@+id/description"
 		android:layout_width="wrap_content"
+<<<<<<< HEAD
 		android:layout_height="wrap_content" />
 
 </LinearLayout>
+=======
+		android:layout_height="wrap_content"
+		android:visibility="gone" />
+
+</LinearLayout>
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6

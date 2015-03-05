@@ -36,7 +36,11 @@ import com.ratebeer.android.gui.components.helpers.ErrorLogEntry;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	private static final String DATABASE_NAME = "ratebeer.db";
+<<<<<<< HEAD
 	private static final int DATABASE_VERSION = 5;
+=======
+	private static final int DATABASE_VERSION = 6;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 
 	private Dao<OfflineRating, Integer> ratingDao;
 	private Dao<BeerMail, Integer> mailDao;
@@ -51,6 +55,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, OfflineRating.class);
 			TableUtils.createTable(connectionSource, BeerMail.class);
 			TableUtils.createTable(connectionSource, ErrorLogEntry.class);
+<<<<<<< HEAD
+=======
+			TableUtils.createTable(connectionSource, CustomList.class);
+			TableUtils.createTable(connectionSource, CustomListBeer.class);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		} catch (SQLException e) {
 			Log.e(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME, "Could not create new table for OfflineRating", e);
 		}
@@ -70,6 +79,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 				TableUtils.createTable(connectionSource, BeerMail.class);
 			case 4:
 				TableUtils.createTable(connectionSource, ErrorLogEntry.class);
+<<<<<<< HEAD
+=======
+			case 5:
+				TableUtils.createTable(connectionSource, CustomList.class);
+				TableUtils.createTable(connectionSource, CustomListBeer.class);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			/*case 3:
 				UpdateBuilder<OfflineRating, Integer> upgrade = getOfflineRatingDao().updateBuilder();
 				upgrade.updateColumnExpression("offlineId", "0");

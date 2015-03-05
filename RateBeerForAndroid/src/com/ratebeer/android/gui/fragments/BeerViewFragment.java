@@ -193,6 +193,15 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 
 	private void refreshImage() {
 		RateBeerForAndroid.getImageCache(getActivity()).displayImage(ImageUrls.getBeerPhotoUrl(beerId), imageView);
+<<<<<<< HEAD
+=======
+		imageView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onShowFullScreenPhoto();
+			}
+		});
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	}
 
 	private void refreshDetails() {
@@ -277,6 +286,15 @@ public class BeerViewFragment extends RateBeerFragment implements NdefUriProvide
 				getUser().getPassword(), getUser().getDrinkingStatus(), getUser().isPremium(), new Date(1)));
 	}
 
+<<<<<<< HEAD
+=======
+	protected void onShowFullScreenPhoto() {
+		// Open the photo in a separate full screen image fragment
+		load(FullScreenImageFragment_.builder().photoLowResUrl(ImageUrls.getBeerPhotoUrl(beerId))
+				.photoHighResUrl(ImageUrls.getBeerPhotoHighResUrl(beerId)).build());
+	}
+
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	protected void onAddAvailability() {
 		// Open availability adding screen
 		load(AddAvailabilityFragment_.builder().beerId(beerId).beerName(beerName).build());

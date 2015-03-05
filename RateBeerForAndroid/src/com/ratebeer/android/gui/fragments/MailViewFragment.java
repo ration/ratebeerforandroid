@@ -252,7 +252,11 @@ public class MailViewFragment extends RateBeerFragment {
 			}
 
 			// Bind the data
+<<<<<<< HEAD
 			MailPart item = getItem(position);
+=======
+			final MailPart item = getItem(position);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			if (getActivity() != null) {
 				String dateText = "";
 				try {
@@ -262,9 +266,21 @@ public class MailViewFragment extends RateBeerFragment {
 				} catch (Exception e) {
 					// Cannot format date; ignore and don't show instead
 				}
+<<<<<<< HEAD
 				holder.sender.setText(getString(R.string.app_by, mail.getSenderName()) + dateText);
 				holder.body.setText(item.body);
 				// TODO: Add click listener
+=======
+				holder.sender.setText(getString(R.string.app_by, item.userName) + dateText);
+				holder.body.setText(item.body);
+				holder.sender.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						load(UserViewFragment_.builder().userId(item.sourceUserId).userName(item.userName)
+								.build());
+					}
+				});
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			}
 
 			return convertView;

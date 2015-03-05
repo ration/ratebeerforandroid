@@ -253,9 +253,15 @@ public class ApiConnection {
 
 		HttpRequestBuilder prepared = httpClient.post("http://www.ratebeer.com/Signin_r.asp");
 		prepared.param("SaveInfo", "on");
+<<<<<<< HEAD
 		prepared.param("username", username);
 		prepared.param("pwd", password);
 		prepared.expect(HttpURLConnection.HTTP_MOVED_TEMP);
+=======
+		prepared.param("username", username.trim());
+		prepared.param("pwd", password);
+		prepared.expect(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		final String uidText = "?uid=";
 		for (int i = 0; i < RETRIES; i++) {
 			try {
@@ -274,6 +280,12 @@ public class ApiConnection {
 							"Tried to sign in but the response header did not include the user ID. 'Location' header was: "
 									+ header.toString());
 				}
+<<<<<<< HEAD
+=======
+				if (reply.getStatusCode() == HttpURLConnection.HTTP_OK && readStream(reply.getPayload()).indexOf("User name or password is invalid") >= 0) {
+					throw new ApiException(ExceptionType.AuthenticationFailed, "Incorrect username or password");
+				}
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 				// No login cookies returned by the server... grrr... try to recover from RateBeer's unholy 
 				// authentication/cookie mess by just trying again
 				Log.d(com.ratebeer.android.gui.components.helpers.Log.LOG_NAME,

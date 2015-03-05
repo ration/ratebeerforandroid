@@ -68,7 +68,11 @@ public class DashboardFragment extends RateBeerFragment {
 	@ViewById
 	protected Button drinkingStatus;
 	@ViewById
+<<<<<<< HEAD
 	protected Button myprofile, offlineratings, beerstyles, top50, places, events, beermail, bycountry;
+=======
+	protected Button myprofile, offlineratings, customlists, beerstyles, top50, places, events, beermail, bycountry;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 	@ViewById
 	protected ListView styles;
 	private LayoutInflater inflater;
@@ -83,6 +87,10 @@ public class DashboardFragment extends RateBeerFragment {
 	@AfterViews
 	public void init() {
 				
+<<<<<<< HEAD
+=======
+		customlists.setOnClickListener(onButtonClick(CustomListsFragment_.builder().build(), false));
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		offlineratings.setOnClickListener(onButtonClick(OfflineRatingsFragment_.builder().build(), false));
 		beerstyles.setOnClickListener(onButtonClick(StylesFragment_.builder().build(), false));
 		top50.setOnClickListener(onButtonClick(TopBeersFragment_.builder().topList(TopListType.Top50).build(), false));
@@ -177,6 +185,7 @@ public class DashboardFragment extends RateBeerFragment {
 
 	private void updateProfileImage() {
 		if (getUser() != null) {
+<<<<<<< HEAD
 			RateBeerForAndroid.getImageCache(getActivity()).loadImage(getActivity(),
 					ImageUrls.getUserPhotoUrl(getUser().getUsername()),
 					new ImageLoadingListener() {
@@ -190,19 +199,42 @@ public class DashboardFragment extends RateBeerFragment {
 
 						@Override
 						public void onLoadingComplete(Bitmap arg0) {
+=======
+			RateBeerForAndroid.getImageCache(getActivity()).loadImage(
+					ImageUrls.getUserPhotoUrl(getUser().getUsername()),
+					new ImageLoadingListener() {
+						@Override
+						public void onLoadingStarted(String url, View view) {
+						}
+
+						@Override
+						public void onLoadingFailed(String url, View view, FailReason reason) {
+						}
+
+						@Override
+						public void onLoadingComplete(String url, View view, Bitmap bitmap) {
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 							if (getActivity() == null) {
 								return;
 							}
 							if (density == null) {
 								density = getResources().getDisplayMetrics().density;
 							}
+<<<<<<< HEAD
 							Drawable d = new BitmapDrawable(getResources(), arg0);
+=======
+							Drawable d = new BitmapDrawable(getResources(), bitmap);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 							d.setBounds(0, 0, (int) (48 * density), (int) (48 * density));
 							myprofile.setCompoundDrawables(null, d, null, null);
 						}
 
 						@Override
+<<<<<<< HEAD
 						public void onLoadingCancelled() {
+=======
+						public void onLoadingCancelled(String url, View view) {
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 						}
 					});
 		}
@@ -212,7 +244,11 @@ public class DashboardFragment extends RateBeerFragment {
 	protected void myprofileClicked() {
 		if (getUser() == null) {
 			// No user yet, but this is required so start the login screen
+<<<<<<< HEAD
 			com.ratebeer.android.gui.SignIn_.intent(getActivity()).extraIsRedirect(true).start();
+=======
+			SignIn_.intent(getActivity()).extraIsRedirect(true).start();
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 		} else {
 			load(UserViewFragment_.builder().userName(getUser().getUsername())
 					.userId(getUser().getUserID()).build());
@@ -225,7 +261,11 @@ public class DashboardFragment extends RateBeerFragment {
 			public void onClick(View v) {
 				if (requiresUser && getUser() == null) {
 					// No user yet, but this is required so start the login screen
+<<<<<<< HEAD
 					com.ratebeer.android.gui.SignIn_.intent(getActivity()).extraIsRedirect(true).start();
+=======
+					SignIn_.intent(getActivity()).extraIsRedirect(true).start();
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 				} else {
 					load(fragment);
 				}

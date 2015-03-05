@@ -19,6 +19,10 @@ package com.ratebeer.android.gui.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.Locale;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -47,7 +51,10 @@ import com.ratebeer.android.R;
 import com.ratebeer.android.api.ApiMethod;
 import com.ratebeer.android.api.CommandFailureResult;
 import com.ratebeer.android.api.CommandSuccessResult;
+<<<<<<< HEAD
 import com.ratebeer.android.api.command.AddAvailabilityCommand;
+=======
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 import com.ratebeer.android.api.command.GetFavouritePlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand;
 import com.ratebeer.android.api.command.SearchPlacesCommand.PlaceSearchResult;
@@ -164,8 +171,13 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		public void onClick(View v) {
 			
 			long[] ids1, ids2;
+<<<<<<< HEAD
 			if (android.os.Build.VERSION.SDK_INT >= 8) {
 				// Use a try {}, because the method name was changed in Android...
+=======
+			// The method name was changed in Android 2.2...
+			if (android.os.Build.VERSION.SDK_INT >= 8) {
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 				// For Android 2.2+
 				ids1 = favouritesView.getCheckedItemIds();
 				ids2 = findresultsView.getCheckedItemIds();
@@ -180,6 +192,7 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 				return;
 			}
 			
+<<<<<<< HEAD
 			// See which favourite places are selected
 			int[] selectedFavourites = new int[ids1.length];
 			for (int f = 0; f < ids1.length; f++) {
@@ -193,17 +206,29 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 			if (ids2.length > 0) {
 				extraPlaceName = getFindresutlsAdapter().getItem((int) ids2[0]).placeName;
 				extraPlaceId = getFindresutlsAdapter().getItem((int) ids2[0]).placeId;
+=======
+			int placeId = -1;
+			//if (resPos != AdapterView.INVALID_POSITION) {
+			if (ids2.length > 0) {
+				placeId = getFindresutlsAdapter().getItem((int) ids2[0]).placeId;
+			} else {
+				placeId = getFavouritesAdapter().getItem((int) ids1[0]).placeId;
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			}
 
 			// Use the poster service to add the new availability info
 			Intent i = new Intent(PosterService.ACTION_ADDAVAILABILITY);
 			i.putExtra(PosterService.EXTRA_BEERID, beerId);
 			i.putExtra(PosterService.EXTRA_BEERNAME, beerName);
+<<<<<<< HEAD
 			i.putExtra(PosterService.EXTRA_SELECTEDPLACES, selectedFavourites);
 			i.putExtra(PosterService.EXTRA_EXTRAPLACENAME, extraPlaceName);
 			i.putExtra(PosterService.EXTRA_EXTRAPLACEID, extraPlaceId);
 			i.putExtra(PosterService.EXTRA_ONBOTTLECAN, onbottlecan.isChecked());
 			i.putExtra(PosterService.EXTRA_ONTAP, ontap.isChecked());
+=======
+			i.putExtra(PosterService.EXTRA_PLACEID, placeId);
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			getActivity().startService(i);
 
 			// Close this fragment
@@ -317,9 +342,15 @@ public class AddAvailabilityFragment extends RateBeerFragment {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
+<<<<<<< HEAD
 				return getActivity().getString(R.string.addav_favourites).toUpperCase();
 			case 1:
 				return getActivity().getString(R.string.addav_findaplace).toUpperCase();
+=======
+				return getActivity().getString(R.string.addav_favourites).toUpperCase(Locale.getDefault());
+			case 1:
+				return getActivity().getString(R.string.addav_findaplace).toUpperCase(Locale.getDefault());
+>>>>>>> 9cb2b20cee7ae90e7a5ea61c0ebff4e0c86a6dd6
 			}
 			return null;
 		}
